@@ -1,0 +1,1027 @@
+[0;31mSeverity:    INFO
+Pattern:     Assembly Usage
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    CurveVault
+Line:        696
+Source: 
+>         uint chainId;
+>         assembly { chainId := chainid() }
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return chainId;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    CurveVault
+Line:        437
+Source: 
+> 
+>       if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
+>                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>           checkpoints[delegatee][nCheckpoints - 1].votes = newVotes;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    CurveVault
+Line:        332
+Source: 
+>      */
+>     function delegate(address delegatee) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _delegate(msg.sender, delegatee);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    CurveVault
+Line:        345
+Source: 
+>      */
+>     function delegateBySig(address delegatee, uint nonce, uint expiry, uint8 v, bytes32 r, bytes32 s) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         bytes32 structHash = keccak256(abi.encode(DELEGATION_TYPEHASH, delegatee, nonce, expiry));
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    CurveVault
+Line:        372
+Source: 
+>      */
+>     function getPriorVotes(address account, uint blockNumber) public view returns (uint) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(blockNumber < block.number, "getPriorVotes:");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    CurveVault
+Line:        610
+Source: 
+>      */
+>     function approve(address spender, uint amount) public returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         allowances[msg.sender][spender] = amount;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    CurveVault
+Line:        655
+Source: 
+>      */
+>     function transfer(address dst, uint amount) public returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _transferTokens(msg.sender, dst, amount);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    CurveVault
+Line:        481
+Source: 
+>             _claim();
+>             uint256 _bal = rewards.balanceOf(address(this));
+>                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             if (_bal > bal) {
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    CurveVault
+Line:        497
+Source: 
+>         if (feeDistribution != address(0x0)) {
+>             FeeDistribution(feeDistribution).claim(address(this));
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    CurveVault
+Line:        528
+Source: 
+>         _updateFor(recipient);
+>         rewards.transfer(recipient, claimable[recipient]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         claimable[recipient] = 0;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    CurveVault
+Line:        530
+Source: 
+>         claimable[recipient] = 0;
+>         bal = rewards.balanceOf(address(this));
+>               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    CurveVault
+Line:        552
+Source: 
+>     function depositAll() external {
+>         _deposit(CRV.balanceOf(msg.sender));
+>                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    CurveVault
+Line:        560
+Source: 
+>     function _deposit(uint _amount) internal {
+>         CRV.transferFrom(msg.sender, LOCK, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _mint(msg.sender, _amount);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    CurveVault
+Line:        562
+Source: 
+>         _mint(msg.sender, _amount);
+>         StrategyProxy(proxy).lock();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    CurveVault
+Line:        332
+Source: 
+>      */
+>     function delegate(address delegatee) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _delegate(msg.sender, delegatee);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    CurveVault
+Line:        522
+Source: 
+>     }
+>     function claimFor(address recipient) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _claimFor(recipient);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    CurveVault
+Line:        555
+Source: 
+>     
+>     function deposit(uint _amount) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _deposit(_amount);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    CurveVault
+Line:        570
+Source: 
+>     
+>     function setFeeDistribution(address _feeDistribution) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == governance, "setGovernance: !gov");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    CurveVault
+Line:        579
+Source: 
+>      */
+>     function setGovernance(address _governance) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == governance, "setGovernance: !gov");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    CurveVault
+Line:        655
+Source: 
+>      */
+>     function transfer(address dst, uint amount) public returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _transferTokens(msg.sender, dst, amount);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    CurveVault
+Line:        667
+Source: 
+>      */
+>     function transferFrom(address src, address dst, uint amount) external returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         address spender = msg.sender;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    CurveVault
+Line:        565
+Source: 
+>     
+>     function setProxy(address _proxy) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == governance, "setGovernance: !gov");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    CurveVault
+Line:        598
+Source: 
+>      */
+>     function allowance(address account, address spender) external view returns (uint) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return allowances[account][spender];
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    CurveVault
+Line:        610
+Source: 
+>      */
+>     function approve(address spender, uint amount) public returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         allowances[msg.sender][spender] = amount;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    CurveVault
+Line:        645
+Source: 
+>      */
+>     function balanceOf(address account) external view returns (uint) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return balances[account];
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    CurveVault
+Line:        481
+Source: 
+>             _claim();
+>             uint256 _bal = rewards.balanceOf(address(this));
+>                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             if (_bal > bal) {
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    CurveVault
+Line:        528
+Source: 
+>         _updateFor(recipient);
+>         rewards.transfer(recipient, claimable[recipient]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         claimable[recipient] = 0;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    CurveVault
+Line:        530
+Source: 
+>         claimable[recipient] = 0;
+>         bal = rewards.balanceOf(address(this));
+>               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    CurveVault
+Line:        279
+Source: 
+>     /// @notice EIP-20 token name for this token
+>     string public constant name = "CRV-DAO yVault";
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    CurveVault
+Line:        282
+Source: 
+>     /// @notice EIP-20 token symbol for this token
+>     string public constant symbol = "yvCRV-DAO";
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    CurveVault
+Line:        285
+Source: 
+>     /// @notice EIP-20 token decimals for this token
+>     uint8 public constant decimals = 18;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    CurveVault
+Line:        304
+Source: 
+>     bytes32 public constant DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,uint chainId,address verifyingContract)");
+>     bytes32 public immutable DOMAINSEPARATOR;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    CurveVault
+Line:        467
+Source: 
+>     
+>     IERC20 public constant rewards = IERC20(0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    CurveVault
+Line:        481
+Source: 
+>             _claim();
+>             uint256 _bal = rewards.balanceOf(address(this));
+>             ^^^^^^^^^^^^
+>             if (_bal > bal) {
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    CurveVault
+Line:        483
+Source: 
+>             if (_bal > bal) {
+>                 uint256 _diff = _bal.sub(bal, "CRV::_update: bal _diff");
+>                 ^^^^^^^^^^^^^
+>                 if (_diff > 0) {
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    CurveVault
+Line:        485
+Source: 
+>                 if (_diff > 0) {
+>                     uint256 _ratio = _diff.mul(1e18).div(totalSupply);
+>                     ^^^^^^^^^^^^^^
+>                     if (_ratio > 0) {
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    CurveVault
+Line:        501
+Source: 
+>     
+>     function _updateFor(address recipient) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _update();
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    CurveVault
+Line:        503
+Source: 
+>         _update();
+>         uint256 _supplied = balances[recipient];
+>         ^^^^^^^^^^^^^^^^^
+>         if (_supplied > 0) {
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    CurveVault
+Line:        505
+Source: 
+>         if (_supplied > 0) {
+>             uint256 _supplyIndex = supplyIndex[recipient];
+>             ^^^^^^^^^^^^^^^^^^^^
+>             supplyIndex[recipient] = index;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    CurveVault
+Line:        507
+Source: 
+>             supplyIndex[recipient] = index;
+>             uint256 _delta = index.sub(_supplyIndex, "CRV::_claimFor: index delta");
+>             ^^^^^^^^^^^^^^
+>             if (_delta > 0) {
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    CurveVault
+Line:        509
+Source: 
+>             if (_delta > 0) {
+>               uint256 _share = _supplied.mul(_delta).div(1e18);
+>               ^^^^^^^^^^^^^^
+>               claimable[recipient] = claimable[recipient].add(_share);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        6
+Source: 
+> // SPDX-License-Identifier: MIT
+> pragma solidity ^0.6.12;
+> ^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    CurveVault
+Line:        481
+Source: 
+>             _claim();
+>             uint256 _bal = rewards.balanceOf(address(this));
+>                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             if (_bal > bal) {
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    CurveVault
+Line:        530
+Source: 
+>         claimable[recipient] = 0;
+>         bal = rewards.balanceOf(address(this));
+>               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    CurveVault
+Line:        552
+Source: 
+>     function depositAll() external {
+>         _deposit(CRV.balanceOf(msg.sender));
+>                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    CurveVault
+Line:        497
+Source: 
+>         if (feeDistribution != address(0x0)) {
+>             FeeDistribution(feeDistribution).claim(address(this));
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    CurveVault
+Line:        528
+Source: 
+>         _updateFor(recipient);
+>         rewards.transfer(recipient, claimable[recipient]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         claimable[recipient] = 0;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    CurveVault
+Line:        560
+Source: 
+>     function _deposit(uint _amount) internal {
+>         CRV.transferFrom(msg.sender, LOCK, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _mint(msg.sender, _amount);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    CurveVault
+Line:        562
+Source: 
+>         _mint(msg.sender, _amount);
+>         StrategyProxy(proxy).lock();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    CurveVault
+Line:        460
+Source: 
+>     address public governance;
+>     address public pendingGovernance;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    CurveVault
+Line:        465
+Source: 
+>     address public proxy = address(0x7A1848e7847F3f5FfB4d8e63BdB9569db535A4f0);
+>     address public feeDistribution;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    CurveVault
+Line:        487
+Source: 
+>                     if (_ratio > 0) {
+>                       index = index.add(_ratio);
+>                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+>                       bal = _bal;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    CurveVault
+Line:        488
+Source: 
+>                       index = index.add(_ratio);
+>                       bal = _bal;
+>                       ^^^^^^^^^^
+>                     }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    CurveVault
+Line:        510
+Source: 
+>               uint256 _share = _supplied.mul(_delta).div(1e18);
+>               claimable[recipient] = claimable[recipient].add(_share);
+>               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    CurveVault
+Line:        542
+Source: 
+>         // mint the amount
+>         totalSupply = totalSupply.add(amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         // transfer the amount to the recipient
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    CurveVault
+Line:        544
+Source: 
+>         // transfer the amount to the recipient
+>         balances[dst] = balances[dst].add(amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Transfer(address(0), dst, amount);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    CurveVault
+Line:        409
+Source: 
+>         uint delegatorBalance = balances[delegator];
+>         delegates[delegator] = delegatee;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    CurveVault
+Line:        438
+Source: 
+>       if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
+>           checkpoints[delegatee][nCheckpoints - 1].votes = newVotes;
+>           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>       } else {
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    CurveVault
+Line:        440
+Source: 
+>       } else {
+>           checkpoints[delegatee][nCheckpoints] = Checkpoint(blockNumber, newVotes);
+>           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>           numCheckpoints[delegatee] = nCheckpoints + 1;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    CurveVault
+Line:        441
+Source: 
+>           checkpoints[delegatee][nCheckpoints] = Checkpoint(blockNumber, newVotes);
+>           numCheckpoints[delegatee] = nCheckpoints + 1;
+>           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>       }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    CurveVault
+Line:        350
+Source: 
+>         require(signatory != address(0), "delegateBySig: sig");
+>         require(nonce == nonces[signatory]++, "delegateBySig: nonce");
+>                          ^^^^^^^^^^^^^^^^^^^
+>         require(now <= expiry, "delegateBySig: expired");
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    CurveVault
+Line:        506
+Source: 
+>             uint256 _supplyIndex = supplyIndex[recipient];
+>             supplyIndex[recipient] = index;
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             uint256 _delta = index.sub(_supplyIndex, "CRV::_claimFor: index delta");
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    CurveVault
+Line:        513
+Source: 
+>         } else {
+>             supplyIndex[recipient] = index;
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    CurveVault
+Line:        529
+Source: 
+>         rewards.transfer(recipient, claimable[recipient]);
+>         claimable[recipient] = 0;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^
+>         bal = rewards.balanceOf(address(this));
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    CurveVault
+Line:        530
+Source: 
+>         claimable[recipient] = 0;
+>         bal = rewards.balanceOf(address(this));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    CurveVault
+Line:        611
+Source: 
+>     function approve(address spender, uint amount) public returns (bool) {
+>         allowances[msg.sender][spender] = amount;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    CurveVault
+Line:        628
+Source: 
+>     function permit(address owner, address spender, uint amount, uint deadline, uint8 v, bytes32 r, bytes32 s) external {
+>         bytes32 structHash = keccak256(abi.encode(PERMIT_TYPEHASH, owner, spender, amount, nonces[owner]++, deadline));
+>                                                                                            ^^^^^^^^^^^^^^^
+>         bytes32 digest = keccak256(abi.encodePacked("\x19\x01", DOMAINSEPARATOR, structHash));
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    CurveVault
+Line:        635
+Source: 
+> 
+>         allowances[owner][spender] = amount;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    CurveVault
+Line:        689
+Source: 
+> 
+>         balances[src] = balances[src].sub(amount, "_transferTokens: exceeds balance");
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         balances[dst] = balances[dst].add(amount, "_transferTokens: overflows");
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    CurveVault
+Line:        690
+Source: 
+>         balances[src] = balances[src].sub(amount, "_transferTokens: exceeds balance");
+>         balances[dst] = balances[dst].add(amount, "_transferTokens: overflows");
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Transfer(src, dst, amount);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    CurveVault
+Line:        528
+Source: 
+>         _updateFor(recipient);
+>         rewards.transfer(recipient, claimable[recipient]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         claimable[recipient] = 0;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    CurveVault
+Line:        560
+Source: 
+>     function _deposit(uint _amount) internal {
+>         CRV.transferFrom(msg.sender, LOCK, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _mint(msg.sender, _amount);
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    CurveVault
+Line:        282
+Source: 
+>     /// @notice EIP-20 token symbol for this token
+>     string public constant symbol = "yvCRV-DAO";
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    CurveVault
+Line:        285
+Source: 
+>     /// @notice EIP-20 token decimals for this token
+>     uint8 public constant decimals = 18;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m

@@ -1,0 +1,592 @@
+pragma directive defines a prior version to 0.5.16. Changing pragma version to 0.5.16....
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    Engine
+Line:        147
+Source: 
+>     // Params for auction price multiplier - TODO: can make customizable with an admin function
+>     uint private startingPercentage = 200;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint private numberSteps = 35;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    Engine
+Line:        148
+Source: 
+>     uint private startingPercentage = 200;
+>     uint private numberSteps = 35;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    SafeMath
+Line:        53
+Source: 
+>         // See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522
+>         if (a == 0) {
+>             ^^^^^^
+>             return 0;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    SafeMath
+Line:        58
+Source: 
+>         uint256 c = a * b;
+>         require(c / a == b, "SafeMath: multiplication overflow");
+>                 ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Engine
+Line:        248
+Source: 
+> 
+>     function getNextAuction() public view returns (
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint nextStartTimeSeconds,
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Engine
+Line:        262
+Source: 
+> 
+>     function getCurrentAuction() public view returns (
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint auctionNumber,
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Engine
+Line:        200
+Source: 
+> 
+>     function ethPayoutForNecAmount(uint necAmount) public view returns (uint) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return necAmount.mul(10 ** uint(NEC_DECIMALS)).div(enginePrice());
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Engine
+Line:        205
+Source: 
+>     /// @notice NEC must be approved first
+>     function sellAndBurnNec(uint necAmount) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (block.timestamp >= lastThaw.add(thawingDelay)) {
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    SafeMath
+Line:        57
+Source: 
+> 
+>         uint256 c = a * b;
+>                     ^^^^^
+>         require(c / a == b, "SafeMath: multiplication overflow");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    Engine
+Line:        256
+Source: 
+>         if (lastSuccessfulSale > 0) {
+>           predictedStartingPrice = lastSuccessfulSale * 2;
+>                                    ^^^^^^^^^^^^^^^^^^^^^^
+>         } else {
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Engine
+Line:        211
+Source: 
+>         require(
+>             necToken().transferFrom(msg.sender, address(this), necAmount),
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             "NEC transferFrom failed"
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Engine
+Line:        223
+Source: 
+>         msg.sender.transfer(ethToSend);
+>         necToken().burnAndRetrieve(necAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Burn(necAmount, lastSuccessfulSale, msg.sender);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Warning
+Contract:    Engine
+Line:        222
+Source: 
+>         totalNecBurned = totalNecBurned.add(necAmount);
+>         msg.sender.transfer(ethToSend);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         necToken().burnAndRetrieve(necAmount);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Warning
+Contract:    Engine
+Line:        222
+Source: 
+>         totalNecBurned = totalNecBurned.add(necAmount);
+>         msg.sender.transfer(ethToSend);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         necToken().burnAndRetrieve(necAmount);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    Engine
+Line:        222
+Source: 
+>         totalNecBurned = totalNecBurned.add(necAmount);
+>         msg.sender.transfer(ethToSend);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         necToken().burnAndRetrieve(necAmount);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    Engine
+Line:        222
+Source: 
+>         totalNecBurned = totalNecBurned.add(necAmount);
+>         msg.sender.transfer(ethToSend);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         necToken().burnAndRetrieve(necAmount);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Engine
+Line:        211
+Source: 
+>         require(
+>             necToken().transferFrom(msg.sender, address(this), necAmount),
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             "NEC transferFrom failed"
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Engine
+Line:        223
+Source: 
+>         msg.sender.transfer(ethToSend);
+>         necToken().burnAndRetrieve(necAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Burn(necAmount, lastSuccessfulSale, msg.sender);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Engine
+Line:        133
+Source: 
+> 
+>     uint public frozenEther;
+>     ^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public liquidEther;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Engine
+Line:        134
+Source: 
+>     uint public frozenEther;
+>     uint public liquidEther;
+>     ^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public lastThaw;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Engine
+Line:        137
+Source: 
+>     uint public thawingDelay;
+>     uint public totalEtherConsumed;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public totalNecBurned;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Engine
+Line:        138
+Source: 
+>     uint public totalEtherConsumed;
+>     uint public totalNecBurned;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public thisAuctionTotalEther;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Engine
+Line:        139
+Source: 
+>     uint public totalNecBurned;
+>     uint public thisAuctionTotalEther;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Engine
+Line:        142
+Source: 
+>     uint private necPerEth; // Price at which the previous auction ended
+>     uint private lastSuccessfulSale;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Engine
+Line:        144
+Source: 
+> 
+>     uint public auctionCounter;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted Ether Flow
+Description: The execution of ether flows should be restricted to an
+             authorized set of users.
+Type:        Warning
+Contract:    Engine
+Line:        222
+Source: 
+>         totalNecBurned = totalNecBurned.add(necAmount);
+>         msg.sender.transfer(ethToSend);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         necToken().burnAndRetrieve(necAmount);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Engine
+Line:        158
+Source: 
+>     function payFeesInEther() external payable {
+>         totalEtherConsumed = totalEtherConsumed.add(msg.value);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         frozenEther = frozenEther.add(msg.value);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Engine
+Line:        159
+Source: 
+>         totalEtherConsumed = totalEtherConsumed.add(msg.value);
+>         frozenEther = frozenEther.add(msg.value);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit FeesPaid(msg.value);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Engine
+Line:        171
+Source: 
+>         require(frozenEther > 0, "No frozen ether to thaw");
+>         lastThaw = block.timestamp;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (lastSuccessfulSale > 0) {
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Engine
+Line:        173
+Source: 
+>         if (lastSuccessfulSale > 0) {
+>           necPerEth = lastSuccessfulSale;
+>           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         } else {
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Engine
+Line:        177
+Source: 
+>         }
+>         liquidEther = liquidEther.add(frozenEther);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         thisAuctionTotalEther = liquidEther;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Engine
+Line:        178
+Source: 
+>         liquidEther = liquidEther.add(frozenEther);
+>         thisAuctionTotalEther = liquidEther;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Thaw(frozenEther);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Engine
+Line:        180
+Source: 
+>         emit Thaw(frozenEther);
+>         frozenEther = 0;
+>         ^^^^^^^^^^^^^^^
+>         lastSuccessfulSale = 0;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Engine
+Line:        181
+Source: 
+>         frozenEther = 0;
+>         lastSuccessfulSale = 0;
+>         ^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Engine
+Line:        184
+Source: 
+>         emit AuctionClose(auctionCounter, totalEtherConsumed, totalNecBurned);
+>         auctionCounter++;
+>         ^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Engine
+Line:        175
+Source: 
+>         } else {
+>           necPerEth = necPerEth.div(4);
+>           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Engine
+Line:        218
+Source: 
+>         if (liquidEther > 0.1 ether) {
+>             lastSuccessfulSale = enginePrice();
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Engine
+Line:        220
+Source: 
+>         }
+>         liquidEther = liquidEther.sub(ethToSend);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         totalNecBurned = totalNecBurned.add(necAmount);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Engine
+Line:        221
+Source: 
+>         liquidEther = liquidEther.sub(ethToSend);
+>         totalNecBurned = totalNecBurned.add(necAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         msg.sender.transfer(ethToSend);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Engine
+Line:        223
+Source: 
+>         msg.sender.transfer(ethToSend);
+>         necToken().burnAndRetrieve(necAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Burn(necAmount, lastSuccessfulSale, msg.sender);
+
+[0m
+[0;35mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Conflict
+Contract:    Engine
+Line:        167
+Source: 
+>         require(
+>             block.timestamp >= lastThaw.add(thawingDelay),
+>             ^^^^^^^^^^^^^^^
+>             "Thawing delay has not passed"
+
+[0m
+[0;35mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Conflict
+Contract:    Engine
+Line:        171
+Source: 
+>         require(frozenEther > 0, "No frozen ether to thaw");
+>         lastThaw = block.timestamp;
+>                    ^^^^^^^^^^^^^^^
+>         if (lastSuccessfulSale > 0) {
+
+[0m
+[0;35mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Conflict
+Contract:    Engine
+Line:        206
+Source: 
+>     function sellAndBurnNec(uint necAmount) external {
+>         if (block.timestamp >= lastThaw.add(thawingDelay)) {
+>             ^^^^^^^^^^^^^^^
+>           thaw();
+
+[0m

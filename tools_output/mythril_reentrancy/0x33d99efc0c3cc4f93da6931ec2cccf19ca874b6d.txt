@@ -1,0 +1,287 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: _0xLitecoinToken
+Function name: fallback
+PC address: 1693
+Estimated Gas Usage: 2330 - 4071
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/b2b50b06af090fd68a10a7705f66ad98.sol:493
+
+
+
+    // the goal i
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40001000000095838, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: name(), txdata: 0x06fdde03, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: _0xLitecoinToken
+Function name: merge()
+PC address: 1924
+Estimated Gas Usage: 6037 - 76337
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/b2b50b06af090fd68a10a7705f66ad98.sol:819
+
+urn false; // a 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: merge(), txdata: 0x0b65108b, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: _0xLitecoinToken
+Function name: merge()
+PC address: 1941
+Estimated Gas Usage: 1044 - 1139
+A control flow decision is made based on The block hash of a previous block.
+The block hash of a previous block is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/b2b50b06af090fd68a10a7705f66ad98.sol:819
+
+ called mint last so return false ( don't revert)
+
+            }
+
+            
+
+            //verify Parent::lastRewardEthBlockNumber == block.number;
+
+
+
+            if(ERC918Interface(parentAddress).lastRewardEth
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: merge(), txdata: 0x0b65108b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: _0xLitecoinToken
+Function name: merge()
+PC address: 2115
+Estimated Gas Usage: 6037 - 76337
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/b2b50b06af090fd68a10a7705f66ad98.sol:841
+
+       //we h
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: merge(), txdata: 0x0b65108b, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: _0xLitecoinToken
+Function name: merge()
+PC address: 2210
+Estimated Gas Usage: 6037 - 76337
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/b2b50b06af090fd68a10a7705f66ad98.sol:839
+
+ningEpoch
+
+            //we have verified that this is th
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: merge(), txdata: 0x0b65108b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: _0xLitecoinToken
+Function name: merge()
+PC address: 2210
+Estimated Gas Usage: 6037 - 76337
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/b2b50b06af090fd68a10a7705f66ad98.sol:839
+
+ningEpoch
+
+            //we have verified that this is th
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: merge(), txdata: 0x0b65108b, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: _0xLitecoinToken
+Function name: merge()
+PC address: 2256
+Estimated Gas Usage: 5937 - 75956
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/b2b50b06af090fd68a10a7705f66ad98.sol:839
+
+wMiningEpoch
+
+            //we have verified that this is the same block as a call to Parent::mint() and that the sender
+
+            // is the sender that has called mint
+
+
+
+
+
+
+
+             //0xLTC will have the s
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: merge(), txdata: 0x0b65108b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: _0xLitecoinToken
+Function name: merge()
+PC address: 2271
+Estimated Gas Usage: 6037 - 76337
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/b2b50b06af090fd68a10a7705f66ad98.sol:881
+
+
+
+
+
+         
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: merge(), txdata: 0x0b65108b, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: _0xLitecoinToken
+Function name: symbol()
+PC address: 3817
+Estimated Gas Usage: 2874 - 4615
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/b2b50b06af090fd68a10a7705f66ad98.sol:489
+
+;//number of 'blocks
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80000140068132, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: symbol(), txdata: 0x95d89b41, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: _0xLitecoinToken
+Function name: transferAnyERC20Token(address,uint256)
+PC address: 4636
+Estimated Gas Usage: 4278 - 40301
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/b2b50b06af090fd68a10a7705f66ad98.sol:1573
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferAnyERC20Token(address,uint256), txdata: 0xdc39d06d000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

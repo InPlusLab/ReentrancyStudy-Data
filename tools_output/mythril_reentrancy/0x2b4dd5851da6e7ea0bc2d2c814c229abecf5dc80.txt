@@ -1,0 +1,836 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: constructor
+PC address: 140
+Estimated Gas Usage: 14074 - 94422
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:923
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: efefefefefefefefefefefefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Token
+Function name: constructor
+PC address: 185
+Estimated Gas Usage: 14074 - 94422
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:156
+
+
+    event Pause();
+
+    event
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: efefefefefefefefefefefefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Token
+Function name: constructor
+PC address: 212
+Estimated Gas Usage: 14074 - 94422
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:156
+
+
+    event Pause();
+
+    event
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: efefefefefefefefefefefefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Token
+Function name: masFreezedTokens(address[],uint256[],uint256[])
+PC address: 740
+Estimated Gas Usage: 13938 - 99263
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:751
+
+reeze storage _freeze = freezedTokens[_to];
+
+            _freeze.amount = _value;
+
+            _freeze.when = _when;
+
+        }
+
+        transfer(_to,_value);
+
+    }
+
+
+
+    function transfer(address _to, uint256 _value) public returns (bool) {
+
+        require(balanceOf(msg.sender) >= freezedTokenOf(msg.sender).add(_value));
+
+        return super.transfer(_to,_value);
+
+    }
+
+
+
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
+
+        require(balanceOf(_from) >= free
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: masFreezedTokens(address[],uint256[],uint256[]), txdata: 0x24db1f50ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc800000000000000000000000000000000000020000000000000000000000001e80, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Token
+Function name: freezedTokenOf(address)
+PC address: 1896
+Estimated Gas Usage: 1113 - 2058
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:719
+
+c {
+
+        onlyAdmin();
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x200000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: freezedTokenOf(address), txdata: 0x11cfb19d, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: masFreezedTokens(address[],uint256[],uint256[])
+PC address: 2185
+Estimated Gas Usage: 13938 - 99263
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:775
+
+ess _to, uint256 _value) pu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80800180801f0004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: masFreezedTokens(address[],uint256[],uint256[]), txdata: 0x24db1f508000000000000000000000000000000000000000000000000000000000000000800000000001000000000000000000000000000000000000000000000000000880, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: masFreezedTokens(address[],uint256[],uint256[])
+PC address: 2220
+Estimated Gas Usage: 13938 - 99263
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:775
+
+l) {
+
+        require(b
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80800180801f0004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: masFreezedTokens(address[],uint256[],uint256[]), txdata: 0x24db1f508000000000000000000000000000000000000000000000000000000000000000800000000001000000000000000000000000000000000000000000000000000880, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: markTokens(address,uint256)
+PC address: 2408
+Estimated Gas Usage: 18505 - 100126
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:459
+
+
+
+}
+
+
+
+contract Standa
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: markTokens(address,uint256), txdata: 0x264282f2, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: markTokens(address,uint256)
+PC address: 2445
+Estimated Gas Usage: 18505 - 100126
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:479
+
+ant to send tokens fro
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: markTokens(address,uint256), txdata: 0x264282f2, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: markTokens(address,uint256)
+PC address: 2486
+Estimated Gas Usage: 18505 - 100126
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:479
+
+s The address which you want to send tokens from
+
+     * @p
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: markTokens(address,uint256), txdata: 0x264282f2, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: markTokens(address,uint256)
+PC address: 2489
+Estimated Gas Usage: 18505 - 100126
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:481
+
+ which you w
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: markTokens(address,uint256), txdata: 0x264282f2, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: markTokens(address,uint256)
+PC address: 2508
+Estimated Gas Usage: 18505 - 100126
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:481
+
+ess The address which you want to trans
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: markTokens(address,uint256), txdata: 0x264282f2, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: mint(address,uint256)
+PC address: 2771
+Estimated Gas Usage: 17686 - 98738
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:867
+
+   totalSupp
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x420400001020a8400, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: mint(address,uint256), txdata: 0x40c10f19, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: mint(address,uint256)
+PC address: 2790
+Estimated Gas Usage: 17686 - 98738
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:863
+
+] = 0;
+
+
+
+        totalSupply_ = totalSu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x420400001020a8400, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: mint(address,uint256), txdata: 0x40c10f19, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: mint(address,uint256)
+PC address: 2815
+Estimated Gas Usage: 17686 - 98738
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:869
+
+talMigrated =
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x420400001020a8400, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: mint(address,uint256), txdata: 0x40c10f19, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: mint(address,uint256)
+PC address: 2861
+Estimated Gas Usage: 17686 - 98738
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:867
+
+ue);
+
+        totalMigrated = totalMigrate
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x420400001020a8400, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: mint(address,uint256), txdata: 0x40c10f19, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Token
+Function name: defrostDate(address)
+PC address: 3003
+Estimated Gas Usage: 1267 - 2212
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:729
+
+          freeze storage _freez
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: defrostDate(address), txdata: 0x50bb117a, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: setMigrationAgent(address)
+PC address: 3656
+Estimated Gas Usage: 9675 - 65747
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:903
+
+nal(msg.sende
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: setMigrationAgent(address), txdata: 0x75e2ff65, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: setMigrationAgent(address)
+PC address: 3670
+Estimated Gas Usage: 9675 - 65747
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:913
+
+contract Token is IToken, Freezi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: setMigrationAgent(address), txdata: 0x75e2ff65, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: setMigrationAgent(address)
+PC address: 3711
+Estimated Gas Usage: 9675 - 65747
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:913
+
+contract Token is IToken, Freezi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: setMigrationAgent(address), txdata: 0x75e2ff65, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: transferTokens(address,address,uint256)
+PC address: 4198
+Estimated Gas Usage: 4894 - 76564
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:261
+
+le);
+
+    event CloneChange
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transferTokens(address,address,uint256), txdata: 0xa64b6e5f000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Token
+Function name: transferTokens(address,address,uint256)
+PC address: 4198
+Estimated Gas Usage: 4894 - 76564
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:261
+
+le);
+
+    event CloneChange
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x200000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferTokens(address,address,uint256), txdata: 0xa64b6e5f, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: setUnpausedWallet(address,bool)
+PC address: 4335
+Estimated Gas Usage: 9145 - 65407
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:213
+
+s.onlyRoles(msg.sender,1));
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setUnpausedWallet(address,bool), txdata: 0xb3e1f523, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: setUnpausedWallet(address,bool)
+PC address: 4348
+Estimated Gas Usage: 9145 - 65407
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:213
+
+s.onlyRoles(msg.sender,1));
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setUnpausedWallet(address,bool), txdata: 0xb3e1f523, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: setPause(bool)
+PC address: 4516
+Estimated Gas Usage: 11483 - 67244
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:239
+
+RC20Pr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: setPause(bool), txdata: 0xbedb86fb, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: setPause(bool)
+PC address: 4596
+Estimated Gas Usage: 11483 - 67244
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:241
+
+public
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: setPause(bool), txdata: 0xbedb86fb, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: setPause(bool)
+PC address: 4618
+Estimated Gas Usage: 11483 - 67244
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:243
+
+quire(rightAnd
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: setPause(bool), txdata: 0xbedb86fb, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: setPause(bool)
+PC address: 4624
+Estimated Gas Usage: 11483 - 67244
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:243
+
+quire(rightAnd
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: setPause(bool), txdata: 0xbedb86fb, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: freezeTokens(address,uint256,uint256)
+PC address: 5035
+Estimated Gas Usage: 13400 - 89662
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:747
+
+      require(freezedTok
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: freezeTokens(address,uint256,uint256), txdata: 0xf831ebab, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: freezeTokens(address,uint256,uint256)
+PC address: 5039
+Estimated Gas Usage: 13400 - 89662
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2de7d0dcf2d9d23cd553e8becad14830.sol:747
+
+0);
+
+        if(_whe
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: freezeTokens(address,uint256,uint256), txdata: 0xf831ebab, value: 0x0
+
+

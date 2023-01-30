@@ -1,0 +1,388 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: HairyHoover
+Function name: suckBalance(address)
+PC address: 401
+Estimated Gas Usage: 229 - 324
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/5a1764905750d611a013ee0ec6fb7922.sol:67
+
+b) {
+
+        assert(uint(token)!=0);
+
+        (a, b) = this.check(token);
+
+        require(b>0, 'must have a balance');
+
+        require(a>0, 'none approved');
+
+        if (a>=b) 
+
+            require(Yrc20(token).transferFrom(msg.sender,this,b), 'not approved');
+
+        else
+
+            require(Yrc20(token).transferFrom(msg.sender,this,a), 'not approved');
+
+    }
+
+    
+
+    function cleanBalance(address token) external returns(uint256 b) {
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: suckBalance(address), txdata: 0x24f98448, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: YBalanceChecker
+Function name: check(address) or check(address)
+PC address: 413
+Estimated Gas Usage: 3667 - 73357
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5a1764905750d611a013ee0ec6fb7922.sol:57
+
+(token).allowance(msg.sender,this)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000010, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: check(address), txdata: 0xc23697a800000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: check(address), txdata: 0xc23697a8c2c2c2c2c2c2c2c2c2c2c2c2deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: YBalanceChecker
+Function name: check(address) or check(address)
+PC address: 681
+Estimated Gas Usage: 3667 - 73357
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5a1764905750d611a013ee0ec6fb7922.sol:65
+
+ntract HairyHoover is YBalanceChecker {
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000010, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: check(address), txdata: 0xc23697a800000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: check(address), txdata: 0xc23697a8c2c2c2c2c2c2c2c2c2c2c2c2deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: YBalanceChecker
+Function name: check(address) or check(address)
+PC address: 681
+Estimated Gas Usage: 3667 - 73357
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/5a1764905750d611a013ee0ec6fb7922.sol:65
+
+ntract HairyHoover is YBalanceChecker {
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x480200000104c0042, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: check(address), txdata: 0xc23697a800000000000000000000000001, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: HairyHoover
+Function name: suckBalance(address)
+PC address: 1100
+Estimated Gas Usage: 3850 - 73728
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5a1764905750d611a013ee0ec6fb7922.sol:83
+
+            require(Yrc20(token).transferFro
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x200000000000fbf92, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: suckBalance(address), txdata: 0x24f98448000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: HairyHoover
+Function name: suckBalance(address)
+PC address: 1100
+Estimated Gas Usage: 3850 - 73728
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/5a1764905750d611a013ee0ec6fb7922.sol:83
+
+            require(Yrc20(token).transferFro
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x500003eaf, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: suckBalance(address), txdata: 0x24f9844800000000000000000000000001, value: 0x0
+
+==== Unprotected Ether Withdrawal ====
+SWC ID: 105
+Severity: High
+Contract: HairyHoover
+Function name: cleanBalance(address)
+PC address: 1779
+Estimated Gas Usage: 1842 - 36404
+Any sender can withdraw Ether from the contract account.
+Arbitrary senders other than the contract creator can profitably extract Ether from the contract account. Verify the business logic carefully and make sure that appropriate security controls are in place to prevent unexpected loss of funds.
+--------------------
+In file: /tmp/5a1764905750d611a013ee0ec6fb7922.sol:99
+
+ Yrc20(token).balanceOf(this);
+
+        requir
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x30000000001000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x7e7402000020000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x01000100, value: 0x1
+Caller: [ATTACKER], function: cleanBalance(address), txdata: 0x9c1192f5, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: HairyHoover
+Function name: cleanBalance(address)
+PC address: 1965
+Estimated Gas Usage: 3702 - 73297
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5a1764905750d611a013ee0ec6fb7922.sol:103
+
+(token).transfer(msg.sender,
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xac24c2c00000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: cleanBalance(address), txdata: 0x9c1192f5000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: HairyHoover
+Function name: cleanBalance(address)
+PC address: 2309
+Estimated Gas Usage: 3702 - 73297
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5a1764905750d611a013ee0ec6fb7922.sol:109
+
+
+
+}
+
+
+
+
+
+pragma solidity ^0.4.8;
+
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xac24c2c00000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: cleanBalance(address), txdata: 0x9c1192f5000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: HairyHoover
+Function name: cleanBalance(address)
+PC address: 2309
+Estimated Gas Usage: 3702 - 73297
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/5a1764905750d611a013ee0ec6fb7922.sol:109
+
+
+
+}
+
+
+
+
+
+pragma solidity ^0.4.8;
+
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x79eb9, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: cleanBalance(address), txdata: 0x9c1192f500000000000000000000000001, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: HairyHoover
+Function name: check(address) or check(address)
+PC address: 2736
+Estimated Gas Usage: 3711 - 73401
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5a1764905750d611a013ee0ec6fb7922.sol:57
+
+(token).allowance(msg.sender,this)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: check(address), txdata: 0xc23697a8000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: HairyHoover
+Function name: check(address) or check(address)
+PC address: 3004
+Estimated Gas Usage: 3711 - 73401
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5a1764905750d611a013ee0ec6fb7922.sol:65
+
+ntract HairyHoover is YBalanceChecker {
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: check(address), txdata: 0xc23697a8000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: HairyHoover
+Function name: check(address) or check(address)
+PC address: 3004
+Estimated Gas Usage: 3711 - 73401
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/5a1764905750d611a013ee0ec6fb7922.sol:65
+
+ntract HairyHoover is YBalanceChecker {
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x7aab1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: check(address), txdata: 0xc23697a800000000000000000000000001, value: 0x0

@@ -1,0 +1,51 @@
+with mythril_dir
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: VoteAndClaim
+Function name: claim(uint256)
+PC address: 347
+Estimated Gas Usage: 5748 - 143345
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3c917e7418f528333ad5ef8766fdb058.sol:33
+
+        WETH.withdraw(qty);
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20fbfbe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: claim(uint256), txdata: 0x379607f50000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: VoteAndClaim
+Function name: claim(uint256)
+PC address: 522
+Estimated Gas Usage: 5748 - 143345
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3c917e7418f528333ad5ef8766fdb058.sol:36
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x40, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: claim(uint256), txdata: 0x379607f50000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+

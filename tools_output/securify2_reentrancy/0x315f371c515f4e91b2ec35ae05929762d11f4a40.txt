@@ -1,0 +1,295 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+pragma directive defines a prior version to 0.5.16. Changing pragma version to 0.5.16....
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Escrow
+Line:        41
+Source: 
+> 
+>     function withdraw() public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (!isReleased) {
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Escrow
+Line:        57
+Source: 
+> 
+>     function release() public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(address(this).balance >= ethAmount, "not enough ether");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Escrow
+Line:        59
+Source: 
+>         require(address(this).balance >= ethAmount, "not enough ether");
+>         require(mbn.balanceOf(address(this)) >= tokenAmount, "not enough tokens");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         mbn.transfer(tokenRecipient, tokenAmount);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Escrow
+Line:        60
+Source: 
+>         require(mbn.balanceOf(address(this)) >= tokenAmount, "not enough tokens");
+>         mbn.transfer(tokenRecipient, tokenAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         ethRecipient.transfer(ethAmount);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Violation
+Contract:    Escrow
+Line:        61
+Source: 
+>         mbn.transfer(tokenRecipient, tokenAmount);
+>         ethRecipient.transfer(ethAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         isReleased = true;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    Escrow
+Line:        21
+Source: 
+>     bool public isReleased = false;
+>     IERC20 mbn;
+>     ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    Escrow
+Line:        49
+Source: 
+>         if (ethOnContract > 0) {
+>             tokenRecipient.transfer(ethOnContract);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    Escrow
+Line:        61
+Source: 
+>         mbn.transfer(tokenRecipient, tokenAmount);
+>         ethRecipient.transfer(ethAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         isReleased = true;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    Escrow
+Line:        49
+Source: 
+>         if (ethOnContract > 0) {
+>             tokenRecipient.transfer(ethOnContract);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    Escrow
+Line:        61
+Source: 
+>         mbn.transfer(tokenRecipient, tokenAmount);
+>         ethRecipient.transfer(ethAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         isReleased = true;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    Escrow
+Line:        49
+Source: 
+>         if (ethOnContract > 0) {
+>             tokenRecipient.transfer(ethOnContract);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    Escrow
+Line:        61
+Source: 
+>         mbn.transfer(tokenRecipient, tokenAmount);
+>         ethRecipient.transfer(ethAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         isReleased = true;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Escrow
+Line:        47
+Source: 
+>         uint256 ethOnContract = address(this).balance;
+>         uint256 tokenOnContract = mbn.balanceOf(address(this));
+>                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (ethOnContract > 0) {
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Escrow
+Line:        59
+Source: 
+>         require(address(this).balance >= ethAmount, "not enough ether");
+>         require(mbn.balanceOf(address(this)) >= tokenAmount, "not enough tokens");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         mbn.transfer(tokenRecipient, tokenAmount);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Escrow
+Line:        52
+Source: 
+>         if (tokenOnContract > 0) {
+>             mbn.transfer(ethRecipient, tokenOnContract);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Escrow
+Line:        60
+Source: 
+>         require(mbn.balanceOf(address(this)) >= tokenAmount, "not enough tokens");
+>         mbn.transfer(tokenRecipient, tokenAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         ethRecipient.transfer(ethAmount);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted Ether Flow
+Description: The execution of ether flows should be restricted to an
+             authorized set of users.
+Type:        Violation
+Contract:    Escrow
+Line:        49
+Source: 
+>         if (ethOnContract > 0) {
+>             tokenRecipient.transfer(ethOnContract);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted Ether Flow
+Description: The execution of ether flows should be restricted to an
+             authorized set of users.
+Type:        Violation
+Contract:    Escrow
+Line:        61
+Source: 
+>         mbn.transfer(tokenRecipient, tokenAmount);
+>         ethRecipient.transfer(ethAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         isReleased = true;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Escrow
+Line:        62
+Source: 
+>         ethRecipient.transfer(ethAmount);
+>         isReleased = true;
+>         ^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Escrow
+Line:        52
+Source: 
+>         if (tokenOnContract > 0) {
+>             mbn.transfer(ethRecipient, tokenOnContract);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Escrow
+Line:        60
+Source: 
+>         require(mbn.balanceOf(address(this)) >= tokenAmount, "not enough tokens");
+>         mbn.transfer(tokenRecipient, tokenAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         ethRecipient.transfer(ethAmount);
+
+[0m

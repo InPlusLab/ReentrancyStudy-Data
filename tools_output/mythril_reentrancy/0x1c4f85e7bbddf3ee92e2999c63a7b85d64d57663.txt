@@ -1,0 +1,167 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DeployTokenContract
+Function name: enableCodeExport(address)
+PC address: 973
+Estimated Gas Usage: 11787 - 102250
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/585ec0da64909b7d5279279d0faf57b2.sol:127
+
+led(msg.sender);
+    }
+
+}
+
+
+/
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x48000000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000000000000002, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: enableCodeExport(address), txdata: 0x27e728ec000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DeployTokenContract
+Function name: enableCodeExport(address)
+PC address: 1011
+Estimated Gas Usage: 11787 - 102250
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/585ec0da64909b7d5279279d0faf57b2.sol:134
+
+tiToken is ERC20,
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20000008a00688000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: enableCodeExport(address), txdata: 0x27e728ec000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: DeployTokenContract
+Function name: enableCodeExport(address)
+PC address: 1087
+Estimated Gas Usage: 11787 - 102250
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/585ec0da64909b7d5279279d0faf57b2.sol:134
+
+tiToken is ERC20, Ownable {
+
+    usin
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x800000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: enableCodeExport(address), txdata: 0x27e728ec00000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DeployTokenContract
+Function name: enableCodeExport(address)
+PC address: 1087
+Estimated Gas Usage: 11787 - 102250
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/585ec0da64909b7d5279279d0faf57b2.sol:134
+
+tiToken is ERC20, Ownable {
+
+    usin
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20000008a00688000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: enableCodeExport(address), txdata: 0x27e728ec000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MultiToken
+Function name: mintToken(address,uint256)
+PC address: 5185
+Estimated Gas Usage: 14703 - 55855
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/585ec0da64909b7d5279279d0faf57b2.sol:214
+
+ss} address or recipient
+    // @p
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000080012, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: mintToken(address,uint256), txdata: 0x79c65068000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffeffffffffffffffffffffffffffffffffffffffffffffffffffffff40, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MultiToken
+Function name: mintToken(address,uint256)
+PC address: 5201
+Estimated Gas Usage: 14703 - 55855
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/585ec0da64909b7d5279279d0faf57b2.sol:215
+
+ {uint} amount to transfer
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: mintToken(address,uint256), txdata: 0x79c650680000000000000000000000000000000000000000000080000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffff80, value: 0x0

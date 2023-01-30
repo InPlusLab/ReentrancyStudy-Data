@@ -1,0 +1,425 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+[0;31mSeverity:    INFO
+Pattern:     Assembly Usage
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    ChangeDutySpell
+Line:        48
+Source: 
+>         address _action = action;
+>         assembly { _tag := extcodehash(_action) }
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         tag = _tag;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    ChangeDutySpell
+Line:        35
+Source: 
+> contract ChangeDutySpell {
+>     DSPauseAbstract  public pause = DSPauseAbstract(0xD4A71B333607549386aDCf528bAd2D096122F31c);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address          public action;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    ChangeDutySpell
+Line:        57
+Source: 
+>         require(now <= expiration, "This contract has expired");
+>         require(eta == 0, "This spell has already been scheduled");
+>                 ^^^^^^^^
+>         eta = now + pause.delay();
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    ChangeDutySpell
+Line:        52
+Source: 
+>     }
+>     function description() public view returns (string memory) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return SpellAction(action).description();
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    ChangeDutySpell
+Line:        55
+Source: 
+>     }
+>     function schedule() public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(now <= expiration, "This contract has expired");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    ChangeDutySpell
+Line:        61
+Source: 
+>     }
+>     function cast() public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(!done, "spell-already-cast");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    ChangeDutySpell
+Line:        58
+Source: 
+>         require(eta == 0, "This spell has already been scheduled");
+>         eta = now + pause.delay();
+>                     ^^^^^^^^^^^^^
+>         pause.plot(action, tag, sig, eta);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    ChangeDutySpell
+Line:        59
+Source: 
+>         eta = now + pause.delay();
+>         pause.plot(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    ChangeDutySpell
+Line:        64
+Source: 
+>         done = true;
+>         pause.exec(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    SpellAction
+Line:        21
+Source: 
+>     // This should be modified weekly to provide a summary of the actions
+>     string constant public description = "2020-12-14 Change Jut duty value (4% -> 0.1%)";
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    ChangeDutySpell
+Line:        46
+Source: 
+>         action = address(new SpellAction());
+>         bytes32 _tag;
+>         ^^^^^^^^^^^^
+>         address _action = action;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    ChangeDutySpell
+Line:        47
+Source: 
+>         bytes32 _tag;
+>         address _action = action;
+>         ^^^^^^^^^^^^^^^
+>         assembly { _tag := extcodehash(_action) }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    SpellAction
+Line:        26
+Source: 
+>         JugLike(MCD_JUG).drip("ETH-A");
+>         JugLike(MCD_JUG).file("ETH-A", "duty", 1000000000031693947650284507);
+>                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         JugLike(MCD_JUG).drip("ETH-A");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    SpellAction
+Line:        30
+Source: 
+>         JugLike(MCD_JUG).drip("WBTC-A");
+>         JugLike(MCD_JUG).file("WBTC-A", "duty", 1000000000031693947650284507);
+>                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         JugLike(MCD_JUG).drip("WBTC-A");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    ChangeDutySpell
+Line:        58
+Source: 
+>         require(eta == 0, "This spell has already been scheduled");
+>         eta = now + pause.delay();
+>                     ^^^^^^^^^^^^^
+>         pause.plot(action, tag, sig, eta);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SpellAction
+Line:        25
+Source: 
+>     function execute() external {
+>         JugLike(MCD_JUG).drip("ETH-A");
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         JugLike(MCD_JUG).file("ETH-A", "duty", 1000000000031693947650284507);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SpellAction
+Line:        26
+Source: 
+>         JugLike(MCD_JUG).drip("ETH-A");
+>         JugLike(MCD_JUG).file("ETH-A", "duty", 1000000000031693947650284507);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         JugLike(MCD_JUG).drip("ETH-A");
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SpellAction
+Line:        27
+Source: 
+>         JugLike(MCD_JUG).file("ETH-A", "duty", 1000000000031693947650284507);
+>         JugLike(MCD_JUG).drip("ETH-A");
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SpellAction
+Line:        29
+Source: 
+>         
+>         JugLike(MCD_JUG).drip("WBTC-A");
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         JugLike(MCD_JUG).file("WBTC-A", "duty", 1000000000031693947650284507);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SpellAction
+Line:        30
+Source: 
+>         JugLike(MCD_JUG).drip("WBTC-A");
+>         JugLike(MCD_JUG).file("WBTC-A", "duty", 1000000000031693947650284507);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         JugLike(MCD_JUG).drip("WBTC-A");
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SpellAction
+Line:        31
+Source: 
+>         JugLike(MCD_JUG).file("WBTC-A", "duty", 1000000000031693947650284507);
+>         JugLike(MCD_JUG).drip("WBTC-A");
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    ChangeDutySpell
+Line:        53
+Source: 
+>     function description() public view returns (string memory) {
+>         return SpellAction(action).description();
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    ChangeDutySpell
+Line:        59
+Source: 
+>         eta = now + pause.delay();
+>         pause.plot(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    ChangeDutySpell
+Line:        64
+Source: 
+>         done = true;
+>         pause.exec(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Uninitialized Local Variables
+Description: A variable is declared but never initialized.
+Type:        Violation
+Contract:    ChangeDutySpell
+Line:        49
+Source: 
+>         assembly { _tag := extcodehash(_action) }
+>         tag = _tag;
+>               ^^^^
+>         expiration = now + 30 days;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    ChangeDutySpell
+Line:        38
+Source: 
+>     bytes32          public tag;
+>     uint256          public eta;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     bytes            public sig;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    ChangeDutySpell
+Line:        41
+Source: 
+>     uint256          public expiration;
+>     bool             public done;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    ChangeDutySpell
+Line:        58
+Source: 
+>         require(eta == 0, "This spell has already been scheduled");
+>         eta = now + pause.delay();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^
+>         pause.plot(action, tag, sig, eta);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    ChangeDutySpell
+Line:        63
+Source: 
+>         require(!done, "spell-already-cast");
+>         done = true;
+>         ^^^^^^^^^^^
+>         pause.exec(action, tag, sig, eta);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    ChangeDutySpell
+Line:        64
+Source: 
+>         done = true;
+>         pause.exec(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    SpellAction
+Line:        21
+Source: 
+>     // This should be modified weekly to provide a summary of the actions
+>     string constant public description = "2020-12-14 Change Jut duty value (4% -> 0.1%)";
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m

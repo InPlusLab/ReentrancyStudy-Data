@@ -1,0 +1,127 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ETFloorPresale
+Function name: fallback
+PC address: 816
+Estimated Gas Usage: 20726 - 97154
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/e0323c70448a2ebf061b422788ebd648.sol:478
+
+
+
+    function setMaxPayments(uint256 _maxPayments) pub
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100040003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x110184d0e1030002, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: a3a3a3a3a3a3a3a3a3a3a3a3deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: unknown, txdata: 0x01010101, value: 0x16345785d8a0000
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ETFloorPresale
+Function name: fallback
+PC address: 833
+Estimated Gas Usage: 20483 - 96911
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/e0323c70448a2ebf061b422788ebd648.sol:481
+
+s = _maxPay
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2000407fc00800000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: unknown, txdata: 0x, value: 0x16345785d8a0000
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ETFloorPresale
+Function name: fallback
+PC address: 836
+Estimated Gas Usage: 20483 - 96911
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/e0323c70448a2ebf061b422788ebd648.sol:481
+
+       maxPay
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2000407fc00800000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: unknown, txdata: 0x, value: 0x16345785d8a0000
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ETToken
+Function name: transferWithParams(address,uint256,uint256,uint256,uint256)
+PC address: 5103
+Estimated Gas Usage: 588 - 683
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/e0323c70448a2ebf061b422788ebd648.sol:395
+
+nces[_to] = balances[_to].add(_value);
+        emit Transfer(msg.sender, _to, _value);
+
+        _invokeTokenRecipient(msg.sender, _to, _value, _param1, _param2, _param3);
+
+        return true;
+    }
+
+    /**
+    * @dev Hook for custom actions to be executed after transfer has completed
+    * @param _from Transferred from
+    * @param _to Transferred to
+    * @param _value Value transferred
+    */
+    function _postTransferHook(address _from, address _to, uint256 _value) internal {
+        _invokeTokenRecipient(_from, _to, _value, 0, 0, 0);
+    }
+
+
+}
+
+contract PresaleContract is Owned {
+    E
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400c0003201442, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x200, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transferWithParams(address,uint256,uint256,uint256,uint256), txdata: 0x411cc791, value: 0x0

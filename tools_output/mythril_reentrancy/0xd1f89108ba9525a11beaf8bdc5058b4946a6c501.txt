@@ -1,0 +1,288 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ERC20Utilities
+Function name: batchTokenDecimals(address[])
+PC address: 294
+Estimated Gas Usage: 517 - 1787
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/9713f5a819ac81b641c0e8cedf836c69.sol:37
+
+] tokens) external view returns (uint[]) {
+    uint[] memory tokenDecimalsRes = new uint[](tokens.length);
+    
+    for (uint j = 0; j < tokens.length; j++) {
+      uint addrIdx = j;
+      tokenDecimalsRes[addrIdx] = tokenDecimals(tokens[j]);
+    }  
+
+    return tokenDecimalsRes;
+  }
+
+  function tokenBalance(address user, addre
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x14, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: batchTokenDecimals(address[]), txdata: 0x5162f6afffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ERC20Utilities
+Function name: batchTokenBalances(address[],address[])
+PC address: 407
+Estimated Gas Usage: 687 - 1957
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/9713f5a819ac81b641c0e8cedf836c69.sol:65
+
+xternal view returns (uint[]) {
+    uint[] memory addrBalances = new uint[](tokens.length * users.length);
+    
+    for(uint i = 0; i < users.length; i++) {
+      for (uint j = 0; j < tokens.length; j++) {
+        uint addrIdx = j + tokens.length * i;
+        addrBalances[addrIdx] = tokenBalance(users[i], tokens[j]);
+      }  
+    }
+  
+    return addrBalances;
+  }    
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x6, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: batchTokenBalances(address[],address[]), txdata: 0x87d74481ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc40, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ERC20Utilities
+Function name: batchTokenBalances(address[],address[])
+PC address: 418
+Estimated Gas Usage: 687 - 1957
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/9713f5a819ac81b641c0e8cedf836c69.sol:65
+
+xternal view returns (uint[]) {
+    uint[] memory addrBalances = new uint[](tokens.length * users.length);
+    
+    for(uint i = 0; i < users.length; i++) {
+      for (uint j = 0; j < tokens.length; j++) {
+        uint addrIdx = j + tokens.length * i;
+        addrBalances[addrIdx] = tokenBalance(users[i], tokens[j]);
+      }  
+    }
+  
+    return addrBalances;
+  }    
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: batchTokenBalances(address[],address[]), txdata: 0x87d744818000000000000000000000000000000000000000000000000000000000000001ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ERC20Utilities
+Function name: batchTokenBalances(address[],address[])
+PC address: 420
+Estimated Gas Usage: 600 - 1870
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/9713f5a819ac81b641c0e8cedf836c69.sol:65
+
+xternal view returns (uint[]) {
+    uint[] memory addrBalances = new uint[](tokens.length * users.length);
+    
+    for(uint i = 0; i < users.length; i++) {
+      for (uint j = 0; j < tokens.length; j++) {
+        uint addrIdx = j + tokens.length * i;
+        addrBalances[addrIdx] = tokenBalance(users[i], tokens[j]);
+      }  
+    }
+  
+    return addrBalances;
+  }    
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x7bfba, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: batchTokenBalances(address[],address[]), txdata: 0x87d744810000000000000000000000000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ERC20Utilities
+Function name: fallback
+PC address: 561
+Estimated Gas Usage: 3553 - 75177
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/9713f5a819ac81b641c0e8cedf836c69.sol:55
+
+urn Token(token).balanceOf(user);   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xa00000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tokenBalance(address,address), txdata: 0x1049334f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: ERC20Utilities
+Function name: fallback
+PC address: 665
+Estimated Gas Usage: 3553 - 75177
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/9713f5a819ac81b641c0e8cedf836c69.sol:57
+
+   if (token == address(0x0)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tokenBalance(address,address), txdata: 0x1049334f, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ERC20Utilities
+Function name: tokenDecimals(address)
+PC address: 1295
+Estimated Gas Usage: 3530 - 74494
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/9713f5a819ac81b641c0e8cedf836c69.sol:25
+
+e567), "0x0000000000000000000000000000000000000000")) {
+        return Token
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8414c0800000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tokenDecimals(address), txdata: 0x8ee573ac000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ERC20Utilities
+Function name: tokenDecimals(address)
+PC address: 1370
+Estimated Gas Usage: 3530 - 74494
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/9713f5a819ac81b641c0e8cedf836c69.sol:26
+
+     
+    } else {
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xac0000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tokenDecimals(address), txdata: 0x8ee573ac000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: ERC20Utilities
+Function name: tokenDecimals(address)
+PC address: 1370
+Estimated Gas Usage: 3530 - 74494
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/9713f5a819ac81b641c0e8cedf836c69.sol:26
+
+     
+    } else {
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: tokenDecimals(address), txdata: 0x8ee573ac, value: 0x0

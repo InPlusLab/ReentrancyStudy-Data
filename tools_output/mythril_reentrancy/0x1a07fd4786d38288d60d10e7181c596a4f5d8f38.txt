@@ -1,0 +1,75 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: UniqueCDP
+Function name: registerCDP(uint256)
+PC address: 555
+Estimated Gas Usage: 2758 - 37650
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/f722f04631cded544d0ec205ba4773ac.sol:61
+
+ transferCDP(addr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 010101010101010101010101deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerCDP(uint256), txdata: 0xc13b72a80000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+Caller: [ATTACKER], function: registerCDP(uint256), txdata: 0xc13b72a80000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: UniqueCDP
+Function name: registerCDP(uint256)
+PC address: 555
+Estimated Gas Usage: 4430 - 73789
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/f722f04631cded544d0ec205ba4773ac.sol:61
+
+ transferCDP(addr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: registerCDP(uint256), txdata: 0xc13b72a80000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: UniqueCDP
+Function name: transferCDP(address,uint256)
+PC address: 1042
+Estimated Gas Usage: 3606 - 38832
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/f722f04631cded544d0ec205ba4773ac.sol:73
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 939393939393939393939393deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: registerCDP(uint256), txdata: 0xc13b72a80000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+Caller: [CREATOR], function: transferCDP(address,uint256), txdata: 0xd09398ee, value: 0x0

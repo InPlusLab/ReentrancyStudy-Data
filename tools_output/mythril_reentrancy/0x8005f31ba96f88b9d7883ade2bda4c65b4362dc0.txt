@@ -1,0 +1,127 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: FFC
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 901
+Estimated Gas Usage: 9372 - 70504
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/194c31397330d75805f297c12d8de874.sol:235
+
+ceiveApproval function on the contract you want to be notified. This crafts the function signature manually so one doesn't have to include a contract in here just for this.
+        //receiveApproval(address _from, uint256 _value, address _tokenContract, bytes _extraData)
+        //it is assumed that when does this that the call *should* succeed, otherwise one would use vanilla approve instead.
+        //if(!_spender.call(bytes4(bytes32(sha3("receiveApproval(address,uint256,address,bytes)"))), msg.sender, _value, this, _extraData)) { revert(); }
+        ApprovalReceiver(_spender).receiveApproval(msg.sender, _value, this, _extraData);
+        return true;
+    }
+
+    function allowance(address _owner, address _spender)public constant returns (uint256 remaining) {
+        return allowed[_owner][_spender];
+    }
+    
+    function mint0(address _owner, uint256 _amount)public onlyOwner {
+    		account
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2100000000000401, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca5100000000000000000000000001000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: FFC
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 2764
+Estimated Gas Usage: 9372 - 70504
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/194c31397330d75805f297c12d8de874.sol:244
+
+ner][_spender];
+    }
+    
+    function mint0(address _owner, uint256 _amount)pu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca51000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000040, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: FFC
+Function name: mint0(address,uint256)
+PC address: 3205
+Estimated Gas Usage: 2289 - 4224
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/194c31397330d75805f297c12d8de874.sol:34
+
+urn uint112(a);
+  }
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42000000100000040, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: mint0(address,uint256), txdata: 0x76c30794000000000000000000000000000000000000000000000000000200200000040401, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: FFC
+Function name: mint(address,uint256,uint32)
+PC address: 3205
+Estimated Gas Usage: 2433 - 4368
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/194c31397330d75805f297c12d8de874.sol:34
+
+urn uint112(a);
+  }
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: mint(address,uint256,uint32), txdata: 0xd0047acf000000000000000000000000000000000000000000000000000000200000020080, value: 0x0
+
+

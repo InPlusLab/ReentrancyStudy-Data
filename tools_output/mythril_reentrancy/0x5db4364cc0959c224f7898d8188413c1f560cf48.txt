@@ -1,0 +1,121 @@
+==== Delegatecall to user-supplied address ====
+SWC ID: 112
+Severity: High
+Contract: Receiver
+Function name: fallback
+PC address: 440
+Estimated Gas Usage: 2638 - 4025
+The contract delegates execution to another contract with a user-supplied address.
+The smart contract delegates execution to a user-supplied address.This could allow an attacker to execute arbitrary code in the context of this contract account and manipulate the state of the contract account or execute actions on its behalf.
+--------------------
+In file: /tmp/55335afb235fcc6bdbf3b3d04809c9f6.sol:64
+
+              returndatacopy(free_ptr, 0, returndatasiz
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+Caller: [ATTACKER], function: unknown, txdata: 0x, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Receiver
+Function name: drain()
+PC address: 961
+Estimated Gas Usage: 2615 - 37509
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/55335afb235fcc6bdbf3b3d04809c9f6.sol:38
+
+alance)("");
+    }
+
+
+    function ()
+        ext
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40100000000003012, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: drain(), txdata: 0x9890220b, value: 0x0
+Caller: [ATTACKER], function: drain(), txdata: 0x9890220b, value: 0x0
+
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: Receiver
+Function name: drain()
+PC address: 961
+Estimated Gas Usage: 2615 - 37509
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: /tmp/55335afb235fcc6bdbf3b3d04809c9f6.sol:38
+
+alance)("");
+    }
+
+
+    function ()
+        ext
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20c0000000003802, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x81, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: drain(), txdata: 0x9890220b, value: 0x0
+Caller: [ATTACKER], function: drain(), txdata: 0x9890220b, value: 0x0
+
+==== Unprotected Ether Withdrawal ====
+SWC ID: 105
+Severity: High
+Contract: Receiver
+Function name: drain()
+PC address: 961
+Estimated Gas Usage: 2615 - 37509
+Any sender can withdraw Ether from the contract account.
+Arbitrary senders other than the contract creator can profitably extract Ether from the contract account. Verify the business logic carefully and make sure that appropriate security controls are in place to prevent unexpected loss of funds.
+--------------------
+In file: /tmp/55335afb235fcc6bdbf3b3d04809c9f6.sol:38
+
+alance)("");
+    }
+
+
+    function ()
+        ext
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef01, value: 0x0
+Caller: [CREATOR], function: unknown, txdata: 0x01010101, value: 0x1
+Caller: [ATTACKER], function: drain(), txdata: 0x9890220b, value: 0x0

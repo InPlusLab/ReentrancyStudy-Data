@@ -1,0 +1,648 @@
+==== Unprotected Selfdestruct ====
+SWC ID: 106
+Severity: High
+Contract: Sacrifice
+Function name: constructor
+PC address: 31
+Estimated Gas Usage: 87 - 3097
+Any sender can cause the contract to self-destruct.
+Any sender can trigger execution of the SELFDESTRUCT instruction to destroy this contract account and withdraw its balance to an arbitrary address. Review the transaction trace generated for this issue and make sure that appropriate security controls are in place to prevent unrestricted access.
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:569
+
+er.send(_value)) {
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: efefefefefefefefefefefefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MessageRelay
+Function name: fallback
+PC address: 233
+Estimated Gas Usage: 1524 - 3734
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: relayedMessages(bytes32), txdata: 0x21d800ec, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ForeignAMB
+Function name: getMinimumGasUsage(bytes)
+PC address: 660
+Estimated Gas Usage: 718 - 4104
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:1332
+
+ChainIdLength + dstChainIdLength);
+
+        // In order to save the gas, the header is packed in the reverse order.
+        // With such approach, it is possible to store right-aligned values without any additional bit shifts.
+        assembly {
+            let ptr := add(header, mload(header)) // points to the las
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10000040208d104, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: getMinimumGasUsage(bytes), txdata: 0x3f768c06ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicAMB
+Function name: initialize(uint256,uint256,address,uint256,uint256,uint256,address)
+PC address: 1421
+Estimated Gas Usage: 65769 - 326997
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:918
+
+etwork
+     */
+    function sourceChainId() public view
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: initialize(uint256,uint256,address,uint256,uint256,uint256,address), txdata: 0x25fbf4ee0000000000000000000000000000000000000000000000000000000000000102000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicAMB
+Function name: initialize(uint256,uint256,address,uint256,uint256,uint256,address)
+PC address: 1457
+Estimated Gas Usage: 65769 - 326997
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:918
+
+etwork
+     */
+    function sourceChainId() public view
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: initialize(uint256,uint256,address,uint256,uint256,uint256,address), txdata: 0x25fbf4ee0000000000000000000000000000000000000000000000000000000000000102000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicAMB
+Function name: initialize(uint256,uint256,address,uint256,uint256,uint256,address)
+PC address: 1499
+Estimated Gas Usage: 65769 - 326997
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:920
+
+int256) {
+        return uintStorage[SOURCE_C
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: initialize(uint256,uint256,address,uint256,uint256,uint256,address), txdata: 0x25fbf4ee0000000000000000000000000000000000000000000000000000000000000102000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicAMB
+Function name: initialize(uint256,uint256,address,uint256,uint256,uint256,address)
+PC address: 1570
+Estimated Gas Usage: 65769 - 326997
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:922
+
+   }
+
+    /**
+     * Internal function for
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: initialize(uint256,uint256,address,uint256,uint256,uint256,address), txdata: 0x25fbf4ee0000000000000000000000000000000000000000000000000000000000000102000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicAMB
+Function name: initialize(uint256,uint256,address,uint256,uint256,uint256,address)
+PC address: 1700
+Estimated Gas Usage: 65769 - 326997
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:361
+
+function deployedAtBlock
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: initialize(uint256,uint256,address,uint256,uint256,uint256,address), txdata: 0x25fbf4ee0000000000000000000000000000000000000000000000000000000000000102000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ForeignAMB
+Function name: relayedMessages(bytes32)
+PC address: 1703
+Estimated Gas Usage: 1581 - 4121
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: relayedMessages(bytes32), txdata: 0x21d800ec, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicAMB
+Function name: initialize(uint256,uint256,address,uint256,uint256,uint256,address)
+PC address: 2325
+Estimated Gas Usage: 65769 - 326997
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:496
+
+(), newOwner);
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: initialize(uint256,uint256,address,uint256,uint256,uint256,address), txdata: 0x25fbf4ee0000000000000000000000000000000000000000000000000000000000000102000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ForeignAMB
+Function name: failedMessageReceiver(bytes32)
+PC address: 3053
+Estimated Gas Usage: 1754 - 4954
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1080001011fbe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: failedMessageReceiver(bytes32), txdata: 0x3f9a8e7e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicAMB
+Function name: initialize(uint256,uint256,address,uint256,uint256,uint256,address)
+PC address: 3158
+Estimated Gas Usage: 65769 - 326997
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:1005
+
+ _isMessageVersionValid(bytes32 _messageId) i
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: initialize(uint256,uint256,address,uint256,uint256,uint256,address), txdata: 0x25fbf4ee0000000000000000000000000000000000000000000000000000000000000102000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicAMB
+Function name: initialize(uint256,uint256,address,uint256,uint256,uint256,address)
+PC address: 3195
+Estimated Gas Usage: 65769 - 326997
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:1005
+
+urns (bool) {
+        return
+            _messageId & 0xf
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: initialize(uint256,uint256,address,uint256,uint256,uint256,address), txdata: 0x25fbf4ee0000000000000000000000000000000000000000000000000000000000000102000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicAMB
+Function name: initialize(uint256,uint256,address,uint256,uint256,uint256,address)
+PC address: 3232
+Estimated Gas Usage: 65769 - 326997
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:1007
+
+0000000000000000000000000000000000000000000000000000 ==
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: initialize(uint256,uint256,address,uint256,uint256,uint256,address), txdata: 0x25fbf4ee0000000000000000000000000000000000000000000000000000000000000102000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicAMB
+Function name: initialize(uint256,uint256,address,uint256,uint256,uint256,address)
+PC address: 3302
+Estimated Gas Usage: 65769 - 326997
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:1007
+
+CKING_VERSION;
+    }
+
+    /**
+     * Internal function for validati
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: initialize(uint256,uint256,address,uint256,uint256,uint256,address), txdata: 0x25fbf4ee0000000000000000000000000000000000000000000000000000000000000102000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ForeignAMB
+Function name: failedMessageSender(bytes32)
+PC address: 3337
+Estimated Gas Usage: 1819 - 5019
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: failedMessageSender(bytes32), txdata: 0x4a610b04, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicAMB
+Function name: initialize(uint256,uint256,address,uint256,uint256,uint256,address)
+PC address: 3383
+Estimated Gas Usage: 65769 - 326997
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:852
+
+       return (5, 3, 0);
+    }
+}
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: initialize(uint256,uint256,address,uint256,uint256,uint256,address), txdata: 0x25fbf4ee0000000000000000000000000000000000000000000000000000000000000102000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicAMB
+Function name: initialize(uint256,uint256,address,uint256,uint256,uint256,address)
+PC address: 3530
+Estimated Gas Usage: 65769 - 326997
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:832
+
+leAMB.sol
+
+pragma solidity 0.4.24;
+
+
+contract VersionableAMB is
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: initialize(uint256,uint256,address,uint256,uint256,uint256,address), txdata: 0x25fbf4ee0000000000000000000000000000000000000000000000000000000000000102000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicAMB
+Function name: initialize(uint256,uint256,address,uint256,uint256,uint256,address)
+PC address: 3736
+Estimated Gas Usage: 65769 - 326997
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:515
+
+ddress indexed from, address ind
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: initialize(uint256,uint256,address,uint256,uint256,uint256,address), txdata: 0x25fbf4ee0000000000000000000000000000000000000000000000000000000000000102000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicAMB
+Function name: initialize(uint256,uint256,address,uint256,uint256,uint256,address)
+PC address: 3777
+Estimated Gas Usage: 65769 - 326997
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:515
+
+ddress indexed from, address ind
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: initialize(uint256,uint256,address,uint256,uint256,uint256,address), txdata: 0x25fbf4ee0000000000000000000000000000000000000000000000000000000000000102000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicAMB
+Function name: initialize(uint256,uint256,address,uint256,uint256,uint256,address)
+PC address: 3855
+Estimated Gas Usage: 65769 - 326997
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:359
+
+ceec05576ad0c710bc6e85f1768535e
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: initialize(uint256,uint256,address,uint256,uint256,uint256,address), txdata: 0x25fbf4ee0000000000000000000000000000000000000000000000000000000000000102000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicAMB
+Function name: initialize(uint256,uint256,address,uint256,uint256,uint256,address)
+PC address: 3864
+Estimated Gas Usage: 65769 - 326997
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:359
+
+ceec05576ad0c710bc6e85f1768535e
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: initialize(uint256,uint256,address,uint256,uint256,uint256,address), txdata: 0x25fbf4ee0000000000000000000000000000000000000000000000000000000000000102000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ForeignAMB
+Function name: messageCallStatus(bytes32)
+PC address: 4431
+Estimated Gas Usage: 2064 - 4604
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: messageCallStatus(bytes32), txdata: 0xcb08a10c, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ForeignAMB
+Function name: failedMessageDataHash(bytes32)
+PC address: 5033
+Estimated Gas Usage: 2141 - 4681
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: failedMessageDataHash(bytes32), txdata: 0xe37c3289, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ForeignAMB
+Function name: requireToPassMessage(address,bytes,uint256)
+PC address: 7586
+Estimated Gas Usage: 2022 - 5647
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/406c0183e1f8079082cdfe83ed407d75.sol:690
+
+ throws on overflow.
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: requireToPassMessage(address,bytes,uint256), txdata: 0xdc8601b311, value: 0x0

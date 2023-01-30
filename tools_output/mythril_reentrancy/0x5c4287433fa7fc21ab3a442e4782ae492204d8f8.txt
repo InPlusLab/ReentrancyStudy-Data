@@ -1,0 +1,347 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: astatoTokenTransfer
+Function name: fallback
+PC address: 458
+Estimated Gas Usage: 2330 - 4071
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/878e06963155ab7b1886f739e0c1ab10.sol:16
+
+ame = 'ASTATO TUSD Pool';
+    string pu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: name(), txdata: 0x06fdde03, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: astatoTokenTransfer
+Function name: exchangeIt(bool)
+PC address: 882
+Estimated Gas Usage: 21673 - 356798
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/878e06963155ab7b1886f739e0c1ab10.sol:51
+
+italAcum)/token(tokenSwap).totalSupply();
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2100000000043002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: exchangeIt(bool), txdata: 0x403bb32f01, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: astatoTokenTransfer
+Function name: exchangeIt(bool)
+PC address: 932
+Estimated Gas Usage: 4277 - 74486
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/878e06963155ab7b1886f739e0c1ab10.sol:51
+
+pitalAcum)/token(tokenSwap).totalSupply();
+       }
+       require(tokenSwap.allowance(msg.
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: exchangeIt(bool), txdata: 0x403bb32f01, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: astatoTokenTransfer
+Function name: exchangeIt(bool)
+PC address: 1272
+Estimated Gas Usage: 17565 - 282576
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/878e06963155ab7b1886f739e0c1ab10.sol:55
+
+  require(tokenAmountSwap <= tokenSwap.balance
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: exchangeIt(bool), txdata: 0x403bb32f, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: astatoTokenTransfer
+Function name: exchangeIt(bool)
+PC address: 1929
+Estimated Gas Usage: 17565 - 282576
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/878e06963155ab7b1886f739e0c1ab10.sol:61
+
+tokenAmount
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: exchangeIt(bool), txdata: 0x403bb32f, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: astatoTokenTransfer
+Function name: exchangeIt(bool)
+PC address: 1934
+Estimated Gas Usage: 17565 - 282576
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/878e06963155ab7b1886f739e0c1ab10.sol:61
+
+r(msg.sender, tokenAmountReward
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: exchangeIt(bool), txdata: 0x403bb32f, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: astatoTokenTransfer
+Function name: exchangeIt(bool)
+PC address: 2048
+Estimated Gas Usage: 17565 - 282576
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/878e06963155ab7b1886f739e0c1ab10.sol:62
+
+    tokenReward.transfer(address(0x5D11B9e7b0ec9C9e70b6
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: exchangeIt(bool), txdata: 0x403bb32f, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: astatoTokenTransfer
+Function name: exchangeIt(bool)
+PC address: 2195
+Estimated Gas Usage: 17565 - 282576
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/878e06963155ab7b1886f739e0c1ab10.sol:62
+
+9136eEd523), fee);       
+	}	
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: exchangeIt(bool), txdata: 0x403bb32f, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: astatoTokenTransfer
+Function name: symbol()
+PC address: 2249
+Estimated Gas Usage: 2374 - 4115
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/878e06963155ab7b1886f739e0c1ab10.sol:17
+
+mbol = 'ATPOOL';
+    string pub
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: symbol(), txdata: 0x95d89b41, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: astatoTokenTransfer
+Function name: sendCapital(uint256)
+PC address: 2689
+Estimated Gas Usage: 10971 - 135841
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/878e06963155ab7b1886f739e0c1ab10.sol:33
+
+) >= value, 'No balance to allowa
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: sendCapital(uint256), txdata: 0xcc868790, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: astatoTokenTransfer
+Function name: sendCapital(uint256)
+PC address: 2951
+Estimated Gas Usage: 10971 - 135841
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/878e06963155ab7b1886f739e0c1ab10.sol:38
+
+ion exchang
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: sendCapital(uint256), txdata: 0xcc868790, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: astatoTokenTransfer
+Function name: sendCapital(uint256)
+PC address: 2957
+Estimated Gas Usage: 10971 - 135841
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/878e06963155ab7b1886f739e0c1ab10.sol:36
+
+   } 
+	
+	function exchangeIt(bo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: sendCapital(uint256), txdata: 0xcc868790, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: astatoTokenTransfer
+Function name: comment()
+PC address: 2997
+Estimated Gas Usage: 2478 - 4219
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/878e06963155ab7b1886f739e0c1ab10.sol:18
+
+ment = 'TUSD <=> ASTATO';
+    uint public
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: comment(), txdata: 0xf4f3c8a4, value: 0x0

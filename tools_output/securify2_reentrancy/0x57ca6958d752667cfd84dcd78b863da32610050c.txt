@@ -1,0 +1,464 @@
+pragma directive defines a prior version to 0.5.17. Changing pragma version to 0.5.17....
+[0;31mSeverity:    INFO
+Pattern:     Assembly Usage
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    Address
+Line:        267
+Source: 
+>         // solhint-disable-next-line no-inline-assembly
+>         assembly { size := extcodesize(account) }
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return size > 0;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    StakingRewards
+Line:        342
+Source: 
+>     uint256 public rewardRate = 0;
+>     uint256 public rewardsDuration = 100 days;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public lastUpdateTime;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    StakingRewards
+Line:        379
+Source: 
+>     function rewardPerToken() public view returns (uint256) {
+>         if (_totalSupply == 0) {
+>             ^^^^^^^^^^^^^^^^^
+>             return rewardPerTokenStored;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    SafeMath
+Line:        117
+Source: 
+>         // See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522
+>         if (a == 0) {
+>             ^^^^^^
+>             return 0;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    SafeMath
+Line:        122
+Source: 
+>         uint256 c = a * b;
+>         require(c / a == b, "SafeMath: multiplication overflow");
+>                 ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Low Level Calls
+Description: Usage of <address>.call should be avoided
+Type:        Violation
+Contract:    SafeERC20
+Line:        230
+Source: 
+>         // solhint-disable-next-line avoid-low-level-calls
+>         (bool success, bytes memory returndata) = address(token).call(data);
+>                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(success, "SafeERC20: low-level call failed");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    StakingRewards
+Line:        388
+Source: 
+> 
+>     function earned(address account) public view returns (uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return _balances[account].mul(rewardPerToken().sub(userRewardPerTokenPaid[account])).div(1e18).add(rewards[account]);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    StakingRewards
+Line:        406
+Source: 
+> 
+>     function withdraw(uint256 amount) public nonReentrant updateReward(msg.sender) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(amount > 0, "Cannot withdraw 0");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    StakingRewards
+Line:        430
+Source: 
+> 
+>     function notifyRewardAmount(uint256 reward) external onlyRewardsDistribution updateReward(address(0)) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (block.timestamp >= periodFinish) {
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    StakingRewards
+Line:        370
+Source: 
+> 
+>     function balanceOf(address account) external view returns (uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return _balances[account];
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    SafeMath
+Line:        121
+Source: 
+> 
+>         uint256 c = a * b;
+>                     ^^^^^
+>         require(c / a == b, "SafeMath: multiplication overflow");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    StakingRewards
+Line:        443
+Source: 
+>         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
+>         uint balance = IERC20(rewardsToken).balanceOf(address(this));
+>                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(rewardRate <= balance.div(rewardsDuration), "Provided reward too high");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    StakingRewards
+Line:        453
+Source: 
+> 
+>     modifier updateReward(address account) {
+>                           ^^^^^^^^^^^^^^^
+>         rewardPerTokenStored = rewardPerToken();
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    StakingRewards
+Line:        443
+Source: 
+>         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
+>         uint balance = IERC20(rewardsToken).balanceOf(address(this));
+>                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(rewardRate <= balance.div(rewardsDuration), "Provided reward too high");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Uninitialized Local Variables
+Description: A variable is declared but never initialized.
+Type:        Violation
+Contract:    Address
+Line:        268
+Source: 
+>         assembly { size := extcodesize(account) }
+>         return size > 0;
+>                ^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    StakingRewards
+Line:        343
+Source: 
+>     uint256 public rewardsDuration = 100 days;
+>     uint256 public lastUpdateTime;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public rewardPerTokenStored;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    StakingRewards
+Line:        344
+Source: 
+>     uint256 public lastUpdateTime;
+>     uint256 public rewardPerTokenStored;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    StakingRewards
+Line:        349
+Source: 
+> 
+>     uint256 private _totalSupply;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     mapping(address => uint256) private _balances;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReentrancyGuard
+Line:        307
+Source: 
+>         // Any calls to nonReentrant after this point will fail
+>         _status = _ENTERED;
+>         ^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    StakingRewards
+Line:        454
+Source: 
+>     modifier updateReward(address account) {
+>         rewardPerTokenStored = rewardPerToken();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastUpdateTime = lastTimeRewardApplicable();
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    StakingRewards
+Line:        455
+Source: 
+>         rewardPerTokenStored = rewardPerToken();
+>         lastUpdateTime = lastTimeRewardApplicable();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (account != address(0)) {
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReentrancyGuard
+Line:        307
+Source: 
+>         // Any calls to nonReentrant after this point will fail
+>         _status = _ENTERED;
+>         ^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    StakingRewards
+Line:        454
+Source: 
+>     modifier updateReward(address account) {
+>         rewardPerTokenStored = rewardPerToken();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastUpdateTime = lastTimeRewardApplicable();
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    StakingRewards
+Line:        455
+Source: 
+>         rewardPerTokenStored = rewardPerToken();
+>         lastUpdateTime = lastTimeRewardApplicable();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (account != address(0)) {
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReentrancyGuard
+Line:        307
+Source: 
+>         // Any calls to nonReentrant after this point will fail
+>         _status = _ENTERED;
+>         ^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    StakingRewards
+Line:        454
+Source: 
+>     modifier updateReward(address account) {
+>         rewardPerTokenStored = rewardPerToken();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastUpdateTime = lastTimeRewardApplicable();
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    StakingRewards
+Line:        455
+Source: 
+>         rewardPerTokenStored = rewardPerToken();
+>         lastUpdateTime = lastTimeRewardApplicable();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (account != address(0)) {
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReentrancyGuard
+Line:        313
+Source: 
+>         // https://eips.ethereum.org/EIPS/eip-2200)
+>         _status = _NOT_ENTERED;
+>         ^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    SafeERC20
+Line:        230
+Source: 
+>         // solhint-disable-next-line avoid-low-level-calls
+>         (bool success, bytes memory returndata) = address(token).call(data);
+>                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(success, "SafeERC20: low-level call failed");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    ReentrancyGuard
+Line:        287
+Source: 
+>     uint256 private constant _NOT_ENTERED = 1;
+>     uint256 private constant _ENTERED = 2;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    ReentrancyGuard
+Line:        289
+Source: 
+> 
+>     uint256 private _status;
+>     ^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    StakingRewards
+Line:        375
+Source: 
+>     function lastTimeRewardApplicable() public view returns (uint256) {
+>         return SafeMath.min(block.timestamp, periodFinish);
+>                             ^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    StakingRewards
+Line:        431
+Source: 
+>     function notifyRewardAmount(uint256 reward) external onlyRewardsDistribution updateReward(address(0)) {
+>         if (block.timestamp >= periodFinish) {
+>             ^^^^^^^^^^^^^^^
+>             rewardRate = reward.div(rewardsDuration);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    StakingRewards
+Line:        447
+Source: 
+>         lastUpdateTime = block.timestamp;
+>         periodFinish = block.timestamp.add(rewardsDuration);
+>                        ^^^^^^^^^^^^^^^
+>         emit RewardAdded(reward);
+
+[0m

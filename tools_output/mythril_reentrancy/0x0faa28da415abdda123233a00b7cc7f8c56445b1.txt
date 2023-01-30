@@ -1,0 +1,151 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Vesting
+Function name: addBeneficiary(address,uint256,uint256,uint256)
+PC address: 1405
+Estimated Gas Usage: 2166 - 3441
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/56c662fbbfb27d0043ca9b4330bc5dc5.sol:637
+
+ernal onlyOwner {
+
+        Info storage info = _info[beneficiary];
+
+        require(info.known, 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addBeneficiary(address,uint256,uint256,uint256), txdata: 0xb095e1290000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Vesting
+Function name: fallback
+PC address: 1715
+Estimated Gas Usage: 4466 - 41198
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/56c662fbbfb27d0043ca9b4330bc5dc5.sol:283
+
+ERC20 token,
+
+    address
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: withdraw(uint256), txdata: 0x2e1a7d4d, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Vesting
+Function name: release()
+PC address: 1820
+Estimated Gas Usage: 2054 - 2859
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/56c662fbbfb27d0043ca9b4330bc5dc5.sol:771
+
+ck.mul(ticks);
+
+            uint256 receivableTokens = tokens.sub(info.receivedAmount);
+
+            require(receivableTokens > 0, "No tokens to take out right now.");
+
+
+
+            // Since `safeTransfer` will throw upon failure, we can modify the state beforehand.
+
+            info.receivedAmount = info.receivedAmount.add(receivableTokens);
+
+            _token.safeTransfer(beneficiary, receivableTokens);
+
+        } else {
+
+            // We could let SafeMath revert release calls if vesting has not started yet.
+
+            // However, in the interest of clarity to contract callers, this error
+
+            // message is added instead.
+
+            revert("This address is not eligible to receive tokens yet.");
+
+        }
+
+    }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addBeneficiary(address,uint256,uint256,uint256), txdata: 0xb095e129000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: release(), txdata: 0x86d1a69f, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Vesting
+Function name: release()
+PC address: 1990
+Estimated Gas Usage: 2885 - 3690
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/56c662fbbfb27d0043ca9b4330bc5dc5.sol:787
+
+e could let SafeMath revert release calls if vesting has not started yet.
+
+            // However, in the interest of clarity to contract callers, this error
+
+            // message is added instead.
+
+            revert("This address is not eligible to receive tokens yet.");
+
+        }
+
+    }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addBeneficiary(address,uint256,uint256,uint256), txdata: 0xb095e129000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe000000000000000000000000000000000000000000000000000000000000000480, value: 0x0
+Caller: [CREATOR], function: release(), txdata: 0x86d1a69f, value: 0x0

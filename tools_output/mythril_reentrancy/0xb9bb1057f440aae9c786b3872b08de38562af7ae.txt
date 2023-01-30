@@ -1,0 +1,335 @@
+mythril.mythril.mythril_analyzer [CRITICAL]: Exception occurred, aborting analysis. Please report this issue to the Mythril GitHub page.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/dist-packages/mythril-0.22.26-py3.8.egg/mythril/mythril/mythril_analyzer.py", line 149, in fire_lasers
+    sym = SymExecWrapper(
+  File "/usr/local/lib/python3.8/dist-packages/mythril-0.22.26-py3.8.egg/mythril/analysis/symbolic.py", line 163, in __init__
+    self.laser.sym_exec(
+  File "/usr/local/lib/python3.8/dist-packages/mythril-0.22.26-py3.8.egg/mythril/laser/ethereum/svm.py", line 175, in sym_exec
+    self._execute_transactions(created_account.address)
+  File "/usr/local/lib/python3.8/dist-packages/mythril-0.22.26-py3.8.egg/mythril/laser/ethereum/svm.py", line 216, in _execute_transactions
+    execute_message_call(self, address)
+  File "/usr/local/lib/python3.8/dist-packages/mythril-0.22.26-py3.8.egg/mythril/laser/ethereum/transaction/symbolic.py", line 108, in execute_message_call
+    laser_evm.exec()
+  File "/usr/local/lib/python3.8/dist-packages/mythril-0.22.26-py3.8.egg/mythril/laser/ethereum/svm.py", line 253, in exec
+    new_states, op_code = self.execute_state(global_state)
+  File "/usr/local/lib/python3.8/dist-packages/mythril-0.22.26-py3.8.egg/mythril/laser/ethereum/svm.py", line 341, in execute_state
+    new_global_states = Instruction(
+  File "/usr/local/lib/python3.8/dist-packages/mythril-0.22.26-py3.8.egg/mythril/laser/ethereum/instructions.py", line 263, in evaluate
+    result = instruction_mutator(global_state)
+  File "/usr/local/lib/python3.8/dist-packages/mythril-0.22.26-py3.8.egg/mythril/laser/ethereum/instructions.py", line 195, in wrapper
+    new_global_states = self.call_on_state_copy(func, func_obj, global_state)
+  File "/usr/local/lib/python3.8/dist-packages/mythril-0.22.26-py3.8.egg/mythril/laser/ethereum/instructions.py", line 130, in call_on_state_copy
+    return func(func_obj, global_state_copy)
+  File "/usr/local/lib/python3.8/dist-packages/mythril-0.22.26-py3.8.egg/mythril/laser/ethereum/instructions.py", line 903, in balance_
+    balance = global_state.world_state.accounts_exist_or_load(
+  File "/usr/local/lib/python3.8/dist-packages/mythril-0.22.26-py3.8.egg/mythril/laser/ethereum/state/world_state.py", line 115, in accounts_exist_or_load
+    code=dynamic_loader.dynld(addr),
+  File "/usr/local/lib/python3.8/dist-packages/mythril-0.22.26-py3.8.egg/mythril/support/loader.py", line 67, in dynld
+    raise ValueError("Cannot load from the chain when eth is None")
+ValueError: Cannot load from the chain when eth is None
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Bank
+Function name: constructor
+PC address: 41
+Estimated Gas Usage: 16466 - 78865
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/5001f2a1d8ad88e4df18357dfcb670e0.sol:211
+
+ontract
+
+    */
+
+    function setC
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Bears
+Function name: constructor
+PC address: 286
+Estimated Gas Usage: 32666 - 208240
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5001f2a1d8ad88e4df18357dfcb670e0.sol:87
+
+BCTokenAddress);
+
+        CBCTokenContract.
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: efefefefefefefefefefefefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Bulls
+Function name: constructor
+PC address: 286
+Estimated Gas Usage: 32666 - 208240
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5001f2a1d8ad88e4df18357dfcb670e0.sol:113
+
+  CBCTokenContract.approve(_bankAddress, 99
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: efefefefefefefefefefefefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Bears
+Function name: constructor
+PC address: 309
+Estimated Gas Usage: 32666 - 208240
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/5001f2a1d8ad88e4df18357dfcb670e0.sol:89
+
+Address, 999999999999999999900000000000000000
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: efefefefefefefefefefefefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Bears
+Function name: constructor
+PC address: 337
+Estimated Gas Usage: 32666 - 208240
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/5001f2a1d8ad88e4df18357dfcb670e0.sol:89
+
+Address, 999999999999999999900000000000000000
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: efefefefefefefefefefefefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Bears
+Function name: constructor
+PC address: 455
+Estimated Gas Usage: 32666 - 208240
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5001f2a1d8ad88e4df18357dfcb670e0.sol:93
+
+
+
+
+
+/*
+
+* @dev Bulls contract. To play game with Bulls send ETH to this contr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Bulls
+Function name: constructor
+PC address: 455
+Estimated Gas Usage: 32666 - 208240
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5001f2a1d8ad88e4df18357dfcb670e0.sol:125
+
+ @dev Bank contract which contained all ETH from Dragons and Hamsters teams.
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Bears
+Function name: constructor
+PC address: 455
+Estimated Gas Usage: 32666 - 208240
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/5001f2a1d8ad88e4df18357dfcb670e0.sol:93
+
+
+
+
+
+/*
+
+* @dev Bulls contract. To play game with Bulls send ETH to this contr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Bears
+Function name: constructor
+PC address: 455
+Estimated Gas Usage: 32666 - 208240
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/5001f2a1d8ad88e4df18357dfcb670e0.sol:93
+
+
+
+
+
+/*
+
+* @dev Bulls contract. To play game with Bulls send ETH to this contr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: efefefefefefefefefefefefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: CBCToken
+Function name: name()
+PC address: 1127
+Estimated Gas Usage: 2346 - 4087
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/5001f2a1d8ad88e4df18357dfcb670e0.sol:1633
+
+ant":true,"inputs":[{"name":"authorizer
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: name(), txdata: 0x06fdde03, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Bank
+Function name: fallback
+PC address: 2695
+Estimated Gas Usage: 898 - 993
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/5001f2a1d8ad88e4df18357dfcb670e0.sol:303
+
+  */
+
+    function setInfo(address _lastHero, uint256 _deposit) public {
+
+        
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2040000000001014, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x0

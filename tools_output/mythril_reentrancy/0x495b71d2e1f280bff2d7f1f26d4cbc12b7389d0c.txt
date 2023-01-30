@@ -1,0 +1,56 @@
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: DappVolumeHearts
+Function name: getTotalHeartsByDappId(uint256)
+PC address: 628
+Estimated Gas Usage: 3643 - 39101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3e62c95eb5c5ed51cb2cd53feeb13b17.sol:155
+
+nt256){
+
+		retu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000002001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getTotalHeartsByDappId(uint256), txdata: 0x72d475db, value: 0x0
+
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: DappVolumeHearts
+Function name: update(uint256)
+PC address: 802
+Estimated Gas Usage: 13797 - 88695
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3e62c95eb5c5ed51cb2cd53feeb13b17.sol:145
+
+unction getTotalHeartsByDappId(uin
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8200000008, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x10000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: update(uint256), txdata: 0x82ab890a01, value: 0x71afd498d0000
+Caller: [SOMEGUY], function: update(uint256), txdata: 0x82ab890a01, value: 0x71afd498d0000
+
+

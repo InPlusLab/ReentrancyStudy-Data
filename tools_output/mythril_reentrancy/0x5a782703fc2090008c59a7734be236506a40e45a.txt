@@ -1,0 +1,320 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: RepaymentDefault
+Function name: CURRENCY()
+PC address: 3174
+Estimated Gas Usage: 2410 - 4151
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/f90160824d6836d1f14e29c056143409.sol:98
+
+atToken;
+    RatToken public r
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: CURRENCY(), txdata: 0xf5361219, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: RepaymentDefault
+Function name: account_info_rotate_tine(uint256)
+PC address: 3500
+Estimated Gas Usage: 18011 - 295506
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/f90160824d6836d1f14e29c056143409.sol:183
+
+(principle,sumInt) = pools.pricip
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000000002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: paidTokenDefaultFee(uint256,uint256,uint256,address,address,uint256,uint256), txdata: 0x7fedc3a4ffffffffffffffffdfff100afec4b37e9dfc58bebc3f1942495443ff620121ac80000000000000000000000000000000000000000000000000000000000000010001010000000000000000000000000001010100000000000000000000000000000000000000000000000000fec4f37e9dfc5cbebdbf4942415443ff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: RepaymentDefault
+Function name: account_info_rotate_tine(uint256)
+PC address: 3906
+Estimated Gas Usage: 18011 - 295506
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/f90160824d6836d1f14e29c056143409.sol:188
+
+pool can't burn
+            // 
+            contr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42000000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: paidTokenDefaultFee(uint256,uint256,uint256,address,address,uint256,uint256), txdata: 0x7fedc3a4fffffffffffffffffffffffeff1123ff17111be22ff6eb53ef888b1e3f81f32c54000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100020002008000000020008000000002000000000000000000000000ff1103ff17151fe22ff2eb537f888b1b00000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: RepaymentDefault
+Function name: account_info_rotate_tine(uint256)
+PC address: 3950
+Estimated Gas Usage: 18011 - 295506
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/f90160824d6836d1f14e29c056143409.sol:191
+
+ ratToken.intTrans
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000000002e80c, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x400001, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: paidTokenDefaultFee(uint256,uint256,uint256,address,address,uint256,uint256), txdata: 0x7fedc3a4ffffffffffffffffffc50114f366e3fffd29e222cfdfff7fc5fe8446ff8020b410000000000000000000000000000000000000000000000000000000000000041020800108800204800402080000000000800100000020000080000000000000000000000000000000000000f366ebfffd6de222cfdfffde51fecc4700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: RepaymentDefault
+Function name: account_info_rotate_tine(uint256)
+PC address: 3959
+Estimated Gas Usage: 18011 - 295506
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/f90160824d6836d1f14e29c056143409.sol:191
+
+om,_toke
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000002051200, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: paidTokenDefaultFee(uint256,uint256,uint256,address,address,uint256,uint256), txdata: 0x7fedc3a47fffffffffffffffffffffffff8df1dfff51fff11fed7ef7d7e3c45e3a01750240000000000000000000000000000000000000000000000000000000000000010000000000000000000000010000000000000000000201010000000000000000000000000000000000000000ffadf1dfff51fff31fed7ef797e3c45600000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: RepaymentDefault
+Function name: account_info_rotate_tine(uint256)
+PC address: 4044
+Estimated Gas Usage: 18011 - 295506
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/f90160824d6836d1f14e29c056143409.sol:191
+
+om,_tokenID);
+        }
+        els
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000002051200, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: paidTokenDefaultFee(uint256,uint256,uint256,address,address,uint256,uint256), txdata: 0x7fedc3a47fffffffffffffffffffffffff8df1dfff51fff11fed7ef7d7e3c45e3a01750240000000000000000000000000000000000000000000000000000000000000010000000000000000000000010000000000000000000201010000000000000000000000000000000000000000ffadf1dfff51fff31fed7ef797e3c45600000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: RepaymentDefault
+Function name: account_info_rotate_tine(uint256)
+PC address: 4071
+Estimated Gas Usage: 18011 - 295506
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/f90160824d6836d1f14e29c056143409.sol:195
+
+t);
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x14142000000008000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: paidTokenDefaultFee(uint256,uint256,uint256,address,address,uint256,uint256), txdata: 0x7fedc3a47ffffffffffffffffffe2202ff3cbffefdb13ffb1ffb8a9f8b488b5e0101252d04000000000000000000000000000000000000000000000000000000000000048000000000000000000000000000000101000000000100000000000000000000000000000000000000000000ff3ebffefdb53ffb0ff98e9d8bc88b5f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: RepaymentDefault
+Function name: account_info_rotate_tine(uint256)
+PC address: 4167
+Estimated Gas Usage: 18011 - 295506
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/f90160824d6836d1f14e29c056143409.sol:195
+
+t);
+        }    
+        return true;
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x14142000000008000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: paidTokenDefaultFee(uint256,uint256,uint256,address,address,uint256,uint256), txdata: 0x7fedc3a47ffffffffffffffffffe2202ff3cbffefdb13ffb1ffb8a9f8b488b5e0101252d04000000000000000000000000000000000000000000000000000000000000048000000000000000000000000000000101000000000100000000000000000000000000000000000000000000ff3ebffefdb53ffb0ff98e9d8bc88b5f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: RepaymentDefault
+Function name: account_info_rotate_tine(uint256)
+PC address: 4211
+Estimated Gas Usage: 18011 - 295506
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/f90160824d6836d1f14e29c056143409.sol:201
+
+unction 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42100040042028804, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: paidTokenDefaultFee(uint256,uint256,uint256,address,address,uint256,uint256), txdata: 0x7fedc3a4cdfffffffffffffffffffffeff1889ff3f88888c478fb266629f8bfc3f81c13280000000000000000000000000000000000000000000000000000000000000000000000000000000000000000801000001000000000000000004000000000000000000000000000000000000ff1889ff3f8a888c478f9276629f8bff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: RepaymentDefault
+Function name: account_info_rotate_tine(uint256)
+PC address: 4305
+Estimated Gas Usage: 18011 - 295506
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/f90160824d6836d1f14e29c056143409.sol:201
+
+unction payFee(address _from,uint256 amount,a
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42100040042028804, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: paidTokenDefaultFee(uint256,uint256,uint256,address,address,uint256,uint256), txdata: 0x7fedc3a4cdfffffffffffffffffffffeff1889ff3f88888c478fb266629f8bfc3f81c13280000000000000000000000000000000000000000000000000000000000000000000000000000000000000000801000001000000000000000004000000000000000000000000000000000000ff1889ff3f8a888c478f9276629f8bff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: RepaymentDefault
+Function name: account_info_rotate_tine(uint256)
+PC address: 4355
+Estimated Gas Usage: 18011 - 295506
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/f90160824d6836d1f14e29c056143409.sol:202
+
+eturn se
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000002051200, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: paidTokenDefaultFee(uint256,uint256,uint256,address,address,uint256,uint256), txdata: 0x7fedc3a47fffffffffffffffffffffffff8df1dfff51fff11fed7ef7d7e3c45e3a01750240000000000000000000000000000000000000000000000000000000000000010000000000000000000000010000000000000000000201010000000000000000000000000000000000000000ffadf1dfff51fff31fed7ef797e3c45600000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: RepaymentDefault
+Function name: account_info_rotate_tine(uint256)
+PC address: 4441
+Estimated Gas Usage: 18011 - 295506
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/f90160824d6836d1f14e29c056143409.sol:202
+
+eturn sellSZO.buyUseAndBurn(_tokenAddr,_fr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000002051200, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: paidTokenDefaultFee(uint256,uint256,uint256,address,address,uint256,uint256), txdata: 0x7fedc3a47fffffffffffffffffffffffff8df1dfff51fff11fed7ef7d7e3c45e3a01750240000000000000000000000000000000000000000000000000000000000000010000000000000000000000010000000000000000000201010000000000000000000000000000000000000000ffadf1dfff51fff31fed7ef797e3c45600000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0

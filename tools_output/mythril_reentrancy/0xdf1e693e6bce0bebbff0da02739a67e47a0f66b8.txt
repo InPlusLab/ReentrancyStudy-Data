@@ -1,0 +1,185 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: SimplifiedLogic
+Function name: name()
+PC address: 1278
+Estimated Gas Usage: 2374 - 4115
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/d3e685708cd8ba2e2174cdbd6f18f4a8.sol:617
+
+ansfer requests are generated when a 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: name(), txdata: 0x06fdde03, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: DelegatedTokenLogic
+Function name: transferFrom(address,address,uint256,address)
+PC address: 1640
+Estimated Gas Usage: 11736 - 70223
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d3e685708cd8ba2e2174cdbd6f18f4a8.sol:449
+
+reduce the spender's a
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setFront(address), txdata: 0xef82f95c000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: transferFrom(address,address,uint256,address), txdata: 0x5fc9309c000000000000000000000000000000000000000000000000000000002010010200000000000000000000000001, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: SimplifiedLogic
+Function name: totalSupply()
+PC address: 1672
+Estimated Gas Usage: 3516 - 38784
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d3e685708cd8ba2e2174cdbd6f18f4a8.sol:373
+
+    {
+
+        require(_to != address(0)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: totalSupply(), txdata: 0x18160ddd, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: DelegatedTokenLogic
+Function name: transferFrom(address,address,uint256,address)
+PC address: 1695
+Estimated Gas Usage: 11736 - 70223
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d3e685708cd8ba2e2174cdbd6f18f4a8.sol:449
+
+ce condition is to first reduce the spender's allowance to 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setFront(address), txdata: 0xef82f95c000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: transferFrom(address,address,uint256,address), txdata: 0x5fc9309c000000000000000000000000000000000000000000000000000000002010010200000000000000000000000001, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: SimplifiedLogic
+Function name: balanceOf(address)
+PC address: 2631
+Estimated Gas Usage: 3673 - 39366
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d3e685708cd8ba2e2174cdbd6f18f4a8.sol:413
+
+nt256 _value, address sender) 
+
+        public
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000020002000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: balanceOf(address), txdata: 0x70a08231, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: SimplifiedLogic
+Function name: symbol()
+PC address: 2828
+Estimated Gas Usage: 2572 - 4313
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/d3e685708cd8ba2e2174cdbd6f18f4a8.sol:617
+
+er (or delegate) wants
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42080000400000042, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: symbol(), txdata: 0x95d89b41, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: SimplifiedLogic
+Function name: migrate(address)
+PC address: 3058
+Estimated Gas Usage: 10350 - 65906
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d3e685708cd8ba2e2174cdbd6f18f4a8.sol:893
+Initial State:
+
+Account: [CREATOR], balance: 0x2400, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+Caller: [SOMEGUY], function: migrate(address), txdata: 0xce5494bb, value: 0x0

@@ -1,0 +1,73 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ContracoinPresale
+Function name: addManyToWhitelist(address[])
+PC address: 472
+Estimated Gas Usage: 1202 - 1627
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/39d1bcde497698ce7ec76b5fd46cdacd.sol:1361
+
+nt Number of tokens
+
+  */
+
+  function mintTokens(
+
+    address _beneficiary,
+
+    uint256 _tokenAmount
+
+  )
+
+    public
+
+    onlyOwner
+
+  {
+
+    _deliverTokens(_beneficiary, _tokenAmount);
+
+  }
+
+
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 2000100201010101021080042002010480010101800208010101020802080840000000000000000000000000010101800200800400021008010180010204020200000000000000000000000080, value: 0x0
+Caller: [CREATOR], function: addManyToWhitelist(address[]), txdata: 0x8c10671cffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ContracoinPresale
+Function name: finalize()
+PC address: 1065
+Estimated Gas Usage: 10899 - 66030
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/39d1bcde497698ce7ec76b5fd46cdacd.sol:1465
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 01010101010101010101010101010101010101010101010101010101010101010000000000000000000000000101010101010101010101010101010101012001000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: finalize(), txdata: 0x4bb278f3, value: 0x0
+
+

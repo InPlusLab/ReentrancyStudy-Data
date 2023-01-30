@@ -1,0 +1,29 @@
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PumpETHDividendTracker
+Function name: getAccountAtIndex(uint256)
+PC address: 3010
+Estimated Gas Usage: 2299 - 37997
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/161c9eed82bccea048591765fa084909.sol:1558
+
+p.keys[_lastProcessedIndex];
+
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: getAccountAtIndex(uint256), txdata: 0x5183d6fd8000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+

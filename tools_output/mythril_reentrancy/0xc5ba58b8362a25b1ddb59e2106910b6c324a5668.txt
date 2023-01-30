@@ -1,0 +1,70 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Last100PricingStrategy
+Function name: adjustPrice(uint256,uint256) or adjustPrice(uint256,uint256)
+PC address: 134
+Estimated Gas Usage: 377 - 753
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/7323f5d98098b2c51f142c09e85cef36.sol:618
+
+
+    uint256 pu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2c, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: adjustPrice(uint256,uint256), txdata: 0xe357b1d304002aab560510a21483404444c25f62800840101c44810101080101014012430000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: OnChainShop
+Function name: rescueToken(address,address)
+PC address: 6957
+Estimated Gas Usage: 4581 - 74225
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/7323f5d98098b2c51f142c09e85cef36.sol:1063
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000101010101010101010101010101010101010101080110010201022001010110010140000801010100012001400100021000010000000000000000000000000001010101010101080201010101010101010101010000000000000000000000000401010802040201010101011004010110080110000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+Caller: [SOMEGUY], function: rescueToken(address,address), txdata: 0x4707d000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef1010101010101010101010101010101010101010101010101010101010101010, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: OnChainShop
+Function name: rescueToken(address,address)
+PC address: 6957
+Estimated Gas Usage: 4581 - 74225
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/7323f5d98098b2c51f142c09e85cef36.sol:1063
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000204080180201010028000012020200008000201040180402080020440001020108002012004100880044040800100800440000200000000000000000000000008800808004040801000041010001010001010020000000000000000000000001008011000000120800210400080001010028000000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+Caller: [SOMEGUY], function: rescueToken(address,address), txdata: 0x4707d00080020200004000201008020204000201100801100004204008080010081000208080808080808080808080808080808080808080808080808080808080808080, value: 0x0

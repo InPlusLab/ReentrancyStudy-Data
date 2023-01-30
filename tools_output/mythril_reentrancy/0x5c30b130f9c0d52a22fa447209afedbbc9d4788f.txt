@@ -1,0 +1,163 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: RRRR_Token
+Function name: transferForMultiAddresses(address[],uint256[])
+PC address: 497
+Estimated Gas Usage: 641 - 6284
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/76e537ebe65d8177a07aea3d769424a6.sol:251
+
+r]);
+      require(_amounts[i] > 0);
+
+      // SafeMath.sub will throw if there is not enough balance.
+      balances[msg.sender] = balances[msg.sender].sub(_amounts[i]);
+      balances[_addresses[i]] = balances[_addresses[i]].add(_amounts[i]);
+      emit Transfer(msg.sender, _addresses[i], _amounts[i]);
+    }
+    return true;
+  }
+
+    /**
+     * Destroy tokens
+     *
+     * Remove `_value` tokens from the system irreversibly
+     *
+     * @param _value the amount of money to burn
+     */
+    function burn(uint256 _value) public returns(bool) {
+        require(balances[msg.sender] >= 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transferForMultiAddresses(address[],uint256[]), txdata: 0x204009d2ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: RRRR_Token
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 962
+Estimated Gas Usage: 9476 - 70608
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/76e537ebe65d8177a07aea3d769424a6.sol:235
+
+pproval(msg.sender, _value, this, _extraData);
+            return true;
+        }
+        return false;
+    }
+
+
+  /**
+   * @dev Transfer tokens to multiple addresses
+   * @param _addresses The addresses that will receieve tokens
+   * @param _amounts The quantity of tokens that will be transferred
+   * @return True if the tokens are transferred c
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x7, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca5100000000000000000000000001010101010104010000010101010101010001010000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: RRRR_Token
+Function name: transferForMultiAddresses(address[],uint256[])
+PC address: 1547
+Estimated Gas Usage: 1602 - 8093
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/76e537ebe65d8177a07aea3d769424a6.sol:256
+
+esses[i]].a
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transferForMultiAddresses(address[],uint256[]), txdata: 0x204009d2800000000000000000000000000000000000000000000000000000000000000020, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: RRRR_Token
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 3542
+Estimated Gas Usage: 9476 - 70608
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/76e537ebe65d8177a07aea3d769424a6.sol:244
+
+eve tokens
+   * @param _amounts The quantity of tokens that w
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000080400020109, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca51000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: RRRR_Token
+Function name: transferFrom(address,address,uint256)
+PC address: 4009
+Estimated Gas Usage: 14394 - 57704
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/76e537ebe65d8177a07aea3d769424a6.sol:32
+
+ b;
+  }
+
+  fun
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc0080000010890, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transferFrom(address,address,uint256), txdata: 0x23b872dd000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe000000000000000000000000000000000000000001, value: 0x0

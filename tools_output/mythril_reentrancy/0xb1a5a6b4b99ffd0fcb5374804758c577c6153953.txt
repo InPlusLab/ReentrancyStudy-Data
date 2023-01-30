@@ -1,0 +1,361 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DolomiteDirectV1
+Function name: enableTrading(address)
+PC address: 687
+Estimated Gas Usage: 5735 - 74772
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d610aa54bb371f1118b34030a8b0e9e5.sol:535
+Initial State:
+
+Account: [CREATOR], balance: 0x5001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: enableTrading(address), txdata: 0x07980cb9000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DolomiteDirectV1
+Function name: enableTrading(address)
+PC address: 709
+Estimated Gas Usage: 5735 - 74772
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d610aa54bb371f1118b34030a8b0e9e5.sol:535
+Initial State:
+
+Account: [CREATOR], balance: 0x40001000540014021, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: enableTrading(address), txdata: 0x07980cb9000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DolomiteDirectV1
+Function name: enableTrading(address)
+PC address: 820
+Estimated Gas Usage: 5735 - 74772
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d610aa54bb371f1118b34030a8b0e9e5.sol:535
+Initial State:
+
+Account: [CREATOR], balance: 0x5001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: enableTrading(address), txdata: 0x07980cb9000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: DolomiteDirectV1
+Function name: enableTrading(address)
+PC address: 820
+Estimated Gas Usage: 5735 - 74772
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/d610aa54bb371f1118b34030a8b0e9e5.sol:535
+Initial State:
+
+Account: [CREATOR], balance: 0x800, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: enableTrading(address), txdata: 0x07980cb90000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DolomiteDirectV1
+Function name: enableTrading(address)
+PC address: 820
+Estimated Gas Usage: 5735 - 74772
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d610aa54bb371f1118b34030a8b0e9e5.sol:535
+Initial State:
+
+Account: [CREATOR], balance: 0x40001000540014021, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: enableTrading(address), txdata: 0x07980cb9000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: DolomiteDirectV1
+Function name: brokerRequestAllowance(((address,bytes32,uint256,uint256,uint256,address,bytes)[],address,address,address,uint256,uint256,uint256))
+PC address: 1608
+Estimated Gas Usage: 2710 - 4596
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/d610aa54bb371f1118b34030a8b0e9e5.sol:445
+
+eAmount;
+        
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x32c020048c074048c, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x32c000000c0440009, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: brokerRequestAllowance(((address,bytes32,uint256,uint256,uint256,address,bytes)[],address,address,address,uint256,uint256,uint256)), txdata: 0xcc2df0960000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: DolomiteDirectV1
+Function name: balanceOf(address,address)
+PC address: 2455
+Estimated Gas Usage: 6413 - 76103
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/d610aa54bb371f1118b34030a8b0e9e5.sol:396
+
+   Types.TransferRequest memory transfe
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: balanceOf(address,address), txdata: 0xf7888aec00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DolomiteDirectV1
+Function name: balanceOf(address,address)
+PC address: 2490
+Estimated Gas Usage: 6413 - 76103
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000844, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: balanceOf(address,address), txdata: 0xf7888aec00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DolomiteDirectV1
+Function name: brokerBalanceOf(address,address)
+PC address: 2490
+Estimated Gas Usage: 6419 - 76109
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: brokerBalanceOf(address,address), txdata: 0x7d8784d800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DolomiteDirectV1
+Function name: balanceOf(address,address)
+PC address: 2502
+Estimated Gas Usage: 6413 - 76103
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/d610aa54bb371f1118b34030a8b0e9e5.sol:396
+
+   Types.TransferRequest memory transfe
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: balanceOf(address,address), txdata: 0xf7888aec00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DolomiteDirectV1
+Function name: brokerBalanceOf(address,address)
+PC address: 2502
+Estimated Gas Usage: 6419 - 76109
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/d610aa54bb371f1118b34030a8b0e9e5.sol:396
+
+   Types.TransferRequest memory transfe
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: brokerBalanceOf(address,address), txdata: 0x7d8784d800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DolomiteDirectV1
+Function name: brokerRequestAllowance(((address,bytes32,uint256,uint256,uint256,address,bytes)[],address,address,address,uint256,uint256,uint256))
+PC address: 4856
+Estimated Gas Usage: 6419 - 76109
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: brokerBalanceOf(address,address), txdata: 0x7d8784d8ffffffffffffffffffffff0000000000000000000000000000000000000000610000000000000000000000000101010101010101010101010101010101010101, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DolomiteDirectV1
+Function name: onOrderFillReport((address,address,bytes32,address,address,address,uint256,uint256,uint256,address,bytes))
+PC address: 5050
+Estimated Gas Usage: 6419 - 76109
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: brokerBalanceOf(address,address), txdata: 0x7d8784d8ffffffffffffffffffffff0000000000000000000000000000000000000000610000000000000000000000000101010101010101010101010101010101010101, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DolomiteDirectV1
+Function name: brokerRequestAllowance(((address,bytes32,uint256,uint256,uint256,address,bytes)[],address,address,address,uint256,uint256,uint256))
+PC address: 5331
+Estimated Gas Usage: 1027 - 1122
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10c00000c1303, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: versionEndUsage(address,address,address,bytes), txdata: 0x79da5cdd7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000180000000000000000000000000000000000000000000000000000000000000040, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DolomiteDirectV1
+Function name: transfer((address,address,uint8,bytes,uint256,(address,address,uint256),(uint8,bytes32,bytes32)))
+PC address: 5664
+Estimated Gas Usage: 6419 - 76109
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: brokerBalanceOf(address,address), txdata: 0x7d8784d8ffffffffffffffffffffff0000000000000000000000000000000000000000610000000000000000000000000101010101010101010101010101010101010101, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DolomiteDirectV1
+Function name: balanceOf(address,address)
+PC address: 6567
+Estimated Gas Usage: 6413 - 76103
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: balanceOf(address,address), txdata: 0xf7888aec00000000000000000000000000000000000000000000000000000000000000000000000000000000000000008080800101010101010101010101010101010101, value: 0x0

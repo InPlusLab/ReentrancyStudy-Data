@@ -1,0 +1,99 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MarmoRelayerHelper
+Function name: revealAndRelay(address,address,bytes,bytes)
+PC address: 863
+Estimated Gas Usage: 7624 - 83158
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/584dd4266da775b1762c4bd8951ce430.sol:193
+
+ internal
+
+    
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x81000000000008, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: ffffffffffffffffffffffffdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: revealAndRelay(address,address,bytes,bytes), txdata: 0x1242a1ff0000000000000000000000000000000000000000000000000000000000000037000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: MarmoRelayerHelper
+Function name: revealAndRelay(address,address,bytes,bytes)
+PC address: 1119
+Estimated Gas Usage: 7624 - 83158
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/584dd4266da775b1762c4bd8951ce430.sol:197
+
+ a 'target'
+
+    //  when the call succeeds and it does not return false, the dependency is satisfied.
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: revealAndRelay(address,address,bytes,bytes), txdata: 0x1242a1ff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000012, value: 0x0
+
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: MarmoRelayerHelper
+Function name: depsReady(bytes)
+PC address: 1930
+Estimated Gas Usage: 1762 - 39285
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: /tmp/584dd4266da775b1762c4bd8951ce430.sol:227
+
+                   32
+
+                )
+
+
+
+                result := and(gt(success, 0), gt(mload(response), 0))
+
+            }
+
+        }
+
+    }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000002000080009, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: depsReady(bytes), txdata: 0x36777cb2000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000410000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100, value: 0x0

@@ -1,0 +1,85 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: FandBToken
+Function name: transfer(address,uint256,bytes)
+PC address: 647
+Estimated Gas Usage: 18469 - 101243
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/31dea8e3f7cda94450fa8c0b8985de28.sol:79
+
+ {
+        if (_value > 0 && 
+            _value <= _balanceOf[msg.sender] &&
+            isContract(_to)) {
+            _balanceOf[msg.sender] -= _value;
+            _balanceOf[_to] += _value;
+            ERC223ReceivingContract _contract = ERC223ReceivingContract(_to);
+                _contract.tokenFallback(msg.sender, _value, _data);
+            Transfer(msg.sender, _to, _value, _data);
+            return true;
+        }
+        return false;
+    }
+
+    function isContract(address _addr) returns (bool) {
+        uint codeSize;
+        a
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transfer(address,uint256,bytes), txdata: 0xbe45fd620101010101010110affeaffe2ddaafeeaffeaffeafbaaffe2ffeaf4e028001000000000000000000000000000000000000000000000000000000000000002000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: FandBToken
+Function name: transfer(address,uint256,bytes)
+PC address: 2010
+Estimated Gas Usage: 18469 - 101243
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transfer(address,uint256,bytes), txdata: 0xbe45fd62000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000000000a1280, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: FandBToken
+Function name: transfer(address,uint256,bytes)
+PC address: 2059
+Estimated Gas Usage: 18469 - 101243
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xfaffe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transfer(address,uint256,bytes), txdata: 0xbe45fd62000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000007, value: 0x0
+
+

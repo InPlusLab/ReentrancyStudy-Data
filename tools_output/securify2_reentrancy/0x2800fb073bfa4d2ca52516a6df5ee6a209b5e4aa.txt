@@ -1,0 +1,478 @@
+pragma directive defines a prior version to 0.6.12. Changing pragma version to 0.6.12....
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    Planets
+Line:        270
+Source: 
+>     bool public killed;
+>     uint256 withdrawDeadline;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^
+>     mapping (address=>bool) tokens;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Planets
+Line:        340
+Source: 
+> 
+>     function adminWithdraw(uint256 _amount) external govOnly nonReentrant returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         IERC20(rewardToken).transfer(msg.sender, _amount);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Planets
+Line:        357
+Source: 
+>     
+>     function changeGovernance(address _governance) external govOnly returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         governance = _governance;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Planets
+Line:        345
+Source: 
+> 
+>     function addToken(address _token, uint256 _reward) external govOnly returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         tokens[_token] = true;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Planets
+Line:        351
+Source: 
+> 
+>     function delToken(address _token) external govOnly returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         tokens[_token] = false;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Planets
+Line:        314
+Source: 
+>         uint256 rewardAmount = block.number.sub(entryBlock[msg.sender][_token]).mul(rewards[_token]).mul(balance[msg.sender][_token]).div(totalValue[_token]);
+>         require(IERC20(rewardToken).balanceOf(address(this))>rewardAmount, "NOT_ENOUGH_REWARD_TOKEN_USE_EMERGENCY_WITHDRAW");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(rewardAmount>0, "NO_REWARDS_FOR_ADDRESS");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Planets
+Line:        318
+Source: 
+>             require(balance[msg.sender][_token]>0);
+>             IERC20(_token).transfer(msg.sender, balance[msg.sender][_token]);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             totalHolders[_token] = totalHolders[_token].sub(1);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Planets
+Line:        327
+Source: 
+>         }
+>         IERC20(rewardToken).transfer(msg.sender, rewardAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Withdraw(msg.sender, _token, rewardAmount, _rewardOnly);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Planets
+Line:        334
+Source: 
+>         require(balance[msg.sender][_token]>0, "NO_INITIAL_BALANCE_FOUND");
+>         IERC20(_token).transfer(msg.sender, balance[msg.sender][_token]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         totalValue[_token] = totalValue[_token].sub(balance[msg.sender][_token]);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Planets
+Line:        341
+Source: 
+>     function adminWithdraw(uint256 _amount) external govOnly nonReentrant returns (bool) {
+>         IERC20(rewardToken).transfer(msg.sender, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return true;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    Planets
+Line:        270
+Source: 
+>     bool public killed;
+>     uint256 withdrawDeadline;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^
+>     mapping (address=>bool) tokens;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    Planets
+Line:        271
+Source: 
+>     uint256 withdrawDeadline;
+>     mapping (address=>bool) tokens;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     mapping (address=>mapping (address=>uint256)) entryBlock;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    Planets
+Line:        272
+Source: 
+>     mapping (address=>bool) tokens;
+>     mapping (address=>mapping (address=>uint256)) entryBlock;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     mapping (address=>uint256) public rewards;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    Planets
+Line:        274
+Source: 
+>     mapping (address=>uint256) public rewards;
+>     mapping (address=>uint256) totalValue;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     mapping (address=>uint256) public totalHolders;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Planets
+Line:        299
+Source: 
+>         require(tokens[_token] == true, "TOKEN_NOT_ALLOWED");
+>         require(IERC20(_token).allowance(msg.sender, address(this)) >= _amount, "ALLOWANCE_NOT_ENOUGH");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Planets
+Line:        314
+Source: 
+>         uint256 rewardAmount = block.number.sub(entryBlock[msg.sender][_token]).mul(rewards[_token]).mul(balance[msg.sender][_token]).div(totalValue[_token]);
+>         require(IERC20(rewardToken).balanceOf(address(this))>rewardAmount, "NOT_ENOUGH_REWARD_TOKEN_USE_EMERGENCY_WITHDRAW");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(rewardAmount>0, "NO_REWARDS_FOR_ADDRESS");
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Planets
+Line:        300
+Source: 
+>         require(IERC20(_token).allowance(msg.sender, address(this)) >= _amount, "ALLOWANCE_NOT_ENOUGH");
+>         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         balance[msg.sender][_token] = balance[msg.sender][_token].add(_amount);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Planets
+Line:        318
+Source: 
+>             require(balance[msg.sender][_token]>0);
+>             IERC20(_token).transfer(msg.sender, balance[msg.sender][_token]);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             totalHolders[_token] = totalHolders[_token].sub(1);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Planets
+Line:        327
+Source: 
+>         }
+>         IERC20(rewardToken).transfer(msg.sender, rewardAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Withdraw(msg.sender, _token, rewardAmount, _rewardOnly);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Planets
+Line:        334
+Source: 
+>         require(balance[msg.sender][_token]>0, "NO_INITIAL_BALANCE_FOUND");
+>         IERC20(_token).transfer(msg.sender, balance[msg.sender][_token]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         totalValue[_token] = totalValue[_token].sub(balance[msg.sender][_token]);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Planets
+Line:        341
+Source: 
+>     function adminWithdraw(uint256 _amount) external govOnly nonReentrant returns (bool) {
+>         IERC20(rewardToken).transfer(msg.sender, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return true;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Planets
+Line:        270
+Source: 
+>     bool public killed;
+>     uint256 withdrawDeadline;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^
+>     mapping (address=>bool) tokens;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Planets
+Line:        301
+Source: 
+>         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
+>         balance[msg.sender][_token] = balance[msg.sender][_token].add(_amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         totalHolders[_token] = totalHolders[_token].add(1);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Planets
+Line:        302
+Source: 
+>         balance[msg.sender][_token] = balance[msg.sender][_token].add(_amount);
+>         totalHolders[_token] = totalHolders[_token].add(1);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         totalValue[_token] = totalValue[_token].add(_amount);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Planets
+Line:        303
+Source: 
+>         totalHolders[_token] = totalHolders[_token].add(1);
+>         totalValue[_token] = totalValue[_token].add(_amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         entryBlock[msg.sender][_token] = block.number;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Planets
+Line:        304
+Source: 
+>         totalValue[_token] = totalValue[_token].add(_amount);
+>         entryBlock[msg.sender][_token] = block.number;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Deposit(msg.sender, _token, _amount);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReentrancyGuard
+Line:        41
+Source: 
+>         // Any calls to nonReentrant after this point will fail
+>         _status = _ENTERED;
+>         ^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Planets
+Line:        300
+Source: 
+>         require(IERC20(_token).allowance(msg.sender, address(this)) >= _amount, "ALLOWANCE_NOT_ENOUGH");
+>         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         balance[msg.sender][_token] = balance[msg.sender][_token].add(_amount);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Planets
+Line:        318
+Source: 
+>             require(balance[msg.sender][_token]>0);
+>             IERC20(_token).transfer(msg.sender, balance[msg.sender][_token]);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             totalHolders[_token] = totalHolders[_token].sub(1);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Planets
+Line:        327
+Source: 
+>         }
+>         IERC20(rewardToken).transfer(msg.sender, rewardAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Withdraw(msg.sender, _token, rewardAmount, _rewardOnly);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Planets
+Line:        334
+Source: 
+>         require(balance[msg.sender][_token]>0, "NO_INITIAL_BALANCE_FOUND");
+>         IERC20(_token).transfer(msg.sender, balance[msg.sender][_token]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         totalValue[_token] = totalValue[_token].sub(balance[msg.sender][_token]);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Planets
+Line:        341
+Source: 
+>     function adminWithdraw(uint256 _amount) external govOnly nonReentrant returns (bool) {
+>         IERC20(rewardToken).transfer(msg.sender, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return true;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    ReentrancyGuard
+Line:        21
+Source: 
+>     uint256 private constant _NOT_ENTERED = 1;
+>     uint256 private constant _ENTERED = 2;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    ReentrancyGuard
+Line:        23
+Source: 
+> 
+>     uint256 private _status;
+>     ^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    Planets
+Line:        270
+Source: 
+>     bool public killed;
+>     uint256 withdrawDeadline;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^
+>     mapping (address=>bool) tokens;
+
+[0m

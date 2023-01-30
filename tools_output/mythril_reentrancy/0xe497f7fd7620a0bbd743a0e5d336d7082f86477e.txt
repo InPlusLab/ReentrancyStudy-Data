@@ -1,0 +1,361 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Object
+Function name: withdrawnTokens(address[],address) or withdrawnTokens(address[],address)
+PC address: 1515
+Estimated Gas Usage: 8263 - 151397
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/68d64b490c6fa4d379b40092581adb60.sol:107
+
+).transfer(_to,balance);
+        }
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawnTokens(address[],address), txdata: 0xd8f9659b80, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Object
+Function name: withdrawnTokens(address[],address) or withdrawnTokens(address[],address)
+PC address: 1725
+Estimated Gas Usage: 8263 - 151397
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/68d64b490c6fa4d379b40092581adb60.sol:112
+
+tractOwner() internal constant returns(uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawnTokens(address[],address), txdata: 0xd8f9659b80, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Object
+Function name: withdrawnTokens(address[],address) or withdrawnTokens(address[],address)
+PC address: 1725
+Estimated Gas Usage: 8263 - 151397
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/68d64b490c6fa4d379b40092581adb60.sol:112
+
+tractOwner() internal constant returns(uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawnTokens(address[],address), txdata: 0xd8f9659b80, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TeamVesting
+Function name: getLockedFunds()
+PC address: 1924
+Estimated Gas Usage: 2677 - 38133
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/68d64b490c6fa4d379b40092581adb60.sol:273
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 7d7d7d7d7d7d7d7d7d7d7d7ddeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: getLockedFunds(), txdata: 0x4124a6a7, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: TeamVesting
+Function name: getVesting()
+PC address: 2592
+Estimated Gas Usage: 1161 - 1256
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/68d64b490c6fa4d379b40092581adb60.sol:251
+
+      lock.lastSpending = i;
+                 break;
+              }
+              else {
+                 amount = ((lock.balance * 125 * (i/3)) / 1000) - ((lock.balance * 125 * (lock.lastSpending/3)) / 1000);
+                 lock.lastSpending = i;
+                 break;
+              }
+          }
+            i-=3;
+        }
+        return amount;   
+    }
+
+    function getLockedFunds() constant returns (uint) {
+        return ERC20Interface(asset).balanceOf(this);
+    }
+    
+    function getLockedFundsLastSpending() constant returns (uint) {
+	    re
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: getVesting(), txdata: 0xbcc4e4ab, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TeamVesting
+Function name: withdrawnTokens(address[],address) or withdrawnTokens(address[],address)
+PC address: 3146
+Estimated Gas Usage: 8373 - 151507
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/68d64b490c6fa4d379b40092581adb60.sol:107
+
+).transfer(_to,balance);
+        }
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawnTokens(address[],address), txdata: 0xd8f9659b80, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TeamVesting
+Function name: withdrawnTokens(address[],address) or withdrawnTokens(address[],address)
+PC address: 3356
+Estimated Gas Usage: 8373 - 151507
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/68d64b490c6fa4d379b40092581adb60.sol:112
+
+tractOwner() internal constant returns(uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawnTokens(address[],address), txdata: 0xd8f9659b80, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: TeamVesting
+Function name: withdrawnTokens(address[],address) or withdrawnTokens(address[],address)
+PC address: 3356
+Estimated Gas Usage: 8373 - 151507
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/68d64b490c6fa4d379b40092581adb60.sol:112
+
+tractOwner() internal constant returns(uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawnTokens(address[],address), txdata: 0xd8f9659b80, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TeamVesting
+Function name: payIn()
+PC address: 3738
+Estimated Gas Usage: 19791 - 116329
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/68d64b490c6fa4d379b40092581adb60.sol:218
+
+CATION;
+        }
+        if (amount 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x140000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b1b1b1b1b1b1b1b1b1b1b1b1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: payIn(), txdata: 0xfcddd056, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: TeamVesting
+Function name: payIn()
+PC address: 3769
+Estimated Gas Usage: 19791 - 116329
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/68d64b490c6fa4d379b40092581adb60.sol:221
+
+     return 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x140000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b1b1b1b1b1b1b1b1b1b1b1b1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: payIn(), txdata: 0xfcddd056, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: TeamVesting
+Function name: payIn()
+PC address: 3883
+Estimated Gas Usage: 19791 - 116329
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/68d64b490c6fa4d379b40092581adb60.sol:228
+
+r
+        uint amount = getVesti
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x140000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b1b1b1b1b1b1b1b1b1b1b1b1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: payIn(), txdata: 0xfcddd056, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: TeamVesting
+Function name: payIn()
+PC address: 3893
+Estimated Gas Usage: 19791 - 116329
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/68d64b490c6fa4d379b40092581adb60.sol:228
+
+r
+        uint amount = getVesti
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x140000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b1b1b1b1b1b1b1b1b1b1b1b1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: payIn(), txdata: 0xfcddd056, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: TeamVesting
+Function name: payIn()
+PC address: 3903
+Estimated Gas Usage: 19791 - 116329
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/68d64b490c6fa4d379b40092581adb60.sol:228
+
+r
+        uint amount = getVesti
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x140000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b1b1b1b1b1b1b1b1b1b1b1b1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: payIn(), txdata: 0xfcddd056, value: 0x0

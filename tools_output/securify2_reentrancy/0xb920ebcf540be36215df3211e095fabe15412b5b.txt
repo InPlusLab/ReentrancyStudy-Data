@@ -1,0 +1,1472 @@
+[0;31mSeverity:    INFO
+Pattern:     Assembly Usage
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    Keep3r
+Line:        1017
+Source: 
+>         uint chainId;
+>         assembly { chainId := chainid() }
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return chainId;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    Keep3r
+Line:        408
+Source: 
+> 
+>       if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
+>                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>           checkpoints[delegatee][nCheckpoints - 1].votes = newVotes;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Keep3r
+Line:        302
+Source: 
+>      */
+>     function delegate(address delegatee) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return _delegate(msg.sender, delegatee);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Keep3r
+Line:        315
+Source: 
+>      */
+>     function delegateBySig(address delegatee, uint nonce, uint expiry, uint8 v, bytes32 r, bytes32 s) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         bytes32 domainSeparator = keccak256(abi.encode(DOMAIN_TYPEHASH, keccak256(bytes(name)), getChainId(), address(this)));
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Keep3r
+Line:        343
+Source: 
+>      */
+>     function getPriorVotes(address account, uint blockNumber) public view returns (uint) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(blockNumber < block.number, "::getPriorVotes: not yet determined");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Keep3r
+Line:        933
+Source: 
+>      */
+>     function approve(address spender, uint amount) public returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         allowances[msg.sender][spender] = amount;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Keep3r
+Line:        979
+Source: 
+>      */
+>     function transfer(address dst, uint amount) public returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _transferTokens(msg.sender, dst, amount);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    Keep3r
+Line:        589
+Source: 
+>         require(liquidityAccepted[liquidity], "Keep3r::addLiquidityToJob: asset not accepted as liquidity");
+>         UniswapPair(liquidity).transferFrom(msg.sender, address(this), amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         liquidityProvided[msg.sender][liquidity][job] = liquidityProvided[msg.sender][liquidity][job].add(amount);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    Keep3r
+Line:        596
+Source: 
+>         if (!jobs[job] && jobProposalDelay[job] < now) {
+>             Governance(governance).proposeJob(job);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             jobProposalDelay[job] = now.add(UNBOND);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    Keep3r
+Line:        613
+Source: 
+>         uint _liquidity = balances[address(liquidity)];
+>         uint _credit = _liquidity.mul(liquidityAmount[msg.sender][liquidity][job]).div(UniswapPair(liquidity).totalSupply());
+>                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         credits[job] = credits[job].add(_credit);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    Keep3r
+Line:        633
+Source: 
+>         uint _liquidity = balances[address(liquidity)];
+>         uint _credit = _liquidity.mul(amount).div(UniswapPair(liquidity).totalSupply());
+>                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (_credit > credits[job]) {
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Keep3r
+Line:        302
+Source: 
+>      */
+>     function delegate(address delegatee) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return _delegate(msg.sender, delegatee);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Keep3r
+Line:        587
+Source: 
+>      */
+>     function addLiquidityToJob(address liquidity, address job, uint amount) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(liquidityAccepted[liquidity], "Keep3r::addLiquidityToJob: asset not accepted as liquidity");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Keep3r
+Line:        626
+Source: 
+>      */
+>     function unbondLiquidityFromJob(address liquidity, address job, uint amount) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(liquidityAmount[msg.sender][liquidity][job] == 0, "Keep3r::credit: pending credit, settle first");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Keep3r
+Line:        648
+Source: 
+>      */
+>     function removeLiquidityFromJob(address liquidity, address job) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(liquidityUnbonding[msg.sender][liquidity][job] != 0, "Keep3r::removeJob: unbond first");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Keep3r
+Line:        663
+Source: 
+>      */
+>     function mint(uint amount) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == governance, "Keep3r::mint: governance only");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Keep3r
+Line:        672
+Source: 
+>      */
+>     function burn(uint amount) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _burn(msg.sender, amount);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Keep3r
+Line:        696
+Source: 
+>      */
+>     function workReceipt(address keeper, uint amount) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(jobs[msg.sender], "Keep3r::workReceipt: only jobs can approve work");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Keep3r
+Line:        763
+Source: 
+>      */
+>     function setGovernance(address _governance) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == governance, "Keep3r::setGovernance: only governance can set");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Keep3r
+Line:        800
+Source: 
+>      */
+>     function bond(uint amount) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(pendingbonds[msg.sender] == 0, "Keep3r::bond: current pending bond");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Keep3r
+Line:        834
+Source: 
+>      */
+>     function unbond(uint amount) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         unbondings[msg.sender] = now.add(UNBOND);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Keep3r
+Line:        857
+Source: 
+>      */
+>     function down(address keeper) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(keepers[msg.sender], "Keep3r::down: not a keeper");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Keep3r
+Line:        886
+Source: 
+>      */
+>     function slash(address keeper, uint amount) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == governance, "Keep3r::slash: only governance can resolve");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Keep3r
+Line:        898
+Source: 
+>      */
+>     function revoke(address keeper) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == governance, "Keep3r::slash: only governance can resolve");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Keep3r
+Line:        979
+Source: 
+>      */
+>     function transfer(address dst, uint amount) public returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _transferTokens(msg.sender, dst, amount);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Keep3r
+Line:        991
+Source: 
+>      */
+>     function transferFrom(address src, address dst, uint amount) external returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         address spender = msg.sender;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Keep3r
+Line:        569
+Source: 
+>      */
+>     function revokeLiquidity(address liquidity) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == governance, "Keep3r::revokeLiquidity: governance only");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Keep3r
+Line:        744
+Source: 
+>      */
+>     function removeJob(address job) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == governance, "Keep3r::removeJob: only governance can remove jobs");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Keep3r
+Line:        754
+Source: 
+>      */
+>     function setKeep3rHelper(Keep3rHelper _kprh) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == governance, "Keep3r::setKeep3rHelper: only governance can set");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Keep3r
+Line:        780
+Source: 
+>      */
+>     function isKeeper(address keeper) external returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         gasUsed = gasleft();
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Keep3r
+Line:        789
+Source: 
+>      */
+>     function isMinKeeper(address keeper, uint minBond, uint earned, uint age) external returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         gasUsed = gasleft();
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Keep3r
+Line:        875
+Source: 
+>      */
+>     function dispute(address keeper) external returns (uint) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == governance, "Keep3r::dispute: only governance can dispute");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Keep3r
+Line:        909
+Source: 
+>      */
+>     function resolve(address keeper) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == governance, "Keep3r::resolve: only governance can resolve");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Keep3r
+Line:        921
+Source: 
+>      */
+>     function allowance(address account, address spender) external view returns (uint) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return allowances[account][spender];
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Keep3r
+Line:        933
+Source: 
+>      */
+>     function approve(address spender, uint amount) public returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         allowances[msg.sender][spender] = amount;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Keep3r
+Line:        969
+Source: 
+>      */
+>     function balanceOf(address account) external view returns (uint) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return balances[account];
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Keep3r
+Line:        589
+Source: 
+>         require(liquidityAccepted[liquidity], "Keep3r::addLiquidityToJob: asset not accepted as liquidity");
+>         UniswapPair(liquidity).transferFrom(msg.sender, address(this), amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         liquidityProvided[msg.sender][liquidity][job] = liquidityProvided[msg.sender][liquidity][job].add(amount);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Keep3r
+Line:        596
+Source: 
+>         if (!jobs[job] && jobProposalDelay[job] < now) {
+>             Governance(governance).proposeJob(job);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             jobProposalDelay[job] = now.add(UNBOND);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Shadowed Builtin
+Description: Reports declarations that shadow Solidity's builtin
+             symbols.
+Type:        Violation
+Contract:    Keep3r
+Line:        430
+Source: 
+>     /// @notice Submit a job
+>     event SubmitJob(address indexed job, address indexed provider, uint block, uint credit);
+>                                                                    ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Shadowed Builtin
+Description: Reports declarations that shadow Solidity's builtin
+             symbols.
+Type:        Violation
+Contract:    Keep3r
+Line:        433
+Source: 
+>     /// @notice Apply credit to a job
+>     event ApplyCredit(address indexed job, address indexed provider, uint block, uint credit);
+>                                                                      ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Shadowed Builtin
+Description: Reports declarations that shadow Solidity's builtin
+             symbols.
+Type:        Violation
+Contract:    Keep3r
+Line:        436
+Source: 
+>     /// @notice Remove credit for a job
+>     event RemoveJob(address indexed job, address indexed provider, uint block, uint credit);
+>                                                                    ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Shadowed Builtin
+Description: Reports declarations that shadow Solidity's builtin
+             symbols.
+Type:        Violation
+Contract:    Keep3r
+Line:        439
+Source: 
+>     /// @notice Unbond credit for a job
+>     event UnbondJob(address indexed job, address indexed provider, uint block, uint credit);
+>                                                                    ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Shadowed Builtin
+Description: Reports declarations that shadow Solidity's builtin
+             symbols.
+Type:        Violation
+Contract:    Keep3r
+Line:        442
+Source: 
+>     /// @notice Added a Job
+>     event JobAdded(address indexed job, uint block, address governance);
+>                                         ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Shadowed Builtin
+Description: Reports declarations that shadow Solidity's builtin
+             symbols.
+Type:        Violation
+Contract:    Keep3r
+Line:        445
+Source: 
+>     /// @notice Removed a job
+>     event JobRemoved(address indexed job, uint block, address governance);
+>                                           ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Shadowed Builtin
+Description: Reports declarations that shadow Solidity's builtin
+             symbols.
+Type:        Violation
+Contract:    Keep3r
+Line:        448
+Source: 
+>     /// @notice Worked a job
+>     event KeeperWorked(address indexed job, address indexed keeper, uint block);
+>                                                                     ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Shadowed Builtin
+Description: Reports declarations that shadow Solidity's builtin
+             symbols.
+Type:        Violation
+Contract:    Keep3r
+Line:        451
+Source: 
+>     /// @notice Keeper bonding
+>     event KeeperBonding(address indexed keeper, uint block, uint active, uint bond);
+>                                                 ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Shadowed Builtin
+Description: Reports declarations that shadow Solidity's builtin
+             symbols.
+Type:        Violation
+Contract:    Keep3r
+Line:        454
+Source: 
+>     /// @notice Keeper bonded
+>     event KeeperBonded(address indexed keeper, uint block, uint activated, uint bond);
+>                                                ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Shadowed Builtin
+Description: Reports declarations that shadow Solidity's builtin
+             symbols.
+Type:        Violation
+Contract:    Keep3r
+Line:        457
+Source: 
+>     /// @notice Keeper unbonding
+>     event KeeperUnbonding(address indexed keeper, uint block, uint deactive, uint bond);
+>                                                   ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Shadowed Builtin
+Description: Reports declarations that shadow Solidity's builtin
+             symbols.
+Type:        Violation
+Contract:    Keep3r
+Line:        460
+Source: 
+>     /// @notice Keeper unbound
+>     event KeeperUnbound(address indexed keeper, uint block, uint deactivated, uint bond);
+>                                                 ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Shadowed Builtin
+Description: Reports declarations that shadow Solidity's builtin
+             symbols.
+Type:        Violation
+Contract:    Keep3r
+Line:        463
+Source: 
+>     /// @notice Keeper slashed
+>     event KeeperSlashed(address indexed keeper, address indexed slasher, uint block, uint slash);
+>                                                                          ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Shadowed Builtin
+Description: Reports declarations that shadow Solidity's builtin
+             symbols.
+Type:        Violation
+Contract:    Keep3r
+Line:        466
+Source: 
+>     /// @notice Keeper disputed
+>     event KeeperDispute(address indexed keeper, uint block);
+>                                                 ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Shadowed Builtin
+Description: Reports declarations that shadow Solidity's builtin
+             symbols.
+Type:        Violation
+Contract:    Keep3r
+Line:        469
+Source: 
+>     /// @notice Keeper resolved
+>     event KeeperResolved(address indexed keeper, uint block);
+>                                                  ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Keep3r
+Line:        241
+Source: 
+>     /// @notice Keep3r Helper to set max prices for the ecosystem
+>     Keep3rHelper public KPRH;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Keep3r
+Line:        250
+Source: 
+>     /// @notice EIP-20 token name for this token
+>     string public constant name = "Keep3r";
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Keep3r
+Line:        253
+Source: 
+>     /// @notice EIP-20 token symbol for this token
+>     string public constant symbol = "KPR";
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Keep3r
+Line:        256
+Source: 
+>     /// @notice EIP-20 token decimals for this token
+>     uint8 public constant decimals = 18;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Keep3r
+Line:        612
+Source: 
+>         require(liquidityApplied[provider][liquidity][job] < now, "Keep3r::credit: still bonding");
+>         uint _liquidity = balances[address(liquidity)];
+>         ^^^^^^^^^^^^^^^
+>         uint _credit = _liquidity.mul(liquidityAmount[msg.sender][liquidity][job]).div(UniswapPair(liquidity).totalSupply());
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Keep3r
+Line:        613
+Source: 
+>         uint _liquidity = balances[address(liquidity)];
+>         uint _credit = _liquidity.mul(liquidityAmount[msg.sender][liquidity][job]).div(UniswapPair(liquidity).totalSupply());
+>         ^^^^^^^^^^^^
+>         credits[job] = credits[job].add(_credit);
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Keep3r
+Line:        632
+Source: 
+> 
+>         uint _liquidity = balances[address(liquidity)];
+>         ^^^^^^^^^^^^^^^
+>         uint _credit = _liquidity.mul(amount).div(UniswapPair(liquidity).totalSupply());
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Keep3r
+Line:        633
+Source: 
+>         uint _liquidity = balances[address(liquidity)];
+>         uint _credit = _liquidity.mul(amount).div(UniswapPair(liquidity).totalSupply());
+>         ^^^^^^^^^^^^
+>         if (_credit > credits[job]) {
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Keep3r
+Line:        651
+Source: 
+>         require(liquidityUnbonding[msg.sender][liquidity][job] < now, "Keep3r::removeJob: still unbonding");
+>         uint _amount = liquidityAmountsUnbonding[msg.sender][liquidity][job];
+>         ^^^^^^^^^^^^
+>         liquidityProvided[msg.sender][liquidity][job] = liquidityProvided[msg.sender][liquidity][job].sub(_amount);
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Keep3r
+Line:        861
+Source: 
+>         require(lastJob[keeper].add(DOWNTIME) < now, "Keep3r::down: keeper safe");
+>         uint _slash = bonds[keeper].mul(DOWNTIMESLASH).div(BASE);
+>         ^^^^^^^^^^^
+>         
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        10
+Source: 
+> // SPDX-License-Identifier: MIT
+> pragma solidity ^0.6.6;
+> ^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Keep3r
+Line:        699
+Source: 
+>         gasUsed = gasUsed.sub(gasleft());
+>         require(amount < KPRH.getQuoteLimit(gasUsed), "Keep3r::workReceipt: spending over max limit");
+>                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         credits[msg.sender] = credits[msg.sender].sub(amount, "Keep3r::workReceipt: insuffient funds to pay keeper");
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Keep3r
+Line:        589
+Source: 
+>         require(liquidityAccepted[liquidity], "Keep3r::addLiquidityToJob: asset not accepted as liquidity");
+>         UniswapPair(liquidity).transferFrom(msg.sender, address(this), amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         liquidityProvided[msg.sender][liquidity][job] = liquidityProvided[msg.sender][liquidity][job].add(amount);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Keep3r
+Line:        596
+Source: 
+>         if (!jobs[job] && jobProposalDelay[job] < now) {
+>             Governance(governance).proposeJob(job);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             jobProposalDelay[job] = now.add(UNBOND);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Keep3r
+Line:        613
+Source: 
+>         uint _liquidity = balances[address(liquidity)];
+>         uint _credit = _liquidity.mul(liquidityAmount[msg.sender][liquidity][job]).div(UniswapPair(liquidity).totalSupply());
+>                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         credits[job] = credits[job].add(_credit);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Keep3r
+Line:        633
+Source: 
+>         uint _liquidity = balances[address(liquidity)];
+>         uint _credit = _liquidity.mul(amount).div(UniswapPair(liquidity).totalSupply());
+>                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (_credit > credits[job]) {
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Keep3r
+Line:        654
+Source: 
+>         liquidityAmountsUnbonding[msg.sender][liquidity][job] = 0;
+>         UniswapPair(liquidity).transfer(msg.sender, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Keep3r
+Line:        241
+Source: 
+>     /// @notice Keep3r Helper to set max prices for the ecosystem
+>     Keep3rHelper public KPRH;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Keep3r
+Line:        538
+Source: 
+>     address public governance;
+>     address public pendingGovernance;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Keep3r
+Line:        545
+Source: 
+> 
+>     uint internal gasUsed;
+>     ^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Keep3r
+Line:        678
+Source: 
+>         // mint the amount
+>         totalSupply = totalSupply.add(amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         // transfer the amount to the recipient
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Keep3r
+Line:        680
+Source: 
+>         // transfer the amount to the recipient
+>         balances[dst] = balances[dst].add(amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Transfer(address(0), dst, amount);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Keep3r
+Line:        686
+Source: 
+>         require(dst != address(0), "::_burn: burn from the zero address");
+>         balances[dst] = balances[dst].sub(amount, "::_burn: burn amount exceeds balance");
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         totalSupply = totalSupply.sub(amount);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Keep3r
+Line:        687
+Source: 
+>         balances[dst] = balances[dst].sub(amount, "::_burn: burn amount exceeds balance");
+>         totalSupply = totalSupply.sub(amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Transfer(dst, address(0), amount);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Keep3r
+Line:        709
+Source: 
+>     function _bond(address _from, uint _amount) internal {
+>         bonds[_from] = bonds[_from].add(_amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         totalBonded = totalBonded.add(_amount);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Keep3r
+Line:        710
+Source: 
+>         bonds[_from] = bonds[_from].add(_amount);
+>         totalBonded = totalBonded.add(_amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _moveDelegates(address(0), delegates[_from], _amount);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Keep3r
+Line:        715
+Source: 
+>     function _unbond(address _from, uint _amount) internal {
+>         bonds[_from] = bonds[_from].sub(_amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         totalBonded = totalBonded.sub(_amount);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        380
+Source: 
+>         uint delegatorBalance = bonds[delegator];
+>         delegates[delegator] = delegatee;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        409
+Source: 
+>       if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
+>           checkpoints[delegatee][nCheckpoints - 1].votes = newVotes;
+>           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>       } else {
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        411
+Source: 
+>       } else {
+>           checkpoints[delegatee][nCheckpoints] = Checkpoint(blockNumber, newVotes);
+>           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>           numCheckpoints[delegatee] = nCheckpoints + 1;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        412
+Source: 
+>           checkpoints[delegatee][nCheckpoints] = Checkpoint(blockNumber, newVotes);
+>           numCheckpoints[delegatee] = nCheckpoints + 1;
+>           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>       }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        321
+Source: 
+>         require(signatory != address(0), "::delegateBySig: invalid signature");
+>         require(nonce == nonces[signatory]++, "::delegateBySig: invalid nonce");
+>                          ^^^^^^^^^^^^^^^^^^^
+>         require(now <= expiry, "::delegateBySig: signature expired");
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        590
+Source: 
+>         UniswapPair(liquidity).transferFrom(msg.sender, address(this), amount);
+>         liquidityProvided[msg.sender][liquidity][job] = liquidityProvided[msg.sender][liquidity][job].add(amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        592
+Source: 
+> 
+>         liquidityApplied[msg.sender][liquidity][job] = now.add(LIQUIDITYBOND);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         liquidityAmount[msg.sender][liquidity][job] = liquidityAmount[msg.sender][liquidity][job].add(amount);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        593
+Source: 
+>         liquidityApplied[msg.sender][liquidity][job] = now.add(LIQUIDITYBOND);
+>         liquidityAmount[msg.sender][liquidity][job] = liquidityAmount[msg.sender][liquidity][job].add(amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        597
+Source: 
+>             Governance(governance).proposeJob(job);
+>             jobProposalDelay[job] = now.add(UNBOND);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        614
+Source: 
+>         uint _credit = _liquidity.mul(liquidityAmount[msg.sender][liquidity][job]).div(UniswapPair(liquidity).totalSupply());
+>         credits[job] = credits[job].add(_credit);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         liquidityAmount[msg.sender][liquidity][job] = 0;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        615
+Source: 
+>         credits[job] = credits[job].add(_credit);
+>         liquidityAmount[msg.sender][liquidity][job] = 0;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        716
+Source: 
+>         bonds[_from] = bonds[_from].sub(_amount);
+>         totalBonded = totalBonded.sub(_amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _moveDelegates(delegates[_from], address(0), _amount);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        781
+Source: 
+>     function isKeeper(address keeper) external returns (bool) {
+>         gasUsed = gasleft();
+>         ^^^^^^^^^^^^^^^^^^^
+>         return keepers[keeper];
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        790
+Source: 
+>     function isMinKeeper(address keeper, uint minBond, uint earned, uint age) external returns (bool) {
+>         gasUsed = gasleft();
+>         ^^^^^^^^^^^^^^^^^^^
+>         return keepers[keeper]
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        1010
+Source: 
+> 
+>         balances[src] = balances[src].sub(amount, "::_transferTokens: transfer amount exceeds balance");
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         balances[dst] = balances[dst].add(amount, "::_transferTokens: transfer amount overflows");
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        1011
+Source: 
+>         balances[src] = balances[src].sub(amount, "::_transferTokens: transfer amount exceeds balance");
+>         balances[dst] = balances[dst].add(amount, "::_transferTokens: transfer amount overflows");
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Transfer(src, dst, amount);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        934
+Source: 
+>     function approve(address spender, uint amount) public returns (bool) {
+>         allowances[msg.sender][spender] = amount;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        952
+Source: 
+>         bytes32 domainSeparator = keccak256(abi.encode(DOMAIN_TYPEHASH, keccak256(bytes(name)), getChainId(), address(this)));
+>         bytes32 structHash = keccak256(abi.encode(PERMIT_TYPEHASH, owner, spender, amount, nonces[owner]++, deadline));
+>                                                                                            ^^^^^^^^^^^^^^^
+>         bytes32 digest = keccak256(abi.encodePacked("\x19\x01", domainSeparator, structHash));
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Keep3r
+Line:        959
+Source: 
+> 
+>         allowances[owner][spender] = amount;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Keep3r
+Line:        589
+Source: 
+>         require(liquidityAccepted[liquidity], "Keep3r::addLiquidityToJob: asset not accepted as liquidity");
+>         UniswapPair(liquidity).transferFrom(msg.sender, address(this), amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         liquidityProvided[msg.sender][liquidity][job] = liquidityProvided[msg.sender][liquidity][job].add(amount);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Keep3r
+Line:        596
+Source: 
+>         if (!jobs[job] && jobProposalDelay[job] < now) {
+>             Governance(governance).proposeJob(job);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             jobProposalDelay[job] = now.add(UNBOND);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Keep3r
+Line:        654
+Source: 
+>         liquidityAmountsUnbonding[msg.sender][liquidity][job] = 0;
+>         UniswapPair(liquidity).transfer(msg.sender, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    Keep3r
+Line:        244
+Source: 
+>     /// @notice WETH address to liquidity into UNI
+>     WETH9 public constant WETH = WETH9(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    Keep3r
+Line:        247
+Source: 
+>     /// @notice UniswapV2Router address
+>     Uniswap public constant UNI = Uniswap(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    Keep3r
+Line:        253
+Source: 
+>     /// @notice EIP-20 token symbol for this token
+>     string public constant symbol = "KPR";
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    Keep3r
+Line:        256
+Source: 
+>     /// @notice EIP-20 token decimals for this token
+>     uint8 public constant decimals = 18;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    Keep3r
+Line:        506
+Source: 
+>     /// @notice tracks the amount of job executions for a keeper
+>     mapping(address => uint) public work;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     /// @notice tracks the total job executions for a keeper
+
+[0m

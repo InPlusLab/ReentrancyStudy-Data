@@ -1,0 +1,240 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+pragma directive defines a prior version to 0.6.12. Changing pragma version to 0.6.12....
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    Wallet
+Line:        156
+Source: 
+>     address payable internal _owner;
+>     uint256 internal _totalBalance;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     mapping(address => uint256) internal _wallets;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Wallet
+Line:        203
+Source: 
+>     
+>     function balanceOf(address wallet) public view returns(uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return _wallets[wallet];
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Wallet
+Line:        207
+Source: 
+>     
+>     function totalBalance() public view returns(uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return address(this).balance;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Wallet
+Line:        241
+Source: 
+>     
+>     function close() public onlyUnpaused onlyOwner { 
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>       selfdestruct(_owner); 
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Wallet
+Line:        221
+Source: 
+>     
+>     function depositFor(address wallet) external payable {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>          require(msg.value > 0, "No ether sent.");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Wallet
+Line:        203
+Source: 
+>     
+>     function balanceOf(address wallet) public view returns(uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return _wallets[wallet];
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Wallet
+Line:        234
+Source: 
+>     
+>     function withdrawFor(address wallet) external onlyUnpaused {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(_wallets[msg.sender] > 0, "You have nothing to withdraw");
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Violation
+Contract:    Wallet
+Line:        229
+Source: 
+>         require(_wallets[msg.sender] > 0, "You have nothing to withdraw");
+>         payable(msg.sender).transfer(_wallets[msg.sender]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit WithdrawEvent(msg.sender, _wallets[msg.sender]);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Violation
+Contract:    Wallet
+Line:        236
+Source: 
+>         require(_wallets[msg.sender] > 0, "You have nothing to withdraw");
+>         payable(wallet).transfer(_wallets[msg.sender]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit WithdrawForEvent(msg.sender, wallet,  _wallets[msg.sender]);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    Wallet
+Line:        229
+Source: 
+>         require(_wallets[msg.sender] > 0, "You have nothing to withdraw");
+>         payable(msg.sender).transfer(_wallets[msg.sender]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit WithdrawEvent(msg.sender, _wallets[msg.sender]);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    Wallet
+Line:        236
+Source: 
+>         require(_wallets[msg.sender] > 0, "You have nothing to withdraw");
+>         payable(wallet).transfer(_wallets[msg.sender]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit WithdrawForEvent(msg.sender, wallet,  _wallets[msg.sender]);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Warning
+Contract:    Wallet
+Line:        236
+Source: 
+>         require(_wallets[msg.sender] > 0, "You have nothing to withdraw");
+>         payable(wallet).transfer(_wallets[msg.sender]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit WithdrawForEvent(msg.sender, wallet,  _wallets[msg.sender]);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    Wallet
+Line:        229
+Source: 
+>         require(_wallets[msg.sender] > 0, "You have nothing to withdraw");
+>         payable(msg.sender).transfer(_wallets[msg.sender]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit WithdrawEvent(msg.sender, _wallets[msg.sender]);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    Wallet
+Line:        236
+Source: 
+>         require(_wallets[msg.sender] > 0, "You have nothing to withdraw");
+>         payable(wallet).transfer(_wallets[msg.sender]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit WithdrawForEvent(msg.sender, wallet,  _wallets[msg.sender]);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Wallet
+Line:        156
+Source: 
+>     address payable internal _owner;
+>     uint256 internal _totalBalance;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     mapping(address => uint256) internal _wallets;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Wallet
+Line:        224
+Source: 
+>          emit DepositForEvent(msg.sender, wallet, msg.value);
+>         _wallets[wallet] = _wallets[wallet].add(msg.value);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    Wallet
+Line:        156
+Source: 
+>     address payable internal _owner;
+>     uint256 internal _totalBalance;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     mapping(address => uint256) internal _wallets;
+
+[0m

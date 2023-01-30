@@ -1,0 +1,168 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: TokenTransferDelegate
+Function name: getLatestAuthorizedAddresses(uint256)
+PC address: 310
+Estimated Gas Usage: 1720 - 4122
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/cb039d899414a0ac0526ea90807fa850.sol:225
+
+fo memory addrInfo;
+        uint count = 0;
+        while (addr != address(0) && max < count) {
+            addrInfo = addressInfos[addr];
+            if (addrInfo.index == 0) {
+                break;
+            }
+            addresses[count++] = addr;
+            addr = addrInfo.previous;
+        }
+    }
+    /// @dev Invoke ERC20 transferFrom method.
+    /// @param token Address of token to transfer.
+    /// @param from Address to transfer token from.
+    /// @param to Address to transfer token to.
+    /// @param value Amount of toke
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000804020682c1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getLatestAuthorizedAddresses(uint256), txdata: 0x2097dd040800000000000000000000000000000000000000000000000000000000000002, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TokenTransferDelegate
+Function name: transferToken(address,address,address,uint256)
+PC address: 1816
+Estimated Gas Usage: 3078 - 38633
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/cb039d899414a0ac0526ea90807fa850.sol:261
+
+external
+    {
+        require(batch.lengt
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2040000200000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: authorizeAddress(address), txdata: 0x4a5db3b5000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+Caller: [SOMEGUY], function: transferToken(address,address,address,uint256), txdata: 0x2c54de4f0d0d0d0d0d0d0d0d0d0d0d0ddeadbeefdeadbeefdeadbeefdeadbeefdeadbeef0d0d0d0d0d0d0d0d0d0d0d0d02020202020202020202200202400202020202020d0d0d0d0d0d0d0d0d0d0d0d010801010101010101018001200101010101010101, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: TokenTransferDelegate
+Function name: batchTransferToken(uint256,address,address,bytes32[])
+PC address: 1967
+Estimated Gas Usage: 1560 - 2175
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/cb039d899414a0ac0526ea90807fa850.sol:219
+
+  external
+        view
+        returns (address[] addresses)
+    {
+        addresses = new address[](max);
+        address addr = latestAddress;
+        Add
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x5, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: authorizeAddress(address), txdata: 0x4a5db3b5000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: batchTransferToken(uint256,address,address,bytes32[]), txdata: 0x35a5066380000000000000000000000000000000000000000000000000000000000000000d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0dff, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: TokenTransferDelegate
+Function name: batchTransferToken(uint256,address,address,bytes32[])
+PC address: 2000
+Estimated Gas Usage: 1648 - 2263
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/cb039d899414a0ac0526ea90807fa850.sol:219
+
+  external
+        view
+        returns (address[] addresses)
+    {
+        addresses = new address[](max);
+        address addr = latestAddress;
+        Add
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400003fbcf7ef, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: authorizeAddress(address), txdata: 0x4a5db3b5000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: batchTransferToken(uint256,address,address,bytes32[]), txdata: 0x35a506638e00c000100010020aac0080028000015800020860028000020c0821020880400d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0dff, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: TokenTransferDelegate
+Function name: batchTransferToken(uint256,address,address,bytes32[])
+PC address: 2033
+Estimated Gas Usage: 1736 - 2351
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/cb039d899414a0ac0526ea90807fa850.sol:219
+
+  external
+        view
+        returns (address[] addresses)
+    {
+        addresses = new address[](max);
+        address addr = latestAddress;
+        Add
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: authorizeAddress(address), txdata: 0x4a5db3b5000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+Caller: [SOMEGUY], function: batchTransferToken(uint256,address,address,bytes32[]), txdata: 0x35a5066370000000000000000000000000000000000000000000000030040000000080000d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0dff, value: 0x0

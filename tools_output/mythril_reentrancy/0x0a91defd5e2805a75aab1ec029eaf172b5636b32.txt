@@ -1,0 +1,258 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MandalorianSale
+Function name: buyTokens(uint256)
+PC address: 556
+Estimated Gas Usage: 12870 - 103476
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/941e98113139fda4d3ef2b164e2cae5c.sol:385
+
+sSold = 0;
+        admin
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10000010084204e, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: buyTokens(uint256), txdata: 0x3610724e00005520004402584e80000080000000ca000018404008800f275e02146b3f8a, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MandalorianSale
+Function name: buyTokens(uint256)
+PC address: 889
+Estimated Gas Usage: 12870 - 103476
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/941e98113139fda4d3ef2b164e2cae5c.sol:388
+Initial State:
+
+Account: [CREATOR], balance: 0x10000010084204e, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: buyTokens(uint256), txdata: 0x3610724e00005520004402584e80000080000000ca000018404008800f275e02146b3f8a, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MandalorianSale
+Function name: buyTokens(uint256)
+PC address: 1025
+Estimated Gas Usage: 12870 - 103476
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/941e98113139fda4d3ef2b164e2cae5c.sol:386
+
+is).balance);
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40002007661, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: e5e5e5e5e5e5e5e5e5e5e5e5deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: buyTokens(uint256), txdata: 0x3610724e200030002822000000000000008000000000000000000000000004c882768817, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: MandalorianSale
+Function name: buyTokens(uint256)
+PC address: 1025
+Estimated Gas Usage: 12870 - 103476
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/941e98113139fda4d3ef2b164e2cae5c.sol:386
+
+is).balance);
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000008005, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: buyTokens(uint256), txdata: 0x3610724e044001a5a01b405f3e80097e60844c4f44ed3bd84002122c0140050000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: MandalorianSale
+Function name: buyTokens(uint256)
+PC address: 1100
+Estimated Gas Usage: 12870 - 103476
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/941e98113139fda4d3ef2b164e2cae5c.sol:388
+Initial State:
+
+Account: [CREATOR], balance: 0xc000004008a91b, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: e5e5e5e5e5e5e5e5e5e5e5e5deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: buyTokens(uint256), txdata: 0x3610724e08080c00053b003642600140009620000020041001aaaabaa7973f8011207ae3, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: MandalorianSale
+Function name: buyTokens(uint256)
+PC address: 1107
+Estimated Gas Usage: 12870 - 103476
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/941e98113139fda4d3ef2b164e2cae5c.sol:388
+Initial State:
+
+Account: [CREATOR], balance: 0xc000004008a91b, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: e5e5e5e5e5e5e5e5e5e5e5e5deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: buyTokens(uint256), txdata: 0x3610724e08080c00053b003642600140009620000020041001aaaabaa7973f8011207ae3, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MandalorianSale
+Function name: endSale()
+PC address: 1787
+Estimated Gas Usage: 14273 - 139423
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/941e98113139fda4d3ef2b164e2cae5c.sol:388
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: e5e5e5e5e5e5e5e5e5e5e5e5deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: endSale(), txdata: 0x380d831b, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: MandalorianSale
+Function name: endSale()
+PC address: 1787
+Estimated Gas Usage: 14273 - 139423
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/941e98113139fda4d3ef2b164e2cae5c.sol:388
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: endSale(), txdata: 0x380d831b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: MandalorianSale
+Function name: endSale()
+PC address: 1861
+Estimated Gas Usage: 14273 - 139423
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/941e98113139fda4d3ef2b164e2cae5c.sol:388
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4e4e4e4e4e4e4e4e4e4e4e4edeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: endSale(), txdata: 0x380d831b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: MandalorianSale
+Function name: endSale()
+PC address: 1867
+Estimated Gas Usage: 14273 - 139423
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/941e98113139fda4d3ef2b164e2cae5c.sol:388
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4e4e4e4e4e4e4e4e4e4e4e4edeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: endSale(), txdata: 0x380d831b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: MandalorianSale
+Function name: endSale()
+PC address: 1966
+Estimated Gas Usage: 14273 - 139423
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/941e98113139fda4d3ef2b164e2cae5c.sol:388
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4e4e4e4e4e4e4e4e4e4e4e4edeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: endSale(), txdata: 0x380d831b, value: 0x0

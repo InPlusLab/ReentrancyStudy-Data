@@ -1,0 +1,104 @@
+with mythril_dir
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ApprovalChecker
+Function name: checkApproval(address)
+PC address: 405
+Estimated Gas Usage: 5606 - 115728
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2f42208af651ceb43c4483807db21970.sol:93
+
+ector,
+                address(0x1111111111111111111111111111111111111111),
+                amount
+            )
+        );
+        return success && (returndata.length == 0 || abi.decode(returndata, (bool)));
+    }
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x410c0500000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: checkApproval(address), txdata: 0xec29e26c0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ApprovalChecker
+Function name: checkApproval(address)
+PC address: 469
+Estimated Gas Usage: 5606 - 115728
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2f42208af651ceb43c4483807db21970.sol:93
+
+ector,
+                address(0x1111111111111111111111111111111111111111),
+                amount
+            )
+        );
+        return success && (returndata.length == 0 || abi.decode(returndata, (bool)));
+    }
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: checkApproval(address), txdata: 0xec29e26c000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: ApprovalChecker
+Function name: checkApproval(address)
+PC address: 469
+Estimated Gas Usage: 5606 - 115728
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2f42208af651ceb43c4483807db21970.sol:93
+
+ector,
+                address(0x1111111111111111111111111111111111111111),
+                amount
+            )
+        );
+        return success && (returndata.length == 0 || abi.decode(returndata, (bool)));
+    }
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x410c0500000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: checkApproval(address), txdata: 0xec29e26c0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+

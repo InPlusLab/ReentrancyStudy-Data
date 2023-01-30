@@ -1,0 +1,943 @@
+==== Unprotected Ether Withdrawal ====
+SWC ID: 105
+Severity: High
+Contract: BiddingBase
+Function name: withdrawEthFromBalance()
+PC address: 1393
+Estimated Gas Usage: 4381 - 39229
+Any sender can withdraw Ether from the contract account.
+Arbitrary senders other than the contract creator can profitably extract Ether from the contract account. Verify the business logic carefully and make sure that appropriate security controls are in place to prevent unexpected loss of funds.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:287
+
+;
+
+    }
+
+
+
+    function setMinTime(uint40 _minTime)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80d19a12e0820000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x1
+Caller: [CREATOR], function: transferOwnership(address), txdata: 0xf2fde38b000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: withdrawEthFromBalance(), txdata: 0x776247c4, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BiddingUnique
+Function name: isEnded(uint16)
+PC address: 1841
+Estimated Gas Usage: 1101 - 1526
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:749
+
+omPendingReturn;
+
+        pendingReturns[msg.sender] -= bank;
+
+        totalReturns -= bank;
+
+
+
+        uint256 currentBid = bank + msg.value;
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: isEnded(uint16), txdata: 0x1749c16f, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BiddingUnique
+Function name: sendToWinner(uint16)
+PC address: 1987
+Estimated Gas Usage: 2848 - 3933
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:925
+Initial State:
+
+Account: [CREATOR], balance: 0xe041, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: sendToWinner(uint16), txdata: 0x202ece74, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BiddingUnique
+Function name: bid(uint16,uint256)
+PC address: 2404
+Estimated Gas Usage: 2040 - 2795
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:769
+
+128(currentBid);
+
+        auction.highestBidder = msg.sender;
+
+        auction.lastBidTime = uint40(now);
+
+
+
+        if (isActive(auctionIndex) && auction.timeEnd < now + minTime)
+
+        {
+
+            auction.timeEnd = uint40(now) + minTime;
+
+        }
+
+
+
+        emit Bid(msg.sender, prevBidder, currentBid, currentBid - returnValue, auctionIndex);
+
+
+
+        if (prevBidder != address(0))
+
+        {
+
+            if (!isContract(prevBidder)) // do not allow auto withdraw for contracts
+
+            {
+
+                if (prevBidder.send(returnValue))
+
+                {
+
+                    return; // sent ok, no need to keep returned money on contract
+
+                }
+
+            }
+
+
+
+            pendingReturns[prevBidder] += returnValue;
+
+            totalReturns += returnValue;
+
+        }
+
+    }
+
+
+
+    function setup(address _coreAddress) public onlyOwner {
+
+        CutieCoreInterface candidateContract = CutieCoreInterface(_coreAddress);
+
+        require(candidateContract.isCutieCore());
+
+        coreContract = candidateContract;
+
+    }
+
+
+
+    function withdraw(uint16 _auctionIndex) public {
+
+        Auction storage auction = auctions[_auctionIndex];
+
+        require(isEnded(_auctionIndex));
+
+        require(auction.highestBidder == msg.sender);
+
+
+
+        coreContract.transferFrom(coreContract.ownerOf(auction.cutieId), msg.sender, uint256(auction.cutieId));
+
+    }
+
+
+
+    function withdrawAdmin(uint40 _cutieId) public onlyOperator {
+
+        coreContract.transferFrom(coreContract.ownerOf(_cutieId), msg.sender, _cutieId);
+
+    }
+
+
+
+    function setTemp(uint40 _temp) public onlyOwner
+
+    {
+
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: bid(uint16,uint256), txdata: 0x3623c225, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BiddingUnique
+Function name: withdraw(uint16)
+PC address: 3275
+Estimated Gas Usage: 1231 - 1656
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:879
+
+onlyOperator
+
+    {
+
+        Auction storage auction = auctions[auctionIndex];
+
+        require(auction.highestBidder == address(0));
+
+
+
+        auction.timeEnd = 0;
+
+        coreContract.transferFrom(coreContract.ownerOf(auction.cutieId), this, auction.cutieId);
+
+        coreContract.createSaleAuction(auction.cutieId, auction.highestBid
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x105, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdraw(uint16), txdata: 0x3d972839, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: BiddingUnique
+Function name: withdrawAdmin(uint40)
+PC address: 3989
+Estimated Gas Usage: 6292 - 77825
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:899
+
+onIndex) public onlyOperator
+
+    {
+
+        Auction storage auction = auctions
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawAdmin(uint40), txdata: 0x49d24ae8, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BiddingUnique
+Function name: transferFrom(uint40)
+PC address: 3989
+Estimated Gas Usage: 7166 - 79359
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:899
+
+onIndex) public onlyOperator
+
+    {
+
+        Auction storage auction = auctions
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferFrom(uint40), txdata: 0x4d39f535, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BiddingUnique
+Function name: transferFrom(uint40)
+PC address: 4215
+Estimated Gas Usage: 7166 - 79359
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:917
+
+ndTo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferFrom(uint40), txdata: 0x4d39f535, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BiddingUnique
+Function name: auctions(uint256)
+PC address: 4322
+Estimated Gas Usage: 1323 - 1748
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:589
+
+;
+
+
+
+        uint16 j = 0
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: auctions(uint256), txdata: 0x571a26a0, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BiddingUnique
+Function name: setup(address)
+PC address: 4529
+Estimated Gas Usage: 8926 - 65468
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:873
+
+.ownerOf(temp), msg.sender, tem
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setup(address), txdata: 0x66d38203000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: BiddingUnique
+Function name: setup(address)
+PC address: 4585
+Estimated Gas Usage: 8926 - 65468
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:879
+
+    function sendToMarket(uint16
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setup(address), txdata: 0x66d38203000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: BiddingUnique
+Function name: setup(address)
+PC address: 4626
+Estimated Gas Usage: 8926 - 65468
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:879
+
+    function sendToMarket(uint16
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setup(address), txdata: 0x66d38203000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BiddingUnique
+Function name: isActive(uint16)
+PC address: 4749
+Estimated Gas Usage: 1431 - 1856
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:761
+
+equire(currentBid >= auction.highestBid + minBid ||
+
+                currentBid >= auction.highestBid && prevBidder == address(0));
+
+        require(isActive(auctionIndex));
+
+
+
+        auction.highe
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: isActive(uint16), txdata: 0x6cb136ba, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BiddingUnique
+Function name: sendToMarket(uint16)
+PC address: 5224
+Estimated Gas Usage: 3244 - 4329
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:919
+
+ public payable
+
+    {
+
+    }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: sendToMarket(uint16), txdata: 0x9e72a9d8, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BiddingUnique
+Function name: abort(uint16)
+PC address: 5807
+Estimated Gas Usage: 3278 - 4363
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:677
+
+ct
+
+                }
+
+            }
+
+
+
+            pendingReturns[prevBidder] += returnValue;
+
+            totalReturns += returnValue;
+
+        }
+
+    }
+
+
+
+    function addAuction(uint40 _startTime, uint40 _duration, uint128 _startPrice, uint40 _cutieId) public onlyOperator
+
+    {
+
+        require(coreContract.getApproved(_cutieId) == address(this) || coreContract.ownerOf(_cutieId) == address(this));
+
+        auctions.push(Auction(_startPrice, address(0), _startTime + _duration, 0, _startTime, _cutieId));
+
+    }
+
+
+
+    function isEnded(uint16 auction) public view returns (bool)
+
+    {
+
+        return
+
+            auctions[auction].timeEnd < now;
+
+    }
+
+
+
+    function isActive(uint16 auction) public view returns (bool)
+
+    {
+
+        return
+
+            auctions[auction].timeStart <= now &&
+
+            now <= auctions[auction].t
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: abort(uint16), txdata: 0x9f912d25, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BiddingUnique
+Function name: finish(uint16)
+PC address: 6183
+Estimated Gas Usage: 3332 - 4417
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:673
+
+f (prevBidder.send(returnValue))
+
+                {
+
+                    return; // sent ok, no need to keep returned mon
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: finish(uint16), txdata: 0xefa227ca, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BiddingUnique
+Function name: addAuction(uint40,uint40,uint128,uint40)
+PC address: 6601
+Estimated Gas Usage: 31404 - 186324
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:739
+
+ auction.hig
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addAuction(uint40,uint40,uint128,uint40), txdata: 0xf41db329, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: BiddingUnique
+Function name: addAuction(uint40,uint40,uint128,uint40)
+PC address: 6687
+Estimated Gas Usage: 31404 - 186324
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:739
+
+ auction.highestBidder;
+
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addAuction(uint40,uint40,uint128,uint40), txdata: 0xf41db329, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BiddingUnique
+Function name: addAuction(uint40,uint40,uint128,uint40)
+PC address: 6687
+Estimated Gas Usage: 31404 - 186324
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:739
+
+ auction.highestBidder;
+
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addAuction(uint40,uint40,uint128,uint40), txdata: 0xf41db329, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BiddingUnique
+Function name: addAuction(uint40,uint40,uint128,uint40)
+PC address: 6830
+Estimated Gas Usage: 31404 - 186324
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addAuction(uint40,uint40,uint128,uint40), txdata: 0xf41db329, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BiddingUnique
+Function name: addAuction(uint40,uint40,uint128,uint40)
+PC address: 6836
+Estimated Gas Usage: 31404 - 186324
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addAuction(uint40,uint40,uint128,uint40), txdata: 0xf41db329, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BiddingUnique
+Function name: addAuction(uint40,uint40,uint128,uint40)
+PC address: 6882
+Estimated Gas Usage: 31404 - 186324
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:741
+
+n.highestBid;
+
+
+
+        require (useFromPendingReturn <= pendingReturns[msg.sender]);
+
+
+
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addAuction(uint40,uint40,uint128,uint40), txdata: 0xf41db329, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BiddingUnique
+Function name: addAuction(uint40,uint40,uint128,uint40)
+PC address: 6914
+Estimated Gas Usage: 31404 - 186324
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:741
+
+n.highestBid;
+
+
+
+        require (useFromPendingReturn <= pendingReturns[msg.sender]);
+
+
+
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addAuction(uint40,uint40,uint128,uint40), txdata: 0xf41db329, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BiddingUnique
+Function name: addAuction(uint40,uint40,uint128,uint40)
+PC address: 6953
+Estimated Gas Usage: 31404 - 186324
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:741
+
+n.highestBid;
+
+
+
+        require (useFromPendingReturn <= pendingReturns[msg.sender]);
+
+
+
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addAuction(uint40,uint40,uint128,uint40), txdata: 0xf41db329, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BiddingUnique
+Function name: addAuction(uint40,uint40,uint128,uint40)
+PC address: 7093
+Estimated Gas Usage: 31404 - 186324
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:741
+
+n.highestBid;
+
+
+
+        require (useFromPendingReturn <= pendingReturns[msg.sender]);
+
+
+
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addAuction(uint40,uint40,uint128,uint40), txdata: 0xf41db329, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BiddingUnique
+Function name: addAuction(uint40,uint40,uint128,uint40)
+PC address: 7132
+Estimated Gas Usage: 31404 - 186324
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:741
+
+n.highestBid;
+
+
+
+        require (useFromPendingReturn <= pendingReturns[msg.sender]);
+
+
+
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addAuction(uint40,uint40,uint128,uint40), txdata: 0xf41db329, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BiddingUnique
+Function name: addAuction(uint40,uint40,uint128,uint40)
+PC address: 7178
+Estimated Gas Usage: 31404 - 186324
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/33ef06d4734ed5ffd2c22f3ca53873fe.sol:741
+
+n.highestBid;
+
+
+
+        require (useFromPendingReturn <= pendingReturns[msg.sender]);
+
+
+
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addAuction(uint40,uint40,uint128,uint40), txdata: 0xf41db329, value: 0x0
+
+

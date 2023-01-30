@@ -1,0 +1,216 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: CBCreatureStorage
+Function name: store(uint256,uint256,uint256[]) or store(uint256,uint256,uint256[])
+PC address: 958
+Estimated Gas Usage: 34778 - 162234
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/be3ebf6fc1b8cdc188be9745bdb91a19.sol:494
+
+
+        require(_tokenId > 0);
+
+        require(this.exists(_tokenId));
+
+        delete tokens[_tokenId];
+
+
+
+        uint256 tokenIndex = 0;
+
+        while (allTokens[tokenIndex] != _tokenId && tokenIndex < allTokens.length) {
+
+            tokenIndex++;
+
+        }
+
+
+
+        // Reorg allToken
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: store(uint256,uint256,uint256[]), txdata: 0xa59c5b3400000000000000000000000fffffffffffffffffffffffffff800000000000230000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: CBCreatureStorage
+Function name: storeBulk(uint256[],uint256[]) or storeBulk(uint256[],uint256[])
+PC address: 1821
+Estimated Gas Usage: 12394 - 53197
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/be3ebf6fc1b8cdc188be9745bdb91a19.sol:457
+
+    }
+
+    
+
+    /**
+
+    * @dev Create a new CryptoBeasties Token
+
+    * @param _tokenId ID of the token
+
+    * @param _attributes Packed attributes value
+
+    * @param _componentIds Array of CryptoBeasties componentIds (i.e. PowerStones)
+
+    */
+
+    function store(uint256 _tokenId, uint256 _attributes, uint256[] _componentIds) external onlyOwnerOrController {
+
+        allTokens.push(_tokenId);
+
+        tokens[_tokenId] = Token(_tokenId, _attributes, _com
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8000410407000209, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: storeBulk(uint256[],uint256[]), txdata: 0x1f800f758000000000000000000000000000000000000000000000000000000000000004ff, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: CBCreatureStorage
+Function name: getAttributes(uint256) or getAttributes(uint256)
+PC address: 2913
+Estimated Gas Usage: 4844 - 40821
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/be3ebf6fc1b8cdc188be9745bdb91a19.sol:583
+
+_attributes > 0);
+
+        
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getAttributes(uint256), txdata: 0x4378a6e3, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: CBCreatureStorage
+Function name: getAttributes(uint256) or getAttributes(uint256)
+PC address: 2938
+Estimated Gas Usage: 4844 - 40821
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/be3ebf6fc1b8cdc188be9745bdb91a19.sol:583
+
+require(_attributes > 0);
+
+        tokens[_tokenId].attributes = _a
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getAttributes(uint256), txdata: 0x4378a6e3, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: CBCreatureStorage
+Function name: getAttributes(uint256) or getAttributes(uint256)
+PC address: 2967
+Estimated Gas Usage: 4844 - 40821
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/be3ebf6fc1b8cdc188be9745bdb91a19.sol:583
+
+require(_attributes > 0);
+
+        tokens[_tokenId].attributes = _a
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getAttributes(uint256), txdata: 0x4378a6e3, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: Low
+Contract: CBCreatureStorage
+Function name: store(uint256,uint256,uint256[]) or store(uint256,uint256,uint256[])
+PC address: 7480
+Estimated Gas Usage: 34778 - 162234
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation.  This issue is reported for internal compiler generated code.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: store(uint256,uint256,uint256[]), txdata: 0xa59c5b348000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: Low
+Contract: CBCreatureStorage
+Function name: store(uint256,uint256,uint256[]) or store(uint256,uint256,uint256[])
+PC address: 7482
+Estimated Gas Usage: 29708 - 137071
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation.  This issue is reported for internal compiler generated code.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: store(uint256,uint256,uint256[]), txdata: 0xa59c5b343ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8, value: 0x0

@@ -1,0 +1,499 @@
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: TorpedoLaunchGame
+Function name: fallback
+PC address: 423
+Estimated Gas Usage: 1600 - 2025
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0b29bdb42779930d107900bc4b1a4054.sol:435
+
+  _;
+
+    }
+
+   
+
+  
+
+    address public owner
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42040000140080140, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x02010101, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: TorpedoLaunchGame
+Function name: BuyTorpedo(int256,uint256,address,bytes32,bytes32,uint8)
+PC address: 1532
+Estimated Gas Usage: 421 - 1794
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0b29bdb42779930d107900bc4b1a4054.sol:449
+
+;
+
+   
+
+    
+
+    
+
+
+
+    constru
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: BuyTorpedo(int256,uint256,address,bytes32,bytes32,uint8), txdata: 0x0908c7fa, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: TorpedoLaunchGame
+Function name: ValidTorpedoScore(int256,uint256,bytes32,bytes32,uint8)
+PC address: 2480
+Estimated Gas Usage: 609 - 1652
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0b29bdb42779930d107900bc4b1a4054.sol:449
+
+;
+
+   
+
+    
+
+    
+
+
+
+    constru
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: ValidTorpedoScore(int256,uint256,bytes32,bytes32,uint8), txdata: 0x4af0616a, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: TorpedoLaunchGame
+Function name: BuyName(bytes32)
+PC address: 2774
+Estimated Gas Usage: 13679 - 104526
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0b29bdb42779930d107900bc4b1a4054.sol:1639
+
+ess , gamev
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: BuyName(bytes32), txdata: 0x576bcd3f, value: 0x16345785d8a0000
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: TorpedoLaunchGame
+Function name: BuyName(bytes32)
+PC address: 2867
+Estimated Gas Usage: 13679 - 104526
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0b29bdb42779930d107900bc4b1a4054.sol:1639
+
+ess , gamevar);
+
+        }
+
+        
+
+        
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x40000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: BuyName(bytes32), txdata: 0x576bcd3f, value: 0x16345785d8a0000
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: TorpedoLaunchGame
+Function name: BuyName(bytes32)
+PC address: 2867
+Estimated Gas Usage: 13679 - 104526
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0b29bdb42779930d107900bc4b1a4054.sol:1639
+
+ess , gamevar);
+
+        }
+
+        
+
+        
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: BuyName(bytes32), txdata: 0x576bcd3f, value: 0x16345785d8a0000
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: TorpedoLaunchGame
+Function name: BuyName(bytes32)
+PC address: 2918
+Estimated Gas Usage: 13679 - 104526
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0b29bdb42779930d107900bc4b1a4054.sol:1647
+
+inue then everything is fine let's create t
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: BuyName(bytes32), txdata: 0x576bcd3f, value: 0x16345785d8a0000
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: TorpedoLaunchGame
+Function name: changePercentageTreasure(uint32)
+PC address: 3211
+Estimated Gas Usage: 1299 - 1724
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0b29bdb42779930d107900bc4b1a4054.sol:421
+
+;
+
+        _;
+
+    }
+
+    
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: changePercentageTreasure(uint32), txdata: 0x67cae2fc, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: TorpedoLaunchGame
+Function name: changeOwner(address)
+PC address: 3831
+Estimated Gas Usage: 1450 - 2205
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0b29bdb42779930d107900bc4b1a4054.sol:421
+
+;
+
+        _;
+
+    }
+
+    
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: changeOwner(address), txdata: 0xa6f9dae1, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: TorpedoLaunchGame
+Function name: changeSigner(address)
+PC address: 4025
+Estimated Gas Usage: 1472 - 2227
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0b29bdb42779930d107900bc4b1a4054.sol:421
+
+;
+
+        _;
+
+    }
+
+    
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: changeSigner(address), txdata: 0xaad2b723, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: TorpedoLaunchGame
+Function name: disableMaintenance()
+PC address: 4378
+Estimated Gas Usage: 1529 - 1954
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0b29bdb42779930d107900bc4b1a4054.sol:421
+
+;
+
+        _;
+
+    }
+
+    
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: disableMaintenance(), txdata: 0xbdc0ba8e, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: TorpedoLaunchGame
+Function name: enableMaintenance()
+PC address: 4472
+Estimated Gas Usage: 1551 - 1976
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0b29bdb42779930d107900bc4b1a4054.sol:421
+
+;
+
+        _;
+
+    }
+
+    
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: enableMaintenance(), txdata: 0xcc0e13e2, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: TorpedoLaunchGame
+Function name: changeAverageScore(uint32)
+PC address: 4576
+Estimated Gas Usage: 1585 - 2010
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0b29bdb42779930d107900bc4b1a4054.sol:421
+
+;
+
+        _;
+
+    }
+
+    
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000140000140, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: changeAverageScore(uint32), txdata: 0xd1ae07b9, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: TorpedoLaunchGame
+Function name: BuyTorpedoWithDividends(uint256,int256,uint256,address,bytes32,bytes32,uint8)
+PC address: 4698
+Estimated Gas Usage: 1064 - 2437
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0b29bdb42779930d107900bc4b1a4054.sol:449
+
+;
+
+   
+
+    
+
+    
+
+
+
+    constru
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: BuyTorpedoWithDividends(uint256,int256,uint256,address,bytes32,bytes32,uint8), txdata: 0xd9253128, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: TorpedoLaunchGame
+Function name: changeTimeOut(uint32)
+PC address: 5031
+Estimated Gas Usage: 1629 - 2054
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0b29bdb42779930d107900bc4b1a4054.sol:421
+
+;
+
+        _;
+
+    }
+
+    
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42000000140040900, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: changeTimeOut(uint32), txdata: 0xf13909c7, value: 0x0
+
+

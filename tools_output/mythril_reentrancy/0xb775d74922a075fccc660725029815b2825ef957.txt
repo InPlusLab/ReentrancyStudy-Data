@@ -1,0 +1,357 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: BasicForeignBridge
+Function name: fallback
+PC address: 399
+Estimated Gas Usage: 1537 - 4077
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: relayedMessages(bytes32), txdata: 0x21d800ec, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: BasicBridge
+Function name: fallback
+PC address: 903
+Estimated Gas Usage: 1507 - 4047
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xffffe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: totalSpentPerDay(uint256), txdata: 0x2bd0bb05, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ForeignBridgeErcToNative
+Function name: relayedMessages(bytes32)
+PC address: 1389
+Estimated Gas Usage: 1559 - 4099
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: relayedMessages(bytes32), txdata: 0x21d800ec, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: BasicBridge
+Function name: claimTokens(address,address)
+PC address: 1674
+Estimated Gas Usage: 4829 - 78005
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3313b729fbe356b73534788773ad1857.sol:689
+
+ete
+
+    event RelayedMessage(addre
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40001000000033ffe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: claimTokens(address,address), txdata: 0x69ffa08a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BasicBridge
+Function name: claimTokens(address,address)
+PC address: 1805
+Estimated Gas Usage: 6621 - 115253
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3313b729fbe356b73534788773ad1857.sol:693
+
+s, bytes message) ext
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x800000400c4fb2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: claimTokens(address,address), txdata: 0x69ffa08a000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000001, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: BasicBridge
+Function name: claimTokens(address,address)
+PC address: 1805
+Estimated Gas Usage: 6621 - 115253
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3313b729fbe356b73534788773ad1857.sol:693
+
+s, bytes message) ext
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x73ffe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: claimTokens(address,address), txdata: 0x69ffa08a000000000000000000000000010101010101010101010101010101010101010100000000000000000000000001, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BasicBridge
+Function name: claimTokens(address,address)
+PC address: 1960
+Estimated Gas Usage: 6621 - 115253
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3313b729fbe356b73534788773ad1857.sol:695
+
+age.hasEnoughValidSignatures
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x800000400c4fb2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: claimTokens(address,address), txdata: 0x69ffa08a000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000001, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ForeignBridgeErcToNative
+Function name: totalSpentPerDay(uint256)
+PC address: 2023
+Estimated Gas Usage: 1573 - 4113
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: totalSpentPerDay(uint256), txdata: 0x2bd0bb05, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicBridge
+Function name: setRequiredBlockConfirmations(uint256)
+PC address: 3129
+Estimated Gas Usage: 9508 - 69359
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3313b729fbe356b73534788773ad1857.sol:535
+
+otalSpentPerDay(uint256 _day, uint256 _value) internal {
+
+        uintStorage[keccak256(abi.
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xfbfba, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setRequiredBlockConfirmations(uint256), txdata: 0xacf5c68901, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicBridge
+Function name: setDailyLimit(uint256)
+PC address: 3492
+Estimated Gas Usage: 9504 - 69355
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3313b729fbe356b73534788773ad1857.sol:621
+
+;
+
+        uintStorage[keccak256(abi.encodePacked("minPerTx"))] = _m
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xfbbba, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setDailyLimit(uint256), txdata: 0xb20d30a9, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: BasicBridge
+Function name: setGasPrice(uint256)
+PC address: 3868
+Estimated Gas Usage: 9549 - 69400
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3313b729fbe356b73534788773ad1857.sol:512
+
+
+        emit RequiredBlockConfirmationChanged(_blockConfirmatio
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xfb7ba, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setGasPrice(uint256), txdata: 0xbf1fe42001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: ForeignBridgeErcToNative
+Function name: setRequiredBlockConfirmations(uint256)
+PC address: 3968
+Estimated Gas Usage: 9595 - 69446
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3313b729fbe356b73534788773ad1857.sol:535
+
+otalSpentPerDay(uint256 _day, uint256 _value) internal {
+
+        uintStorage[keccak256(abi.
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3fffffffffffffffe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x3fffffffffffffffd, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setRequiredBlockConfirmations(uint256), txdata: 0xacf5c68901, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: ForeignBridgeErcToNative
+Function name: setDailyLimit(uint256)
+PC address: 4331
+Estimated Gas Usage: 9591 - 69442
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3313b729fbe356b73534788773ad1857.sol:621
+
+;
+
+        uintStorage[keccak256(abi.encodePacked("minPerTx"))] = _m
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3fffffffffffffffe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x3fffffffffffffffd, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setDailyLimit(uint256), txdata: 0xb20d30a9, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: ForeignBridgeErcToNative
+Function name: setGasPrice(uint256)
+PC address: 4707
+Estimated Gas Usage: 9636 - 69487
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3313b729fbe356b73534788773ad1857.sol:512
+
+
+        emit RequiredBlockConfirmationChanged(_blockConfirmatio
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3fffffffffffffffe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x3fffffffffffffffd, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setGasPrice(uint256), txdata: 0xbf1fe42001, value: 0x0
+
+

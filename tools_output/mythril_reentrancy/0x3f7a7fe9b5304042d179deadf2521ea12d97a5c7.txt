@@ -1,0 +1,634 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: KulapDex
+Function name: tradeRoutes(address,uint256,address,uint256,address[])
+PC address: 1194
+Estimated Gas Usage: 6792 - 81544
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:353
+
+                    ERC20(_tradingPaths[i+2]);
+
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tradeRoutes(address,uint256,address,uint256,address[]), txdata: 0x242d184b000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000000000000000000000000000000000000000000020, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: KulapDex
+Function name: tradeRoutes(address,uint256,address,uint256,address[])
+PC address: 1284
+Estimated Gas Usage: 1489 - 5533
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:349
+
+ uint256 pathSrcAmount = srcAmount;
+        for (uint i=0; i < _tradingPaths.length; i+=3) {
+            uint256 tradingProxyIndex =         uint256(_tradingPaths[i]);
+            ERC20 pathSrc =                     ERC20(_tradingPaths[i+1]);
+            ERC20 pathDest =                    ERC20(_tradingPaths[i+2]);
+
+            destAmount = _trade(tradingProxyIndex, pathSrc, pathSrcAmount, pathDest, 1);
+            pathSrcAmount = destAmount;
+        }
+
+        // Throw exception if destination amount doesn't meet user requirement.
+        assert(destAmount >= minDestAmount);
+
+        // Trade Any -> ETH
+        if (etherERC20 == dest) {
+            // Send back ether to sender
+            // Throws on failure
+            msg.sender.transfer(destAmount);
+        
+        // Trade Any -> Token
+        } else {
+            // Send back token to sender
+            // Some ERC20 Smart contract not return Bool, so we can't check here
+            // require(dest.transfer(msg.sender, destAmount));
+            dest.transfer(msg.sender, destAmount);
+        }
+
+        emit Trade( src, srcAmount, dest, destAmount, msg.sender, 0);
+
+        return destAmount;
+    }
+
+    /// @notice use token address ETH_TOKEN_ADDRESS for ether
+    /// @dev best conversion rate for a pair of tokens, if number of reserves have small differences. randomize
+    /// @param tradingProxyIndex index of trading proxy
+    /// @param src Source token
+    /// @param dest Destination token
+    /// @param srcAmount Srouce amount
+    /* solhint-disable code-complexit
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: tradeRoutes(address,uint256,address,uint256,address[]), txdata: 0x242d184b000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: KulapDex
+Function name: tradeRoutes(address,uint256,address,uint256,address[])
+PC address: 1313
+Estimated Gas Usage: 1564 - 5794
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:349
+
+ uint256 pathSrcAmount = srcAmount;
+        for (uint i=0; i < _tradingPaths.length; i+=3) {
+            uint256 tradingProxyIndex =         uint256(_tradingPaths[i]);
+            ERC20 pathSrc =                     ERC20(_tradingPaths[i+1]);
+            ERC20 pathDest =                    ERC20(_tradingPaths[i+2]);
+
+            destAmount = _trade(tradingProxyIndex, pathSrc, pathSrcAmount, pathDest, 1);
+            pathSrcAmount = destAmount;
+        }
+
+        // Throw exception if destination amount doesn't meet user requirement.
+        assert(destAmount >= minDestAmount);
+
+        // Trade Any -> ETH
+        if (etherERC20 == dest) {
+            // Send back ether to sender
+            // Throws on failure
+            msg.sender.transfer(destAmount);
+        
+        // Trade Any -> Token
+        } else {
+            // Send back token to sender
+            // Some ERC20 Smart contract not return Bool, so we can't check here
+            // require(dest.transfer(msg.sender, destAmount));
+            dest.transfer(msg.sender, destAmount);
+        }
+
+        emit Trade( src, srcAmount, dest, destAmount, msg.sender, 0);
+
+        return destAmount;
+    }
+
+    /// @notice use token address ETH_TOKEN_ADDRESS for ether
+    /// @dev best conversion rate for a pair of tokens, if number of reserves have small differences. randomize
+    /// @param tradingProxyIndex index of trading proxy
+    /// @param src Source token
+    /// @param dest Destination token
+    /// @param srcAmount Srouce amount
+    /* solhint-disable code-complexit
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000001000c0001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tradeRoutes(address,uint256,address,uint256,address[]), txdata: 0x242d184b000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: KulapDex
+Function name: tradeRoutes(address,uint256,address,uint256,address[])
+PC address: 1365
+Estimated Gas Usage: 1378 - 4813
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:349
+
+ uint256 pathSrcAmount = srcAmount;
+        for (uint i=0; i < _tradingPaths.length; i+=3) {
+            uint256 tradingProxyIndex =         uint256(_tradingPaths[i]);
+            ERC20 pathSrc =                     ERC20(_tradingPaths[i+1]);
+            ERC20 pathDest =                    ERC20(_tradingPaths[i+2]);
+
+            destAmount = _trade(tradingProxyIndex, pathSrc, pathSrcAmount, pathDest, 1);
+            pathSrcAmount = destAmount;
+        }
+
+        // Throw exception if destination amount doesn't meet user requirement.
+        assert(destAmount >= minDestAmount);
+
+        // Trade Any -> ETH
+        if (etherERC20 == dest) {
+            // Send back ether to sender
+            // Throws on failure
+            msg.sender.transfer(destAmount);
+        
+        // Trade Any -> Token
+        } else {
+            // Send back token to sender
+            // Some ERC20 Smart contract not return Bool, so we can't check here
+            // require(dest.transfer(msg.sender, destAmount));
+            dest.transfer(msg.sender, destAmount);
+        }
+
+        emit Trade( src, srcAmount, dest, destAmount, msg.sender, 0);
+
+        return destAmount;
+    }
+
+    /// @notice use token address ETH_TOKEN_ADDRESS for ether
+    /// @dev best conversion rate for a pair of tokens, if number of reserves have small differences. randomize
+    /// @param tradingProxyIndex index of trading proxy
+    /// @param src Source token
+    /// @param dest Destination token
+    /// @param srcAmount Srouce amount
+    /* solhint-disable code-complexit
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tradeRoutes(address,uint256,address,uint256,address[]), txdata: 0x242d184b000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010101010101010101010101010101010101010101010101010101010101010180, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KulapDex
+Function name: tradeRoutes(address,uint256,address,uint256,address[])
+PC address: 1369
+Estimated Gas Usage: 6792 - 81544
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:372
+
+nder, dest
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tradeRoutes(address,uint256,address,uint256,address[]), txdata: 0x242d184b000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000000000000000000000000000000000000000000010, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: KulapDex
+Function name: tradeRoutes(address,uint256,address,uint256,address[])
+PC address: 1411
+Estimated Gas Usage: 6792 - 81544
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:376
+
+mount, dest, destAmount, msg.se
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tradeRoutes(address,uint256,address,uint256,address[]), txdata: 0x242d184b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KulapDex
+Function name: tradeRoutes(address,uint256,address,uint256,address[])
+PC address: 1411
+Estimated Gas Usage: 6792 - 81544
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:376
+
+mount, dest, destAmount, msg.se
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tradeRoutes(address,uint256,address,uint256,address[]), txdata: 0x242d184b000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000000000000000000000000000000000000000000010, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: KulapDex
+Function name: tradeRoutes(address,uint256,address,uint256,address[])
+PC address: 1545
+Estimated Gas Usage: 5977 - 46541
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:383
+
+rading proxy
+    /// @param src Sourc
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xe3a18, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tradeRoutes(address,uint256,address,uint256,address[]), txdata: 0x242d184b000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000040, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KulapDex
+Function name: tradeRoutes(address,uint256,address,uint256,address[])
+PC address: 1545
+Estimated Gas Usage: 6792 - 81544
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:383
+
+rading proxy
+    /// @param src Sourc
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tradeRoutes(address,uint256,address,uint256,address[]), txdata: 0x242d184b000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000000000000000000000000000000000000000000010, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: KulapDex
+Function name: tradingProxies(uint256)
+PC address: 1698
+Estimated Gas Usage: 1002 - 1097
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:177
+
+
+        private 
+        returns(uint256
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tradingProxies(uint256), txdata: 0x2ad5e73a, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: KulapDex
+Function name: rate(uint256,address,address,uint256)
+PC address: 1864
+Estimated Gas Usage: 1110 - 1535
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:397
+
+ing proxy.
+    * @return index of this proxy.
+    */
+    function addTradingProxy(
+        KULAPTradingProxy _proxyAddress
+    ) public onlyOwner returns (uint256) {
+
+        tradingProxies.push( _proxyAddress );
+
+        return tradingProxies.length;
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: rate(uint256,address,address,uint256), txdata: 0x55445249, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KulapDex
+Function name: tradeRoutes(address,uint256,address,uint256,address[])
+PC address: 2172
+Estimated Gas Usage: 6792 - 81544
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:247
+
+ress(this)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tradeRoutes(address,uint256,address,uint256,address[]), txdata: 0x242d184b000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000000000000000000000000000000000000000000010, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: KulapDex
+Function name: tradeRoutes(address,uint256,address,uint256,address[])
+PC address: 2287
+Estimated Gas Usage: 6792 - 81544
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:252
+
+ Token
+        if (e
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: tradeRoutes(address,uint256,address,uint256,address[]), txdata: 0x242d184b00000000000000000000000001010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KulapDex
+Function name: tradeRoutes(address,uint256,address,uint256,address[])
+PC address: 2334
+Estimated Gas Usage: 6792 - 81544
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:254
+
+ = _tradeE
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tradeRoutes(address,uint256,address,uint256,address[]), txdata: 0x242d184b00000000000000000000000001010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: KulapDex
+Function name: tradeRoutes(address,uint256,address,uint256,address[])
+PC address: 2439
+Estimated Gas Usage: 6792 - 81544
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:257
+
+20 == _dest) {
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tradeRoutes(address,uint256,address,uint256,address[]), txdata: 0x242d184b00000000000000000000000001010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KulapDex
+Function name: tradeRoutes(address,uint256,address,uint256,address[])
+PC address: 2486
+Estimated Gas Usage: 6792 - 81544
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:258
+
+src, _srcA
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tradeRoutes(address,uint256,address,uint256,address[]), txdata: 0x242d184b00000000000000000000000001010101010480204002020040040000021040020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: KulapDex
+Function name: fallback
+PC address: 2986
+Estimated Gas Usage: 5968 - 7713
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:260
+
+en
+        // For token -> token use tradeRoutes instead
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: trade(uint256,address,uint256,address,uint256), txdata: 0x0e8a47b50000000000000000000000000000000000000000000000000000000000000000000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: KulapDex
+Function name: tradeRoutes(address,uint256,address,uint256,address[])
+PC address: 2986
+Estimated Gas Usage: 6529 - 11842
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:260
+
+en
+        // For token -> token use tradeRoutes instead
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tradeRoutes(address,uint256,address,uint256,address[]), txdata: 0x242d184b010101010101010101010101eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: KulapDex
+Function name: fallback
+PC address: 3193
+Estimated Gas Usage: 10251 - 82774
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24cd00e2824f4751b76831cc6a326f22.sol:267
+
+e
+        if (etherERC20 == _src) {
+            assert(a
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: trade(uint256,address,uint256,address,uint256), txdata: 0x0e8a47b5000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee, value: 0x0
+
+

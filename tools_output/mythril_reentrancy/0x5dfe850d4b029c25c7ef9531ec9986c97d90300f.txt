@@ -1,0 +1,239 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: BalanceCheckerN
+Function name: allBalancesForManyAccounts(address[],address[])
+PC address: 281
+Estimated Gas Usage: 881 - 7274
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/f6cc69d34488fc6528aa982a22c418be.sol:363
+
+f( tokens[token] != address(0x0) ) { // ETH address in Etherdelta config
+
+                    balances[(user * tokens.length) + token] = tokenBalance(users[user], tokens[token]);
+
+                } else {
+
+                   balances[(user * tokens.length) + token] =  users[user].balance;
+
+                }
+
+            }
+
+        }
+
+        return balances;
+
+    }
+
+
+
+    /* Check the balances of many address' WETH (which is a 0x ETH wrapper for 0x exchanges)
+
+       */
+
+    function allWETHbalances(
+
+        address wethAddress,
+
+        address[] users
+
+    ) public view returns (uint[]) {
+
+        WETH_0x weth = WETH_0x(wethAddress);
+
+        uint[] memory balances = new uint[](users.length);
+
+        for(uint k = 0; k < users.lengt
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000081, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: allBalancesForManyAccounts(address[],address[]), txdata: 0x01afd5f3b80000000000000000000000000000004000000000000000000c000000000005fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BalanceCheckerN
+Function name: allBalancesForManyAccounts(address[],address[])
+PC address: 2213
+Estimated Gas Usage: 1640 - 8122
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/f6cc69d34488fc6528aa982a22c418be.sol:363
+
+f( tokens[token] != address(0x0) ) { // ETH address in Etherdelta config
+
+                    balances[(user * tokens.length) + token] = tokenBalance(users[user], tokens[token]);
+
+                } else {
+
+                   balances[(user * tokens.length) + token] =  users[user].balance;
+
+                }
+
+            }
+
+        }
+
+        return balances;
+
+    }
+
+
+
+    /* Check the balances of many address' WETH (which is a 0x ETH wrapper for 0x exchanges)
+
+       */
+
+    function allWETHbalances(
+
+        address wethAddress,
+
+        address[] users
+
+    ) public view returns (uint[]) {
+
+        WETH_0x weth = WETH_0x(wethAddress);
+
+        uint[] memory balances = new uint[](users.length);
+
+        for(uint k = 0; k < users.lengt
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80102002009, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: allBalancesForManyAccounts(address[],address[]), txdata: 0x01afd5f3a1, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BalanceCheckerN
+Function name: tokenBalance(address,address)
+PC address: 2512
+Estimated Gas Usage: 3680 - 73275
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/f6cc69d34488fc6528aa982a22c418be.sol:213
+
+ of error
+
+            }
+
+        } else {
+
+            return 0
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tokenBalance(address,address), txdata: 0x1049334f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BalanceCheckerN
+Function name: tokenBalance(address,address)
+PC address: 2679
+Estimated Gas Usage: 3680 - 73275
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/f6cc69d34488fc6528aa982a22c418be.sol:219
+
+instead of error
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tokenBalance(address,address), txdata: 0x1049334f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: BalanceCheckerN
+Function name: tokenBalance(address,address)
+PC address: 2679
+Estimated Gas Usage: 3680 - 73275
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/f6cc69d34488fc6528aa982a22c418be.sol:219
+
+instead of error
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tokenBalance(address,address), txdata: 0x1049334f, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BalanceCheckerN
+Function name: tokenAllowance(address,address,address)
+PC address: 3907
+Estimated Gas Usage: 2210 - 37338
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/f6cc69d34488fc6528aa982a22c418be.sol:163
+
+ {
+
+                  return 0; // not a valid allowance, return 0 instead of err
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tokenAllowance(address,address,address), txdata: 0x8e8758d800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

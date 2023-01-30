@@ -1,0 +1,461 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ConferenceCoinCrowdsale
+Function name: constructor
+PC address: 245
+Estimated Gas Usage: 23009 - 108227
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/df51d477b975dcd32b2e277e028e985a.sol:809
+
+ext-line security/no-block-members
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010102010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: CanReclaimToken
+Function name: fallback
+PC address: 364
+Estimated Gas Usage: 5251 - 76875
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/df51d477b975dcd32b2e277e028e985a.sol:1105
+
+imedCrowdsale(_openin
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320, value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CanReclaimToken
+Function name: fallback
+PC address: 408
+Estimated Gas Usage: 5251 - 76875
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/df51d477b975dcd32b2e277e028e985a.sol:1107
+
+ncrea
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000000020, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: CanReclaimToken
+Function name: fallback
+PC address: 729
+Estimated Gas Usage: 5251 - 76875
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/df51d477b975dcd32b2e277e028e985a.sol:127
+
+rom(
+
+    ERC20 token,
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320, value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: CanReclaimToken
+Function name: fallback
+PC address: 729
+Estimated Gas Usage: 5251 - 76875
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/df51d477b975dcd32b2e277e028e985a.sol:127
+
+rom(
+
+    ERC20 token,
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CanReclaimToken
+Function name: fallback
+PC address: 729
+Estimated Gas Usage: 5251 - 76875
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/df51d477b975dcd32b2e277e028e985a.sol:127
+
+rom(
+
+    ERC20 token,
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000000020, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ConferenceCoinCrowdsale
+Function name: remainingTokens()
+PC address: 1366
+Estimated Gas Usage: 3699 - 39062
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/df51d477b975dcd32b2e277e028e985a.sol:937
+
+e
+
+ * @dev Extension of Crowdsale 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x102055000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 400108000000000000000000000000000000000000000000000000000000000280010800000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000001010101010101010101010101010101014001010000000000000000000000000040010101010101040808024010400101010101000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: remainingTokens(), txdata: 0xbf583903, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ConferenceCoinCrowdsale
+Function name: fallback
+PC address: 1626
+Estimated Gas Usage: 903 - 998
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/df51d477b975dcd32b2e277e028e985a.sol:783
+
+embers
+
+    require(_openingTime >= block.timestamp);
+
+    requi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 2c000000000000000000000000000000000000000000000000000000000000012d00000000000000000000000000000000000000000000000000000000000000400000002000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000010000000000000000000000000101010101010101010101010101010101010101000000000000000000000000010101010101010101010101010101010101010100000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: unknown, txdata: 0x, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ConferenceCoinCrowdsale
+Function name: fallback
+PC address: 1640
+Estimated Gas Usage: 923 - 1018
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/df51d477b975dcd32b2e277e028e985a.sol:783
+
+-block-members
+
+    require(_openingTime >= block.timestamp);
+
+    requir
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 40000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000000800000002000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000010000000000000000000000000101010101010101010101010101010101010101000000000000000000000000010101010101010101010101010101010101010100000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: unknown, txdata: 0x, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ConferenceCoinCrowdsale
+Function name: fallback
+PC address: 2092
+Estimated Gas Usage: 2769 - 3194
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/df51d477b975dcd32b2e277e028e985a.sol:81
+
+}
+
+
+
+  /**
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 20000000000000000000000000000000020110040880010002020104001000028000000000000000000000000000000000000000000000000000000000000000150c00000000000000000000000000000000000000000000000000000000000015080000400000000000040101000100000400000001000000080001000000010000000000000000000000000101010101010101010101010101010101010101000000000000000000000000010101010101010101010101010101010101010100000000000000000000000001, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x1
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ConferenceCoinCrowdsale
+Function name: getCurrentRate()
+PC address: 2093
+Estimated Gas Usage: 1326 - 1421
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/df51d477b975dcd32b2e277e028e985a.sol:81
+
+}
+
+
+
+  /**
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 40000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000000e000000020000000000000000000000000000000000000000000000000000000c0000000200000000000000000000000000000000000000000000000000000010000000000000000000000000101010101010101010101010101010101010101000000000000000000000000010101010101010101010101010101010101010100000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: getCurrentRate(), txdata: 0xf7fb07b0, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ConferenceCoinCrowdsale
+Function name: fallback
+PC address: 2109
+Estimated Gas Usage: 6236 - 6661
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/df51d477b975dcd32b2e277e028e985a.sol:33
+
+      return 0;
+
+    }
+
+
+
+    c = a * b
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4000000000000000000000000000000002201004080110100001010002000003c000000000000000000000000000000000000000000000000000000000000000840000000000000000000000000000000000000000000000000000000000000080000000010100000000000000000000010040010000000200000002000000010000000000000000000000000101010101010101010101010101010101010101000000000000000000000000010101010101010101010101010101010101010100000000000000000000000001, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x1
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ConferenceCoinCrowdsale
+Function name: fallback
+PC address: 2131
+Estimated Gas Usage: 6281 - 6706
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/df51d477b975dcd32b2e277e028e985a.sol:43
+
+turn 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4000000000000000000000000000000002010000000000000000020004800103c000000000000000000000000000000000000000000000000000000000000000420000000000000000000000000000000000000000000000000000000000000040010000010000000000000020000000000001000001010000010000000200010000000000000000000000000101010101010101010101010101010101010101000000000000000000000000010101010101010101010101010101010101010100000000000000000000000001, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x1
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ConferenceCoinCrowdsale
+Function name: fallback
+PC address: 2139
+Estimated Gas Usage: 6303 - 6728
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/df51d477b975dcd32b2e277e028e985a.sol:42
+
+
+    return c;
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4000000000000000000000000000000008010000000000000000040101000103c000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000001000000000101010000000000000100000000000000040100000000010000000000000000000000000101010101010101010101010101010101010101000000000000000000000000010101010101010101010101010101010101010100000000000000000000000001, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x1
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ConferenceCoinCrowdsale
+Function name: fallback
+PC address: 2153
+Estimated Gas Usage: 6334 - 6759
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/df51d477b975dcd32b2e277e028e985a.sol:71
+
+Subtr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80000000104, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 921120003500000000100c00020a0006a1072000008804000000000200088000921120003500000000100c00020a0006a1072000008804000000000200088000800000000000000000000000002000000000000000000000000000000000000000000080000000000200000100201001010100100000010020020001000801010000000000000000000000000101010101010101010101010101010101010101000000000000000000000000010101010101010101010101010101010101200100000000000000000000000001, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x1
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ConferenceCoinCrowdsale
+Function name: getCurrentRate()
+PC address: 2153
+Estimated Gas Usage: 4881 - 4976
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/df51d477b975dcd32b2e277e028e985a.sol:71
+
+Subtr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10000100000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: ee37002a16810f0000010000090401101000000001000200000800000244400cee37002a16810f0000010000090401101000000001000200000800000244400c8000400000000000000000000000100000000400080102400101204000102008002040000200010202010020200140101004042008010240010120400810200a0000000000000000000000000101010101010101010101010101010101010101000000000000000000000000010101010101011001011001010101018001020100000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: getCurrentRate(), txdata: 0xf7fb07b0, value: 0x0

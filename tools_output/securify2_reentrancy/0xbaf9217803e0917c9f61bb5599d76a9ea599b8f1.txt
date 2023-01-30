@@ -1,0 +1,674 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+pragma directive defines a prior version to 0.6.12. Changing pragma version to 0.6.12....
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    Governance
+Line:        36
+Source: 
+>     
+>     uint public governanceExpiry      = 7 days;    // Duration for which governance votes can be collected
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public governanceSwitchDelay = 1 days;    // Duration before next governance module can be loaded
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    Governance
+Line:        37
+Source: 
+>     uint public governanceExpiry      = 7 days;    // Duration for which governance votes can be collected
+>     uint public governanceSwitchDelay = 1 days;    // Duration before next governance module can be loaded
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public voteQuorum            = 25;        // Quorum to approve new governance
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    Governance
+Line:        38
+Source: 
+>     uint public governanceSwitchDelay = 1 days;    // Duration before next governance module can be loaded
+>     uint public voteQuorum            = 25;        // Quorum to approve new governance
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public votePass              = 50;        // Percentage required to approve new governance
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    Governance
+Line:        39
+Source: 
+>     uint public voteQuorum            = 25;        // Quorum to approve new governance
+>     uint public votePass              = 50;        // Percentage required to approve new governance
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public minGovToken           = 1;         // Percentage tokens required to create new proposal 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    Governance
+Line:        40
+Source: 
+>     uint public votePass              = 50;        // Percentage required to approve new governance
+>     uint public minGovToken           = 1;         // Percentage tokens required to create new proposal 
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public voteDecimal           = 100;       // Divisor for voteQuorum and votePass
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    Governance
+Line:        41
+Source: 
+>     uint public minGovToken           = 1;         // Percentage tokens required to create new proposal 
+>     uint public voteDecimal           = 100;       // Divisor for voteQuorum and votePass
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    Governance
+Line:        44
+Source: 
+>     // Address Management
+>     address public previousGovernance;    // Address of previous governance - a linked list leading back to the genesis
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address public GovernanceTokenAddress = 0x3DA1095F0b571f00B4D9A4B2A78AD8D13416886b;    // GovernanceTokenAddress
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    Governance
+Line:        45
+Source: 
+>     address public previousGovernance;    // Address of previous governance - a linked list leading back to the genesis
+>     address public GovernanceTokenAddress = 0x3DA1095F0b571f00B4D9A4B2A78AD8D13416886b;    // GovernanceTokenAddress
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    SafeMath
+Line:        127
+Source: 
+>   function mul(uint a, uint b) internal pure returns (uint) {
+>     if (a == 0) return 0;
+>         ^^^^^^
+>     uint c = a * b;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    SafeMath
+Line:        129
+Source: 
+>     uint c = a * b;
+>     require (c / a == b, "SafeMath: multiplication overflow");
+>              ^^^^^^^^^^
+>     return c;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Governance
+Line:        47
+Source: 
+>     
+>     function executeGovernanceActions() public {                // Function executed by the predecessor Governance Contract when handing over
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == previousGovernance, "!PrevGov");  // Governance actions can be executed here, such as mint GG, revoke GG, etc
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Governance
+Line:        84
+Source: 
+>     
+>     function voteYesForProposal(address newGovernanceContract) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(dateIntroduced[newGovernanceContract].add(governanceExpiry) > now , "ProposalExpired");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Governance
+Line:        93
+Source: 
+>     
+>     function voteNoForProposal(address newGovernanceContract) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(dateIntroduced[newGovernanceContract].add(governanceExpiry) > now , "ProposalExpired");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Governance
+Line:        102
+Source: 
+>     
+>     function queueGovernance(address newGovernanceContract) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require( voteYesTotal[newGovernanceContract].add(voteNoTotal[newGovernanceContract]).mul(voteDecimal).div( GovernanceToken(GovernanceTokenAddress).totalSupply() ) > voteQuorum, "<Quorum" );
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Governance
+Line:        69
+Source: 
+>         require(tokenLocked[msg.sender] == false, "Locked");
+>         require(GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender).mul(voteDecimal).div( GovernanceToken(GovernanceTokenAddress).totalSupply() ) > minGovToken, "<InsufGovTok" );
+>                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(Governance(newGovernanceContract).previousGovernance() == address(this), "WrongGovAddr");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Governance
+Line:        69
+Source: 
+>         require(tokenLocked[msg.sender] == false, "Locked");
+>         require(GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender).mul(voteDecimal).div( GovernanceToken(GovernanceTokenAddress).totalSupply() ) > minGovToken, "<InsufGovTok" );
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(Governance(newGovernanceContract).previousGovernance() == address(this), "WrongGovAddr");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Governance
+Line:        70
+Source: 
+>         require(GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender).mul(voteDecimal).div( GovernanceToken(GovernanceTokenAddress).totalSupply() ) > minGovToken, "<InsufGovTok" );
+>         require(Governance(newGovernanceContract).previousGovernance() == address(this), "WrongGovAddr");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(dateIntroduced[newGovernanceContract] == 0, "AlreadyProposed");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Governance
+Line:        89
+Source: 
+>         clearExistingVotesForProposal(newGovernanceContract);
+>         voteYes[newGovernanceContract][msg.sender] = GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender);
+>                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         voteYesTotal[newGovernanceContract] = voteYesTotal[newGovernanceContract].add( GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender) );
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Governance
+Line:        90
+Source: 
+>         voteYes[newGovernanceContract][msg.sender] = GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender);
+>         voteYesTotal[newGovernanceContract] = voteYesTotal[newGovernanceContract].add( GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender) );
+>                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Governance
+Line:        98
+Source: 
+>         clearExistingVotesForProposal(newGovernanceContract);
+>         voteNo[newGovernanceContract][msg.sender] = GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender);
+>                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         voteNoTotal[newGovernanceContract] = voteNoTotal[newGovernanceContract].add( GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender) );
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Governance
+Line:        99
+Source: 
+>         voteNo[newGovernanceContract][msg.sender] = GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender);
+>         voteNoTotal[newGovernanceContract] = voteNoTotal[newGovernanceContract].add( GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender) );
+>                                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Governance
+Line:        103
+Source: 
+>     function queueGovernance(address newGovernanceContract) external {
+>         require( voteYesTotal[newGovernanceContract].add(voteNoTotal[newGovernanceContract]).mul(voteDecimal).div( GovernanceToken(GovernanceTokenAddress).totalSupply() ) > voteQuorum, "<Quorum" );
+>                                                                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require( voteYesTotal[newGovernanceContract].mul(voteDecimal).div( voteYesTotal[newGovernanceContract].add(voteNoTotal[newGovernanceContract]) ) > votePass, "<Pass" );
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Governance
+Line:        114
+Source: 
+>         require( GovernanceSwitchExecuted == false, "AlrExec");
+>         GovernanceToken(GovernanceTokenAddress).setGovernance(nextGovernance);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         Governance(nextGovernance).executeGovernanceActions();
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Governance
+Line:        115
+Source: 
+>         GovernanceToken(GovernanceTokenAddress).setGovernance(nextGovernance);
+>         Governance(nextGovernance).executeGovernanceActions();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         GovernanceSwitchExecuted = true;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Governance
+Line:        45
+Source: 
+>     address public previousGovernance;    // Address of previous governance - a linked list leading back to the genesis
+>     address public GovernanceTokenAddress = 0x3DA1095F0b571f00B4D9A4B2A78AD8D13416886b;    // GovernanceTokenAddress
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Governance
+Line:        56
+Source: 
+>     address [] public proposedGovernanceList; // List of proposed governance modules
+>     bool    public GovernanceSwitchExecuted;  // Governance Changed. 
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Governance
+Line:        69
+Source: 
+>         require(tokenLocked[msg.sender] == false, "Locked");
+>         require(GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender).mul(voteDecimal).div( GovernanceToken(GovernanceTokenAddress).totalSupply() ) > minGovToken, "<InsufGovTok" );
+>                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(Governance(newGovernanceContract).previousGovernance() == address(this), "WrongGovAddr");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Governance
+Line:        69
+Source: 
+>         require(tokenLocked[msg.sender] == false, "Locked");
+>         require(GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender).mul(voteDecimal).div( GovernanceToken(GovernanceTokenAddress).totalSupply() ) > minGovToken, "<InsufGovTok" );
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(Governance(newGovernanceContract).previousGovernance() == address(this), "WrongGovAddr");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Governance
+Line:        70
+Source: 
+>         require(GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender).mul(voteDecimal).div( GovernanceToken(GovernanceTokenAddress).totalSupply() ) > minGovToken, "<InsufGovTok" );
+>         require(Governance(newGovernanceContract).previousGovernance() == address(this), "WrongGovAddr");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(dateIntroduced[newGovernanceContract] == 0, "AlreadyProposed");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Governance
+Line:        90
+Source: 
+>         voteYes[newGovernanceContract][msg.sender] = GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender);
+>         voteYesTotal[newGovernanceContract] = voteYesTotal[newGovernanceContract].add( GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender) );
+>                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Governance
+Line:        99
+Source: 
+>         voteNo[newGovernanceContract][msg.sender] = GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender);
+>         voteNoTotal[newGovernanceContract] = voteNoTotal[newGovernanceContract].add( GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender) );
+>                                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Governance
+Line:        103
+Source: 
+>     function queueGovernance(address newGovernanceContract) external {
+>         require( voteYesTotal[newGovernanceContract].add(voteNoTotal[newGovernanceContract]).mul(voteDecimal).div( GovernanceToken(GovernanceTokenAddress).totalSupply() ) > voteQuorum, "<Quorum" );
+>                                                                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require( voteYesTotal[newGovernanceContract].mul(voteDecimal).div( voteYesTotal[newGovernanceContract].add(voteNoTotal[newGovernanceContract]) ) > votePass, "<Pass" );
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Governance
+Line:        89
+Source: 
+>         clearExistingVotesForProposal(newGovernanceContract);
+>         voteYes[newGovernanceContract][msg.sender] = GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender);
+>                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         voteYesTotal[newGovernanceContract] = voteYesTotal[newGovernanceContract].add( GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender) );
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Governance
+Line:        98
+Source: 
+>         clearExistingVotesForProposal(newGovernanceContract);
+>         voteNo[newGovernanceContract][msg.sender] = GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender);
+>                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         voteNoTotal[newGovernanceContract] = voteNoTotal[newGovernanceContract].add( GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender) );
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Governance
+Line:        114
+Source: 
+>         require( GovernanceSwitchExecuted == false, "AlrExec");
+>         GovernanceToken(GovernanceTokenAddress).setGovernance(nextGovernance);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         Governance(nextGovernance).executeGovernanceActions();
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Governance
+Line:        115
+Source: 
+>         GovernanceToken(GovernanceTokenAddress).setGovernance(nextGovernance);
+>         Governance(nextGovernance).executeGovernanceActions();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         GovernanceSwitchExecuted = true;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Governance
+Line:        44
+Source: 
+>     // Address Management
+>     address public previousGovernance;    // Address of previous governance - a linked list leading back to the genesis
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address public GovernanceTokenAddress = 0x3DA1095F0b571f00B4D9A4B2A78AD8D13416886b;    // GovernanceTokenAddress
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Governance
+Line:        53
+Source: 
+> 
+>     address public nextGovernance;            // Next governance module
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint    public nextGovernanceExecution;   // Timestamp before governance module is executed
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Governance
+Line:        54
+Source: 
+>     address public nextGovernance;            // Next governance module
+>     uint    public nextGovernanceExecution;   // Timestamp before governance module is executed
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address [] public proposedGovernanceList; // List of proposed governance modules
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Governance
+Line:        56
+Source: 
+>     address [] public proposedGovernanceList; // List of proposed governance modules
+>     bool    public GovernanceSwitchExecuted;  // Governance Changed. 
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Governance
+Line:        78
+Source: 
+>     function clearExistingVotesForProposal(address newGovernanceContract) internal {
+>         voteYesTotal[newGovernanceContract] = voteYesTotal[newGovernanceContract].sub( voteYes[newGovernanceContract][msg.sender] );
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         voteNoTotal [newGovernanceContract] = voteNoTotal [newGovernanceContract].sub( voteNo [newGovernanceContract][msg.sender] );
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Governance
+Line:        79
+Source: 
+>         voteYesTotal[newGovernanceContract] = voteYesTotal[newGovernanceContract].sub( voteYes[newGovernanceContract][msg.sender] );
+>         voteNoTotal [newGovernanceContract] = voteNoTotal [newGovernanceContract].sub( voteNo [newGovernanceContract][msg.sender] );
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         voteYes[newGovernanceContract][msg.sender] = 0;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Governance
+Line:        90
+Source: 
+>         voteYes[newGovernanceContract][msg.sender] = GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender);
+>         voteYesTotal[newGovernanceContract] = voteYesTotal[newGovernanceContract].add( GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender) );
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Governance
+Line:        99
+Source: 
+>         voteNo[newGovernanceContract][msg.sender] = GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender);
+>         voteNoTotal[newGovernanceContract] = voteNoTotal[newGovernanceContract].add( GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender) );
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Governance
+Line:        106
+Source: 
+>         require( nextGovernance == address(0), "AlreadyQueued");
+>         nextGovernance = newGovernanceContract;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         nextGovernanceExecution = now.add(governanceSwitchDelay);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Governance
+Line:        107
+Source: 
+>         nextGovernance = newGovernanceContract;
+>         nextGovernanceExecution = now.add(governanceSwitchDelay);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }  
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Governance
+Line:        116
+Source: 
+>         Governance(nextGovernance).executeGovernanceActions();
+>         GovernanceSwitchExecuted = true;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Governance
+Line:        89
+Source: 
+>         clearExistingVotesForProposal(newGovernanceContract);
+>         voteYes[newGovernanceContract][msg.sender] = GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender);
+>                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         voteYesTotal[newGovernanceContract] = voteYesTotal[newGovernanceContract].add( GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender) );
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Governance
+Line:        98
+Source: 
+>         clearExistingVotesForProposal(newGovernanceContract);
+>         voteNo[newGovernanceContract][msg.sender] = GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender);
+>                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         voteNoTotal[newGovernanceContract] = voteNoTotal[newGovernanceContract].add( GovernanceToken(GovernanceTokenAddress).balanceOf(msg.sender) );
+
+[0m

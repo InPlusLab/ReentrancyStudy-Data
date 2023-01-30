@@ -1,0 +1,235 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: SendLove
+Function name: multisend(address,address[],uint256[])
+PC address: 209
+Estimated Gas Usage: 4540 - 83016
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/151fe30f1966c805697dcf486690f140.sol:55
+
+uint256[] _value)
+
+    returns (bool _success) {
+
+        assert(_to.length == _value.length);
+
+        assert(_to.length <= 150);
+
+        // loop through to addresses and send value
+
+        for (uint8 i = 0; i < _to.length; i++) {
+
+                assert((Token(_tokenAddr).transfer(_to[i], _value[i])) == true);
+
+            }
+
+            return true;
+
+        }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x801, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: multisend(address,address[],uint256[]), txdata: 0xad8733ca0000000000000000000000000000000000000000000000000000000000000002ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: SendLove
+Function name: multisend(address,address[],uint256[])
+PC address: 381
+Estimated Gas Usage: 587 - 6372
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/151fe30f1966c805697dcf486690f140.sol:55
+
+uint256[] _value)
+
+    returns (bool _success) {
+
+        assert(_to.length == _value.length);
+
+        assert(_to.length <= 150);
+
+        // loop through to addresses and send value
+
+        for (uint8 i = 0; i < _to.length; i++) {
+
+                assert((Token(_tokenAddr).transfer(_to[i], _value[i])) == true);
+
+            }
+
+            return true;
+
+        }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4240f012102118014, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: multisend(address,address[],uint256[]), txdata: 0xad8733ca040280042008400102040821400404088002042020200101020102020108100480, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: SendLove
+Function name: multisend(address,address[],uint256[])
+PC address: 393
+Estimated Gas Usage: 616 - 6494
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/151fe30f1966c805697dcf486690f140.sol:55
+
+uint256[] _value)
+
+    returns (bool _success) {
+
+        assert(_to.length == _value.length);
+
+        assert(_to.length <= 150);
+
+        // loop through to addresses and send value
+
+        for (uint8 i = 0; i < _to.length; i++) {
+
+                assert((Token(_tokenAddr).transfer(_to[i], _value[i])) == true);
+
+            }
+
+            return true;
+
+        }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: multisend(address,address[],uint256[]), txdata: 0xad8733ca01, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: SendLove
+Function name: multisend(address,address[],uint256[])
+PC address: 589
+Estimated Gas Usage: 4540 - 83016
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/151fe30f1966c805697dcf486690f140.sol:69
+
+    }
+
+            return true;
+
+        }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4c800000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: multisend(address,address[],uint256[]), txdata: 0xad8733ca000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef800000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: SendLove
+Function name: account_info_rotate_tine(uint256)
+PC address: 589
+Estimated Gas Usage: 4540 - 83016
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/151fe30f1966c805697dcf486690f140.sol:69
+
+    }
+
+            return true;
+
+        }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4c800000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: multisend(address,address[],uint256[]), txdata: 0xad8733ca000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef800000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: SendLove
+Function name: account_info_rotate_tine(uint256)
+PC address: 589
+Estimated Gas Usage: 4540 - 83016
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/151fe30f1966c805697dcf486690f140.sol:69
+
+    }
+
+            return true;
+
+        }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: multisend(address,address[],uint256[]), txdata: 0xad8733ca0000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+
+

@@ -1,0 +1,173 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DeltaBalances
+Function name: fallback
+PC address: 144
+Estimated Gas Usage: 561 - 2161
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/ff245d3dc7717176ae04b2b274393f06.sol:157
+
+  uint[] memory balances = new uint[](tokens.length);
+
+    
+
+    for(uint i = 0; i < tokens.length; i++) {
+
+      balances[i] = ex.balanceOf(tokens[i], user); //might error if exchange does not implement balanceOf correctly
+
+    }    
+
+    return balances;
+
+  }
+
+
+
+  /* Get multiple token allowances for a contract.
+
+     Returns array of deposited token balances in wei units. */
+
+  function tokenAllowances(address spenderContr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000042, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: depositedBalances(address,address,address[]), txdata: 0x1621c4e500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DeltaBalances
+Function name: tokenBalances(address,address[])
+PC address: 269
+Estimated Gas Usage: 1622 - 6892
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/ff245d3dc7717176ae04b2b274393f06.sol:123
+
+ew uint[](tokens.length);
+
+    
+
+    for(uint i = 0; i < tokens.length; i++) {
+
+      if(tokens[i] != address(0x0)) { 
+
+        balances[i] = tokenBalance(user, tokens[i]); // check token balance and catch errors
+
+      } else {
+
+        balances[i] = user.balance; // ETH balance    
+
+      }
+
+    }    
+
+    return balances;
+
+  }
+
+
+
+
+
+  /* Get multiple token balances deposited on a DEX (EtherDelta, IDEX, or similar exchange).
+
+     Returns array of deposited token bala
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000802, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: tokenBalances(address,address[]), txdata: 0x3ad206cc0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DeltaBalances
+Function name: tokenAllowances(address,address,address[])
+PC address: 381
+Estimated Gas Usage: 1736 - 6346
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/ff245d3dc7717176ae04b2b274393f06.sol:181
+
+   
+
+    for(uint i = 0; i < tokens.length; i++) {
+
+      allowances[i] = tokenAllowance(spenderContract, user, tokens[i]); // check token allowance and catch errors
+
+    }    
+
+    return allowances;
+
+  }
+
+
+
+
+
+ /* Check the token balance of a wallet in a token contract.
+
+    Returns 0 on a bad token contract   */
+
+  function tokenBalance(address user, address token) internal view returns (ui
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tokenAllowances(address,address,address[]), txdata: 0xed58350600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DeltaBalances
+Function name: withdrawToken(address,uint256)
+PC address: 1170
+Estimated Gas Usage: 2826 - 39228
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/ff245d3dc7717176ae04b2b274393f06.sol:117
+
+ tokens.
+
+     Returns array of token bal
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawToken(address,uint256), txdata: 0x9e281a98000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

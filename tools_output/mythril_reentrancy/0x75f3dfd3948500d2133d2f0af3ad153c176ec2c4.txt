@@ -1,0 +1,197 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ReleaseToken
+Function name: releaseMultiAccounts(address[])
+PC address: 596
+Estimated Gas Usage: 3387 - 7382
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/fd6af3fc998186ff00a7d3d90926a927.sol:417
+
+  * @dev release the locked tokens owned by an account with several stages
+     * this need the contract get approval from the account by call approve() in the token contract
+     *
+     * @param _target the account address that hold an amount of locked tokens
+     * @param _dest the secondary address that will hold the released tokens
+     */
+    function releaseWithStage(address _target, address
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: releaseMultiAccounts(address[]), txdata: 0x4ded9bfefffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc000000000000000001, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ReleaseToken
+Function name: releaseMultiAccounts(address[])
+PC address: 602
+Estimated Gas Usage: 3387 - 7382
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/fd6af3fc998186ff00a7d3d90926a927.sol:417
+
+  * @dev release the locked tokens owned by an account with several stages
+     * this need the contract get approval from the account by call approve() in the token contract
+     *
+     * @param _target the account address that hold an amount of locked tokens
+     * @param _dest the secondary address that will hold the released tokens
+     */
+    function releaseWithStage(address _target, address
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: releaseMultiAccounts(address[]), txdata: 0x4ded9bfefffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: OwnerContract
+Function name: changeContractOwner(address) or changeContractOwner(address)
+PC address: 826
+Estimated Gas Usage: 9448 - 65190
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/fd6af3fc998186ff00a7d3d90926a927.sol:127
+
+ ReleaseToken is OwnerContract {
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x6000000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setContract(address), txdata: 0x75f890ab000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: changeContractOwner(address), txdata: 0x3ead67b5adadadadadadadadadadadad40, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: OwnerContract
+Function name: changeContractOwner(address) or changeContractOwner(address)
+PC address: 852
+Estimated Gas Usage: 9448 - 65190
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/fd6af3fc998186ff00a7d3d90926a927.sol:128
+
+feMath for uint256;
+
+    /
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40010059e00000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setContract(address), txdata: 0x75f890ab000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: changeContractOwner(address), txdata: 0x3ead67b5adadadadadadadadadadadad01, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: OwnerContract
+Function name: changeContractOwner(address) or changeContractOwner(address)
+PC address: 905
+Estimated Gas Usage: 9448 - 65190
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/fd6af3fc998186ff00a7d3d90926a927.sol:128
+
+feMath for uint256;
+
+    /
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40010059e00000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setContract(address), txdata: 0x75f890ab000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: changeContractOwner(address), txdata: 0x3ead67b5adadadadadadadadadadadad01, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ReleaseToken
+Function name: frozenAccounts(uint256)
+PC address: 9525
+Estimated Gas Usage: 1207 - 1302
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/fd6af3fc998186ff00a7d3d90926a927.sol:141
+
+ mapping (address => uint256) p
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x801, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: frozenAccounts(uint256), txdata: 0xbf9ef865, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ReleaseToken
+Function name: releaseMultiWithStage(address[],address[])
+PC address: 10193
+Estimated Gas Usage: 1742 - 7713
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/fd6af3fc998186ff00a7d3d90926a927.sol:542
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: releaseMultiWithStage(address[],address[]), txdata: 0xdde4f41a80, value: 0x0

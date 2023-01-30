@@ -1,0 +1,166 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: Controller
+Function name: round()
+PC address: 528
+Estimated Gas Usage: 11452 - 67243
+A control flow decision is made based on The block hash of a previous block.
+The block hash of a previous block is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/6d604796a7e8b8b2dbf02f8d91c58cb0.sol:395
+
+ming) {
+            sheriffsPotDistributing = (((randomNumber >> 64) % 10) < 3); // 30% chance
+            if (sheriffsPotDistributing) {
+                potDistributionAmount = _milker.sheriffsPotDistribution();
+        
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2bc75e0800084c04, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: round(), txdata: 0x146ca531, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Controller
+Function name: round()
+PC address: 623
+Estimated Gas Usage: 19350 - 145793
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/6d604796a7e8b8b2dbf02f8d91c58cb0.sol:398
+
+_milker.sheriffsPotDistribution
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x50c0000ed4092122d, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: round(), txdata: 0x146ca531, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Controller
+Function name: round()
+PC address: 691
+Estimated Gas Usage: 19350 - 145793
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6d604796a7e8b8b2dbf02f8d91c58cb0.sol:403
+
+g, sher
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1010401000907ba, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: round(), txdata: 0x146ca531, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Controller
+Function name: round()
+PC address: 768
+Estimated Gas Usage: 19350 - 145793
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6d604796a7e8b8b2dbf02f8d91c58cb0.sol:403
+
+g, sheriffsPotDistributing, bandi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1010401000907ba, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: round(), txdata: 0x146ca531, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: Controller
+Function name: round()
+PC address: 816
+Estimated Gas Usage: 16438 - 141774
+A control flow decision is made based on The block hash of a previous block.
+The block hash of a previous block is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/6d604796a7e8b8b2dbf02f8d91c58cb0.sol:404
+
+, burntAmount,
+            vaultCommissionAmount, potDistributionAmount,
+            block.timestamp // solium-disable-line security/no-block-members
+        );
+    }
+
+    ////////////////////////////////////////////////////////////////
+    // Contract ge
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21010001000a3fba, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: round(), txdata: 0x146ca531, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Controller
+Function name: round()
+PC address: 965
+Estimated Gas Usage: 19350 - 145793
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6d604796a7e8b8b2dbf02f8d91c58cb0.sol:412
+
+///////////
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1010401000907ba, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: round(), txdata: 0x146ca531, value: 0x0

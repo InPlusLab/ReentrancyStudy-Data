@@ -1,0 +1,405 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DimonCoin
+Function name: distributeFUDD(address[],uint256,uint256)
+PC address: 487
+Estimated Gas Usage: 18325 - 63988
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/ce087785044dbf8f7063aca33705f906.sol:72
+
+thbal) onlyOwner canDistr {
+         for (uint i = 0; i < addresses.length; i++) {
+	     if (getEthBalance(addresses[i]) < _ethbal) {
+ 	         continue;
+             }
+             balances[owner] -= _value;
+             balances[addresses[i]] += _value;
+             Transfer(owner, addresses[i], _value);
+         }
+    }
+    
+    function balanceOf(address _owner) constant returns (uint256) {
+	 retu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: distributeFUDD(address[],uint256,uint256), txdata: 0x173a48a4ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DimonCoin
+Function name: distributeFUDD(address[],uint256,uint256)
+PC address: 2245
+Estimated Gas Usage: 18325 - 63988
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/ce087785044dbf8f7063aca33705f906.sol:79
+
+           Transfer(owner
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: distributeFUDD(address[],uint256,uint256), txdata: 0x173a48a4c001ffffffffffffffffffffffffffffffffffffffdfefffffffff000000000201, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DimonCoin
+Function name: distributeFUDD(address[],uint256,uint256)
+PC address: 2345
+Estimated Gas Usage: 18325 - 63988
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/ce087785044dbf8f7063aca33705f906.sol:79
+
+_value);
+         }
+    }
+    
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: distributeFUDD(address[],uint256,uint256), txdata: 0x173a48a4840000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: DimonCoin
+Function name: transferFrom(address,address,uint256) or transferFrom(address,address,uint256)
+PC address: 2568
+Estimated Gas Usage: 363 - 458
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/ce087785044dbf8f7063aca33705f906.sol:111
+
+s) {
+
+        if (_value == 0) { return false; }
+        
+        uint256 fromBalance = balances[_from];
+        uint256 allowance = allowed[_from][msg.sender];
+
+        bool sufficientFunds = fromBalance <= _value;
+        bool sufficientAllowance = allowance <= _value;
+        bool overflowed = balances[_to] + _value > balances[_to];
+
+        if (sufficientFunds && sufficientAllowance && !overflowed) {
+            balances[_to] += _value;
+            balances[_from] -= _value;
+            
+            allowed[_from][msg.sender] -= _value;
+            
+            Transfer(_from, _to, _value);
+            return true;
+        } else { return false; }
+    }
+    
+    function approve(address _spender, uint256 _value) returns (bool success) {
+        // mitigates the ERC20 spend/approva
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transferFrom(address,address,uint256), txdata: 0x23b872dd, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DimonCoin
+Function name: transferFrom(address,address,uint256) or transferFrom(address,address,uint256)
+PC address: 2922
+Estimated Gas Usage: 23730 - 86353
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/ce087785044dbf8f7063aca33705f906.sol:123
+
+   balances[_to] += _v
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000605a7, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transferFrom(address,address,uint256), txdata: 0x23b872dd3fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffeffffffffffffffffffffffffffffffffffffffffffffffffffe0000800000000, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DimonCoin
+Function name: transferFrom(address,address,uint256) or transferFrom(address,address,uint256)
+PC address: 3020
+Estimated Gas Usage: 23730 - 86353
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/ce087785044dbf8f7063aca33705f906.sol:126
+
+lue;
+            
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000605a7, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transferFrom(address,address,uint256), txdata: 0x23b872dd3fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffeffffffffffffffffffffffffffffffffffffffffffffffffffe0000800000000, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DimonCoin
+Function name: transferFrom(address,address,uint256) or transferFrom(address,address,uint256)
+PC address: 3097
+Estimated Gas Usage: 23730 - 86353
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/ce087785044dbf8f7063aca33705f906.sol:128
+
+(_from, _to, _value);
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x14408980630, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transferFrom(address,address,uint256), txdata: 0x23b872dd000000004000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffefffffffffffffffffffffffffffffffffffffffffffffffffffc710054dfded2, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DimonCoin
+Function name: transferFrom(address,address,uint256) or transferFrom(address,address,uint256)
+PC address: 3235
+Estimated Gas Usage: 23730 - 86353
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/ce087785044dbf8f7063aca33705f906.sol:130
+
+ } else { return false; }
+    }
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000000002501, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transferFrom(address,address,uint256), txdata: 0x23b872dd800000000000000020000000ffffffffff7effffffffffffffffffffffffeff9000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffeffffffffffffffffffffffffffffffffffffffffffffffffffecc00690040049, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: DimonCoin
+Function name: transfer(address,uint256) or transfer(address,uint256) or transfer(address,uint256) or transfer(address,uint256)
+PC address: 3762
+Estimated Gas Usage: 459 - 554
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/ce087785044dbf8f7063aca33705f906.sol:93
+
+) {
+
+        if (_value == 0) { return false; }
+
+        uint256 fromBalance = balances[msg.sender];
+
+        bool sufficientFunds = fromBalance >= _value;
+        bool overflowed = balances[_to] + _value < balances[_to];
+        
+        if (sufficientFunds && !overflowed) {
+            balances[msg.sender] -= _value;
+            balances[_to] += _value;
+            
+            Transfer(msg.sender, _to, _value);
+            return true;
+        } else { return false; }
+    }
+    
+    function transferFrom(address _from, address _to, uint256 _value) onlyPayloadSize(3 * 32) returns 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transfer(address,uint256), txdata: 0xa9059cbb, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DimonCoin
+Function name: withdrawForeignTokens(address)
+PC address: 4711
+Estimated Gas Usage: 5504 - 76135
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/ce087785044dbf8f7063aca33705f906.sol:161
+Initial State:
+
+Account: [CREATOR], balance: 0x40, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawForeignTokens(address), txdata: 0xe58fc54c800000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DimonCoin
+Function name: withdrawForeignTokens(address)
+PC address: 4768
+Estimated Gas Usage: 5504 - 76135
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ce087785044dbf8f7063aca33705f906.sol:161
+Initial State:
+
+Account: [CREATOR], balance: 0x3828000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawForeignTokens(address), txdata: 0xe58fc54c800000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DimonCoin
+Function name: withdrawForeignTokens(address)
+PC address: 4945
+Estimated Gas Usage: 5504 - 76135
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/ce087785044dbf8f7063aca33705f906.sol:161
+Initial State:
+
+Account: [CREATOR], balance: 0x40, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawForeignTokens(address), txdata: 0xe58fc54c800000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: DimonCoin
+Function name: withdrawForeignTokens(address)
+PC address: 4945
+Estimated Gas Usage: 5504 - 76135
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/ce087785044dbf8f7063aca33705f906.sol:161
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawForeignTokens(address), txdata: 0xe58fc54c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DimonCoin
+Function name: withdrawForeignTokens(address)
+PC address: 4945
+Estimated Gas Usage: 5504 - 76135
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ce087785044dbf8f7063aca33705f906.sol:161
+Initial State:
+
+Account: [CREATOR], balance: 0x3828000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawForeignTokens(address), txdata: 0xe58fc54c800000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

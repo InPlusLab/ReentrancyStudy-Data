@@ -1,0 +1,262 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: RewardClaimHandler
+Function name: registerRewards(address[],uint256[],uint256)
+PC address: 274
+Estimated Gas Usage: 27409 - 149914
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/deb1ca9f8278b75edc0ac251129ba21f.sol:94
+
+
+        require(
+
+            winners.length == 0 &&
+
+            _winners.length > 0 &&
+
+            _winners.length == _rewardAmounts.length &&
+
+            msg.sender == operator
+
+        );
+
+
+
+        uint totalAmount = 0;
+
+        for(uint i = 0; i < _winners.length; i++) {
+
+            totalAmount += _rewardAmounts[i];
+
+            rewardAmounts[_winners[i]] = _rewardAmounts[i];
+
+        }
+
+
+
+        require(rewardToken.transferFrom(msg.sender, this, totalAmount));
+
+
+
+        winners = _winners;
+
+        guaranteedClaimEndTime = now + duration;
+
+    }
+
+
+
+    function claimReward() public {
+
+        require(winners.length > 0 && rewardToken.transfer(msg.sender, rewardAmounts[ms
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4010024000001000b, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: registerRewards(address[],uint256[],uint256), txdata: 0x553eb4dbffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc80, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: RewardClaimHandler
+Function name: registerRewards(address[],uint256[],uint256)
+PC address: 1371
+Estimated Gas Usage: 27409 - 149914
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/deb1ca9f8278b75edc0ac251129ba21f.sol:127
+
+ = now + duration;
+
+    }
+
+
+
+    function claimReward()
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 242424242424242424242424deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: registerRewards(address[],uint256[],uint256), txdata: 0x553eb4dbe0a033206c4162ecb6ed448a80a1ac81e5247101eb000000000000000000000080, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: RewardClaimHandler
+Function name: registerRewards(address[],uint256[],uint256)
+PC address: 1464
+Estimated Gas Usage: 27409 - 149914
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/deb1ca9f8278b75edc0ac251129ba21f.sol:135
+
+sender, reward
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: registerRewards(address[],uint256[],uint256), txdata: 0x553eb4db8000000000000000000000000000000000000000000000040000000000000001d80000000000000000000000000000000000000000000000000000000000000110, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: RewardClaimHandler
+Function name: registerRewards(address[],uint256[],uint256)
+PC address: 1469
+Estimated Gas Usage: 27409 - 149914
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/deb1ca9f8278b75edc0ac251129ba21f.sol:135
+
+rewardToken.transfer(msg.sender, reward
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x200, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b9b9b9b9b9b9b9b9b9b9b9b9deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: registerRewards(address[],uint256[],uint256), txdata: 0x553eb4dbd7b9dd5e43367cb97b71aee39d6e956bb94c8b74fccc00005c80000000000004ff, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: RewardClaimHandler
+Function name: winners(uint256)
+PC address: 1535
+Estimated Gas Usage: 1102 - 1197
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/deb1ca9f8278b75edc0ac251129ba21f.sol:77
+
+nts;
+
+    uint public gu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: winners(uint256), txdata: 0xa2fb1175, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: RewardClaimHandler
+Function name: registerRewards(address[],uint256[],uint256)
+PC address: 2738
+Estimated Gas Usage: 27409 - 149914
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state. This issue is reported for internal compiler generated code.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: fefefefefefefefefefefefedeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: registerRewards(address[],uint256[],uint256), txdata: 0x553eb4dbffffffffffffffffffffff00000000000000000000000000000000000000002080, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: RewardClaimHandler
+Function name: registerRewards(address[],uint256[],uint256)
+PC address: 2741
+Estimated Gas Usage: 27409 - 149914
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state. This issue is reported for internal compiler generated code.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: fefefefefefefefefefefefedeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: registerRewards(address[],uint256[],uint256), txdata: 0x553eb4dbffffffffffffffffffffff00000000000000000000000000000000000000002080, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: RewardClaimHandler
+Function name: registerRewards(address[],uint256[],uint256)
+PC address: 2786
+Estimated Gas Usage: 27409 - 149914
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state. This issue is reported for internal compiler generated code.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x200, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b9b9b9b9b9b9b9b9b9b9b9b9deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: registerRewards(address[],uint256[],uint256), txdata: 0x553eb4dbd7b9dd5e43367cb97b71aee39d6e956bb94c8b74fccc00005c80000000000004ff, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: RewardClaimHandler
+Function name: registerRewards(address[],uint256[],uint256)
+PC address: 2839
+Estimated Gas Usage: 27409 - 149914
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state. This issue is reported for internal compiler generated code.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x200, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b9b9b9b9b9b9b9b9b9b9b9b9deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: registerRewards(address[],uint256[],uint256), txdata: 0x553eb4dbd7b9dd5e43367cb97b71aee39d6e956bb94c8b74fccc00005c80000000000004ff, value: 0x0

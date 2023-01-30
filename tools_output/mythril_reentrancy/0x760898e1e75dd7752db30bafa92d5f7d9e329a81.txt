@@ -1,0 +1,579 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: CryptoRomeAuction
+Function name: bid()
+PC address: 1862
+Estimated Gas Usage: 2623 - 2718
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:264
+
+
+
+
+        if (highestBid
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2001000000000202, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: createAuction(uint256,uint256,uint256,uint256,address,uint256), txdata: 0x2801260608053103c38002c104006cbd7dfc107fffffffddffffcfffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000008000000000000040000000010004000000000022000830000000080000000001000000000000008000800001000500000000008000103000000008000000000200000000000000000000000002010104400280800101010101010120010101010000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+Caller: [ATTACKER], function: bid(), txdata: 0x1998aeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: CryptoRomeAuction
+Function name: createAuction(uint256,uint256,uint256,uint256,address,uint256)
+PC address: 2611
+Estimated Gas Usage: 44028 - 254711
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:165
+
+ess(0));
+
+        require(_duration >
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100800001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 606060606060606060606060deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createAuction(uint256,uint256,uint256,uint256,address,uint256), txdata: 0x280126067491894d8d6c6a5621092ecb621105ac82d4f7897b8293206810c48eaed0df8600000000000000000000000000000000000000000000000000000000000000002c80914800401b390b0ae8402200012002012088060750e240708bc2a89190040d04ac6a09997cca8e0af060d211c4281501000046aff3ec209e4ec4b880b03600000000000000000000000001010101010101010101010101010101010101010000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CryptoRomeAuction
+Function name: createAuction(uint256,uint256,uint256,uint256,address,uint256)
+PC address: 2797
+Estimated Gas Usage: 44028 - 254711
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:175
+
+nd = (SafeMath.add(auctio
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 909090909090909090909090deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createAuction(uint256,uint256,uint256,uint256,address,uint256), txdata: 0x2801260647ec7f049c28b55444357f870cfc8d6b058d00b70d5a1069fffe93ffffffffff000000000000000000000000000000000000000000000000000000000000000041000200001900904713008904808008411940a440c2782001020000000000010100020000200120671502003a00800c252071407c447860020000000000000200000000000000000000000001010101010101010101010101010101010101010000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CryptoRomeAuction
+Function name: createAuction(uint256,uint256,uint256,uint256,address,uint256)
+PC address: 2804
+Estimated Gas Usage: 44028 - 254711
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:175
+
+ation));
+
+        extensionTim
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 909090909090909090909090deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createAuction(uint256,uint256,uint256,uint256,address,uint256), txdata: 0x2801260647ec7f049c28b55444357f870cfc8d6b058d00b70d5a1069fffe93ffffffffff000000000000000000000000000000000000000000000000000000000000000041000200001900904713008904808008411940a440c2782001020000000000010100020000200120671502003a00800c252071407c447860020000000000000200000000000000000000000001010101010101010101010101010101010101010000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CryptoRomeAuction
+Function name: createAuction(uint256,uint256,uint256,uint256,address,uint256)
+PC address: 2811
+Estimated Gas Usage: 44028 - 254711
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:179
+
+ress = _wall
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 909090909090909090909090deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createAuction(uint256,uint256,uint256,uint256,address,uint256), txdata: 0x2801260647ec7f049c28b55444357f870cfc8d6b058d00b70d5a1069fffe93ffffffffff000000000000000000000000000000000000000000000000000000000000000041000200001900904713008904808008411940a440c2782001020000000000010100020000200120671502003a00800c252071407c447860020000000000000200000000000000000000000001010101010101010101010101010101010101010000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CryptoRomeAuction
+Function name: createAuction(uint256,uint256,uint256,uint256,address,uint256)
+PC address: 2822
+Estimated Gas Usage: 44028 - 254711
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:177
+
+onTime;
+
+        paymentAddress = _wallet;
+
+        
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 909090909090909090909090deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createAuction(uint256,uint256,uint256,uint256,address,uint256), txdata: 0x2801260647ec7f049c28b55444357f870cfc8d6b058d00b70d5a1069fffe93ffffffffff000000000000000000000000000000000000000000000000000000000000000041000200001900904713008904808008411940a440c2782001020000000000010100020000200120671502003a00800c252071407c447860020000000000000200000000000000000000000001010101010101010101010101010101010101010000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CryptoRomeAuction
+Function name: createAuction(uint256,uint256,uint256,uint256,address,uint256)
+PC address: 2829
+Estimated Gas Usage: 44028 - 254711
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:181
+
+okenId;
+
+        highestBid = 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 909090909090909090909090deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createAuction(uint256,uint256,uint256,uint256,address,uint256), txdata: 0x2801260647ec7f049c28b55444357f870cfc8d6b058d00b70d5a1069fffe93ffffffffff000000000000000000000000000000000000000000000000000000000000000041000200001900904713008904808008411940a440c2782001020000000000010100020000200120671502003a00800c252071407c447860020000000000000200000000000000000000000001010101010101010101010101010101010101010000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CryptoRomeAuction
+Function name: createAuction(uint256,uint256,uint256,uint256,address,uint256)
+PC address: 2841
+Estimated Gas Usage: 44028 - 254711
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:185
+
+_escrow(_tokenId);
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 909090909090909090909090deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createAuction(uint256,uint256,uint256,uint256,address,uint256), txdata: 0x2801260647ec7f049c28b55444357f870cfc8d6b058d00b70d5a1069fffe93ffffffffff000000000000000000000000000000000000000000000000000000000000000041000200001900904713008904808008411940a440c2782001020000000000010100020000200120671502003a00800c252071407c447860020000000000000200000000000000000000000001010101010101010101010101010101010101010000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CryptoRomeAuction
+Function name: createAuction(uint256,uint256,uint256,uint256,address,uint256)
+PC address: 2894
+Estimated Gas Usage: 44028 - 254711
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:185
+
+_escrow(_tokenId);
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 909090909090909090909090deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createAuction(uint256,uint256,uint256,uint256,address,uint256), txdata: 0x2801260647ec7f049c28b55444357f870cfc8d6b058d00b70d5a1069fffe93ffffffffff000000000000000000000000000000000000000000000000000000000000000041000200001900904713008904808008411940a440c2782001020000000000010100020000200120671502003a00800c252071407c447860020000000000000200000000000000000000000001010101010101010101010101010101010101010000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CryptoRomeAuction
+Function name: createAuction(uint256,uint256,uint256,uint256,address,uint256)
+PC address: 2901
+Estimated Gas Usage: 44028 - 254711
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:191
+
+ction getAuctionDa
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 909090909090909090909090deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createAuction(uint256,uint256,uint256,uint256,address,uint256), txdata: 0x2801260647ec7f049c28b55444357f870cfc8d6b058d00b70d5a1069fffe93ffffffffff000000000000000000000000000000000000000000000000000000000000000041000200001900904713008904808008411940a440c2782001020000000000010100020000200120671502003a00800c252071407c447860020000000000000200000000000000000000000001010101010101010101010101010101010101010000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CryptoRomeAuction
+Function name: createAuction(uint256,uint256,uint256,uint256,address,uint256)
+PC address: 2909
+Estimated Gas Usage: 44028 - 254711
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:191
+
+view returns(u
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 909090909090909090909090deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createAuction(uint256,uint256,uint256,uint256,address,uint256), txdata: 0x2801260647ec7f049c28b55444357f870cfc8d6b058d00b70d5a1069fffe93ffffffffff000000000000000000000000000000000000000000000000000000000000000041000200001900904713008904808008411940a440c2782001020000000000010100020000200120671502003a00800c252071407c447860020000000000000200000000000000000000000001010101010101010101010101010101010101010000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: CryptoRomeAuction
+Function name: endAuction()
+PC address: 4751
+Estimated Gas Usage: 2380 - 2805
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:363
+
+ to the buyer
+
+        if
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: endAuction(), txdata: 0xfe67a54b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CryptoRomeAuction
+Function name: endAuction()
+PC address: 5046
+Estimated Gas Usage: 19757 - 111876
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:381
+
+        // Fol
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 242424242424242424242424deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: endAuction(), txdata: 0xfe67a54b, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: CryptoRomeAuction
+Function name: endAuction()
+PC address: 5145
+Estimated Gas Usage: 19757 - 111876
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:381
+
+        // Follow-up step for CC transfer that
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: endAuction(), txdata: 0xfe67a54b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CryptoRomeAuction
+Function name: endAuction()
+PC address: 5145
+Estimated Gas Usage: 19757 - 111876
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:381
+
+        // Follow-up step for CC transfer that
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 242424242424242424242424deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: endAuction(), txdata: 0xfe67a54b, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: CryptoRomeAuction
+Function name: createAuction(uint256,uint256,uint256,uint256,address,uint256)
+PC address: 5253
+Estimated Gas Usage: 15629 - 91276
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:179
+
+   paymentAddress = _wallet;
+
+       
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: createAuction(uint256,uint256,uint256,uint256,address,uint256), txdata: 0x28012606fe2c800dc97fffffffbfffa8ff94f07c703010fffffbffc5fff7ffffffffffff00000000000000000000000000000000000000000000000000000000000000000400c8004d0000000040006001000008211010000008003a00080000000000010100e1000080000000000020000001104902000800008008104400000080000200000000000000000000000010080102808080010408404002400402010810400000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CryptoRomeAuction
+Function name: createAuction(uint256,uint256,uint256,uint256,address,uint256)
+PC address: 5270
+Estimated Gas Usage: 44028 - 254711
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:221
+
+other address.
+
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 909090909090909090909090deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createAuction(uint256,uint256,uint256,uint256,address,uint256), txdata: 0x2801260647ec7f049c28b55444357f870cfc8d6b058d00b70d5a1069fffe93ffffffffff000000000000000000000000000000000000000000000000000000000000000041000200001900904713008904808008411940a440c2782001020000000000010100020000200120671502003a00800c252071407c447860020000000000000200000000000000000000000001010101010101010101010101010101010101010000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: CryptoRomeAuction
+Function name: createAuction(uint256,uint256,uint256,uint256,address,uint256)
+PC address: 5412
+Estimated Gas Usage: 44028 - 254711
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:221
+
+other address.
+
+    function _transfer(addr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100800001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 606060606060606060606060deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createAuction(uint256,uint256,uint256,uint256,address,uint256), txdata: 0x280126067491894d8d6c6a5621092ecb621105ac82d4f7897b8293206810c48eaed0df8600000000000000000000000000000000000000000000000000000000000000002c80914800401b390b0ae8402200012002012088060750e240708bc2a89190040d04ac6a09997cca8e0af060d211c4281501000046aff3ec209e4ec4b880b03600000000000000000000000001010101010101010101010101010101010101010000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: CryptoRomeAuction
+Function name: createAuction(uint256,uint256,uint256,uint256,address,uint256)
+PC address: 5412
+Estimated Gas Usage: 44028 - 254711
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:221
+
+other address.
+
+    function _transfer(addr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: createAuction(uint256,uint256,uint256,uint256,address,uint256), txdata: 0x280126065ac249a4077040d046ffbffbf9f19fffdfb0fe8ac03bdffffffdffffffffffff0000000000000000000000000000000000000000000000000000000000000000183e0c0081080040c000400407030000001580021fcc2000000200000000000100400801100008600400000000004000001500085c010000000201008001800800000000000000000000000020010210048002000210102008080202200100010000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CryptoRomeAuction
+Function name: createAuction(uint256,uint256,uint256,uint256,address,uint256)
+PC address: 5412
+Estimated Gas Usage: 44028 - 254711
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:221
+
+other address.
+
+    function _transfer(addr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 909090909090909090909090deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createAuction(uint256,uint256,uint256,uint256,address,uint256), txdata: 0x2801260647ec7f049c28b55444357f870cfc8d6b058d00b70d5a1069fffe93ffffffffff000000000000000000000000000000000000000000000000000000000000000041000200001900904713008904808008411940a440c2782001020000000000010100020000200120671502003a00800c252071407c447860020000000000000200000000000000000000000001010101010101010101010101010101010101010000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: CryptoRomeAuction
+Function name: endAuction()
+PC address: 5636
+Estimated Gas Usage: 19757 - 111876
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/70aeebdf27f25d0216e2d5d7d96fba57.sol:231
+
+bool) {
+
+        if (auctionStart != 0) {
+
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 242424242424242424242424deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: endAuction(), txdata: 0xfe67a54b, value: 0x0

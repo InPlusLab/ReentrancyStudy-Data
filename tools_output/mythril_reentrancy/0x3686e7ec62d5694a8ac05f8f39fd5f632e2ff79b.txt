@@ -1,0 +1,1293 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Random
+Function name: random(uint256,uint256) or random(uint256,uint256)
+PC address: 459
+Estimated Gas Usage: 362 - 457
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:32
+
+ceBlock) public view returns (uint256 randomNumber) {
+    require(block.number > sourceBlock);
+    return uint256(block.blockhash(sourceBlock));
+  }
+
+  function random(uint256 upper)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: random(uint256,uint256), txdata: 0xa9dd1225, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Random
+Function name: random(uint256) or random(uint256)
+PC address: 459
+Estimated Gas Usage: 386 - 481
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:32
+
+ceBlock) public view returns (uint256 randomNumber) {
+    require(block.number > sourceBlock);
+    return uint256(block.blockhash(sourceBlock));
+  }
+
+  function random(uint256 upper)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: random(uint256), txdata: 0xb863bd37, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: Random
+Function name: maxRandom(uint256) or maxRandom(uint256)
+PC address: 502
+Estimated Gas Usage: 266 - 361
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:33
+
+ck);
+    return uint256(block.block
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: maxRandom(uint256), txdata: 0xfbec9121, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: KittyArena
+Function name: games(uint256)
+PC address: 1012
+Estimated Gas Usage: 1036 - 1131
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:66
+
+);
+
+	event KittyEnt
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: games(uint256), txdata: 0x117a5b90, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: KittyArena
+Function name: getWinner(uint256)
+PC address: 1328
+Estimated Gas Usage: 1076 - 1171
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:118
+
+winner != address(0)) {
+			return game.winner;
+		}
+
+		bytes32 genes1 = catGenes(game.player1.kitty);
+		bytes32 genes2 = catGenes(game.player2.kitty);
+
+		require(block.number > game.fightBlock);
+		bytes32 seed = bytes32(maxRandom(game.fightBlock));
+		
+		// If game isn't resolved in 256 blocks and we cannot get the entropy,
+		// we considered it tie
+		if (seed == bytes32(0)) {
+			return TIE;
+		}
+
+		bytes32 winnerGenes = destiny.fight(genes1, genes2, seed);
+
+		if (winnerGenes == genes1) {
+			return game.player1.addr;
+		} 
+
+		if (winnerGenes == genes2) { 
+			return game.player2.addr;
+		}
+
+		// Destiny may return something other than one of the two cats gens,
+		// if so we consider it a tie
+		return TIE;
+	}
+
+	function catGenes(uint256 kitty) private view returns (bytes32 genes) {
+		var (,,,,,,,,,_genes) = ck.getKitty(kitty);
+		genes = bytes32(_genes)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getWinner(uint256), txdata: 0x4129b2c9, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: getWinner(uint256)
+PC address: 1508
+Estimated Gas Usage: 13875 - 121216
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:128
+
+		// If game isn't
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: ccccccccccccccccccccccccdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [SOMEGUY], function: getWinner(uint256), txdata: 0x4129b2c9, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: getWinner(uint256)
+PC address: 1520
+Estimated Gas Usage: 13875 - 121216
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:128
+
+cannot get the 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: ccccccccccccccccccccccccdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [SOMEGUY], function: getWinner(uint256), txdata: 0x4129b2c9, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: KittyArena
+Function name: getWinner(uint256)
+PC address: 1528
+Estimated Gas Usage: 10126 - 82104
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:128
+
+d in 256 blocks and we cannot get the e
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x3fffffbfffffffdfd, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [ATTACKER], function: getWinner(uint256), txdata: 0x4129b2c9, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: getWinner(uint256)
+PC address: 1541
+Estimated Gas Usage: 13875 - 121216
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:130
+
+ (seed == bytes
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: ccccccccccccccccccccccccdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [SOMEGUY], function: getWinner(uint256), txdata: 0x4129b2c9, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: KittyArena
+Function name: getWinner(uint256)
+PC address: 1571
+Estimated Gas Usage: 11102 - 83080
+A control flow decision is made based on The block hash of a previous block.
+The block hash of a previous block is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:136
+
+genes1) {
+			return game.player1.addr;
+		} 
+
+	
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [ATTACKER], function: getWinner(uint256), txdata: 0x4129b2c9, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: getWinner(uint256)
+PC address: 1617
+Estimated Gas Usage: 13875 - 121216
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:140
+
+{ 
+			r
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: ccccccccccccccccccccccccdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [SOMEGUY], function: getWinner(uint256), txdata: 0x4129b2c9, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: KittyArena
+Function name: getWinner(uint256)
+PC address: 1799
+Estimated Gas Usage: 13875 - 121216
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:140
+
+{ 
+			return game.player2.addr;
+		}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40430000010001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: cccccccccccccccccccccccc0000000000000000000000000000000000000000ccccccccccccccccccccccccdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [SOMEGUY], function: getWinner(uint256), txdata: 0x4129b2c9, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: getWinner(uint256)
+PC address: 1799
+Estimated Gas Usage: 13875 - 121216
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:140
+
+{ 
+			return game.player2.addr;
+		}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: ccccccccccccccccccccccccdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [SOMEGUY], function: getWinner(uint256), txdata: 0x4129b2c9, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: KittyArena
+Function name: resolve(uint256)
+PC address: 2045
+Estimated Gas Usage: 1083 - 1178
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:104
+
+r == address(0));
+        require(game.player1.addr != address(0));
+        require(game.player2.addr != address(0));
+
+		game.winner = getWinner(gameId);
+		
+		ck.transfer(game.winner == TIE ? game.player1.addr : game.winner, game.player1.kitty);
+		ck.transfer(game.winner == TIE ? game.player2.addr : game.winner, game.player2.kitty);
+
+		emit FightResolved(gameId, game.winner);
+	}
+
+	function getWinner(uint256 gameId) public view returns (address) {
+		Game storage game = games[gameId];
+		if (
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: resolve(uint256), txdata: 0x4f896d4f, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 3694
+Estimated Gas Usage: 31091 - 128475
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:80
+
+rage game;
+
+		if (games.length > 0 && ga
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [SOMEGUY], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 3721
+Estimated Gas Usage: 27435 - 124187
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:83
+
+ayer2 for ga
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 3741
+Estimated Gas Usage: 31091 - 128475
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:84
+
+ames[games.l
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 3746
+Estimated Gas Usage: 31091 - 128475
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:84
+
+me = games[games.length
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 3774
+Estimated Gas Usage: 31091 - 128475
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:84
+
+me = games[games.length - 1];
+			g
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 3789
+Estimated Gas Usage: 31091 - 128475
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:86
+
+= block.numb
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 3794
+Estimated Gas Usage: 31091 - 128475
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:86
+
+Block = block.number;
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 3877
+Estimated Gas Usage: 31091 - 128475
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:88
+
+yer = game.player2;
+
+			emit FightStarte
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 3894
+Estimated Gas Usage: 31091 - 128475
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:88
+
+yer = game.player2;
+
+			emit FightStarte
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 3947
+Estimated Gas Usage: 31091 - 128475
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:88
+
+yer = game.player2;
+
+			emit FightStarte
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 3959
+Estimated Gas Usage: 31091 - 128475
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:90
+
+s.length - 1, game.fightBlock)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 3972
+Estimated Gas Usage: 31091 - 128475
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:93
+
+s.length - 1
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 4013
+Estimated Gas Usage: 31091 - 128475
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:94
+
+game.player1 = 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 4047
+Estimated Gas Usage: 27435 - 124187
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:94
+
+ender);
+
+			playe
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 4072
+Estimated Gas Usage: 27435 - 124187
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:97
+
+	}
+
+		emit K
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 4077
+Estimated Gas Usage: 27435 - 124187
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:96
+
+er1;
+		}
+
+		emit KittyE
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 4160
+Estimated Gas Usage: 27435 - 124187
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:99
+
+(games.length - 1, player.kitty, player.
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 4177
+Estimated Gas Usage: 27435 - 124187
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:99
+
+(games.length - 1, player.kitty, player.
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 4230
+Estimated Gas Usage: 27435 - 124187
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:99
+
+(games.length - 1, player.kitty, player.
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 4249
+Estimated Gas Usage: 27435 - 124187
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:103
+
+;
+		require
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 4305
+Estimated Gas Usage: 27435 - 124187
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:103
+
+ games[gameI
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 4311
+Estimated Gas Usage: 27435 - 124187
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:103
+
+ame storage 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: KittyArena
+Function name: random(uint256,uint256) or random(uint256,uint256)
+PC address: 4383
+Estimated Gas Usage: 472 - 567
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:32
+
+ceBlock) public view returns (uint256 randomNumber) {
+    require(block.number > sourceBlock);
+    return uint256(block.blockhash(sourceBlock));
+  }
+
+  function random(uint256 upper)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: random(uint256,uint256), txdata: 0xa9dd1225, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: KittyArena
+Function name: random(uint256) or random(uint256)
+PC address: 4383
+Estimated Gas Usage: 496 - 591
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:32
+
+ceBlock) public view returns (uint256 randomNumber) {
+    require(block.number > sourceBlock);
+    return uint256(block.blockhash(sourceBlock));
+  }
+
+  function random(uint256 upper)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: random(uint256), txdata: 0xb863bd37, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: KittyArena
+Function name: random(uint256) or random(uint256)
+PC address: 4403
+Estimated Gas Usage: 31091 - 128475
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:41
+
+ pseudo random n
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [CREATOR], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: KittyArena
+Function name: maxRandom(uint256) or maxRandom(uint256)
+PC address: 4463
+Estimated Gas Usage: 398 - 493
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:33
+
+ck);
+    return uint256(block.block
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: maxRandom(uint256), txdata: 0xfbec9121, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: getWinner(uint256)
+PC address: 4489
+Estimated Gas Usage: 13875 - 121216
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:153
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: ccccccccccccccccccccccccdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [SOMEGUY], function: getWinner(uint256), txdata: 0x4129b2c9, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: KittyArena
+Function name: getWinner(uint256)
+PC address: 4632
+Estimated Gas Usage: 13875 - 121216
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:153
+Initial State:
+
+Account: [CREATOR], balance: 0x20000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [CREATOR], function: getWinner(uint256), txdata: 0x4129b2c9, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: KittyArena
+Function name: getWinner(uint256)
+PC address: 4632
+Estimated Gas Usage: 13875 - 121216
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:153
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [SOMEGUY], function: getWinner(uint256), txdata: 0x4129b2c9, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KittyArena
+Function name: getWinner(uint256)
+PC address: 4632
+Estimated Gas Usage: 13875 - 121216
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8e9b628e39aa0cafe6ebdbf523efbc3f.sol:153
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: ccccccccccccccccccccccccdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+Caller: [SOMEGUY], function: getWinner(uint256), txdata: 0x4129b2c9, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 4804
+Estimated Gas Usage: 27435 - 124187
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state. This issue is reported for internal compiler generated code.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: KittyArena
+Function name: enter(uint256)
+PC address: 4807
+Estimated Gas Usage: 27435 - 124187
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state. This issue is reported for internal compiler generated code.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 4f4f4f4f4f4f4f4f4f4f4f4fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: enter(uint256), txdata: 0xa59f3e0c, value: 0x0

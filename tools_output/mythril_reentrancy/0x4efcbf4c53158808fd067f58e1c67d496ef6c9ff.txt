@@ -1,0 +1,488 @@
+with mythril_dir
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: TokenBase
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 747
+Estimated Gas Usage: 8011 - 69500
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09b6b4260963ddb146bacdb3eef366c3.sol:69
+
+ata) public returns (bool success) {
+        tokenRecipient spender = tokenRecipient(_spender);
+        if (approve(_spender, _value)) {
+            spender.receiveApproval(msg.sender, _value, this, _extraData);
+            return true;
+        }
+    }
+}
+
+
+contract WorkProff is TokenBase {
+    uint public oneYear = 1 years;
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x800, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca5100000000000000000000000001011001080280040008200004100002010000400000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: WorkProff
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 1042
+Estimated Gas Usage: 8209 - 69698
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09b6b4260963ddb146bacdb3eef366c3.sol:69
+
+ata) public returns (bool success) {
+        tokenRecipient spender = tokenRecipient(_spender);
+        if (approve(_spender, _value)) {
+            spender.receiveApproval(msg.sender, _value, this, _extraData);
+            return true;
+        }
+    }
+}
+
+
+contract WorkProff is TokenBase {
+    uint public oneYear = 1 years;
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40080040000000040, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca5100000000000000000000000010204001010101024008010402084000040008010000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TokenBase
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 1678
+Estimated Gas Usage: 8011 - 69500
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca51000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: WorkProff
+Function name: proofOfWork(uint256)
+PC address: 1743
+Estimated Gas Usage: 4516 - 4987
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09b6b4260963ddb146bacdb3eef366c3.sol:104
+
+ngTime < minerPreTime) {
+            rew
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: proofOfWork(uint256), txdata: 0x5c10fe08, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: WorkProff
+Function name: proofOfWork(uint256)
+PC address: 1766
+Estimated Gas Usage: 6155 - 6626
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09b6b4260963ddb146bacdb3eef366c3.sol:105
+
+erPreTime;
+        } else {
+            reward = timeSinceLastProof * (minerTotalSupply - minerPreSupply) / minerTotalTime;
+        }
+
+        balanceOf[msg.sender] += reward;
+        totalSupply += reward;
+        minerTotalReward += rewar
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x5, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: proofOfWork(uint256), txdata: 0x5c10fe08, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Option
+Function name: optionExercise(uint256)
+PC address: 1777
+Estimated Gas Usage: 5399 - 6109
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09b6b4260963ddb146bacdb3eef366c3.sol:176
+
+lue;
+        totalSupply += value;
+        Transfer(0, this, value);
+        Transfer(thi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000806, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: optionExercise(uint256), txdata: 0x20f361b3, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: WorkProff
+Function name: proofOfWork(uint256)
+PC address: 1878
+Estimated Gas Usage: 26191 - 87182
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09b6b4260963ddb146bacdb3eef366c3.sol:115
+
+hallenge = sha3(nonce, minerCurrentChallenge, blo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42080080040014109, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: proofOfWork(uint256), txdata: 0x5c10fe08, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Token
+Function name: optionExercise(uint256)
+PC address: 2124
+Estimated Gas Usage: 5443 - 6153
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09b6b4260963ddb146bacdb3eef366c3.sol:176
+
+lue;
+        totalSupply += value;
+        Transfer(0, this, value);
+        Transfer(thi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x48310200002000009, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: optionExercise(uint256), txdata: 0x20f361b3, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Option
+Function name: proofOfWork(uint256)
+PC address: 2305
+Estimated Gas Usage: 4560 - 5031
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09b6b4260963ddb146bacdb3eef366c3.sol:104
+
+ngTime < minerPreTime) {
+            rew
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xfbfbe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: proofOfWork(uint256), txdata: 0x5c10fe08, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Option
+Function name: proofOfWork(uint256)
+PC address: 2328
+Estimated Gas Usage: 6199 - 6670
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09b6b4260963ddb146bacdb3eef366c3.sol:105
+
+erPreTime;
+        } else {
+            reward = timeSinceLastProof * (minerTotalSupply - minerPreSupply) / minerTotalTime;
+        }
+
+        balanceOf[msg.sender] += reward;
+        totalSupply += reward;
+        minerTotalReward += rewar
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xfbfbe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: proofOfWork(uint256), txdata: 0x5c10fe08, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Option
+Function name: proofOfWork(uint256)
+PC address: 2440
+Estimated Gas Usage: 26235 - 87226
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09b6b4260963ddb146bacdb3eef366c3.sol:115
+
+hallenge = sha3(nonce, minerCurrentChallenge, blo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x7befe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x200, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: proofOfWork(uint256), txdata: 0x5c10fe08, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: WorkProff
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 2563
+Estimated Gas Usage: 8209 - 69698
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000084000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca51000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Token
+Function name: proofOfWork(uint256)
+PC address: 2664
+Estimated Gas Usage: 4648 - 5119
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09b6b4260963ddb146bacdb3eef366c3.sol:104
+
+ngTime < minerPreTime) {
+            rew
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: proofOfWork(uint256), txdata: 0x5c10fe08, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Token
+Function name: proofOfWork(uint256)
+PC address: 2687
+Estimated Gas Usage: 6287 - 6758
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09b6b4260963ddb146bacdb3eef366c3.sol:105
+
+erPreTime;
+        } else {
+            reward = timeSinceLastProof * (minerTotalSupply - minerPreSupply) / minerTotalTime;
+        }
+
+        balanceOf[msg.sender] += reward;
+        totalSupply += reward;
+        minerTotalReward += rewar
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000e000a, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: proofOfWork(uint256), txdata: 0x5c10fe08, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Token
+Function name: proofOfWork(uint256)
+PC address: 2799
+Estimated Gas Usage: 26323 - 87314
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09b6b4260963ddb146bacdb3eef366c3.sol:115
+
+hallenge = sha3(nonce, minerCurrentChallenge, blo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x208000000000402c, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: proofOfWork(uint256), txdata: 0x5c10fe08, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Option
+Function name: optionExercise(uint256)
+PC address: 4148
+Estimated Gas Usage: 4464 - 5174
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09b6b4260963ddb146bacdb3eef366c3.sol:145
+
+s = min(optio
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1fe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: optionExercise(uint256), txdata: 0x20f361b3, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Token
+Function name: optionExercise(uint256)
+PC address: 4692
+Estimated Gas Usage: 4508 - 5218
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09b6b4260963ddb146bacdb3eef366c3.sol:145
+
+s = min(optio
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: optionExercise(uint256), txdata: 0x20f361b3, value: 0x0
+
+

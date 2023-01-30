@@ -1,0 +1,442 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ScarlettSale
+Function name: constructor
+PC address: 45
+Estimated Gas Usage: 88112 - 414179
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/6d7dc88a96c6901986a5ae0edf4746bf.sol:116
+
+r); //
+    
+    event
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ScarlettSale
+Function name: fallback
+PC address: 945
+Estimated Gas Usage: 995 - 1090
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/6d7dc88a96c6901986a5ae0edf4746bf.sol:158
+
+00, "Wei amount should b
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000010102080001010140010110000180010210080400000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: unknown, txdata: 0x, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ScarlettSale
+Function name: constructor
+PC address: 1027
+Estimated Gas Usage: 64791 - 308554
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/6d7dc88a96c6901986a5ae0edf4746bf.sol:130
+
+nthTwo, 4 weeks);
+        _monthF
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000800101080101200440200101020480041020080100000000000000000000000004, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ScarlettSale
+Function name: withdrawTokens(uint256)
+PC address: 1818
+Estimated Gas Usage: 4456 - 40198
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/6d7dc88a96c6901986a5ae0edf4746bf.sol:246
+
+         require(_saleSupply >= v
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000420020110010210010101020810804020080101000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: withdrawTokens(uint256), txdata: 0x315a095d01, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ScarlettSale
+Function name: transferFunds(address[],uint256[])
+PC address: 2035
+Estimated Gas Usage: 1340 - 1765
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/6d7dc88a96c6901986a5ae0edf4746bf.sol:247
+
+   _saleSupply = SafeMath.sub(_saleSupply,values[i]);
+            _token.transfer(recipients[i], x); 
+        }
+    } 
+
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x108800000448042, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000024001041040040404012002042080101008201000000000000000000000000010, value: 0x0
+Caller: [CREATOR], function: transferFunds(address[],uint256[]), txdata: 0x4603ae38fffffffffffefffffffffffffffffffffffffffffffffffffffffffffeffddd0ff, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ScarlettSale
+Function name: fallback
+PC address: 2951
+Estimated Gas Usage: 910 - 1005
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/6d7dc88a96c6901986a5ae0edf4746bf.sol:225
+
+nstant returns (bool) {
+      return
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000040101010101010102010108010101010101010100000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: unknown, txdata: 0x, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ScarlettSale
+Function name: fallback
+PC address: 2975
+Estimated Gas Usage: 954 - 1049
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/6d7dc88a96c6901986a5ae0edf4746bf.sol:229
+
+
+    //     _wallet.transfer(ms
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000018001020101010101012001010101100101014000000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: unknown, txdata: 0x, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ScarlettSale
+Function name: fallback
+PC address: 3326
+Estimated Gas Usage: 2833 - 2928
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/6d7dc88a96c6901986a5ae0edf4746bf.sol:191
+
+_monthOne)) { 
+     
+        tokenAmount = SafeMath.add(tokenAmount, weiAmount.mul(_tierTwoRate));
+     
+      } else if (( accessTime <= _monthThree ) && (accessTime > _monthTwo)) { 
+     
+        tokenAmount = SafeMath.add(tokenAmount, weiAmount.mul(_tierThreeRate));
+     
+      } else if (( accessTime <= _monthFour ) && (accessTime > _monthThree)) { 
+     
+        tokenAmount = SafeMath.add(tokenAmount, weiAmount.mul(_tierFourRate));
+     
+      } else {
+          
+          tokenAmount = SafeMath.add(tokenAmount, weiAmount.mul(_tierFiveRate));
+          
+      }
+
+        require(_saleSupply >= tokenAmount, "sale supply should be greater or equals to tokenAmount");
+        
+        _saleSupply = _saleSupply.sub(tokenAmount);        
+
+        return tokenAmount;
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x39c0446038001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000028020800410400404082020020101101004040800000000000000000000000004, value: 0x0
+Caller: [CREATOR], function: unknown, txdata: 0x, value: 0x38d7ea4c68000
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ScarlettSale
+Function name: fallback
+PC address: 3375
+Estimated Gas Usage: 3665 - 3760
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/6d7dc88a96c6901986a5ae0edf4746bf.sol:195
+
+hree ) && (accessTime > _monthTwo)) { 
+     
+        to
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1020a1b33, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x40008cf7f0a000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000400210010201010880402010200101800410010200000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: unknown, txdata: 0x, value: 0x38d7ea4c68000
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ScarlettSale
+Function name: fallback
+PC address: 3387
+Estimated Gas Usage: 3682 - 3777
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/6d7dc88a96c6901986a5ae0edf4746bf.sol:195
+
+nthThree ) && (accessTime > _monthTwo)) { 
+     
+        tokenAmount = SafeMath.add(tokenAmount, weiAmount.mul(_tierThreeRate));
+     
+      } else if (( accessTime <= _monthFour ) && (accessTime > _monthThree)) { 
+     
+        tokenAmount = SafeMath.add(tokenAmount, weiAmount.mul(_tierFourRate));
+     
+      } else {
+          
+          tokenAmount = SafeMath.add(tokenAmount, weiAmount.mul(_tierFiveRate));
+          
+      }
+
+        require(_saleSupply >= tokenAmount, "sale supply should be greater or equals to tokenAmount");
+        
+        _saleSupply = _saleSupply.sub(tokenAmount);        
+
+        return tokenAmount;
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000100010003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000010101010101010101010108010101010101010100000000000000000000000004, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x38d7ea4c68000
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ScarlettSale
+Function name: fallback
+PC address: 3436
+Estimated Gas Usage: 4514 - 4609
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/6d7dc88a96c6901986a5ae0edf4746bf.sol:199
+
+our ) && (accessTime > _monthThree)) { 
+     
+        tok
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40002802080286, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000010108010101010110100101010101010102011000000000000000000000000002, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x38d7ea4c68000
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ScarlettSale
+Function name: fallback
+PC address: 3448
+Estimated Gas Usage: 4531 - 4626
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/6d7dc88a96c6901986a5ae0edf4746bf.sol:199
+
+nthFour ) && (accessTime > _monthThree)) { 
+     
+        tokenAmount = SafeMath.add(tokenAmount, weiAmount.mul(_tierFourRate));
+     
+      } else {
+          
+          tokenAmount = SafeMath.add(tokenAmount, weiAmount.mul(_tierFiveRate));
+          
+      }
+
+        require(_saleSupply >= tokenAmount, "sale supply should be greater or equals to tokenAmount");
+        
+        _saleSupply = _saleSupply.sub(tokenAmount);        
+
+        return tokenAmount;
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x810c05010b0001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000010102010101010101010101000101010101020100000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: unknown, txdata: 0x, value: 0x38d7ea4c68000
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ScarlettSale
+Function name: fallback
+PC address: 3497
+Estimated Gas Usage: 5363 - 5458
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/6d7dc88a96c6901986a5ae0edf4746bf.sol:205
+
+unt = SafeMath.add(tokenAmount, weiAmount.mul(_tierFiveRat
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x81040441068001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000010101010101010101010101010102010101010100000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: unknown, txdata: 0x, value: 0x38d7ea4c68000
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ScarlettSale
+Function name: fallback
+PC address: 3509
+Estimated Gas Usage: 5380 - 5475
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/6d7dc88a96c6901986a5ae0edf4746bf.sol:205
+
+nAmount = SafeMath.add(tokenAmount, weiAmount.mul(_tierFiveRate));
+          
+      }
+
+        require(_saleSupply >= tokenAmount, "sale supply should be greater or equals to tokenAmount");
+        
+        _saleSupply = _saleSupply.sub(tokenAmount);        
+
+        return tokenAmount;
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000010101010101010101010101010101010101010100000000000000000000000001, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x38d7ea4c68000

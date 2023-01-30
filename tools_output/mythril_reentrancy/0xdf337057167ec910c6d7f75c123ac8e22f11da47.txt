@@ -1,0 +1,359 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: TokenVesting
+Function name: constructor
+PC address: 200
+Estimated Gas Usage: 7750 - 31955
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/32b9fc04381ec135901b6aca2677b1af.sol:311
+
+eficiary;
+  }
+
+  /**
+   * @return the cliff ti
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000004100104800040100440200110048004800004010dcc2d4dac87f7fb7c8a18bc765ca718f2ecfef7e406deb6c083b1be37293b68056a08ad101210904d058005844181111989a50401829f08a212517ff7ffff0a0d, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TokenVesting
+Function name: releasable(address)
+PC address: 1398
+Estimated Gas Usage: 6729 - 44687
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000013020, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x40000000013020, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000000000000000000000000000000000000001c1dafda01e330026015c0aba4a026d4211215156c19412948631a49b5680c93000110349b246a05c02880a9346824102302100cc8000ee8184222c1154c4090401, value: 0x0
+Caller: [ATTACKER], function: releasable(address), txdata: 0xa3f8eace1e1e1e1e1e1e1e1e1e1e1e1edeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: TokenVesting
+Function name: releasable(address)
+PC address: 1464
+Estimated Gas Usage: 6729 - 44687
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/32b9fc04381ec135901b6aca2677b1af.sol:397
+
+y  {
+  using SafeMath for uint256;
+  using SafeERC20 for IERC20;
+
+  event TokenVestingDeployed(address indexed location, address indexed recipient);
+
+
+  constructor() public {}
+
+  function deployVestingContract(address recipient, uin
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2490404000101a1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000000000000000000000000000000000000000000016a84205218c2c48a924c2d2d029646a28411f6eaa1a4d8af424d0a968453c339001a000e088e5c09c278e82910400ab60c330486a120600106ca0894848202010f, value: 0x0
+Caller: [CREATOR], function: releasable(address), txdata: 0xa3f8eace8e8e8e8e8e8e8e8e8e8e8e8edeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: TokenVesting
+Function name: releasable(address)
+PC address: 1489
+Estimated Gas Usage: 6729 - 44687
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/32b9fc04381ec135901b6aca2677b1af.sol:401
+
+dress indexe
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2490404000101a1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000000000000000000000000000000000000000000016a84205218c2c48a924c2d2d029646a28411f6eaa1a4d8af424d0a968453c339001a000e088e5c09c278e82910400ab60c330486a120600106ca0894848202010f, value: 0x0
+Caller: [CREATOR], function: releasable(address), txdata: 0xa3f8eace8e8e8e8e8e8e8e8e8e8e8e8edeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: TokenVesting
+Function name: release(address)
+PC address: 1496
+Estimated Gas Usage: 4674 - 42351
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/32b9fc04381ec135901b6aca2677b1af.sol:399
+
+20;
+
+  event TokenVestingDeployed(address indexed location, address indexed recipient);
+
+
+  constructor() public {}
+
+  function deployVestingContract(address recipient, uin
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000000000002000000000000100080000000004000002c9c780994b6c25c66683874a6bca4a874c265964eaa4b509b282d0a268d370862b54952037484a08202008b6292fc60015dcb3014c036388518051a00a0021866, value: 0x0
+Caller: [SOMEGUY], function: release(address), txdata: 0x19165587, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: TokenVesting
+Function name: releasable(address)
+PC address: 1508
+Estimated Gas Usage: 6729 - 44687
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/32b9fc04381ec135901b6aca2677b1af.sol:406
+
+nction deployVe
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2490404000101a1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000000000000000000000000000000000000000000016a84205218c2c48a924c2d2d029646a28411f6eaa1a4d8af424d0a968453c339001a000e088e5c09c278e82910400ab60c330486a120600106ca0894848202010f, value: 0x0
+Caller: [CREATOR], function: releasable(address), txdata: 0xa3f8eace8e8e8e8e8e8e8e8e8e8e8e8edeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: TokenVesting
+Function name: releasable(address)
+PC address: 1511
+Estimated Gas Usage: 6729 - 44687
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/32b9fc04381ec135901b6aca2677b1af.sol:406
+
+nction deployVestin
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2490404000101a1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000000000000000000000000000000000000000000016a84205218c2c48a924c2d2d029646a28411f6eaa1a4d8af424d0a968453c339001a000e088e5c09c278e82910400ab60c330486a120600106ca0894848202010f, value: 0x0
+Caller: [CREATOR], function: releasable(address), txdata: 0xa3f8eace8e8e8e8e8e8e8e8e8e8e8e8edeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: TokenVesting
+Function name: release(address)
+PC address: 1532
+Estimated Gas Usage: 6391 - 44068
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/32b9fc04381ec135901b6aca2677b1af.sol:404
+
+) public {}
+
+  function deployVestingContract
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 20202020202020202020202000000101000001020001000000000000000000200900c096b00d4744d428514c40010040c410d1e37134c2b3052a4346a94dd8c03940800004f4400803e0b002003f800001100009015040060300dd01aba0800c60, value: 0x0
+Caller: [SOMEGUY], function: release(address), txdata: 0x19165587, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: TokenVesting
+Function name: releasable(address)
+PC address: 1546
+Estimated Gas Usage: 6729 - 44687
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/32b9fc04381ec135901b6aca2677b1af.sol:404
+
+ructor() public {}
+
+  function deployVestingContract(address recipi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2490404000101a1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000000000000000000000000000000000000000000016a84205218c2c48a924c2d2d029646a28411f6eaa1a4d8af424d0a968453c339001a000e088e5c09c278e82910400ab60c330486a120600106ca0894848202010f, value: 0x0
+Caller: [CREATOR], function: releasable(address), txdata: 0xa3f8eace8e8e8e8e8e8e8e8e8e8e8e8edeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: TokenVesting
+Function name: releasable(address)
+PC address: 1555
+Estimated Gas Usage: 6729 - 44687
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/32b9fc04381ec135901b6aca2677b1af.sol:386
+
+imestamp.sub(_start)).div(_duration);
+    }
+  }
+}
+
+
+
+/**
+ * @title TokenVestingFactory
+ * @dev A factory to deploy instances of TokenVesting for RSR, nothing more. 
+ */
+contract TokenVestingFactory  {
+  using SafeMath for uint256;
+  using SafeERC20 for IERC20;
+
+  event TokenVestingDeployed(address indexed location, address indexed recipient);
+
+
+  constructor() public {}
+
+  function deployVestingContract(address recipient, uint256 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2490404000101a1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000000000000000000000000000000000000000000016a84205218c2c48a924c2d2d029646a28411f6eaa1a4d8af424d0a968453c339001a000e088e5c09c278e82910400ab60c330486a120600106ca0894848202010f, value: 0x0
+Caller: [CREATOR], function: releasable(address), txdata: 0xa3f8eace8e8e8e8e8e8e8e8e8e8e8e8edeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: TokenVesting
+Function name: release(address)
+PC address: 1616
+Estimated Gas Usage: 8067 - 45744
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/32b9fc04381ec135901b6aca2677b1af.sol:68
+
+* @de
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4014207f926, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x400, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000000000000000000000000000000000000000000145a20c3a101030305872974000b4041e961e40dde406ae6d7146cfe1414832b0051248003282006c5913bc10398403f09230bf5084249828cb2c80015000cf6849, value: 0x0
+Caller: [SOMEGUY], function: release(address), txdata: 0x19165587, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: TokenVesting
+Function name: release(address)
+PC address: 1669
+Estimated Gas Usage: 8209 - 45886
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/32b9fc04381ec135901b6aca2677b1af.sol:71
+
+    require(b > 0); // Solidity only automatically asserts when dividing by 0
+    uint256 c = a / b;
+    // assert(a == b * c + a % b); // There is no case in which this doesn't hold
+
+    return c;
+  }
+
+  /**
+  * @dev Subtracts two numbers, reverts on overflow (i.e. if subtra
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000010081080100202400280102040808004020802080809d4d1402021c3835ab108000103838882a9994afc9b444bb2a686b9536714081c141f2027df40800063f800001c8c8785a0310a417204091002aca14e1a3480, value: 0x0
+Caller: [ATTACKER], function: release(address), txdata: 0x19165587, value: 0x0
+
+

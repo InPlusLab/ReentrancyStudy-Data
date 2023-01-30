@@ -1,0 +1,188 @@
+==== Unprotected Selfdestruct ====
+SWC ID: 106
+Severity: High
+Contract: Pass
+Function name: constructor
+PC address: 74
+Estimated Gas Usage: 139 - 2819
+Any sender can cause the contract to self-destruct.
+Any sender can trigger execution of the SELFDESTRUCT instruction to destroy this contract account and withdraw its balance to an arbitrary address. Review the transaction trace generated for this issue and make sure that appropriate security controls are in place to prevent unrestricted access.
+--------------------
+In file: /tmp/4a6a79d63420faeaca7f0268792928d4.sol:17
+
+getAddress);
+
+    }
+
+}
+
+
+
+i
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: efefefefefefefefefefefefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Proxy_toff
+Function name: investTargetAmount(uint256,bool,bool)
+PC address: 2078
+Estimated Gas Usage: 4507 - 73917
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/4a6a79d63420faeaca7f0268792928d4.sol:103
+
+eepBa
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: investTargetAmount(uint256,bool,bool), txdata: 0xb462b2bb000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101010101010101010101010100, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Proxy_toff
+Function name: investTargetMsgValue(bool,bool)
+PC address: 2078
+Estimated Gas Usage: 4538 - 73948
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/4a6a79d63420faeaca7f0268792928d4.sol:103
+
+eepBa
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xa0000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: investTargetMsgValue(bool,bool), txdata: 0xe43ac63300000000000000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Proxy_toff
+Function name: investTargetAmount(uint256,bool,bool)
+PC address: 2177
+Estimated Gas Usage: 4434 - 73561
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/4a6a79d63420faeaca7f0268792928d4.sol:103
+
+eepBalance) public payable onlyOwner 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2020000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: investTargetAmount(uint256,bool,bool), txdata: 0xb462b2bb000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Proxy_toff
+Function name: investTargetMsgValue(bool,bool)
+PC address: 2177
+Estimated Gas Usage: 4465 - 73592
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/4a6a79d63420faeaca7f0268792928d4.sol:103
+
+eepBalance) public payable onlyOwner 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: investTargetMsgValue(bool,bool), txdata: 0xe43ac63300000000000000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Proxy_toff
+Function name: investTargetAmount(uint256,bool,bool)
+PC address: 2177
+Estimated Gas Usage: 4507 - 73917
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/4a6a79d63420faeaca7f0268792928d4.sol:103
+
+eepBalance) public payable onlyOwner 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: investTargetAmount(uint256,bool,bool), txdata: 0xb462b2bb000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101010101010101010101010100, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Proxy_toff
+Function name: investTargetMsgValue(bool,bool)
+PC address: 2177
+Estimated Gas Usage: 4538 - 73948
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/4a6a79d63420faeaca7f0268792928d4.sol:103
+
+eepBalance) public payable onlyOwner 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xa0000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: investTargetMsgValue(bool,bool), txdata: 0xe43ac63300000000000000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101010101010101010101010101, value: 0x0

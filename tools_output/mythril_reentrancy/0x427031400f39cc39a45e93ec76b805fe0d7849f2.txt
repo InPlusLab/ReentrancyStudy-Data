@@ -1,0 +1,560 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MultiChanger
+Function name: change(bytes,uint256[])
+PC address: 710
+Estimated Gas Usage: 2940 - 77790
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:629
+
+ance.mul(mul).div(div);
+
+        etherToken.deposit.value(amount)();
+
+    }
+
+
+
+    function withdrawEtherTokenAmount(IEtherToken etherToken, uint256 amount) external {
+
+        etherToken.withdraw(amount);
+
+    }
+
+
+
+    function withdrawEtherTokenProportion(IEtherToken etherToken, uint256 mul, u
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: change(bytes,uint256[]), txdata: 0xdc0ba228fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc80, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MultiChanger
+Function name: multitokenChangeProportion(address,address,address,uint256,uint256,uint256)
+PC address: 1103
+Estimated Gas Usage: 3976 - 73389
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:681
+Initial State:
+
+Account: [CREATOR], balance: 0x2040080000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: multitokenChangeProportion(address,address,address,uint256,uint256,uint256), txdata: 0x12cc40ce0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000201, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: MultiChanger
+Function name: multitokenChangeProportion(address,address,address,uint256,uint256,uint256)
+PC address: 1467
+Estimated Gas Usage: 3976 - 73389
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:681
+Initial State:
+
+Account: [CREATOR], balance: 0x40080000002fb9, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: multitokenChangeProportion(address,address,address,uint256,uint256,uint256), txdata: 0x12cc40ce0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000201, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MultiChanger
+Function name: multitokenChangeAmount(address,address,address,uint256,uint256)
+PC address: 1709
+Estimated Gas Usage: 3801 - 73400
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:681
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000040000002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: multitokenChangeAmount(address,address,address,uint256,uint256), txdata: 0x482a6c570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MultiChanger
+Function name: multitokenChangeAmount(address,address,address,uint256,uint256)
+PC address: 2074
+Estimated Gas Usage: 3801 - 73400
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:681
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: multitokenChangeAmount(address,address,address,uint256,uint256), txdata: 0x482a6c57000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: MultiChanger
+Function name: multitokenChangeAmount(address,address,address,uint256,uint256)
+PC address: 2074
+Estimated Gas Usage: 3801 - 73400
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:681
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multitokenChangeAmount(address,address,address,uint256,uint256), txdata: 0x482a6c57, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MultiChanger
+Function name: withdrawEtherTokenProportion(address,uint256,uint256)
+PC address: 2306
+Estimated Gas Usage: 3794 - 72827
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:675
+
+(div);
+
+        this.multi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x41000000003f82, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: withdrawEtherTokenProportion(address,uint256,uint256), txdata: 0x5499716a000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MultiChanger
+Function name: withdrawEtherTokenProportion(address,uint256,uint256)
+PC address: 2506
+Estimated Gas Usage: 3794 - 72827
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:677
+
+en, toToken, minReturn, amo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x41000000003f82, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: withdrawEtherTokenProportion(address,uint256,uint256), txdata: 0x5499716a000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: MultiChanger
+Function name: withdrawEtherTokenProportion(address,uint256,uint256)
+PC address: 2506
+Estimated Gas Usage: 3794 - 72827
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:677
+
+en, toToken, minReturn, amo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: withdrawEtherTokenProportion(address,uint256,uint256), txdata: 0x5499716a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MultiChanger
+Function name: depositEtherTokenAmount(address,uint256)
+PC address: 2636
+Estimated Gas Usage: 1838 - 36214
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:650
+
+
+    }
+
+
+
+    // MultiToken
+
+
+
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: depositEtherTokenAmount(address,uint256), txdata: 0x630b76eb000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MultiChanger
+Function name: withdrawEtherTokenAmount(address,uint256)
+PC address: 2776
+Estimated Gas Usage: 1886 - 36357
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:673
+
+rtion(IMultiToken mtkn, ERC
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawEtherTokenAmount(address,uint256), txdata: 0xbd3e904f000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiChanger
+Function name: change(bytes,uint256[])
+PC address: 2838
+Estimated Gas Usage: 724 - 6179
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:629
+
+ance.mul(mul).div(div);
+
+        etherToken.deposit.value(amount)();
+
+    }
+
+
+
+    function withdrawEtherTokenAmount(IEtherToken etherToken, uint256 amount) external {
+
+        etherToken.withdraw(amount);
+
+    }
+
+
+
+    function withdrawEtherTokenProportion(IEtherToken etherToken, uint256 mul, u
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: change(bytes,uint256[]), txdata: 0xdc0ba228, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MultiChanger
+Function name: depositEtherTokenProportion(address,uint256,uint256)
+PC address: 3137
+Estimated Gas Usage: 2845 - 37221
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:663
+
+oken.asmApprove(mtkn, uint256(-1))
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: depositEtherTokenProportion(address,uint256,uint256), txdata: 0xe17eba5d000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000082, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiChanger
+Function name: withdrawEtherTokenProportion(address,uint256,uint256)
+PC address: 3210
+Estimated Gas Usage: 2092 - 36749
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:675
+
+(div);
+
+        this.multitokenChan
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4238908809a07ad95, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: withdrawEtherTokenProportion(address,uint256,uint256), txdata: 0x5499716a000000000000000000000000000000000000000000000000000000000000000040, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiChanger
+Function name: multitokenChangeProportion(address,address,address,uint256,uint256,uint256)
+PC address: 3210
+Estimated Gas Usage: 2141 - 36798
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:681
+Initial State:
+
+Account: [CREATOR], balance: 0x899020080289083, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: multitokenChangeProportion(address,address,address,uint256,uint256,uint256), txdata: 0x12cc40ce000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiChanger
+Function name: depositEtherTokenProportion(address,uint256,uint256)
+PC address: 3233
+Estimated Gas Usage: 1247 - 1342
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:661
+
+ken.allowance(this, mtkn) == 0) {
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21c0000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: depositEtherTokenProportion(address,uint256,uint256), txdata: 0xe17eba5d, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiChanger
+Function name: withdrawEtherTokenProportion(address,uint256,uint256)
+PC address: 3233
+Estimated Gas Usage: 2179 - 36836
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:675
+
+(div);
+
+        this.multitokenChangeAmount(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawEtherTokenProportion(address,uint256,uint256), txdata: 0x5499716a, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiChanger
+Function name: multitokenChangeProportion(address,address,address,uint256,uint256,uint256)
+PC address: 3233
+Estimated Gas Usage: 2228 - 36885
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:681
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multitokenChangeProportion(address,address,address,uint256,uint256,uint256), txdata: 0x12cc40ce, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: MultiChanger
+Function name: change(bytes,uint256[])
+PC address: 3553
+Estimated Gas Usage: 2940 - 77790
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/bc1e3122a3d5e199f858369eb5f34bb2.sol:561
+
+ padding problem
+
+                x,
+
+                0                  // Output is ignored, therefore the output size is zero
+
+            )
+
+        }
+
+    }
+
+}
+
+
+
+// File: contracts/network/MultiChanger.sol
+
+
+
+contract IEtherToken is ERC20 {
+
+    function deposit() public payable;
+
+    function withdraw(uint256 amount) public;
+
+}
+
+
+
+
+
+contract MultiChanger {
+
+    using SafeMath for uint256;
+
+    using CheckedERC20 for ERC20;
+
+    using ExternalCall for address;
+
+
+
+    function change(bytes callDatas, uint[] starts) public payable { // starts should include 0 and callDatas.length
+
+        for (uint i = 0; i < starts.length - 1; i++) {
+
+            require(address(this).externalCall(0, callDatas, 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: change(bytes,uint256[]), txdata: 0xdc0ba2280000000000000000000000000000000000000000000000000000000000000003, value: 0x0

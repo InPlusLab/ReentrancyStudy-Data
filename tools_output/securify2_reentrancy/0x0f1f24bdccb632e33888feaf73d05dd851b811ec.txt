@@ -1,0 +1,893 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        21
+Source: 
+>     bool private _firstCapture = true;
+>     uint256 private _reethDecimals = 18; // Same as YAM
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 private _reethETHPrice = 0;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        118
+Source: 
+>         }
+>         if(_reethPriceWindow == 0){
+>            ^^^^^^^^^^^^^^^^^^^^^^
+>             // First time price is calculated, set it to the twap price
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        132
+Source: 
+>     // Governance
+>     function governanceChangeFrequency(uint256 _freq) external onlyGovernance {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         updateFrequency = _freq;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        155
+Source: 
+>     // --------------------
+>     function startGovernanceChange(address _address) external onlyGovernance {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _timelockStart = now;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        168
+Source: 
+>     // --------------------
+>     function startUpdateLiquidityToken(address _address, uint256 _index) external onlyGovernance {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _timelockStart = now;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        108
+Source: 
+>                 // This is price in relationship to base pair
+>                 lastTWAPPrice = ((cumuPrice - lastTWAPCumulativePrice) / (_blockTime - lastTWAPBlockTime) * (10**_reethDecimals)) >> 112;
+>                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 lastTWAPCumulativePrice = cumuPrice;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        125
+Source: 
+>             uint256 price = lastTWAPPrice;
+>             _reethETHPrice = (_reethETHPrice * (_reethPriceWindow * DIVISION_FACTOR / (_reethPriceWindow + period)) / DIVISION_FACTOR);
+>                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             _reethETHPrice += (price * (period * DIVISION_FACTOR / (_reethPriceWindow + period)) / DIVISION_FACTOR);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        126
+Source: 
+>             _reethETHPrice = (_reethETHPrice * (_reethPriceWindow * DIVISION_FACTOR / (_reethPriceWindow + period)) / DIVISION_FACTOR);
+>             _reethETHPrice += (price * (period * DIVISION_FACTOR / (_reethPriceWindow + period)) / DIVISION_FACTOR);
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             _reethPriceWindow = period; // Set the window to the new period
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        74
+Source: 
+>         UniswapV2Pair pair = UniswapV2Pair(mainLiquidity);
+>         (, uint112 reserve1, uint32 _blockTime) = pair.getReserves();
+>                                                   ^^^^^^^^^^^^^^^^^^
+>         if(reserve1 == 0){
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        91
+Source: 
+>                 if(_tokenIndex == 0){
+>                     lastTWAPCumulativePrice = pair.price0CumulativeLast();
+>                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 }else{
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        93
+Source: 
+>                 }else{
+>                     lastTWAPCumulativePrice = pair.price1CumulativeLast();
+>                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 }
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        103
+Source: 
+>                 if(_tokenIndex == 0){
+>                     cumuPrice = pair.price0CumulativeLast();
+>                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 }else{
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        105
+Source: 
+>                 }else{
+>                     cumuPrice = pair.price1CumulativeLast();
+>                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Repeated Call to Untrusted Contract
+Description: Repeated call to an untrusted contract may result in
+             different values
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        91
+Source: 
+>                 if(_tokenIndex == 0){
+>                     lastTWAPCumulativePrice = pair.price0CumulativeLast();
+>                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 }else{
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Repeated Call to Untrusted Contract
+Description: Repeated call to an untrusted contract may result in
+             different values
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        93
+Source: 
+>                 }else{
+>                     lastTWAPCumulativePrice = pair.price1CumulativeLast();
+>                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Repeated Call to Untrusted Contract
+Description: Repeated call to an untrusted contract may result in
+             different values
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        103
+Source: 
+>                 if(_tokenIndex == 0){
+>                     cumuPrice = pair.price0CumulativeLast();
+>                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 }else{
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Repeated Call to Untrusted Contract
+Description: Repeated call to an untrusted contract may result in
+             different values
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        105
+Source: 
+>                 }else{
+>                     cumuPrice = pair.price1CumulativeLast();
+>                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        74
+Source: 
+>         UniswapV2Pair pair = UniswapV2Pair(mainLiquidity);
+>         (, uint112 reserve1, uint32 _blockTime) = pair.getReserves();
+>            ^^^^^^^^^^^^^^^^
+>         if(reserve1 == 0){
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        74
+Source: 
+>         UniswapV2Pair pair = UniswapV2Pair(mainLiquidity);
+>         (, uint112 reserve1, uint32 _blockTime) = pair.getReserves();
+>                              ^^^^^^^^^^^^^^^^^
+>         if(reserve1 == 0){
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        143
+Source: 
+>     // Reusable timelock variables
+>     address private _timelock_address;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 private _timelock_data;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        144
+Source: 
+>     address private _timelock_address;
+>     uint256 private _timelock_data;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        28
+Source: 
+> 
+>     uint256 constant DIVISION_FACTOR = 100000;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        140
+Source: 
+>     uint256 private _timelockType; // The function that needs to be changed
+>     uint256 constant TIMELOCK_DURATION = 86400; // Timelock is 24 hours
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        146
+Source: 
+>     
+>     modifier timelockConditionsMet(uint256 _type) {
+>                                    ^^^^^^^^^^^^^
+>         require(_timelockType == _type, "Timelock not acquired for this function");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        28
+Source: 
+> 
+>     uint256 constant DIVISION_FACTOR = 100000;
+>                                        ^^^^^^
+>     
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        74
+Source: 
+>         UniswapV2Pair pair = UniswapV2Pair(mainLiquidity);
+>         (, uint112 reserve1, uint32 _blockTime) = pair.getReserves();
+>                                                   ^^^^^^^^^^^^^^^^^^
+>         if(reserve1 == 0){
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        91
+Source: 
+>                 if(_tokenIndex == 0){
+>                     lastTWAPCumulativePrice = pair.price0CumulativeLast();
+>                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 }else{
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        93
+Source: 
+>                 }else{
+>                     lastTWAPCumulativePrice = pair.price1CumulativeLast();
+>                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        103
+Source: 
+>                 if(_tokenIndex == 0){
+>                     cumuPrice = pair.price0CumulativeLast();
+>                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 }else{
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        105
+Source: 
+>                 }else{
+>                     cumuPrice = pair.price1CumulativeLast();
+>                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        25
+Source: 
+>     uint256 private _tokenIndex = 0;
+>     uint256 public lastREETHPriceUpdate; // The last time the price was updated
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public updateFrequency = 10 minutes; // Oracle can be updated at least every 10 minutes
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        31
+Source: 
+>     // TWAP details
+>     address public mainLiquidity;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 private lastTWAPCumulativePrice;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        32
+Source: 
+>     address public mainLiquidity;
+>     uint256 private lastTWAPCumulativePrice;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint32 private lastTWAPBlockTime;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        33
+Source: 
+>     uint256 private lastTWAPCumulativePrice;
+>     uint32 private lastTWAPBlockTime;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 private lastTWAPPrice;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        34
+Source: 
+>     uint32 private lastTWAPBlockTime;
+>     uint256 private lastTWAPPrice;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        138
+Source: 
+>     
+>     uint256 private _timelockStart; // The start of the timelock to change governance variables
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 private _timelockType; // The function that needs to be changed
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        139
+Source: 
+>     uint256 private _timelockStart; // The start of the timelock to change governance variables
+>     uint256 private _timelockType; // The function that needs to be changed
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 constant TIMELOCK_DURATION = 86400; // Timelock is 24 hours
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        143
+Source: 
+>     // Reusable timelock variables
+>     address private _timelock_address;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 private _timelock_data;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    ReethPriceOracle
+Line:        144
+Source: 
+>     address private _timelock_address;
+>     uint256 private _timelock_data;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        51
+Source: 
+>     function changeLiquidityToken(address _lp, uint256 _pos) internal {
+>         mainLiquidity = _lp;
+>         ^^^^^^^^^^^^^^^^^^^
+>         _tokenIndex = _pos;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        52
+Source: 
+>         mainLiquidity = _lp;
+>         _tokenIndex = _pos;
+>         ^^^^^^^^^^^^^^^^^^
+>         _reethETHPrice = 0;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        53
+Source: 
+>         _tokenIndex = _pos;
+>         _reethETHPrice = 0;
+>         ^^^^^^^^^^^^^^^^^^
+>         _reethPriceWindow = 0;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        54
+Source: 
+>         _reethETHPrice = 0;
+>         _reethPriceWindow = 0;
+>         ^^^^^^^^^^^^^^^^^^^^^
+>         lastTWAPBlockTime = 0;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        55
+Source: 
+>         _reethPriceWindow = 0;
+>         lastTWAPBlockTime = 0;
+>         ^^^^^^^^^^^^^^^^^^^^^
+>         lastTWAPCumulativePrice = 0;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        56
+Source: 
+>         lastTWAPBlockTime = 0;
+>         lastTWAPCumulativePrice = 0;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastREETHPriceUpdate = 0;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        57
+Source: 
+>         lastTWAPCumulativePrice = 0;
+>         lastREETHPriceUpdate = 0;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^
+>         _firstCapture = true;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        58
+Source: 
+>         lastREETHPriceUpdate = 0;
+>         _firstCapture = true;
+>         ^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        71
+Source: 
+>         uint256 period = now - lastREETHPriceUpdate; // Get the time between the last update and now
+>         lastREETHPriceUpdate = now;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         // We will use a combination of the Twap and weighted averages to determine the current price
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        78
+Source: 
+>             // Reset the oracle
+>             _reethETHPrice = 0;
+>             ^^^^^^^^^^^^^^^^^^
+>             _reethPriceWindow = 0;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        79
+Source: 
+>             _reethETHPrice = 0;
+>             _reethPriceWindow = 0;
+>             ^^^^^^^^^^^^^^^^^^^^^
+>             lastTWAPBlockTime = 0;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        80
+Source: 
+>             _reethPriceWindow = 0;
+>             lastTWAPBlockTime = 0;
+>             ^^^^^^^^^^^^^^^^^^^^^
+>             lastTWAPCumulativePrice = 0;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        81
+Source: 
+>             lastTWAPBlockTime = 0;
+>             lastTWAPCumulativePrice = 0;
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             _firstCapture = true;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        82
+Source: 
+>             lastTWAPCumulativePrice = 0;
+>             _firstCapture = true;
+>             ^^^^^^^^^^^^^^^^^^^^
+>             emit NoLiquidity();
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        91
+Source: 
+>                 if(_tokenIndex == 0){
+>                     lastTWAPCumulativePrice = pair.price0CumulativeLast();
+>                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 }else{
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        95
+Source: 
+>                 }
+>                 lastTWAPBlockTime = _blockTime;
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 _firstCapture = false;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        96
+Source: 
+>                 lastTWAPBlockTime = _blockTime;
+>                 _firstCapture = false;
+>                 ^^^^^^^^^^^^^^^^^^^^^
+>                 emit FirstPriceCapture();
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        93
+Source: 
+>                 }else{
+>                     lastTWAPCumulativePrice = pair.price1CumulativeLast();
+>                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        108
+Source: 
+>                 // This is price in relationship to base pair
+>                 lastTWAPPrice = ((cumuPrice - lastTWAPCumulativePrice) / (_blockTime - lastTWAPBlockTime) * (10**_reethDecimals)) >> 112;
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 lastTWAPCumulativePrice = cumuPrice;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        109
+Source: 
+>                 lastTWAPPrice = ((cumuPrice - lastTWAPCumulativePrice) / (_blockTime - lastTWAPBlockTime) * (10**_reethDecimals)) >> 112;
+>                 lastTWAPCumulativePrice = cumuPrice;
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 lastTWAPBlockTime = _blockTime;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        110
+Source: 
+>                 lastTWAPCumulativePrice = cumuPrice;
+>                 lastTWAPBlockTime = _blockTime;
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        120
+Source: 
+>             // First time price is calculated, set it to the twap price
+>             _reethPriceWindow = updateFrequency;
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             _reethETHPrice = lastTWAPPrice;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        121
+Source: 
+>             _reethPriceWindow = updateFrequency;
+>             _reethETHPrice = lastTWAPPrice;
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }else{
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        125
+Source: 
+>             uint256 price = lastTWAPPrice;
+>             _reethETHPrice = (_reethETHPrice * (_reethPriceWindow * DIVISION_FACTOR / (_reethPriceWindow + period)) / DIVISION_FACTOR);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             _reethETHPrice += (price * (period * DIVISION_FACTOR / (_reethPriceWindow + period)) / DIVISION_FACTOR);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        126
+Source: 
+>             _reethETHPrice = (_reethETHPrice * (_reethPriceWindow * DIVISION_FACTOR / (_reethPriceWindow + period)) / DIVISION_FACTOR);
+>             _reethETHPrice += (price * (period * DIVISION_FACTOR / (_reethPriceWindow + period)) / DIVISION_FACTOR);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             _reethPriceWindow = period; // Set the window to the new period
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ReethPriceOracle
+Line:        127
+Source: 
+>             _reethETHPrice += (price * (period * DIVISION_FACTOR / (_reethPriceWindow + period)) / DIVISION_FACTOR);
+>             _reethPriceWindow = period; // Set the window to the new period
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m

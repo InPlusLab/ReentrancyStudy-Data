@@ -1,0 +1,122 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: EACCoin
+Function name: transferFrom(address,address,uint256) or transferFrom(address,address,uint256)
+PC address: 1747
+Estimated Gas Usage: 329 - 424
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/eda6236a279e6adca93edeb6e72267db.sol:203
+
+es[_from]);
+
+        require(_amount <= allowed[_from][msg.sender]);
+
+        
+
+        balances[_from] = balances[_from].sub(_amount);
+
+        allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_amount);
+
+        balances[_to] = balances[_to].add(_amount);
+
+        Transfer(_from, _to, _amount);
+
+        return true;
+
+    }
+
+    
+
+    function approve(address _spender, uint256 _value) public returns (bool success) {
+
+        allowed[msg.sender][_spender] = _value;
+
+        Approval(msg.sender, _spender, _value);
+
+        return true;
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferFrom(address,address,uint256), txdata: 0x23b872dd, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: EACCoin
+Function name: transfer(address,uint256) or transfer(address,uint256) or transfer(address,uint256)
+PC address: 3556
+Estimated Gas Usage: 453 - 548
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/eda6236a279e6adca93edeb6e72267db.sol:181
+
+ances[msg.sender]);
+
+        
+
+        balances[msg.sender] = balances[msg.sender].sub(_amount);
+
+        balances[_to] = balances[_to].add(_amount);
+
+        Transfer(msg.sender, _to, _amount);
+
+        return true;
+
+    }
+
+    
+
+    function transferFrom(address _from, address _to, uint256 _amount) onlyPayloadSize(3 * 32) public returns (bool success) {
+
+
+
+        require(_to != address(0));
+
+        require(_
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000086, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transfer(address,uint256), txdata: 0xa9059cbb, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: EACCoin
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 4752
+Estimated Gas Usage: 8842 - 68651
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca51000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000004402000ff, value: 0x0

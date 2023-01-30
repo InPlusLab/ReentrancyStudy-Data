@@ -1,0 +1,152 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    ETHRefund
+Line:        9
+Source: 
+>     uint256 public endTime;
+>     address payable public avatar = 0x519b70055af55A007110B4Ff99b0eA33071c720a;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    ETHRefund
+Line:        20
+Source: 
+>     // Claim function to be called by the receiver
+>     function claim(uint256 index) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(block.timestamp < endTime);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    ETHRefund
+Line:        28
+Source: 
+>     // Destroy the contract and send back the ETH to the avatar
+>     function kill() public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(block.timestamp > endTime);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Violation
+Contract:    ETHRefund
+Line:        23
+Source: 
+>         require(msg.sender == receivers[index]);
+>         msg.sender.transfer(values[index]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         values[index] = 0;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        1
+Source: 
+> pragma solidity ^0.7.0;
+> ^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    ETHRefund
+Line:        23
+Source: 
+>         require(msg.sender == receivers[index]);
+>         msg.sender.transfer(values[index]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         values[index] = 0;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    ETHRefund
+Line:        23
+Source: 
+>         require(msg.sender == receivers[index]);
+>         msg.sender.transfer(values[index]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         values[index] = 0;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted call to selfdestruct
+Description: Calls to selfdestruct that can be triggered by any user
+             must be inspected.
+Type:        Violation
+Contract:    ETHRefund
+Line:        30
+Source: 
+>         require(block.timestamp > endTime);
+>         selfdestruct(avatar);
+>         ^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    ETHRefund
+Line:        14
+Source: 
+>         values = _values;
+>         endTime = block.timestamp + 7890000; // 3 months
+>                   ^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    ETHRefund
+Line:        21
+Source: 
+>     function claim(uint256 index) public {
+>         require(block.timestamp < endTime);
+>                 ^^^^^^^^^^^^^^^
+>         require(msg.sender == receivers[index]);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    ETHRefund
+Line:        29
+Source: 
+>     function kill() public {
+>         require(block.timestamp > endTime);
+>                 ^^^^^^^^^^^^^^^
+>         selfdestruct(avatar);
+
+[0m

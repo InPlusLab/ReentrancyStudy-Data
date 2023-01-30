@@ -1,0 +1,308 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.7.0;
+
+library SafeMath {
+  function add(uint256 a, uint256 b) internal pure returns (uint256) {
+    uint256 c = a + b;
+    require(c >= a);
+    return c;
+  }
+
+  function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+    require(b <= a);
+    uint256 c = a - b;
+    return c;
+  }
+
+  function mul(uint256 a, uint256 b) internal pure returns (uint256) {
+    if (a == 0) {
+      return 0;
+    }
+    uint256 c = a * b;
+    require(c / a == b);
+    return c;
+  }
+
+  function div(uint256 a, uint256 b) internal pure returns (uint256) {
+    require(b > 0);
+    uint256 c = a / b;
+    return c;
+  }
+
+  function mod(uint256 a, uint256 b) internal pure returns (uint256) {
+    require(b != 0);
+    return a % b;
+  }
+}
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.7.0;
+
+import "./IOwnershipTransferrable.sol";
+
+abstract contract Ownable is IOwnershipTransferrable {
+  address private _owner;
+
+  constructor(address owner) {
+    _owner = owner;
+    emit OwnershipTransferred(address(0), _owner);
+  }
+
+  function owner() public view returns (address) {
+    return _owner;
+  }
+
+  modifier onlyOwner() {
+    require(_owner == msg.sender, "Ownable: caller is not the owner");
+    _;
+  }
+
+  function transferOwnership(address newOwner) override external onlyOwner {
+    require(newOwner != address(0), "Ownable: new owner is the zero address");
+    emit OwnershipTransferred(_owner, newOwner);
+    _owner = newOwner;
+  }
+}
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.7.0;
+
+interface IOwnershipTransferrable {
+  function transferOwnership(address owner) external;
+  event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+}
+
+// SPDX-License-Identifier: MIT
+pragma solidity 0.7.0;
+
+abstract contract ReentrancyGuard {
+  bool private _entered;
+
+  modifier noReentrancy() {
+    require(!_entered);
+    _entered = true;
+    _;
+    _entered = false;
+  }
+}
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.7.0;
+
+import "./SafeMath.sol";
+import "./IOwnershipTransferrable.sol";
+import "./ReentrancyGuard.sol";
+import "./Vybe.sol";
+
+contract VybeStake is ReentrancyGuard, Ownable {
+  using SafeMath for uint256;
+
+  uint256 constant UINT256_MAX = ~uint256(0);
+  uint256 constant MONTH = 30 days;
+
+  Vybe private _VYBE;
+
+  uint256 _totalStaked;
+  mapping (address => uint256) private _staked;
+  mapping (address => uint256) private _lastClaim;
+  address private _developerFund;
+
+  event Rewards(address indexed staker, uint256 mintage, uint256 developerFund);
+  event MelodyAdded(address indexed melody);
+  event MelodyRemoved(address indexed melody);
+
+  constructor(address vybe) Ownable(msg.sender) {
+    _VYBE = Vybe(vybe);
+    _developerFund = msg.sender;
+  }
+
+  function upgradeDevelopmentFund(address fund) external onlyOwner {
+    _developerFund = fund;
+  }
+
+  function vybe() external view returns (address) {
+    return address(_VYBE);
+  }
+
+  function totalStaked() external view returns (uint256) {
+    return _totalStaked;
+  }
+
+  function staked(address staker) external view returns (uint256) {
+    return _staked[staker];
+  }
+
+  function increaseStake(uint256 amount) external {
+    require(_VYBE.transferFrom(msg.sender, address(this), amount));
+    _totalStaked = _totalStaked.add(amount);
+    if (_staked[msg.sender] == 0) {
+      _lastClaim[msg.sender] = block.timestamp;
+    }
+    _staked[msg.sender] = _staked[msg.sender].add(amount);
+  }
+
+  function decreaseStake(uint256 amount) external {
+    _staked[msg.sender] = _staked[msg.sender].sub(amount);
+    _totalStaked = _totalStaked.sub(amount);
+    require(_VYBE.transfer(address(msg.sender), amount));
+  }
+
+  function _calculateMintage(address staker) private view returns (uint256) {
+    uint256 share = _VYBE.totalSupply().div(20).div(_totalStaked.div(_staked[staker]));
+    uint256 timeElapsed = block.timestamp.sub(_lastClaim[staker]);
+    uint256 mintage = 0;
+    if (timeElapsed > MONTH) {
+      mintage = share.mul(timeElapsed.div(MONTH));
+      timeElapsed = timeElapsed.mod(MONTH);
+    }
+    if (timeElapsed != 0) {
+      mintage = mintage.add(share.div(MONTH.div(timeElapsed)));
+    }
+    return mintage;
+  }
+
+  function calculateRewards(address staker) public view returns (uint256) {
+    return _calculateMintage(staker).div(20).mul(19);
+  }
+
+  function claimRewards() external noReentrancy {
+    uint256 mintage = _calculateMintage(msg.sender);
+    uint256 mintagePiece = mintage.div(20);
+    require(mintagePiece > 0);
+
+    _lastClaim[msg.sender] = block.timestamp;
+    _VYBE.mint(msg.sender, mintage.sub(mintagePiece));
+    _VYBE.mint(_developerFund, mintagePiece);
+    emit Rewards(msg.sender, mintage, mintagePiece);
+  }
+
+  function addMelody(address melody) external onlyOwner {
+    _VYBE.approve(melody, UINT256_MAX);
+    emit MelodyAdded(melody);
+  }
+
+  function removeMelody(address melody) external onlyOwner {
+    _VYBE.approve(melody, 0);
+    emit MelodyRemoved(melody);
+  }
+
+  function upgrade(address owned, address upgraded) external onlyOwner {
+    IOwnershipTransferrable(owned).transferOwnership(upgraded);
+  }
+}
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.7.0;
+
+import "./SafeMath.sol";
+import "./Ownable.sol";
+
+contract Vybe is Ownable {
+  using SafeMath for uint256;
+
+  uint256 constant UINT256_MAX = ~uint256(0);
+
+  string private _name;
+  string private _symbol;
+  uint8 private _decimals;
+
+  uint256 private _totalSupply;
+  mapping(address => uint256) private _balances;
+  mapping(address => mapping(address => uint256)) private _allowances;
+
+  event Transfer(address indexed from, address indexed to, uint256 value);
+  event Approval(address indexed owner, address indexed spender, uint256 value);
+
+  constructor() Ownable(msg.sender) {
+    _name = "Vybe";
+    _symbol = "VYBE";
+    _decimals = 18;
+
+    _totalSupply = 2000000 * 1e18;
+    _balances[msg.sender] = _totalSupply;
+    emit Transfer(address(0), msg.sender, _totalSupply);
+  }
+
+  function name() external view returns (string memory) {
+    return _name;
+  }
+
+  function symbol() external view returns (string memory) {
+    return _symbol;
+  }
+
+  function decimals() external view returns (uint8) {
+    return _decimals;
+  }
+
+  function totalSupply() external view returns (uint256) {
+    return _totalSupply;
+  }
+
+  function balanceOf(address account) external view returns (uint256) {
+    return _balances[account];
+  }
+
+  function allowance(address owner, address spender) external view returns (uint256) {
+    return _allowances[owner][spender];
+  }
+
+  function transfer(address recipient, uint256 amount) external returns (bool) {
+    _transfer(msg.sender, recipient, amount);
+    return true;
+  }
+
+  function approve(address spender, uint256 amount) external returns (bool) {
+    _approve(msg.sender, spender, amount);
+    return true;
+  }
+
+  function transferFrom(address sender, address recipient, uint256 amount) external returns (bool) {
+    _transfer(sender, recipient, amount);
+    if (_allowances[msg.sender][sender] != UINT256_MAX) {
+      _approve(sender, msg.sender, _allowances[sender][msg.sender].sub(amount));
+    }
+    return true;
+  }
+
+  function increaseAllowance(address spender, uint256 addedValue) external returns (bool) {
+    _approve(msg.sender, spender, _allowances[msg.sender][spender].add(addedValue));
+    return true;
+  }
+
+  function decreaseAllowance(address spender, uint256 subtractedValue) external returns (bool) {
+    _approve(msg.sender, spender, _allowances[msg.sender][spender].sub(subtractedValue));
+    return true;
+  }
+
+  function _transfer(address sender, address recipient, uint256 amount) internal {
+    require(sender != address(0));
+    require(recipient != address(0));
+
+    _balances[sender] = _balances[sender].sub(amount);
+    _balances[recipient] = _balances[recipient].add(amount);
+    emit Transfer(sender, recipient, amount);
+  }
+
+  function _approve(address owner, address spender, uint256 amount) internal {
+    require(owner != address(0));
+    require(spender != address(0));
+
+    _allowances[owner][spender] = amount;
+    emit Approval(owner, spender, amount);
+  }
+
+  function mint(address account, uint256 amount) external onlyOwner {
+    _totalSupply = _totalSupply.add(amount);
+    _balances[account] = _balances[account].add(amount);
+    emit Transfer(address(0), account, amount);
+  }
+
+  function burn(uint256 amount) external returns (bool) {
+    _balances[msg.sender] = _balances[msg.sender].sub(amount);
+    _totalSupply = _totalSupply.sub(amount);
+    emit Transfer(msg.sender, address(0), amount);
+    return true;
+  }
+}
+

@@ -1,0 +1,52 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: RockPaperScissors
+Function name: play(uint8)
+PC address: 839
+Estimated Gas Usage: 1904 - 2329
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/db198080774166dfa28bd6d2dbf93b45.sol:224
+
+nqueue(msg.sender
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x11000000000000001, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: play(uint8), txdata: 0x53a04b050101010101010101010101010101010101010101010101010101010101010104, value: 0x10000000000000000
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: RockPaperScissors
+Function name: play(uint8)
+PC address: 1197
+Estimated Gas Usage: 12963 - 69432
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/db198080774166dfa28bd6d2dbf93b45.sol:230
+
+lue);
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000000000000000000000000001, value: 0x0
+Caller: [SOMEGUY], function: play(uint8), txdata: 0x53a04b052121212121212121212121212121212121212121212121212121212121212103, value: 0x10000000000000000

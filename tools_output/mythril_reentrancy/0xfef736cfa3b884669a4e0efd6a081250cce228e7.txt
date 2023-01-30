@@ -1,0 +1,234 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Bob
+Function name: bobMakesEthPayment(bytes32,address,bytes20,uint64)
+PC address: 5492
+Estimated Gas Usage: 20962 - 118356
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/6fdd4b12b8b323e201a6ce637ce0f126.sol:207
+
+adePayment
+    );
+  }
+
+  function bobMakesErc20Payment(
+    bytes32 _txId,
+    uint256 _amount,
+    address
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x10000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: bobMakesEthPayment(bytes32,address,bytes20,uint64), txdata: 0x5ab30d95000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x1
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Bob
+Function name: bobMakesErc20Deposit(bytes32,uint256,address,bytes20,address,uint64)
+PC address: 6060
+Estimated Gas Usage: 21730 - 153356
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/6fdd4b12b8b323e201a6ce637ce0f126.sol:131
+
+ = BobDeposit(
+      depositHash,
+      _lockTime,
+      DepositState.BobMadeDeposit
+    );
+    ERC20 token 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000fbffd, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: bobMakesErc20Deposit(bytes32,uint256,address,bytes20,address,uint64), txdata: 0x5d567259, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Bob
+Function name: bobMakesErc20Deposit(bytes32,uint256,address,bytes20,address,uint64)
+PC address: 6530
+Estimated Gas Usage: 21730 - 153356
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/6fdd4b12b8b323e201a6ce637ce0f126.sol:143
+
+ytes32 _secret,
+    address _alice,
+    address _token
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: bobMakesErc20Deposit(bytes32,uint256,address,bytes20,address,uint64), txdata: 0x5d5672594000400400020104102080002008040000200808080140400008040800008010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Bob
+Function name: bobMakesErc20Deposit(bytes32,uint256,address,bytes20,address,uint64)
+PC address: 6530
+Estimated Gas Usage: 21730 - 153356
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/6fdd4b12b8b323e201a6ce637ce0f126.sol:143
+
+ytes32 _secret,
+    address _alice,
+    address _token
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: bobMakesErc20Deposit(bytes32,uint256,address,bytes20,address,uint64), txdata: 0x5d567259, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Bob
+Function name: bobMakesErc20Payment(bytes32,uint256,address,bytes20,address,uint64)
+PC address: 7077
+Estimated Gas Usage: 22882 - 155028
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/6fdd4b12b8b323e201a6ce637ce0f126.sol:237
+
+ token = ERC20(_tokenAddress);
+    assert(token.transferFrom(msg.sender, address(this), _amount));
+  }
+
+  fu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xfbbf5, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: bobMakesErc20Payment(bytes32,uint256,address,bytes20,address,uint64), txdata: 0xb8a15b1d000000000000000000000000000000000000000000000000000000000000000001010202200420040208010120012020010120012002010101010101010101020000000000000000000000000101010101010101010101010101010101010104000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Bob
+Function name: bobMakesErc20Payment(bytes32,uint256,address,bytes20,address,uint64)
+PC address: 7548
+Estimated Gas Usage: 22882 - 155028
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/6fdd4b12b8b323e201a6ce637ce0f126.sol:248
+
+[_txId].state == PaymentState.BobMadePayment);
+    byt
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xeb4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: bobMakesErc20Payment(bytes32,uint256,address,bytes20,address,uint64), txdata: 0xb8a15b1d0000000000000000000000000000000000000000000000000000000000000000010101010101010101010101010102020101080102020802808020020402100200000000000000000000000001010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Bob
+Function name: bobMakesErc20Payment(bytes32,uint256,address,bytes20,address,uint64)
+PC address: 7548
+Estimated Gas Usage: 22882 - 155028
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/6fdd4b12b8b323e201a6ce637ce0f126.sol:248
+
+[_txId].state == PaymentState.BobMadePayment);
+    byt
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xfa5e5, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: bobMakesErc20Payment(bytes32,uint256,address,bytes20,address,uint64), txdata: 0xb8a15b1d000000000000000000000000000000000000000000000000000000000000000001020101020102010101020101010101010101010101010102020101010102020000000000000000000000000101010101010201020101010101010101010101000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Bob
+Function name: bobMakesEthDeposit(bytes32,address,bytes20,uint64)
+PC address: 8058
+Estimated Gas Usage: 21028 - 118422
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/6fdd4b12b8b323e201a6ce637ce0f126.sol:108
+
+;
+    deposits[_txId] = BobDeposit(
+      depositHash,
+      _lockTime,
+      DepositState.BobMadeDeposit
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40002001ee4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: bobMakesEthDeposit(bytes32,address,bytes20,uint64), txdata: 0xdd23795f000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002, value: 0x1

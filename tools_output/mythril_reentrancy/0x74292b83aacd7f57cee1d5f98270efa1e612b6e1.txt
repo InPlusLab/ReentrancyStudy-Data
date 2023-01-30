@@ -1,0 +1,129 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Salary
+Function name: newPackage(address,uint256[])
+PC address: 285
+Estimated Gas Usage: 27780 - 144472
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/46f4dfb0337d89a910255f85f0989b87.sol:275
+
+yData[_staffAddress][deliveredId + i] = _monthlySalary[i];
+
+      packageTotalAmount = packageTotalAmount + _monthlySalary[i];
+
+    }
+
+    addressList.push(_staffAddress);
+
+    staffSalaryStatus[_staffAddress] = 1;
+
+    require(token.transferFrom(msg.sender, address(this), packageTotalAmount));
+
+  }
+
+
+
+  /**
+
+  * @dev When there's a staff resign and terminate the package, admin can withdraw tokens
+
+  * from the contract.  This would emit an event TerminatePackage which is the only event of this contract.
+
+  * all staff should watch this event on Ethereum in order to protect their
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: newPackage(address,uint256[]), txdata: 0x08e88aa10120010000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Salary
+Function name: newPackage(address,uint256[])
+PC address: 2115
+Estimated Gas Usage: 27780 - 144472
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/46f4dfb0337d89a910255f85f0989b87.sol:297
+
+ * all staff should watch this event on Ethereum in order to prot
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20053, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: a1a1a1a1a1a1a1a1a1a1a1a1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: newPackage(address,uint256[]), txdata: 0x08e88aa10000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Salary
+Function name: withdrawToken(uint256)
+PC address: 3102
+Estimated Gas Usage: 4533 - 40275
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/46f4dfb0337d89a910255f85f0989b87.sol:333
+
+
+
+    helperAddressTable[_hel
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1c040000011500010, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 090909090909090909090909deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: withdrawToken(uint256), txdata: 0x50baa622, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Salary
+Function name: addressList(uint256)
+PC address: 3603
+Estimated Gas Usage: 1190 - 1285
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/46f4dfb0337d89a910255f85f0989b87.sol:161
+
+s.
+
+  // StaffAddress => ( d
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: addressList(uint256), txdata: 0xb810fb43, value: 0x0

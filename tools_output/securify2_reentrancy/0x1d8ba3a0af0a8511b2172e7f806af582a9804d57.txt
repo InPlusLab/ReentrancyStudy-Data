@@ -1,0 +1,836 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    LPStaker
+Line:        118
+Source: 
+>     uint128 totalAllocatedReward = initialAllocatedReward;
+>     uint128 public totalBonusDeposits = 0;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LPStaker
+Line:        184
+Source: 
+> 
+>     function deposit(uint128 amount) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(block.timestamp < depositDeadline, "deposits no longer accepted");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    LPStaker
+Line:        202
+Source: 
+>         emit Deposit(msg.sender, amount, until, reward);
+>         require(depositToken.transferFrom(msg.sender, address(this), amount), "transfer unsuccessful");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    LPStaker
+Line:        215
+Source: 
+> 
+>         require(depositToken.transfer(to, balance), "transfer unsuccessful");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(rewardToken1.transfer(to, reward), "transfer unsuccessful");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    LPStaker
+Line:        216
+Source: 
+>         require(depositToken.transfer(to, balance), "transfer unsuccessful");
+>         require(rewardToken1.transfer(to, reward), "transfer unsuccessful");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(rewardToken2.transfer(to, reward * chrPerHGET), "transfer unsuccessful");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    LPStaker
+Line:        217
+Source: 
+>         require(rewardToken1.transfer(to, reward), "transfer unsuccessful");
+>         require(rewardToken2.transfer(to, reward * chrPerHGET), "transfer unsuccessful");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    LPStaker
+Line:        225
+Source: 
+>         require(token != depositToken);
+>         token.transfer(0xEBdDe0641202ea77Af5edaA105ae6A6c006C6551, token.balanceOf(address(this)));
+>                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    LPStaker
+Line:        225
+Source: 
+>         require(token != depositToken);
+>         token.transfer(0xEBdDe0641202ea77Af5edaA105ae6A6c006C6551, token.balanceOf(address(this)));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    LPStaker
+Line:        184
+Source: 
+> 
+>     function deposit(uint128 amount) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(block.timestamp < depositDeadline, "deposits no longer accepted");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    LPStaker
+Line:        205
+Source: 
+> 
+>     function withdraw(address to) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         StakeState storage ss = _states[msg.sender];
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LPStaker
+Line:        179
+Source: 
+> 
+>     function getStakeState(address account) external view returns (uint256, uint64, uint64) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         StakeState storage ss = _states[account];
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    LPStaker
+Line:        149
+Source: 
+> 
+>             uint256 boughtTokens = (741101126592248 * tAllocatedReward) / (1000000000000000);
+>                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    LPStaker
+Line:        166
+Source: 
+>             int256 rd = int256(remainingDeposit);
+>             int256 tDepositedTokensSquared = int256(tDepositedTokens*tDepositedTokens);
+>                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             int256 temp1 = int256(tAllocatedReward) * rd;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    LPStaker
+Line:        167
+Source: 
+>             int256 tDepositedTokensSquared = int256(tDepositedTokens*tDepositedTokens);
+>             int256 temp1 = int256(tAllocatedReward) * rd;
+>                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             int256 x1 = (799572 * temp1)/int256(tDepositedTokens);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    LPStaker
+Line:        168
+Source: 
+>             int256 temp1 = int256(tAllocatedReward) * rd;
+>             int256 x1 = (799572 * temp1)/int256(tDepositedTokens);
+>                          ^^^^^^^^^^^^^^
+>             int256 x2 = (75513 * temp1 * rd)/tDepositedTokensSquared;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    LPStaker
+Line:        169
+Source: 
+>             int256 x1 = (799572 * temp1)/int256(tDepositedTokens);
+>             int256 x2 = (75513 * temp1 * rd)/tDepositedTokensSquared;
+>                          ^^^^^^^^^^^^^
+>             int256 x3 = (((17042 * temp1 * rd)/tDepositedTokensSquared) * rd)/int256(tDepositedTokens);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    LPStaker
+Line:        169
+Source: 
+>             int256 x1 = (799572 * temp1)/int256(tDepositedTokens);
+>             int256 x2 = (75513 * temp1 * rd)/tDepositedTokensSquared;
+>                          ^^^^^^^^^^^^^^^^^^
+>             int256 x3 = (((17042 * temp1 * rd)/tDepositedTokensSquared) * rd)/int256(tDepositedTokens);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    LPStaker
+Line:        170
+Source: 
+>             int256 x2 = (75513 * temp1 * rd)/tDepositedTokensSquared;
+>             int256 x3 = (((17042 * temp1 * rd)/tDepositedTokensSquared) * rd)/int256(tDepositedTokens);
+>                            ^^^^^^^^^^^^^
+>             int256 res = (x1 - x2 + x3)/1000000;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    LPStaker
+Line:        170
+Source: 
+>             int256 x2 = (75513 * temp1 * rd)/tDepositedTokensSquared;
+>             int256 x3 = (((17042 * temp1 * rd)/tDepositedTokensSquared) * rd)/int256(tDepositedTokens);
+>                            ^^^^^^^^^^^^^^^^^^
+>             int256 res = (x1 - x2 + x3)/1000000;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    LPStaker
+Line:        170
+Source: 
+>             int256 x2 = (75513 * temp1 * rd)/tDepositedTokensSquared;
+>             int256 x3 = (((17042 * temp1 * rd)/tDepositedTokensSquared) * rd)/int256(tDepositedTokens);
+>                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             int256 res = (x1 - x2 + x3)/1000000;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LPStaker
+Line:        202
+Source: 
+>         emit Deposit(msg.sender, amount, until, reward);
+>         require(depositToken.transferFrom(msg.sender, address(this), amount), "transfer unsuccessful");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    LPStaker
+Line:        97
+Source: 
+>     // TODO: DEPLOYMENT-SPECIFIC PARAMETERS
+>     IERC20 private constant depositToken = IERC20(0x510C9b3FE162f463DAC2F8c6dDd3d8ED5F49e360); // HGET/CHR
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     IERC20 private constant rewardToken1 = IERC20(0x7968bc6a03017eA2de509AAA816F163Db0f35148); // HGET
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    LPStaker
+Line:        98
+Source: 
+>     IERC20 private constant depositToken = IERC20(0x510C9b3FE162f463DAC2F8c6dDd3d8ED5F49e360); // HGET/CHR
+>     IERC20 private constant rewardToken1 = IERC20(0x7968bc6a03017eA2de509AAA816F163Db0f35148); // HGET
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     IERC20 private constant rewardToken2 = IERC20(0x8A2279d4A90B6fe1C4B30fa660cC9f926797bAA2); // CHR
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    LPStaker
+Line:        99
+Source: 
+>     IERC20 private constant rewardToken1 = IERC20(0x7968bc6a03017eA2de509AAA816F163Db0f35148); // HGET
+>     IERC20 private constant rewardToken2 = IERC20(0x8A2279d4A90B6fe1C4B30fa660cC9f926797bAA2); // CHR
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    LPStaker
+Line:        101
+Source: 
+> 
+>     uint64 constant lockTime = 4 weeks;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint64 constant depositDeadline = 1632085200; // 2021-09-20
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    LPStaker
+Line:        102
+Source: 
+>     uint64 constant lockTime = 4 weeks;
+>     uint64 constant depositDeadline = 1632085200; // 2021-09-20
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    LPStaker
+Line:        105
+Source: 
+>     // TODO: these are highly volatile parameters, update right before deployment
+>     uint128 constant chrPerHGET = 9; // affects only reward
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint128 constant hgetPerLPToken = 348762938230; // TODO. Expressed in aomout of HGET per 1 LP token
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    LPStaker
+Line:        106
+Source: 
+>     uint128 constant chrPerHGET = 9; // affects only reward
+>     uint128 constant hgetPerLPToken = 348762938230; // TODO. Expressed in aomout of HGET per 1 LP token
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     // e.g. suppose 0.00000003464 LP tokens contain 22896.3 HGET
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    LPStaker
+Line:        112
+Source: 
+>     // these paramters affect yield
+>     uint128 constant initialDepositedTokens = 2500 * 1000000; // an offset
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint128 constant initialAllocatedReward = 485 * 1000000; // an offset
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    LPStaker
+Line:        113
+Source: 
+>     uint128 constant initialDepositedTokens = 2500 * 1000000; // an offset
+>     uint128 constant initialAllocatedReward = 485 * 1000000; // an offset
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint128 constant maxAllocatedReward = 25000 * 1000000; 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    LPStaker
+Line:        114
+Source: 
+>     uint128 constant initialAllocatedReward = 485 * 1000000; // an offset
+>     uint128 constant maxAllocatedReward = 25000 * 1000000; 
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LPStaker
+Line:        101
+Source: 
+> 
+>     uint64 constant lockTime = 4 weeks;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint64 constant depositDeadline = 1632085200; // 2021-09-20
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LPStaker
+Line:        102
+Source: 
+>     uint64 constant lockTime = 4 weeks;
+>     uint64 constant depositDeadline = 1632085200; // 2021-09-20
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LPStaker
+Line:        105
+Source: 
+>     // TODO: these are highly volatile parameters, update right before deployment
+>     uint128 constant chrPerHGET = 9; // affects only reward
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint128 constant hgetPerLPToken = 348762938230; // TODO. Expressed in aomout of HGET per 1 LP token
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LPStaker
+Line:        106
+Source: 
+>     uint128 constant chrPerHGET = 9; // affects only reward
+>     uint128 constant hgetPerLPToken = 348762938230; // TODO. Expressed in aomout of HGET per 1 LP token
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     // e.g. suppose 0.00000003464 LP tokens contain 22896.3 HGET
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LPStaker
+Line:        112
+Source: 
+>     // these paramters affect yield
+>     uint128 constant initialDepositedTokens = 2500 * 1000000; // an offset
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint128 constant initialAllocatedReward = 485 * 1000000; // an offset
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LPStaker
+Line:        113
+Source: 
+>     uint128 constant initialDepositedTokens = 2500 * 1000000; // an offset
+>     uint128 constant initialAllocatedReward = 485 * 1000000; // an offset
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint128 constant maxAllocatedReward = 25000 * 1000000; 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LPStaker
+Line:        114
+Source: 
+>     uint128 constant initialAllocatedReward = 485 * 1000000; // an offset
+>     uint128 constant maxAllocatedReward = 25000 * 1000000; 
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LPStaker
+Line:        116
+Source: 
+>     
+>     uint128 totalDepositedTokens = initialDepositedTokens; 
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint128 totalAllocatedReward = initialAllocatedReward;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LPStaker
+Line:        117
+Source: 
+>     uint128 totalDepositedTokens = initialDepositedTokens; 
+>     uint128 totalAllocatedReward = initialAllocatedReward;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint128 public totalBonusDeposits = 0;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    LPStaker
+Line:        112
+Source: 
+>     // these paramters affect yield
+>     uint128 constant initialDepositedTokens = 2500 * 1000000; // an offset
+>                                                      ^^^^^^^
+>     uint128 constant initialAllocatedReward = 485 * 1000000; // an offset
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    LPStaker
+Line:        113
+Source: 
+>     uint128 constant initialDepositedTokens = 2500 * 1000000; // an offset
+>     uint128 constant initialAllocatedReward = 485 * 1000000; // an offset
+>                                                     ^^^^^^^
+>     uint128 constant maxAllocatedReward = 25000 * 1000000; 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    LPStaker
+Line:        114
+Source: 
+>     uint128 constant initialAllocatedReward = 485 * 1000000; // an offset
+>     uint128 constant maxAllocatedReward = 25000 * 1000000; 
+>                                                   ^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    LPStaker
+Line:        149
+Source: 
+> 
+>             uint256 boughtTokens = (741101126592248 * tAllocatedReward) / (1000000000000000);
+>                                                                            ^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    LPStaker
+Line:        171
+Source: 
+>             int256 x3 = (((17042 * temp1 * rd)/tDepositedTokensSquared) * rd)/int256(tDepositedTokens);
+>             int256 res = (x1 - x2 + x3)/1000000;
+>                                         ^^^^^^^
+>             if (res > 0)  totalBoughtTokens += uint256(res);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LPStaker
+Line:        202
+Source: 
+>         emit Deposit(msg.sender, amount, until, reward);
+>         require(depositToken.transferFrom(msg.sender, address(this), amount), "transfer unsuccessful");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LPStaker
+Line:        215
+Source: 
+> 
+>         require(depositToken.transfer(to, balance), "transfer unsuccessful");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(rewardToken1.transfer(to, reward), "transfer unsuccessful");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LPStaker
+Line:        216
+Source: 
+>         require(depositToken.transfer(to, balance), "transfer unsuccessful");
+>         require(rewardToken1.transfer(to, reward), "transfer unsuccessful");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(rewardToken2.transfer(to, reward * chrPerHGET), "transfer unsuccessful");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LPStaker
+Line:        217
+Source: 
+>         require(rewardToken1.transfer(to, reward), "transfer unsuccessful");
+>         require(rewardToken2.transfer(to, reward * chrPerHGET), "transfer unsuccessful");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LPStaker
+Line:        225
+Source: 
+>         require(token != depositToken);
+>         token.transfer(0xEBdDe0641202ea77Af5edaA105ae6A6c006C6551, token.balanceOf(address(this)));
+>                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LPStaker
+Line:        225
+Source: 
+>         require(token != depositToken);
+>         token.transfer(0xEBdDe0641202ea77Af5edaA105ae6A6c006C6551, token.balanceOf(address(this)));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    LPStaker
+Line:        190
+Source: 
+>         uint64 reward = uint64(calculateReward(adjustedAmount)); 
+>         totalAllocatedReward += reward;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    LPStaker
+Line:        194
+Source: 
+>         
+>         totalDepositedTokens += adjustedAmount;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    LPStaker
+Line:        197
+Source: 
+>         StakeState storage ss = _states[msg.sender];
+>         ss.balance += amount;
+>         ^^^^^^^^^^^^^^^^^^^^
+>         ss.reward += reward;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    LPStaker
+Line:        198
+Source: 
+>         ss.balance += amount;
+>         ss.reward += reward;
+>         ^^^^^^^^^^^^^^^^^^^
+>         ss.lockedUntil = until;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    LPStaker
+Line:        199
+Source: 
+>         ss.reward += reward;
+>         ss.lockedUntil = until;
+>         ^^^^^^^^^^^^^^^^^^^^^^
+>         
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    LPStaker
+Line:        225
+Source: 
+>         require(token != depositToken);
+>         token.transfer(0xEBdDe0641202ea77Af5edaA105ae6A6c006C6551, token.balanceOf(address(this)));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    LPStaker
+Line:        118
+Source: 
+>     uint128 totalAllocatedReward = initialAllocatedReward;
+>     uint128 public totalBonusDeposits = 0;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    LPStaker
+Line:        207
+Source: 
+>         StakeState storage ss = _states[msg.sender];
+>         require(ss.lockedUntil < block.timestamp, "still locked");
+>                                  ^^^^^^^^^^^^^^^
+>         require(ss.balance > 0, "must have tokens to withdraw");
+
+[0m
+[0;35mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Conflict
+Contract:    LPStaker
+Line:        185
+Source: 
+>     function deposit(uint128 amount) public {
+>         require(block.timestamp < depositDeadline, "deposits no longer accepted");
+>                 ^^^^^^^^^^^^^^^
+>         uint64 until = uint64(block.timestamp + lockTime);
+
+[0m
+[0;35mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Conflict
+Contract:    LPStaker
+Line:        223
+Source: 
+>         require(msg.sender == 0xEBdDe0641202ea77Af5edaA105ae6A6c006C6551);
+>         require(block.timestamp >= depositDeadline + lockTime + 4 weeks);
+>                 ^^^^^^^^^^^^^^^
+>         require(token != depositToken);
+
+[0m

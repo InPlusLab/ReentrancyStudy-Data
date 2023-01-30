@@ -1,0 +1,157 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+pragma directive defines a prior version to 0.6.12. Changing pragma version to 0.6.12....
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    NamedForwarder
+Line:        33
+Source: 
+> 
+>     function enableOracle(address oracle) external onlyOwner {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _oracles[oracle] = true;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    NamedForwarder
+Line:        43
+Source: 
+> 
+>     function deposit(bytes32 account) external payable {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.value > 0, "No ether sent.");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    NamedForwarder
+Line:        57
+Source: 
+> 
+>     function approveAddress(address wallet, bytes32 account) external onlyOracles {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _usersByAddress[account] = wallet;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Violation
+Contract:    NamedForwarder
+Line:        52
+Source: 
+>         require(_userBalances[account] > 0, "There is nothing to withdraw");
+>         payable(_usersByAddress[account]).transfer(_userBalances[account]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit WithdrawEvent(account, _usersByAddress[account], _userBalances[account]);
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    NamedForwarder
+Line:        10
+Source: 
+> 
+>     mapping(bytes32 => uint256) public _userBalances;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     mapping(bytes32 => address) public _usersByAddress;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    NamedForwarder
+Line:        11
+Source: 
+>     mapping(bytes32 => uint256) public _userBalances;
+>     mapping(bytes32 => address) public _usersByAddress;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     mapping(address => bool) public _oracles;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    NamedForwarder
+Line:        12
+Source: 
+>     mapping(bytes32 => address) public _usersByAddress;
+>     mapping(address => bool) public _oracles;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address internal owner;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    NamedForwarder
+Line:        52
+Source: 
+>         require(_userBalances[account] > 0, "There is nothing to withdraw");
+>         payable(_usersByAddress[account]).transfer(_userBalances[account]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit WithdrawEvent(account, _usersByAddress[account], _userBalances[account]);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    NamedForwarder
+Line:        52
+Source: 
+>         require(_userBalances[account] > 0, "There is nothing to withdraw");
+>         payable(_usersByAddress[account]).transfer(_userBalances[account]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit WithdrawEvent(account, _usersByAddress[account], _userBalances[account]);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    NamedForwarder
+Line:        52
+Source: 
+>         require(_userBalances[account] > 0, "There is nothing to withdraw");
+>         payable(_usersByAddress[account]).transfer(_userBalances[account]);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit WithdrawEvent(account, _usersByAddress[account], _userBalances[account]);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    NamedForwarder
+Line:        45
+Source: 
+>         require(msg.value > 0, "No ether sent.");
+>         _userBalances[account] += msg.value;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit DepositEvent(msg.sender, account, msg.value);
+
+[0m

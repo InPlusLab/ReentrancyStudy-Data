@@ -1,0 +1,623 @@
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    TokenFarm
+Line:        194
+Source: 
+>     address public owner;
+>     string public name = "Clash Farm";
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     IERC20Mintable public dappToken;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    TokenFarm
+Line:        230
+Source: 
+>         require(lockupTime>=minimumDaysLockup && lockupTime<366,"lockup time not allowed");
+> 		require(RatePerCoin[address(token)].exists==true,"token doesnt have a rate");
+>           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(_amount > 0, "amount cannot be 0");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    TokenFarm
+Line:        280
+Source: 
+> 
+>     function timeStaked(address token) public view returns(uint256){
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return block.timestamp.sub(stakers[msg.sender].startTimestamp[token]);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    TokenFarm
+Line:        232
+Source: 
+>         require(_amount > 0, "amount cannot be 0");
+>         token.transferFrom(msg.sender, address(this), _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    TokenFarm
+Line:        313
+Source: 
+>         stakers[msg.sender].timestamp[token]=block.timestamp;
+>         IERC20Mintable(dappToken).mint(msg.sender, earnings);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    TokenFarm
+Line:        299
+Source: 
+>         if(fee>0){
+>             IERC20Mintable(dappToken).mint(owner, fee);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             rewardbal = rewardbal.sub(fee);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    TokenFarm
+Line:        302
+Source: 
+>         }
+>         IERC20Mintable(dappToken).mint(msg.sender, rewardbal);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;35mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Conflict
+Contract:    TokenFarm
+Line:        264
+Source: 
+>                 stakers[msg.sender].balance[tokenPools[i]] = 0;
+>                 IERC20(tokenPools[i]).transfer(msg.sender, balance);
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 emit Unstake(address(tokenPools[i]),msg.sender);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    TokenFarm
+Line:        242
+Source: 
+> 
+>     function unstakeToken(IERC20 token) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         staker storage stake = stakers[msg.sender];
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    TokenFarm
+Line:        304
+Source: 
+>     }
+>     function claimToken(address token) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(stakers[msg.sender].balance[token]>0,"you have no balance and cant claim");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    TokenFarm
+Line:        316
+Source: 
+> 
+>     function setMinimumLockup(uint256 _days) external onlyModerators {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         minimumDaysLockup =_days;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    TokenFarm
+Line:        324
+Source: 
+> 
+>     function transferOwnership(address _newOwner) external onlyOwner{
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         owner=_newOwner;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    TokenFarm
+Line:        270
+Source: 
+> 
+> 	function earned(address token) public view returns(uint256){ 
+>  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 		return (stakers[msg.sender].balance[token]*
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    TokenFarm
+Line:        280
+Source: 
+> 
+>     function timeStaked(address token) public view returns(uint256){
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return block.timestamp.sub(stakers[msg.sender].startTimestamp[token]);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    TokenFarm
+Line:        320
+Source: 
+> 
+>     function setPenaltyFee(uint256 _fee) external onlyModerators {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         penaltyFee =_fee;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    TokenFarm
+Line:        328
+Source: 
+> 
+>     function setCoinRate(address coin,uint256 Rate) public onlyModerators {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         RatePerCoin[coin].rate =Rate;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    TokenFarm
+Line:        336
+Source: 
+> 
+> 	function setAdmin(address addy,bool value) external onlyOwner{
+>  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 		Admins[addy]= value;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    TokenFarm
+Line:        339
+Source: 
+> 	}
+>     function stakingBalance(address token) external view returns(uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return stakers[msg.sender].balance[token];
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    TokenFarm
+Line:        271
+Source: 
+> 	function earned(address token) public view returns(uint256){ 
+> 		return (stakers[msg.sender].balance[token]*
+>           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             (RatePerCoin[token].rate)                 
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    TokenFarm
+Line:        232
+Source: 
+>         require(_amount > 0, "amount cannot be 0");
+>         token.transferFrom(msg.sender, address(this), _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    TokenFarm
+Line:        198
+Source: 
+> 
+>     struct staker {
+>     ^^^^^^^^^^^^^^^
+>         uint256 id;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    TokenFarm
+Line:        206
+Source: 
+> 
+>     struct rate {
+>     ^^^^^^^^^^^^^
+>         uint256 rate;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    TokenFarm
+Line:        214
+Source: 
+>     mapping(address => staker) public stakers;
+>     mapping(address => rate) public RatePerCoin;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 	mapping (address=>bool) Admins;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    TokenFarm
+Line:        215
+Source: 
+>     mapping(address => rate) public RatePerCoin;
+> 	mapping (address=>bool) Admins;
+>  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public minimumDaysLockup=3;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        5
+Source: 
+> 
+> pragma solidity ^0.5.0;
+> ^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    TokenFarm
+Line:        215
+Source: 
+>     mapping(address => rate) public RatePerCoin;
+> 	mapping (address=>bool) Admins;
+>  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public minimumDaysLockup=3;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    TokenFarm
+Line:        232
+Source: 
+>         require(_amount > 0, "amount cannot be 0");
+>         token.transferFrom(msg.sender, address(this), _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    TokenFarm
+Line:        253
+Source: 
+> 
+>         token.transfer(msg.sender, balance);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Unstake(address(token),msg.sender);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    TokenFarm
+Line:        310
+Source: 
+>             earnings = earnings.sub(fee);
+>             IERC20Mintable(dappToken).mint(owner, fee);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    TokenFarm
+Line:        313
+Source: 
+>         stakers[msg.sender].timestamp[token]=block.timestamp;
+>         IERC20Mintable(dappToken).mint(msg.sender, earnings);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    TokenFarm
+Line:        264
+Source: 
+>                 stakers[msg.sender].balance[tokenPools[i]] = 0;
+>                 IERC20(tokenPools[i]).transfer(msg.sender, balance);
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 emit Unstake(address(tokenPools[i]),msg.sender);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    TokenFarm
+Line:        299
+Source: 
+>         if(fee>0){
+>             IERC20Mintable(dappToken).mint(owner, fee);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             rewardbal = rewardbal.sub(fee);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    TokenFarm
+Line:        302
+Source: 
+>         }
+>         IERC20Mintable(dappToken).mint(msg.sender, rewardbal);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    TokenFarm
+Line:        234
+Source: 
+> 
+>         stakers[msg.sender].balance[address(token)] = stakers[msg.sender].balance[address(token)].add( _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         totalStaked[address(token)] = totalStaked[address(token)].add( _amount);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    TokenFarm
+Line:        235
+Source: 
+>         stakers[msg.sender].balance[address(token)] = stakers[msg.sender].balance[address(token)].add( _amount);
+>         totalStaked[address(token)] = totalStaked[address(token)].add( _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         stakers[msg.sender].timestamp[address(token)] = block.timestamp;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    TokenFarm
+Line:        236
+Source: 
+>         totalStaked[address(token)] = totalStaked[address(token)].add( _amount);
+>         stakers[msg.sender].timestamp[address(token)] = block.timestamp;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         stakers[msg.sender].startTimestamp[address(token)] = block.timestamp;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    TokenFarm
+Line:        237
+Source: 
+>         stakers[msg.sender].timestamp[address(token)] = block.timestamp;
+>         stakers[msg.sender].startTimestamp[address(token)] = block.timestamp;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         stakers[msg.sender].lockedUpTill[address(token)]= block.timestamp.add(lockupTime* 1 days);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    TokenFarm
+Line:        238
+Source: 
+>         stakers[msg.sender].startTimestamp[address(token)] = block.timestamp;
+>         stakers[msg.sender].lockedUpTill[address(token)]= block.timestamp.add(lockupTime* 1 days);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Stake(_amount,address(token),msg.sender,lockupTime);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    TokenFarm
+Line:        232
+Source: 
+>         require(_amount > 0, "amount cannot be 0");
+>         token.transferFrom(msg.sender, address(this), _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    TokenFarm
+Line:        253
+Source: 
+> 
+>         token.transfer(msg.sender, balance);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Unstake(address(token),msg.sender);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    TokenFarm
+Line:        264
+Source: 
+>                 stakers[msg.sender].balance[tokenPools[i]] = 0;
+>                 IERC20(tokenPools[i]).transfer(msg.sender, balance);
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 emit Unstake(address(tokenPools[i]),msg.sender);
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    TokenFarm
+Line:        194
+Source: 
+>     address public owner;
+>     string public name = "Clash Farm";
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     IERC20Mintable public dappToken;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    TokenFarm
+Line:        238
+Source: 
+>         stakers[msg.sender].startTimestamp[address(token)] = block.timestamp;
+>         stakers[msg.sender].lockedUpTill[address(token)]= block.timestamp.add(lockupTime* 1 days);
+>                                                           ^^^^^^^^^^^^^^^
+>         emit Stake(_amount,address(token),msg.sender,lockupTime);
+
+[0m
+[0;35mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Conflict
+Contract:    TokenFarm
+Line:        307
+Source: 
+>         uint256 earnings = earned(token);
+>         if(block.timestamp < stakers[msg.sender].lockedUpTill[address(token)]){
+>            ^^^^^^^^^^^^^^^
+>             uint256 fee = earnings.div(100).mul(penaltyFee);
+
+[0m
+[0;35mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Conflict
+Contract:    TokenFarm
+Line:        291
+Source: 
+>                 uint256 earnings = earned(token);
+>                 if(block.timestamp<stakers[msg.sender].lockedUpTill[token]){
+>                    ^^^^^^^^^^^^^^^
+>                     fee= fee.add((earnings.div(100).mul(penaltyFee)));
+
+[0m

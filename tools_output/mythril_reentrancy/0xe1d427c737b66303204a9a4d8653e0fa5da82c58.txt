@@ -1,0 +1,111 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: PolkazeckStake
+Function name: getAsset(address,uint256)
+PC address: 8383
+Estimated Gas Usage: 7929 - 78770
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/6218a74be64a84ebcd26fdba7b49dd16.sol:678
+
+sh(_token);
+    } 
+    
+    event NewSta
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: getAsset(address,uint256), txdata: 0xdfd01ff3000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00a082310000000000000000000000000901d12ebe1b195e5aa8748e62bd7735, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: PolkazeckStake
+Function name: getAsset(address,uint256)
+PC address: 8383
+Estimated Gas Usage: 7929 - 78770
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/6218a74be64a84ebcd26fdba7b49dd16.sol:678
+
+sh(_token);
+    } 
+    
+    event NewSta
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: getAsset(address,uint256), txdata: 0xdfd01ff3000000000000000000000000000000000000000000000000000000000000000000a082310000000000000000000000000901d12ebe1b195e5aa8748e62bd7735, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: PolkazeckStake
+Function name: roi(address)
+PC address: 12275
+Estimated Gas Usage: 3921 - 5197
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/6218a74be64a84ebcd26fdba7b49dd16.sol:26
+
+    /**
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000000000e013, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: roi(address), txdata: 0x3ade7ed70000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: PolkazeckStake
+Function name: roi(address)
+PC address: 12303
+Estimated Gas Usage: 4117 - 5864
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/6218a74be64a84ebcd26fdba7b49dd16.sol:98
+
+
+     * @dev Returns the mult
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: roi(address), txdata: 0x3ade7ed70000000000000000000000000000000000000000000000000000000000000000, value: 0x0

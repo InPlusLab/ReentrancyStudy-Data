@@ -1,0 +1,496 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Upgradable
+Function name: fallback
+PC address: 102
+Estimated Gas Usage: 15255 - 207344
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/6569e0261bc6cf421611274be2a21c1b.sol:381
+
+age.getAddress(keccak256("contract.name", _name));
+
+        // Check it exists
+
+        require(oldContractAddress != 0x0);
+
+        // Check it is not the contract's current address
+
+        require(oldContractAddress != _upgradedContractAddress);
+
+        // Replace the address for the name lookup - contract addresses can be looked up by their name or verified by a reverse address lookup
+
+        rocketStorage.setAddress(keccak256("contract.name", _name), _upgradedContractAddress);
+
+        // Add the new contract address for a direct verification using the address (used in RocketStorage to verify its a legit contract using only the msg.sender)
+
+        rocketStorage.setAddress(keccak256("contract.address", _upgradedContractAddress), _upgradedContractAddress);
+
+        // Remove the old contract address verification
+
+        rocketStorage.deleteAddress(keccak256("contract.address", oldContractAddress));
+
+        // Log it
+
+        emit ContractUpgraded(oldContractAddress, _upgradedContractAddress, now);
+
+    }
+
+
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x81000000000844, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: upgradeContract(string,address), txdata: 0x1271bd53ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Upgradable
+Function name: account_info_rotate_tine(uint256)
+PC address: 338
+Estimated Gas Usage: 15255 - 207344
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6569e0261bc6cf421611274be2a21c1b.sol:387
+
+ss
+
+        r
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x216, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 464646464646464646464646deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: upgradeContract(string,address), txdata: 0x1271bd5380, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: RocketBase
+Function name: fallback
+PC address: 414
+Estimated Gas Usage: 2747 - 38063
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/6569e0261bc6cf421611274be2a21c1b.sol:241
+
+s has this role
+
+    * @return bool
+
+    */
+
+    function roleHas(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: isOwner(address), txdata: 0x2f54bf6e, value: 0x0
+Caller: [SOMEGUY], function: isOwner(address), txdata: 0x2f54bf6e, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Upgradable
+Function name: account_info_rotate_tine(uint256)
+PC address: 480
+Estimated Gas Usage: 15255 - 207344
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/6569e0261bc6cf421611274be2a21c1b.sol:387
+
+ss
+
+        require(oldContractAddress != _upgradedContract
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100080000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 808080808080808080808080deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: upgradeContract(string,address), txdata: 0x1271bd5380, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Upgradable
+Function name: account_info_rotate_tine(uint256)
+PC address: 480
+Estimated Gas Usage: 15255 - 207344
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/6569e0261bc6cf421611274be2a21c1b.sol:387
+
+ss
+
+        require(oldContractAddress != _upgradedContract
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: upgradeContract(string,address), txdata: 0x1271bd5380, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Upgradable
+Function name: account_info_rotate_tine(uint256)
+PC address: 480
+Estimated Gas Usage: 15255 - 207344
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6569e0261bc6cf421611274be2a21c1b.sol:387
+
+ss
+
+        require(oldContractAddress != _upgradedContract
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x216, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 464646464646464646464646deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: upgradeContract(string,address), txdata: 0x1271bd5380, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Upgradable
+Function name: account_info_rotate_tine(uint256)
+PC address: 575
+Estimated Gas Usage: 15255 - 207344
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6569e0261bc6cf421611274be2a21c1b.sol:395
+
+o verify its 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x216, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 464646464646464646464646deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: upgradeContract(string,address), txdata: 0x1271bd5380, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Upgradable
+Function name: account_info_rotate_tine(uint256)
+PC address: 731
+Estimated Gas Usage: 15255 - 207344
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/6569e0261bc6cf421611274be2a21c1b.sol:395
+
+o verify its a legit contract using only the msg.sender)
+
+        rocketStorage.setAd
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100080000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 808080808080808080808080deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: upgradeContract(string,address), txdata: 0x1271bd5380, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Upgradable
+Function name: account_info_rotate_tine(uint256)
+PC address: 731
+Estimated Gas Usage: 15255 - 207344
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6569e0261bc6cf421611274be2a21c1b.sol:395
+
+o verify its a legit contract using only the msg.sender)
+
+        rocketStorage.setAd
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x216, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 464646464646464646464646deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: upgradeContract(string,address), txdata: 0x1271bd5380, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Upgradable
+Function name: account_info_rotate_tine(uint256)
+PC address: 754
+Estimated Gas Usage: 15255 - 207344
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6569e0261bc6cf421611274be2a21c1b.sol:401
+
+ress(keccak25
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x216, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 464646464646464646464646deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: upgradeContract(string,address), txdata: 0x1271bd5380, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Upgradable
+Function name: account_info_rotate_tine(uint256)
+PC address: 933
+Estimated Gas Usage: 15255 - 207344
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/6569e0261bc6cf421611274be2a21c1b.sol:401
+
+ress(keccak256("contract.address", oldContractAddress));
+
+        // Log it
+
+        emit ContractUpgraded(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100080000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 808080808080808080808080deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: upgradeContract(string,address), txdata: 0x1271bd5380, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Upgradable
+Function name: account_info_rotate_tine(uint256)
+PC address: 933
+Estimated Gas Usage: 15255 - 207344
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6569e0261bc6cf421611274be2a21c1b.sol:401
+
+ress(keccak256("contract.address", oldContractAddress));
+
+        // Log it
+
+        emit ContractUpgraded(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x216, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 464646464646464646464646deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: upgradeContract(string,address), txdata: 0x1271bd5380, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Upgradable
+Function name: account_info_rotate_tine(uint256)
+PC address: 956
+Estimated Gas Usage: 15255 - 207344
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6569e0261bc6cf421611274be2a21c1b.sol:411
+Initial State:
+
+Account: [CREATOR], balance: 0x216, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 464646464646464646464646deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: upgradeContract(string,address), txdata: 0x1271bd5380, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Upgradable
+Function name: account_info_rotate_tine(uint256)
+PC address: 1126
+Estimated Gas Usage: 15255 - 207344
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/6569e0261bc6cf421611274be2a21c1b.sol:411
+Initial State:
+
+Account: [CREATOR], balance: 0x100080000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 808080808080808080808080deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: upgradeContract(string,address), txdata: 0x1271bd5380, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Upgradable
+Function name: account_info_rotate_tine(uint256)
+PC address: 1126
+Estimated Gas Usage: 15255 - 207344
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6569e0261bc6cf421611274be2a21c1b.sol:411
+Initial State:
+
+Account: [CREATOR], balance: 0x216, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 464646464646464646464646deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: upgradeContract(string,address), txdata: 0x1271bd5380, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Upgradable
+Function name: isOwner(address)
+PC address: 1431
+Estimated Gas Usage: 2820 - 39126
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/6569e0261bc6cf421611274be2a21c1b.sol:241
+
+s has this role
+
+    * @return bool
+
+    */
+
+    function roleHas(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: isOwner(address), txdata: 0x2f54bf6e, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Upgradable
+Function name: fallback
+PC address: 2503
+Estimated Gas Usage: 15255 - 207344
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/6569e0261bc6cf421611274be2a21c1b.sol:257
+
+s role, reverts if it doesn't
+
+    */
+
+    function roleCheck(st
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100080000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 808080808080808080808080deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: upgradeContract(string,address), txdata: 0x1271bd5380, value: 0x0

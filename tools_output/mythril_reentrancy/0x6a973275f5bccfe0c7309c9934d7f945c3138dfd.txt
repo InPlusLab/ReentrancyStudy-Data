@@ -1,0 +1,191 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MessageTransport
+Function name: getRecvMsgs(address,uint256,uint256)
+PC address: 1720
+Estimated Gas Usage: 1862 - 5767
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/a629cc5e6a5472b0b19ed3b6e3cf5e2b.sol:497
+
+sageCount; ++_idx) {
+
+      _messageIds[_count] = _recvIds[_idx];
+
+      if (++_count >= _maxResults)
+
+        break;
+
+    }
+
+  }
+
+
+
+  // -------------------------------------------------------------------------
+
+  // get _maxResults message id's of sent messages
+
+  // note that array will always have _maxResults entries. ignore messageID = 0
+
+  // -------------------------------------------------------------------------
+
+  function getSentMsgs(address _from, uint256 _startIdx, uint256 _maxResults) public view returns(uint256 _idx, uint256[] memory _messageIds) {
+
+    uint _count = 0;
+
+    Account storage _sentAccount = account
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42000000040001ac1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: getRecvMsgs(address,uint256,uint256), txdata: 0x88a0c3a0000000000000000000000000000000000000000000000000000000000000000090000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000002, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MessageTransport
+Function name: getSentMsgs(address,uint256,uint256)
+PC address: 2735
+Estimated Gas Usage: 1817 - 5722
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/a629cc5e6a5472b0b19ed3b6e3cf5e2b.sol:535
+
+ _messageIds[_count] = _sentIds[_idx];
+
+      if (++_count >= _maxResults)
+
+        break;
+
+    }
+
+  }
+
+
+
+
+
+  // -------------------------------------------------------------------------
+
+  // get the required fee in order to send a message (or spam message)
+
+  // the second version is handy for calls from partner contract(s)
+
+  // -------------------------------------------------------------------------
+
+  function getFee(address _toAddr) public view returns(uint256 _fee) {
+
+    Account storage _sendAccount = accounts[msg.sender];
+
+    Account storage _recvAccount = accounts[_toAddr];
+
+    if (_sendAccount.peerRecvMessageCount[_toAddr]
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8080040040000041, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getSentMsgs(address,uint256,uint256), txdata: 0xd4931de9000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000100000800000000000000000000000000000000000000000000000000000000000002, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MessageTransport
+Function name: getRecvMsgs(address,uint256,uint256)
+PC address: 4405
+Estimated Gas Usage: 1862 - 5767
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x33a00140040007, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getRecvMsgs(address,uint256,uint256), txdata: 0x88a0c3a0000000000000000000000000000000000000000000000000000000000000000000000000081000000000000000000000000000000000000000000080100400104000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MessageTransport
+Function name: withdrawRetainedFees()
+PC address: 5008
+Estimated Gas Usage: 9502 - 98582
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/a629cc5e6a5472b0b19ed3b6e3cf5e2b.sol:741
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0d0d0d0d0d0d0d0d0d0d0d0ddeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: withdrawRetainedFees(), txdata: 0xb4150ee7, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: MessageTransport
+Function name: withdrawRetainedFees()
+PC address: 5008
+Estimated Gas Usage: 9502 - 98582
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/a629cc5e6a5472b0b19ed3b6e3cf5e2b.sol:741
+Initial State:
+
+Account: [CREATOR], balance: 0x14000010008200b, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: withdrawRetainedFees(), txdata: 0xb4150ee7, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MessageTransport
+Function name: getSentMsgs(address,uint256,uint256)
+PC address: 5880
+Estimated Gas Usage: 1817 - 5722
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1f100c000998009, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getSentMsgs(address,uint256,uint256), txdata: 0xd4931de9000000000000000000000000000000000000000000000000000001000000000000004080082000004000020100000040002000040000000000010000040020010800000000000000000000000000000000000000000000000000000000000002, value: 0x0

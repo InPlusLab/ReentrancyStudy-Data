@@ -1,0 +1,655 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    NFTStaking
+Line:        100
+Source: 
+>   }
+>   rewardSchedule public rewardMultiplier = rewardSchedule({
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     days30: 2,
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    NFTStaking
+Line:        153
+Source: 
+>   event WithdrawAll(address userAddress, uint256 principal, uint256 yield, uint256 userFundsRemaining, uint256 stakingFundsRemaining);
+>   function withdrawAll() public {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     require(active == true, "staking has not begun yet");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    NFTStaking
+Line:        170
+Source: 
+>   event WithdrawPrincipal(address userAddress, uint256 principal, uint256 userFundsRemaining);
+>   function withdrawPrincipal() public {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     require(active == true, "staking has not begun yet");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    NFTStaking
+Line:        133
+Source: 
+>   function deposit(uint256 depositAmount) external {
+>     require(NFTProtocol.balanceOf(msg.sender) >= depositAmount, "not enough NFT tokens");
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     require(active == true, "staking has not begun yet");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    NFTStaking
+Line:        149
+Source: 
+>     numUserDeposits[msg.sender] = numUserDeposits[msg.sender] + 1;
+>     NFTProtocol.transferFrom(msg.sender, address(this), depositAmount);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    NFTStaking
+Line:        165
+Source: 
+>     NFTProtocol.transfer(msg.sender, withdrawalAmount);
+>     NFTProtocol.transfer(msg.sender, userYield);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     emit WithdrawAll(msg.sender, withdrawalAmount, userYield, userFunds, stakingFunds);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    NFTStaking
+Line:        185
+Source: 
+>     require(msg.sender == governance, "only governance can begin staking");
+>     require(NFTProtocol.balanceOf(address(this)) == totalRewardSupply, "not enough staking rewards");
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     active = true;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Violation
+Contract:    NFTStaking
+Line:        164
+Source: 
+>     }
+>     NFTProtocol.transfer(msg.sender, withdrawalAmount);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     NFTProtocol.transfer(msg.sender, userYield);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Violation
+Contract:    NFTStaking
+Line:        178
+Source: 
+>     }
+>     NFTProtocol.transfer(msg.sender, withdrawalAmount);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     emit WithdrawPrincipal(msg.sender, withdrawalAmount, userFunds);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    NFTStaking
+Line:        193
+Source: 
+> 
+>   function getYieldMultiplier(uint256 daysStaked) public view returns(uint256) {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     if (daysStaked >= 90) return rewardMultiplier.days90;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    NFTStaking
+Line:        211
+Source: 
+>   
+>   function getUserDeposits(address userAddress) external view returns(userDeposit[] memory) {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     return userDeposits[userAddress];
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    NFTStaking
+Line:        133
+Source: 
+>   function deposit(uint256 depositAmount) external {
+>     require(NFTProtocol.balanceOf(msg.sender) >= depositAmount, "not enough NFT tokens");
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     require(active == true, "staking has not begun yet");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    NFTStaking
+Line:        149
+Source: 
+>     numUserDeposits[msg.sender] = numUserDeposits[msg.sender] + 1;
+>     NFTProtocol.transferFrom(msg.sender, address(this), depositAmount);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    NFTStaking
+Line:        164
+Source: 
+>     }
+>     NFTProtocol.transfer(msg.sender, withdrawalAmount);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     NFTProtocol.transfer(msg.sender, userYield);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    NFTStaking
+Line:        165
+Source: 
+>     NFTProtocol.transfer(msg.sender, withdrawalAmount);
+>     NFTProtocol.transfer(msg.sender, userYield);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     emit WithdrawAll(msg.sender, withdrawalAmount, userYield, userFunds, stakingFunds);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    NFTStaking
+Line:        178
+Source: 
+>     }
+>     NFTProtocol.transfer(msg.sender, withdrawalAmount);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     emit WithdrawPrincipal(msg.sender, withdrawalAmount, userFunds);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    NFTStaking
+Line:        185
+Source: 
+>     require(msg.sender == governance, "only governance can begin staking");
+>     require(NFTProtocol.balanceOf(address(this)) == totalRewardSupply, "not enough staking rewards");
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     active = true;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    NFTStaking
+Line:        93
+Source: 
+>   address public governance;
+>   IERC20 internal immutable NFTProtocol;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   struct rewardSchedule {
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    NFTStaking
+Line:        94
+Source: 
+>   IERC20 internal immutable NFTProtocol;
+>   struct rewardSchedule {
+>   ^^^^^^^^^^^^^^^^^^^^^^^
+>     uint64 days30;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    NFTStaking
+Line:        110
+Source: 
+>   address[] public allStakingUsers;
+>   struct userDeposit {
+>   ^^^^^^^^^^^^^^^^^^^^
+>     uint256 amountNFT;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    NFTStaking
+Line:        119
+Source: 
+>   uint256 public stakingFunds;
+>   uint256 public constant maxContractStakingCapacity = 7500000 * 1 ether;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   uint256 public constant userMaxDeposits = 5;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    NFTStaking
+Line:        120
+Source: 
+>   uint256 public constant maxContractStakingCapacity = 7500000 * 1 ether;
+>   uint256 public constant userMaxDeposits = 5;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   uint256 public constant totalRewardSupply = 750000 * 1 ether;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    NFTStaking
+Line:        121
+Source: 
+>   uint256 public constant userMaxDeposits = 5;
+>   uint256 public constant totalRewardSupply = 750000 * 1 ether;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   uint256 public constant minStakingAmount = 10000 * 1 ether;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    NFTStaking
+Line:        122
+Source: 
+>   uint256 public constant totalRewardSupply = 750000 * 1 ether;
+>   uint256 public constant minStakingAmount = 10000 * 1 ether;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   uint256 public constant maxStakingAmount = 1000000 * 1 ether;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    NFTStaking
+Line:        123
+Source: 
+>   uint256 public constant minStakingAmount = 10000 * 1 ether;
+>   uint256 public constant maxStakingAmount = 1000000 * 1 ether;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        7
+Source: 
+> 
+> pragma solidity ^0.6.12;
+> ^^^^^^^^^^^^^^^^^^^^^^^^
+> pragma experimental ABIEncoderV2;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    NFTStaking
+Line:        119
+Source: 
+>   uint256 public stakingFunds;
+>   uint256 public constant maxContractStakingCapacity = 7500000 * 1 ether;
+>                                                        ^^^^^^^
+>   uint256 public constant userMaxDeposits = 5;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    NFTStaking
+Line:        123
+Source: 
+>   uint256 public constant minStakingAmount = 10000 * 1 ether;
+>   uint256 public constant maxStakingAmount = 1000000 * 1 ether;
+>                                              ^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    NFTStaking
+Line:        133
+Source: 
+>   function deposit(uint256 depositAmount) external {
+>     require(NFTProtocol.balanceOf(msg.sender) >= depositAmount, "not enough NFT tokens");
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     require(active == true, "staking has not begun yet");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    NFTStaking
+Line:        185
+Source: 
+>     require(msg.sender == governance, "only governance can begin staking");
+>     require(NFTProtocol.balanceOf(address(this)) == totalRewardSupply, "not enough staking rewards");
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     active = true;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    NFTStaking
+Line:        149
+Source: 
+>     numUserDeposits[msg.sender] = numUserDeposits[msg.sender] + 1;
+>     NFTProtocol.transferFrom(msg.sender, address(this), depositAmount);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    NFTStaking
+Line:        164
+Source: 
+>     }
+>     NFTProtocol.transfer(msg.sender, withdrawalAmount);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     NFTProtocol.transfer(msg.sender, userYield);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    NFTStaking
+Line:        165
+Source: 
+>     NFTProtocol.transfer(msg.sender, withdrawalAmount);
+>     NFTProtocol.transfer(msg.sender, userYield);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     emit WithdrawAll(msg.sender, withdrawalAmount, userYield, userFunds, stakingFunds);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    NFTStaking
+Line:        178
+Source: 
+>     }
+>     NFTProtocol.transfer(msg.sender, withdrawalAmount);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     emit WithdrawPrincipal(msg.sender, withdrawalAmount, userFunds);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    NFTStaking
+Line:        89
+Source: 
+> 
+>   bool public active;
+>   ^^^^^^^^^^^^^^^^^^
+>   uint256 public startTime;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    NFTStaking
+Line:        90
+Source: 
+>   bool public active;
+>   uint256 public startTime;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^
+>   uint256 public cutoffTime;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    NFTStaking
+Line:        91
+Source: 
+>   uint256 public startTime;
+>   uint256 public cutoffTime;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^
+>   address public governance;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    NFTStaking
+Line:        116
+Source: 
+> 
+>   uint256 public totalDeposited;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   uint256 public userFunds;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    NFTStaking
+Line:        117
+Source: 
+>   uint256 public totalDeposited;
+>   uint256 public userFunds;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^
+>   uint256 public stakingFunds;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    NFTStaking
+Line:        118
+Source: 
+>   uint256 public userFunds;
+>   uint256 public stakingFunds;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   uint256 public constant maxContractStakingCapacity = 7500000 * 1 ether;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    NFTStaking
+Line:        174
+Source: 
+>     userDepositTotal[msg.sender] = 0;
+>     userFunds -= withdrawalAmount;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     for (uint256 i = 0; i < userDeposits[msg.sender].length; i++) {
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    NFTStaking
+Line:        149
+Source: 
+>     numUserDeposits[msg.sender] = numUserDeposits[msg.sender] + 1;
+>     NFTProtocol.transferFrom(msg.sender, address(this), depositAmount);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    NFTStaking
+Line:        164
+Source: 
+>     }
+>     NFTProtocol.transfer(msg.sender, withdrawalAmount);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     NFTProtocol.transfer(msg.sender, userYield);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    NFTStaking
+Line:        165
+Source: 
+>     NFTProtocol.transfer(msg.sender, withdrawalAmount);
+>     NFTProtocol.transfer(msg.sender, userYield);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     emit WithdrawAll(msg.sender, withdrawalAmount, userYield, userFunds, stakingFunds);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    NFTStaking
+Line:        178
+Source: 
+>     }
+>     NFTProtocol.transfer(msg.sender, withdrawalAmount);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     emit WithdrawPrincipal(msg.sender, withdrawalAmount, userFunds);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    NFTStaking
+Line:        204
+Source: 
+>     for (uint256 i = 0; i < userDeposits[userAddress].length; i++) {
+>       uint256 daysStaked = (block.timestamp - userDeposits[userAddress][i].depositTime) / 1 days;
+>                             ^^^^^^^^^^^^^^^
+>       uint256 yieldMultiplier = getYieldMultiplier(daysStaked);
+
+[0m
+[0;35mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Conflict
+Contract:    NFTStaking
+Line:        139
+Source: 
+>     require(totalDeposited < maxContractStakingCapacity, "contract staking capacity exceeded");
+>     require(block.timestamp < cutoffTime, "contract staking deposit time period over");
+>             ^^^^^^^^^^^^^^^
+>     if (userDepositTotal[msg.sender] == 0) allStakingUsers.push(msg.sender);
+
+[0m
+[0;35mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Conflict
+Contract:    NFTStaking
+Line:        187
+Source: 
+>     active = true;
+>     startTime = block.timestamp;
+>                 ^^^^^^^^^^^^^^^
+>     cutoffTime = startTime + 60 days;
+
+[0m

@@ -1,0 +1,116 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: TimeLock
+Function name: constructor
+PC address: 66
+Estimated Gas Usage: 21804 - 104203
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/28e6e598aba49cfb2c1d1fe92d2851da.sol:117
+
+
+    
+    
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: TimeLock
+Function name: withDraw(address)
+PC address: 295
+Estimated Gas Usage: 1824 - 1919
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/28e6e598aba49cfb2c1d1fe92d2851da.sol:123
+
+= token.balanceOf(address(this)); //get total balance of all tokens the contract holds (token address entered when function called so it can support any token)
+            token.transfer(receiver,balance); //send all tokens this contract holds back to the reciever address hard set above
+        } else {
+            revert(); //if the data isn't ready, don't execute
+        }
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withDraw(address), txdata: 0x0a67d2c70000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TimeLock
+Function name: withDraw(address)
+PC address: 505
+Estimated Gas Usage: 5965 - 75186
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/28e6e598aba49cfb2c1d1fe92d2851da.sol:125
+
+ } else {
+            revert(); 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8000000001a, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withDraw(address), txdata: 0x0a67d2c70000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [CREATOR], function: withDraw(address), txdata: 0x0a67d2c7000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: TimeLock
+Function name: withDraw(address)
+PC address: 505
+Estimated Gas Usage: 5965 - 75186
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/28e6e598aba49cfb2c1d1fe92d2851da.sol:125
+
+ } else {
+            revert(); 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withDraw(address), txdata: 0x0a67d2c70000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+

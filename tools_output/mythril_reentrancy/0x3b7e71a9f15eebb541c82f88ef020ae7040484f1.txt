@@ -1,0 +1,347 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Feeable
+Function name: minFee() or minFee()
+PC address: 332
+Estimated Gas Usage: 1061 - 1767
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/d7e7a043d6eb93cfbbce33b96783bfdb.sol:35
+
+ / 100;
+    }
+}
+
+
+con
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80002042310, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: minFee(), txdata: 0x24ec7590, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Multiplexer
+Function name: claim(address)
+PC address: 1189
+Estimated Gas Usage: 5178 - 75528
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d7e7a043d6eb93cfbbce33b96783bfdb.sol:93
+Initial State:
+
+Account: [CREATOR], balance: 0x10, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: claim(address), txdata: 0x1e83409a000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Multiplexer
+Function name: claim(address)
+PC address: 1245
+Estimated Gas Usage: 5178 - 75528
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d7e7a043d6eb93cfbbce33b96783bfdb.sol:93
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: claim(address), txdata: 0x1e83409a000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Multiplexer
+Function name: claim(address)
+PC address: 1422
+Estimated Gas Usage: 5178 - 75528
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d7e7a043d6eb93cfbbce33b96783bfdb.sol:93
+Initial State:
+
+Account: [CREATOR], balance: 0x10, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: claim(address), txdata: 0x1e83409a000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Multiplexer
+Function name: claim(address)
+PC address: 1422
+Estimated Gas Usage: 5178 - 75528
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/d7e7a043d6eb93cfbbce33b96783bfdb.sol:93
+Initial State:
+
+Account: [CREATOR], balance: 0x4480000448000c800, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: claim(address), txdata: 0x1e83409a00000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Multiplexer
+Function name: claim(address)
+PC address: 1422
+Estimated Gas Usage: 5178 - 75528
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d7e7a043d6eb93cfbbce33b96783bfdb.sol:93
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: claim(address), txdata: 0x1e83409a000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Multiplexer
+Function name: minFee() or minFee()
+PC address: 1477
+Estimated Gas Usage: 1101 - 1807
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/d7e7a043d6eb93cfbbce33b96783bfdb.sol:35
+
+ / 100;
+    }
+}
+
+
+con
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x51040000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: minFee(), txdata: 0x24ec7590, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Multiplexer
+Function name: sendEth(address[],uint256[])
+PC address: 1512
+Estimated Gas Usage: 560 - 6015
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/d7e7a043d6eb93cfbbce33b96783bfdb.sol:49
+
+) payable returns (bool _success) {
+		// input validation
+		assert(_to.length == _value.length);
+		assert(_to.length <= 255);
+        uint256 fee = minFee();
+        require(msg.value > fee);
+
+        uint256 remain_value = msg.value - fee;
+
+		// loop through to addresses and send value
+		for (uint8 i = 0; i < _to.length; i++) {
+            require(remain_value >= _value[i]);
+            remain_value = remain_value - _value[i];
+
+			_to[i].transfer(_value[i]);
+		}
+
+		return true;
+	}
+
+	function sendErc20(address _tokenAddress, address[] _to, uint25
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: sendEth(address[],uint256[]), txdata: 0x25245b26e7, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Multiplexer
+Function name: sendEth(address[],uint256[])
+PC address: 1526
+Estimated Gas Usage: 595 - 6143
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/d7e7a043d6eb93cfbbce33b96783bfdb.sol:49
+
+) payable returns (bool _success) {
+		// input validation
+		assert(_to.length == _value.length);
+		assert(_to.length <= 255);
+        uint256 fee = minFee();
+        require(msg.value > fee);
+
+        uint256 remain_value = msg.value - fee;
+
+		// loop through to addresses and send value
+		for (uint8 i = 0; i < _to.length; i++) {
+            require(remain_value >= _value[i]);
+            remain_value = remain_value - _value[i];
+
+			_to[i].transfer(_value[i]);
+		}
+
+		return true;
+	}
+
+	function sendErc20(address _tokenAddress, address[] _to, uint25
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: sendEth(address[],uint256[]), txdata: 0x25245b2680, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Multiplexer
+Function name: sendErc20(address,address[],uint256[])
+PC address: 1862
+Estimated Gas Usage: 653 - 6108
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/d7e7a043d6eb93cfbbce33b96783bfdb.sol:69
+
+value) payable returns (bool _success) {
+		// input validation
+		assert(_to.length == _value.length);
+		assert(_to.length <= 255);
+        require(msg.value >= minFee());
+
+		// use the erc20 abi
+		ERC20 token = ERC20(_tokenAddress);
+		// loop through to addresses and send value
+		for (uint8 i = 0; i < _to.length; i++) {
+			assert(token.transferFrom(msg.sender, _to[i], _value[i]) == true);
+		}
+		return true;
+	}
+
+    function claim(address _token) public onlyOwner {
+        if (_token == 0x0
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21401040036002c15, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: sendErc20(address,address[],uint256[]), txdata: 0xaee25613084028080408010404011002010404200810010202400208040402780401020180, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Multiplexer
+Function name: sendErc20(address,address[],uint256[])
+PC address: 1876
+Estimated Gas Usage: 688 - 6236
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/d7e7a043d6eb93cfbbce33b96783bfdb.sol:69
+
+value) payable returns (bool _success) {
+		// input validation
+		assert(_to.length == _value.length);
+		assert(_to.length <= 255);
+        require(msg.value >= minFee());
+
+		// use the erc20 abi
+		ERC20 token = ERC20(_tokenAddress);
+		// loop through to addresses and send value
+		for (uint8 i = 0; i < _to.length; i++) {
+			assert(token.transferFrom(msg.sender, _to[i], _value[i]) == true);
+		}
+		return true;
+	}
+
+    function claim(address _token) public onlyOwner {
+        if (_token == 0x0
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: sendErc20(address,address[],uint256[]), txdata: 0xaee2561301, value: 0x0

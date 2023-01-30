@@ -1,0 +1,694 @@
+[0;31mSeverity:    INFO
+Pattern:     Assembly Usage
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    DssSpell
+Line:        212
+Source: 
+>         address _action = action;
+>         assembly { _tag := extcodehash(_action) }
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         tag = _tag;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    DssSpell
+Line:        189
+Source: 
+> contract DssSpell {
+>     DSPauseAbstract public pause =
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         DSPauseAbstract(0xbE286431454714F511008713973d3B053A2d38f3);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    DssSpell
+Line:        229
+Source: 
+>         require(now <= expiration, "This contract has expired");
+>         require(eta == 0, "This spell has already been scheduled");
+>                 ^^^^^^^^
+>         eta = now + DSPauseAbstract(pause).delay();
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DssSpell
+Line:        227
+Source: 
+> 
+>     function schedule() public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(now <= expiration, "This contract has expired");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DssSpell
+Line:        234
+Source: 
+> 
+>     function cast() public limited {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(!done, "spell-already-cast");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    SpellAction
+Line:        170
+Source: 
+>     function execute() external {
+>         address ILK_REGISTRY = CHANGELOG.getAddress("ILK_REGISTRY");
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         address MCD_VAT      = CHANGELOG.getAddress("MCD_VAT");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    SpellAction
+Line:        171
+Source: 
+>         address ILK_REGISTRY = CHANGELOG.getAddress("ILK_REGISTRY");
+>         address MCD_VAT      = CHANGELOG.getAddress("MCD_VAT");
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    SpellAction
+Line:        175
+Source: 
+>         // 1,468,750,000 (DC after 11-13 spell executes) + 13 (YFI-A increase)
+>         VatAbstract(MCD_VAT).file("Line", 1_481_750_000 * RAD);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    SpellAction
+Line:        178
+Source: 
+>         // Increase YFI debt ceiling to 20MM
+>         VatAbstract(MCD_VAT).file("YFI-A", "line", 20 * MILLION * RAD);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    SpellAction
+Line:        181
+Source: 
+>         // Set dust to 500 DAI
+>         bytes32[] memory ilks = IlkRegistryAbstract(ILK_REGISTRY).list();
+>                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         for (uint256 i = 0; i < ilks.length; i++) {
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Violation
+Contract:    SpellAction
+Line:        183
+Source: 
+>         for (uint256 i = 0; i < ilks.length; i++) {
+>             VatAbstract(MCD_VAT).file(ilks[i], "dust", 500 * RAD);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    DssSpell
+Line:        230
+Source: 
+>         require(eta == 0, "This spell has already been scheduled");
+>         eta = now + DSPauseAbstract(pause).delay();
+>                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         pause.plot(action, tag, sig, eta);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    DssSpell
+Line:        231
+Source: 
+>         eta = now + DSPauseAbstract(pause).delay();
+>         pause.plot(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    DssSpell
+Line:        237
+Source: 
+>         done = true;
+>         pause.exec(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Repeated Call to Untrusted Contract
+Description: Repeated call to an untrusted contract may result in
+             different values
+Type:        Violation
+Contract:    SpellAction
+Line:        175
+Source: 
+>         // 1,468,750,000 (DC after 11-13 spell executes) + 13 (YFI-A increase)
+>         VatAbstract(MCD_VAT).file("Line", 1_481_750_000 * RAD);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Repeated Call to Untrusted Contract
+Description: Repeated call to an untrusted contract may result in
+             different values
+Type:        Violation
+Contract:    SpellAction
+Line:        178
+Source: 
+>         // Increase YFI debt ceiling to 20MM
+>         VatAbstract(MCD_VAT).file("YFI-A", "line", 20 * MILLION * RAD);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Repeated Call to Untrusted Contract
+Description: Repeated call to an untrusted contract may result in
+             different values
+Type:        Violation
+Contract:    SpellAction
+Line:        183
+Source: 
+>         for (uint256 i = 0; i < ilks.length; i++) {
+>             VatAbstract(MCD_VAT).file(ilks[i], "dust", 500 * RAD);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    VatAbstract
+Line:        105
+Source: 
+>     function vice() external view returns (uint256);
+>     function Line() external view returns (uint256);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     function live() external view returns (uint256);
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    SpellAction
+Line:        170
+Source: 
+>     function execute() external {
+>         address ILK_REGISTRY = CHANGELOG.getAddress("ILK_REGISTRY");
+>         ^^^^^^^^^^^^^^^^^^^^
+>         address MCD_VAT      = CHANGELOG.getAddress("MCD_VAT");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    SpellAction
+Line:        171
+Source: 
+>         address ILK_REGISTRY = CHANGELOG.getAddress("ILK_REGISTRY");
+>         address MCD_VAT      = CHANGELOG.getAddress("MCD_VAT");
+>         ^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    DssSpell
+Line:        199
+Source: 
+>     // Office hours enabled if true
+>     bool   constant public officeHours = false;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    DssSpell
+Line:        204
+Source: 
+>     // Hash: seth keccak -- "$(wget https://raw.githubusercontent.com/makerdao/community/aa1ccb0c0dea66c66a2fd7fba687b0b9e0478098/governance/votes/Executive%20vote%20-%20November%2020%2C%202020.md -q -O - 2>/dev/null)"
+>     string constant public description =
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         "2020-11-20 MakerDAO Executive Spell | Hash: 0x132a0053c544cbc2772e17d62b7b1ddcfa0074cc8132597378cc9846168822f5";
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    DssSpell
+Line:        210
+Source: 
+>         action = address(new SpellAction());
+>         bytes32 _tag;
+>         ^^^^^^^^^^^^
+>         address _action = action;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    DssSpell
+Line:        211
+Source: 
+>         bytes32 _tag;
+>         address _action = action;
+>         ^^^^^^^^^^^^^^^
+>         assembly { _tag := extcodehash(_action) }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        6
+Source: 
+> // hevm: flattened sources of src/DssSpell.sol
+> pragma solidity =0.5.12 >=0.5.12;
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    SpellAction
+Line:        151
+Source: 
+>     //     https://changelog.makerdao.com/releases/mainnet/1.1.5/contracts.json
+>     ChainlogAbstract constant CHANGELOG = ChainlogAbstract(0xdA0Ab1e0017DEbCd72Be8599041a2aa3bA7e740F);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    SpellAction
+Line:        154
+Source: 
+>     // Decimals & precision
+>     uint256 constant THOUSAND = 10 ** 3;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 constant MILLION  = 10 ** 6;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    SpellAction
+Line:        155
+Source: 
+>     uint256 constant THOUSAND = 10 ** 3;
+>     uint256 constant MILLION  = 10 ** 6;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 constant WAD      = 10 ** 18;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    SpellAction
+Line:        156
+Source: 
+>     uint256 constant MILLION  = 10 ** 6;
+>     uint256 constant WAD      = 10 ** 18;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 constant RAY      = 10 ** 27;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    SpellAction
+Line:        157
+Source: 
+>     uint256 constant WAD      = 10 ** 18;
+>     uint256 constant RAY      = 10 ** 27;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 constant RAD      = 10 ** 45;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    SpellAction
+Line:        158
+Source: 
+>     uint256 constant RAY      = 10 ** 27;
+>     uint256 constant RAD      = 10 ** 45;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    DssSpell
+Line:        219
+Source: 
+>         if (officeHours) {
+>             uint day = (now / 1 days + 3) % 7;
+>             ^^^^^^^^
+>             require(day < 5, "Can only be cast on a weekday");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    DssSpell
+Line:        221
+Source: 
+>             require(day < 5, "Can only be cast on a weekday");
+>             uint hour = now / 1 hours % 24;
+>             ^^^^^^^^^
+>             require(hour >= 14 && hour < 21, "Outside office hours");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    DssSpell
+Line:        230
+Source: 
+>         require(eta == 0, "This spell has already been scheduled");
+>         eta = now + DSPauseAbstract(pause).delay();
+>                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         pause.plot(action, tag, sig, eta);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SpellAction
+Line:        170
+Source: 
+>     function execute() external {
+>         address ILK_REGISTRY = CHANGELOG.getAddress("ILK_REGISTRY");
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         address MCD_VAT      = CHANGELOG.getAddress("MCD_VAT");
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SpellAction
+Line:        171
+Source: 
+>         address ILK_REGISTRY = CHANGELOG.getAddress("ILK_REGISTRY");
+>         address MCD_VAT      = CHANGELOG.getAddress("MCD_VAT");
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SpellAction
+Line:        175
+Source: 
+>         // 1,468,750,000 (DC after 11-13 spell executes) + 13 (YFI-A increase)
+>         VatAbstract(MCD_VAT).file("Line", 1_481_750_000 * RAD);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SpellAction
+Line:        178
+Source: 
+>         // Increase YFI debt ceiling to 20MM
+>         VatAbstract(MCD_VAT).file("YFI-A", "line", 20 * MILLION * RAD);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SpellAction
+Line:        183
+Source: 
+>         for (uint256 i = 0; i < ilks.length; i++) {
+>             VatAbstract(MCD_VAT).file(ilks[i], "dust", 500 * RAD);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    DssSpell
+Line:        231
+Source: 
+>         eta = now + DSPauseAbstract(pause).delay();
+>         pause.plot(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    DssSpell
+Line:        237
+Source: 
+>         done = true;
+>         pause.exec(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Uninitialized Local Variables
+Description: A variable is declared but never initialized.
+Type:        Violation
+Contract:    DssSpell
+Line:        213
+Source: 
+>         assembly { _tag := extcodehash(_action) }
+>         tag = _tag;
+>               ^^^^
+>         expiration = now + 30 days;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    DssSpell
+Line:        193
+Source: 
+>     bytes32         public tag;
+>     uint256         public eta;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     bytes           public sig;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    DssSpell
+Line:        196
+Source: 
+>     uint256         public expiration;
+>     bool            public done;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    DssSpell
+Line:        230
+Source: 
+>         require(eta == 0, "This spell has already been scheduled");
+>         eta = now + DSPauseAbstract(pause).delay();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         pause.plot(action, tag, sig, eta);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    DssSpell
+Line:        236
+Source: 
+>         require(!done, "spell-already-cast");
+>         done = true;
+>         ^^^^^^^^^^^
+>         pause.exec(action, tag, sig, eta);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    DssSpell
+Line:        237
+Source: 
+>         done = true;
+>         pause.exec(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    SpellAction
+Line:        154
+Source: 
+>     // Decimals & precision
+>     uint256 constant THOUSAND = 10 ** 3;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 constant MILLION  = 10 ** 6;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    SpellAction
+Line:        156
+Source: 
+>     uint256 constant MILLION  = 10 ** 6;
+>     uint256 constant WAD      = 10 ** 18;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 constant RAY      = 10 ** 27;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    SpellAction
+Line:        157
+Source: 
+>     uint256 constant WAD      = 10 ** 18;
+>     uint256 constant RAY      = 10 ** 27;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 constant RAD      = 10 ** 45;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    DssSpell
+Line:        204
+Source: 
+>     // Hash: seth keccak -- "$(wget https://raw.githubusercontent.com/makerdao/community/aa1ccb0c0dea66c66a2fd7fba687b0b9e0478098/governance/votes/Executive%20vote%20-%20November%2020%2C%202020.md -q -O - 2>/dev/null)"
+>     string constant public description =
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         "2020-11-20 MakerDAO Executive Spell | Hash: 0x132a0053c544cbc2772e17d62b7b1ddcfa0074cc8132597378cc9846168822f5";
+
+[0m

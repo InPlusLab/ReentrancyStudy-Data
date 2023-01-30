@@ -1,0 +1,304 @@
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: UniversalBasicIncome
+Function name: claim()
+PC address: 851
+Estimated Gas Usage: 14963 - 140494
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/bc4816df631a624c0103acb3c7ddec65.sol:391
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: claim(), txdata: 0x4e71d92d, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: UniversalBasicIncome
+Function name: claim()
+PC address: 886
+Estimated Gas Usage: 14963 - 140494
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80100000403, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: claim(), txdata: 0x4e71d92d, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: UniversalBasicIncome
+Function name: claim()
+PC address: 898
+Estimated Gas Usage: 14963 - 140494
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/bc4816df631a624c0103acb3c7ddec65.sol:391
+Initial State:
+
+Account: [CREATOR], balance: 0x611208809c, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: claim(), txdata: 0x4e71d92d, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: UniversalBasicIncome
+Function name: claim()
+PC address: 1047
+Estimated Gas Usage: 14963 - 140494
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/bc4816df631a624c0103acb3c7ddec65.sol:391
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000083, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x10, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 2d2d2d2d2d2d2d2d2d2d2d2d00200080000001010102010104100004100080002d2d2d2d2d2d2d2d2d2d2d2ddeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: claim(), txdata: 0x4e71d92d, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: UniversalBasicIncome
+Function name: claim()
+PC address: 1082
+Estimated Gas Usage: 14963 - 140494
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000010002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: claim(), txdata: 0x4e71d92d, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: UniversalBasicIncome
+Function name: claim()
+PC address: 1094
+Estimated Gas Usage: 14963 - 140494
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/bc4816df631a624c0103acb3c7ddec65.sol:391
+Initial State:
+
+Account: [CREATOR], balance: 0x2080000002088022, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: claim(), txdata: 0x4e71d92d, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: UniversalBasicIncome
+Function name: claim()
+PC address: 1168
+Estimated Gas Usage: 14963 - 140494
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/bc4816df631a624c0103acb3c7ddec65.sol:391
+Initial State:
+
+Account: [CREATOR], balance: 0xc0000000013, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x40000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 2d2d2d2d2d2d2d2d2d2d2d2d00002000000001010101010104010000000000002d2d2d2d2d2d2d2d2d2d2d2ddeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: claim(), txdata: 0x4e71d92d, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: UniversalBasicIncome
+Function name: claim()
+PC address: 1320
+Estimated Gas Usage: 4936 - 40398
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bc4816df631a624c0103acb3c7ddec65.sol:153
+
+wo unsigned integers, reverts on overflow.
+
+    */
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3c0a, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: claim(), txdata: 0x4e71d92d, value: 0x0
+Caller: [SOMEGUY], function: claim(), txdata: 0x4e71d92d, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: UniversalBasicIncome
+Function name: claim()
+PC address: 1406
+Estimated Gas Usage: 5038 - 40500
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bc4816df631a624c0103acb3c7ddec65.sol:97
+
+ require(c / a == b, "SafeMath::mul: Integer overfl
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21410c0000043632, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x100000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: claim(), txdata: 0x4e71d92d, value: 0x0
+Caller: [ATTACKER], function: claim(), txdata: 0x4e71d92d, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: UniversalBasicIncome
+Function name: claim()
+PC address: 1430
+Estimated Gas Usage: 5083 - 40545
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bc4816df631a624c0103acb3c7ddec65.sol:109
+
+ev In
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x141040002000c20, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: claim(), txdata: 0x4e71d92d, value: 0x0
+Caller: [ATTACKER], function: claim(), txdata: 0x4e71d92d, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: UniversalBasicIncome
+Function name: claim()
+PC address: 1438
+Estimated Gas Usage: 5105 - 40567
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bc4816df631a624c0103acb3c7ddec65.sol:109
+
+    * @dev Integer division of two unsigned integers t
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20010c0000082022, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: claim(), txdata: 0x4e71d92d, value: 0x0
+Caller: [SOMEGUY], function: claim(), txdata: 0x4e71d92d, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: UniversalBasicIncome
+Function name: claim()
+PC address: 1616
+Estimated Gas Usage: 14963 - 140494
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000007190021601, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: claim(), txdata: 0x4e71d92d, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: UniversalBasicIncome
+Function name: claim()
+PC address: 1657
+Estimated Gas Usage: 14963 - 140494
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000000000a01, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: claim(), txdata: 0x4e71d92d, value: 0x0

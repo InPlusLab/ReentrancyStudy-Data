@@ -1,0 +1,848 @@
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: upcore
+Function name: constructor
+PC address: 1169
+Estimated Gas Usage: 96628 - 473508
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2479
+
+ed;
+    uint256 public LPperETHUnit;
+
+
+    bool public LPGenerationCompleted;
+    // Sends all avaibile balanc
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: upcore
+Function name: constructor
+PC address: 1216
+Estimated Gas Usage: 96628 - 473508
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2479
+
+c totalETHContributed;
+    uint256 public LPperETHUnit;
+
+
+    bool public LPGenerationCompleted;
+    // Sends all avaibile balanc
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: upcore
+Function name: constructor
+PC address: 1242
+Estimated Gas Usage: 96628 - 473508
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2479
+
+c totalETHContributed;
+    uint256 public LPperETHUnit;
+
+
+    bool public LPGenerationCompleted;
+    // Sends all avaibile balanc
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: NBUNIERC20
+Function name: name()
+PC address: 1953
+Estimated Gas Usage: 1424 - 2364
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2431
+
+air(
+       
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: name(), txdata: 0x06fdde03, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: upcore
+Function name: name()
+PC address: 2621
+Estimated Gas Usage: 2433 - 4174
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2431
+
+air(
+       
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: name(), txdata: 0x06fdde03, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: NBUNIERC20
+Function name: emergencyDrain24hAfterLiquidityGenerationEventIsDone()
+PC address: 3084
+Estimated Gas Usage: 1997 - 2092
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2519
+
+ed require
+    // 2) Adding liquidity after generaion is over - added require
+    // 3) Overflow from uint - imp
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: emergencyDrain24hAfterLiquidityGenerationEventIsDone(), txdata: 0x4f1a0f7d, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: NBUNIERC20
+Function name: emergencyDrain24hAfterLiquidityGenerationEventIsDone()
+PC address: 3302
+Estimated Gas Usage: 13860 - 88711
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2523
+
+ic payable {
+        req
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: emergencyDrain24hAfterLiquidityGenerationEventIsDone(), txdata: 0x4f1a0f7d, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: NBUNIERC20
+Function name: emergencyDrain24hAfterLiquidityGenerationEventIsDone()
+PC address: 3312
+Estimated Gas Usage: 13860 - 88711
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2523
+
+icipationAgreement) public payable {
+        req
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: emergencyDrain24hAfterLiquidityGenerationEventIsDone(), txdata: 0x4f1a0f7d, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: NBUNIERC20
+Function name: emergencyDrain24hAfterLiquidityGenerationEventIsDone()
+PC address: 3317
+Estimated Gas Usage: 13860 - 88711
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2524
+
+ityGenerationOngoing(), "Liq
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: emergencyDrain24hAfterLiquidityGenerationEventIsDone(), txdata: 0x4f1a0f7d, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: NBUNIERC20
+Function name: getSecondsLeftInLiquidityGenerationEvent()
+PC address: 3348
+Estimated Gas Usage: 6026 - 80100
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2501
+
+(WETH).transfer(address(pair),totalETHContributed);
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getSecondsLeftInLiquidityGenerationEvent(), txdata: 0x5b5f3e87, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: NBUNIERC20
+Function name: addLiquidityToUniswapupcorexWETHPair()
+PC address: 3573
+Estimated Gas Usage: 5939 - 80013
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2533
+
+leted bool
+    // 3) LP per unit is 0 - impossible checked at generation func
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addLiquidityToUniswapupcorexWETHPair(), txdata: 0x5d74a418, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: upcore
+Function name: emergencyDrain24hAfterLiquidityGenerationEventIsDone()
+PC address: 3788
+Estimated Gas Usage: 2064 - 2159
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2519
+
+ed require
+    // 2) Adding liquidity after generaion is over - added require
+    // 3) Overflow from uint - imp
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: emergencyDrain24hAfterLiquidityGenerationEventIsDone(), txdata: 0x4f1a0f7d, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: upcore
+Function name: emergencyDrain24hAfterLiquidityGenerationEventIsDone()
+PC address: 4006
+Estimated Gas Usage: 13927 - 88778
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2523
+
+ic payable {
+        req
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: emergencyDrain24hAfterLiquidityGenerationEventIsDone(), txdata: 0x4f1a0f7d, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: upcore
+Function name: emergencyDrain24hAfterLiquidityGenerationEventIsDone()
+PC address: 4016
+Estimated Gas Usage: 13927 - 88778
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2523
+
+icipationAgreement) public payable {
+        req
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: emergencyDrain24hAfterLiquidityGenerationEventIsDone(), txdata: 0x4f1a0f7d, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: upcore
+Function name: emergencyDrain24hAfterLiquidityGenerationEventIsDone()
+PC address: 4021
+Estimated Gas Usage: 13927 - 88778
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2524
+
+ityGenerationOngoing(), "Liq
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: emergencyDrain24hAfterLiquidityGenerationEventIsDone(), txdata: 0x4f1a0f7d, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: NBUNIERC20
+Function name: createUniswapPairMainnet(address,address)
+PC address: 5758
+Estimated Gas Usage: 24612 - 154112
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2479
+
+ed;
+    uint256 public LPperETHUnit;
+
+
+    bool public LPGenerationCompleted;
+    // Sends all avaibile balanc
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: createUniswapPairMainnet(address,address), txdata: 0x87e2e90c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: NBUNIERC20
+Function name: createUniswapPairMainnet(address,address)
+PC address: 5758
+Estimated Gas Usage: 24622 - 154122
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2479
+
+ed;
+    uint256 public LPperETHUnit;
+
+
+    bool public LPGenerationCompleted;
+    // Sends all avaibile balanc
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: createUniswapPairMainnet(address,address), txdata: 0x87e2e90c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: NBUNIERC20
+Function name: createUniswapPairMainnet(address,address)
+PC address: 5803
+Estimated Gas Usage: 24622 - 154122
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2479
+
+c totalETHContributed;
+    uint256 public LPperETHUnit;
+
+
+    bool public LPGenerationCompleted;
+    // Sends all avaibile balanc
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: createUniswapPairMainnet(address,address), txdata: 0x87e2e90c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: NBUNIERC20
+Function name: createUniswapPairMainnet(address,address)
+PC address: 5829
+Estimated Gas Usage: 24622 - 154122
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2479
+
+c totalETHContributed;
+    uint256 public LPperETHUnit;
+
+
+    bool public LPGenerationCompleted;
+    // Sends all avaibile balanc
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: createUniswapPairMainnet(address,address), txdata: 0x87e2e90c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: upcore
+Function name: getPriorVotes(address,uint256)
+PC address: 6027
+Estimated Gas Usage: 358 - 453
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:3084
+
+mber, newVotes);
+            numCheckpoints[delegatee] = nCheckpoints + 1;
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: getPriorVotes(address,uint256), txdata: 0x782d6fe100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: NBUNIERC20
+Function name: symbol()
+PC address: 6036
+Estimated Gas Usage: 1400 - 2340
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2448
+
+// And will be
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: symbol(), txdata: 0x95d89b41, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: NBUNIERC20
+Function name: addLiquidity(bool)
+PC address: 6379
+Estimated Gas Usage: 5980 - 80054
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2594
+
+RC20};
+     *
+     * Requirements:
+     * - `sender` and `recipient` can
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: addLiquidity(bool), txdata: 0xda620cd70000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: upcore
+Function name: symbol()
+PC address: 7345
+Estimated Gas Usage: 2519 - 4260
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:2448
+
+// And will be
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: symbol(), txdata: 0x95d89b41, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: NBUNIERC20
+Function name: getSecondsLeftInLiquidityGenerationEvent()
+PC address: 8047
+Estimated Gas Usage: 9661 - 121880
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:175
+
+on
+     * overflow.
+     *
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getSecondsLeftInLiquidityGenerationEvent(), txdata: 0x5b5f3e87, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: NBUNIERC20
+Function name: liquidityGenerationOngoing()
+PC address: 9282
+Estimated Gas Usage: 5991 - 80346
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:461
+
+Payload(abi.encodeWithSignature("log(string)", p0));
+	}
+
+	function l
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: liquidityGenerationOngoing(), txdata: 0x60a02590, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: NBUNIERC20
+Function name: addLiquidity(bool)
+PC address: 9282
+Estimated Gas Usage: 18976 - 133777
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:461
+
+Payload(abi.encodeWithSignature("log(string)", p0));
+	}
+
+	function l
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40080100004001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x32020448000040000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: addLiquidity(bool), txdata: 0xda620cd70102044040001001040400041010808080000408408008800100800100008004, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: NBUNIERC20
+Function name: getSecondsLeftInLiquidityGenerationEvent()
+PC address: 9282
+Estimated Gas Usage: 9779 - 122279
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:461
+
+Payload(abi.encodeWithSignature("log(string)", p0));
+	}
+
+	function l
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getSecondsLeftInLiquidityGenerationEvent(), txdata: 0x5b5f3e87, value: 0x0
+
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: NBUNIERC20
+Function name: liquidityGenerationOngoing()
+PC address: 9282
+Estimated Gas Usage: 5991 - 80346
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:461
+
+Payload(abi.encodeWithSignature("log(string)", p0));
+	}
+
+	function l
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: liquidityGenerationOngoing(), txdata: 0x60a02590, value: 0x0
+
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: NBUNIERC20
+Function name: addLiquidity(bool)
+PC address: 9282
+Estimated Gas Usage: 18976 - 133777
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:461
+
+Payload(abi.encodeWithSignature("log(string)", p0));
+	}
+
+	function l
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000040, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: addLiquidity(bool), txdata: 0xda620cd70220080840400140100140800420004001010040808040000080401008018080, value: 0x0
+
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: NBUNIERC20
+Function name: getSecondsLeftInLiquidityGenerationEvent()
+PC address: 9282
+Estimated Gas Usage: 9779 - 122279
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: /tmp/9bdb1dbdc1548a15ab6906c9e229dd47.sol:461
+
+Payload(abi.encodeWithSignature("log(string)", p0));
+	}
+
+	function l
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getSecondsLeftInLiquidityGenerationEvent(), txdata: 0x5b5f3e87, value: 0x0

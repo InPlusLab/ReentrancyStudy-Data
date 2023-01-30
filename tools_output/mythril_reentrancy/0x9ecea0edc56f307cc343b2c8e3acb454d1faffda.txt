@@ -1,0 +1,142 @@
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: BZxVault
+Function name: withdrawEther(address,uint256)
+PC address: 1879
+Estimated Gas Usage: 3441 - 38333
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: /tmp/e7a9015b0246907f31542d5df4054957.sol:476
+
+
+            re
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferBZxOwnership(address), txdata: 0x72e98a79000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+Caller: [SOMEGUY], function: withdrawEther(address,uint256), txdata: 0x522f6815fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe01, value: 0x0
+
+==== Unprotected Ether Withdrawal ====
+SWC ID: 105
+Severity: High
+Contract: BZxVault
+Function name: withdrawEther(address,uint256)
+PC address: 1879
+Estimated Gas Usage: 3441 - 38333
+Any sender can withdraw Ether from the contract account.
+Arbitrary senders other than the contract creator can profitably extract Ether from the contract account. Verify the business logic carefully and make sure that appropriate security controls are in place to prevent unexpected loss of funds.
+--------------------
+In file: /tmp/e7a9015b0246907f31542d5df4054957.sol:476
+
+
+            re
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1018000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x1
+Caller: [CREATOR], function: transferBZxOwnership(address), txdata: 0x72e98a79000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: withdrawEther(address,uint256), txdata: 0x522f6815fefefefefefefefefefefefedeadbeefdeadbeefdeadbeefdeadbeefdeadbeef01, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BZxVault
+Function name: withdrawToken(address,address,uint256)
+PC address: 4066
+Estimated Gas Usage: 2972 - 38149
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/e7a9015b0246907f31542d5df4054957.sol:281
+
+                 // non compliant ERC20
+
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000003846000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferBZxOwnership(address), txdata: 0x72e98a79000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: withdrawToken(address,address,uint256), txdata: 0x01e33667fefefefefefefefefefefefedeadbeefdeadbeefdeadbeefdeadbeefdeadbeeffefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe01, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BZxVault
+Function name: depositToken(address,address,uint256)
+PC address: 4476
+Estimated Gas Usage: 3187 - 38459
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/e7a9015b0246907f31542d5df4054957.sol:335
+
+// non compliant ERC20
+
+                result := not(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferBZxOwnership(address), txdata: 0x72e98a79000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: depositToken(address,address,uint256), txdata: 0xfb0f97a8fefefefefefefefefefefefedeadbeefdeadbeefdeadbeefdeadbeefdeadbeeffefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe01, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BZxVault
+Function name: transferTokenFrom(address,address,address,uint256)
+PC address: 4476
+Estimated Gas Usage: 3179 - 38451
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/e7a9015b0246907f31542d5df4054957.sol:335
+
+// non compliant ERC20
+
+                result := not(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4383fdfffefffff, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferBZxOwnership(address), txdata: 0x72e98a79000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: transferTokenFrom(address,address,address,uint256), txdata: 0xe5994905fefefefefefefefefefefefedeadbeefdeadbeefdeadbeefdeadbeefdeadbeeffefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe01, value: 0x0

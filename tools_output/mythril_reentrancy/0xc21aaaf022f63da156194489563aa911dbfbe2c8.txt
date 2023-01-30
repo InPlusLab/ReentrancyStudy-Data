@@ -1,0 +1,109 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: UnicryptIsBad
+Function name: lockERC20Token(address,uint256,uint256)
+PC address: 694
+Estimated Gas Usage: 35419 - 171567
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1dd764f593eebc56641cfc742b952fe8.sol:29
+
+From(msg.sender, address(this), amount);
+        currentId++;
+    }
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: lockERC20Token(address,uint256,uint256), txdata: 0x75a1cd74000000000000000000000000000000000000000000000000000000000000000001010101010101010101010101010101010101010101010101010101010101020000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [SOMEGUY], function: lockERC20Token(address,uint256,uint256), txdata: 0x75a1cd74000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef01010101010101010101010101010101010101010101010101010101010101010202020202020202020202020202020202020202020202020202020202020202, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: UnicryptIsBad
+Function name: lockERC20Token(address,uint256,uint256)
+PC address: 717
+Estimated Gas Usage: 35419 - 171567
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1dd764f593eebc56641cfc742b952fe8.sol:33
+
+ion unlockE
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3875e2c00000052, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: lockERC20Token(address,uint256,uint256), txdata: 0x75a1cd74000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef01010101010101010101010101010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: UnicryptIsBad
+Function name: lockERC20Token(address,uint256,uint256)
+PC address: 736
+Estimated Gas Usage: 35419 - 171567
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1dd764f593eebc56641cfc742b952fe8.sol:33
+
+ion unlockE
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3875e2c00000052, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: lockERC20Token(address,uint256,uint256), txdata: 0x75a1cd74000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef01010101010101010101010101010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: UnicryptIsBad
+Function name: unlockERC20Token(uint256)
+PC address: 764
+Estimated Gas Usage: 1114 - 1399
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1dd764f593eebc56641cfc742b952fe8.sol:34
+
+lockDate[id], "not yet unlockable");
+        require(idToAmount[curr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unlockERC20Token(uint256), txdata: 0xc3f6db220000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+

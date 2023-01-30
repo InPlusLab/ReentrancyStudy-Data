@@ -1,0 +1,444 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: YALPHARewardsUSDCPool
+Function name: stakeReward()
+PC address: 1761
+Estimated Gas Usage: 32100 - 148273
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bc7fd1538f3789ba0ba21d118e5d49c2.sol:406
+
+t total reward
+            }
+
+            if (currentEpochReward > 0) {
+                yalpha.mint(address(this), currentEpochReward);
+                totalAccumulatedReward = totalAccumulatedReward.add(currentEpochReward);
+                currentEpoch++;
+            }
+
+            rewardRate = currentEpochReward.div(DURATION);
+            lastUpdateTime = block.timestamp;
+            periodFinish = block.timestamp.add(DURATION);
+            emit RewardAdded(currentEpochReward);
+        }
+        _;
+    }
+
+    modifier checkStart() {
+        require(block.timestamp > starttime, "not start");
+        _;
+    }
+
+    function notifyRewardAmount(uint256 reward) external onlyOwner updateReward(address(0)) {
+        require(periodFinish == 0, "Only can call once to start staking");
+        currentEpochReward = reward;
+
+        if (totalAccumulatedReward.add(currentEpochReward) > TOTAL_REWARD) {
+          
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: stakeReward(), txdata: 0x14f47dcc, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: YALPHARewardsUSDCPool
+Function name: withdraw(uint256)
+PC address: 2978
+Estimated Gas Usage: 32164 - 148337
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bc7fd1538f3789ba0ba21d118e5d49c2.sol:406
+
+t total reward
+            }
+
+            if (currentEpochReward > 0) {
+                yalpha.mint(address(this), currentEpochReward);
+                totalAccumulatedReward = totalAccumulatedReward.add(currentEpochReward);
+                currentEpoch++;
+            }
+
+            rewardRate = currentEpochReward.div(DURATION);
+            lastUpdateTime = block.timestamp;
+            periodFinish = block.timestamp.add(DURATION);
+            emit RewardAdded(currentEpochReward);
+        }
+        _;
+    }
+
+    modifier checkStart() {
+        require(block.timestamp > starttime, "not start");
+        _;
+    }
+
+    function notifyRewardAmount(uint256 reward) external onlyOwner updateReward(address(0)) {
+        require(periodFinish == 0, "Only can call once to start staking");
+        currentEpochReward = reward;
+
+        if (totalAccumulatedReward.add(currentEpochReward) > TOTAL_REWARD) {
+          
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: withdraw(uint256), txdata: 0x2e1a7d4d0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: YALPHARewardsUSDCPool
+Function name: notifyRewardAmount(uint256)
+PC address: 4182
+Estimated Gas Usage: 60148 - 278592
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/bc7fd1538f3789ba0ba21d118e5d49c2.sol:444
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: notifyRewardAmount(uint256), txdata: 0x3c6b16ab01400108010240800808020002100120080201010102068019e2143ab4400440, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: YALPHARewardsUSDCPool
+Function name: notifyRewardAmount(uint256)
+PC address: 4185
+Estimated Gas Usage: 60148 - 278592
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/bc7fd1538f3789ba0ba21d118e5d49c2.sol:444
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: notifyRewardAmount(uint256), txdata: 0x3c6b16ab01400108010240800808020002100120080201010102068019e2143ab4400440, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: YALPHARewardsUSDCPool
+Function name: notifyRewardAmount(uint256)
+PC address: 4206
+Estimated Gas Usage: 60148 - 278592
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/bc7fd1538f3789ba0ba21d118e5d49c2.sol:444
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: notifyRewardAmount(uint256), txdata: 0x3c6b16ab01400108010240800808020002100120080201010102068019e2143ab4400440, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: YALPHARewardsUSDCPool
+Function name: notifyRewardAmount(uint256)
+PC address: 4210
+Estimated Gas Usage: 60148 - 278592
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/bc7fd1538f3789ba0ba21d118e5d49c2.sol:444
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: notifyRewardAmount(uint256), txdata: 0x3c6b16ab01400108010240800808020002100120080201010102068019e2143ab4400440, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: YALPHARewardsUSDCPool
+Function name: notifyRewardAmount(uint256)
+PC address: 4228
+Estimated Gas Usage: 60148 - 278592
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/bc7fd1538f3789ba0ba21d118e5d49c2.sol:444
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: notifyRewardAmount(uint256), txdata: 0x3c6b16ab01400108010240800808020002100120080201010102068019e2143ab4400440, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: YALPHARewardsUSDCPool
+Function name: notifyRewardAmount(uint256)
+PC address: 4234
+Estimated Gas Usage: 60148 - 278592
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/bc7fd1538f3789ba0ba21d118e5d49c2.sol:444
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: notifyRewardAmount(uint256), txdata: 0x3c6b16ab01400108010240800808020002100120080201010102068019e2143ab4400440, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: YALPHARewardsUSDCPool
+Function name: notifyRewardAmount(uint256)
+PC address: 4256
+Estimated Gas Usage: 60148 - 278592
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/bc7fd1538f3789ba0ba21d118e5d49c2.sol:444
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: notifyRewardAmount(uint256), txdata: 0x3c6b16ab01400108010240800808020002100120080201010102068019e2143ab4400440, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: YALPHARewardsUSDCPool
+Function name: notifyRewardAmount(uint256)
+PC address: 4259
+Estimated Gas Usage: 60148 - 278592
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/bc7fd1538f3789ba0ba21d118e5d49c2.sol:444
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: notifyRewardAmount(uint256), txdata: 0x3c6b16ab01400108010240800808020002100120080201010102068019e2143ab4400440, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: YALPHARewardsUSDCPool
+Function name: getReward()
+PC address: 4397
+Estimated Gas Usage: 32080 - 148253
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bc7fd1538f3789ba0ba21d118e5d49c2.sol:406
+
+t total reward
+            }
+
+            if (currentEpochReward > 0) {
+                yalpha.mint(address(this), currentEpochReward);
+                totalAccumulatedReward = totalAccumulatedReward.add(currentEpochReward);
+                currentEpoch++;
+            }
+
+            rewardRate = currentEpochReward.div(DURATION);
+            lastUpdateTime = block.timestamp;
+            periodFinish = block.timestamp.add(DURATION);
+            emit RewardAdded(currentEpochReward);
+        }
+        _;
+    }
+
+    modifier checkStart() {
+        require(block.timestamp > starttime, "not start");
+        _;
+    }
+
+    function notifyRewardAmount(uint256 reward) external onlyOwner updateReward(address(0)) {
+        require(periodFinish == 0, "Only can call once to start staking");
+        currentEpochReward = reward;
+
+        if (totalAccumulatedReward.add(currentEpochReward) > TOTAL_REWARD) {
+          
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xa372b, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getReward(), txdata: 0x3d18b912, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: YALPHARewardsUSDCPool
+Function name: stake(uint256)
+PC address: 5449
+Estimated Gas Usage: 32163 - 148336
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bc7fd1538f3789ba0ba21d118e5d49c2.sol:406
+
+t total reward
+            }
+
+            if (currentEpochReward > 0) {
+                yalpha.mint(address(this), currentEpochReward);
+                totalAccumulatedReward = totalAccumulatedReward.add(currentEpochReward);
+                currentEpoch++;
+            }
+
+            rewardRate = currentEpochReward.div(DURATION);
+            lastUpdateTime = block.timestamp;
+            periodFinish = block.timestamp.add(DURATION);
+            emit RewardAdded(currentEpochReward);
+        }
+        _;
+    }
+
+    modifier checkStart() {
+        require(block.timestamp > starttime, "not start");
+        _;
+    }
+
+    function notifyRewardAmount(uint256 reward) external onlyOwner updateReward(address(0)) {
+        require(periodFinish == 0, "Only can call once to start staking");
+        currentEpochReward = reward;
+
+        if (totalAccumulatedReward.add(currentEpochReward) > TOTAL_REWARD) {
+          
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stake(uint256), txdata: 0xa694fc3a0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: YALPHARewardsUSDCPool
+Function name: notifyRewardAmount(uint256)
+PC address: 6584
+Estimated Gas Usage: 47480 - 222424
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bc7fd1538f3789ba0ba21d118e5d49c2.sol:23
+
+ath: addition overflow");
+        return c;
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: notifyRewardAmount(uint256), txdata: 0x3c6b16ab00000000000000000000000000000000000000000000001e19e0c9bab2400001, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: YALPHARewardsUSDCPool
+Function name: lastTimeRewardApplicable()
+PC address: 6941
+Estimated Gas Usage: 1041 - 1136
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bc7fd1538f3789ba0ba21d118e5d49c2.sol:10
+
+ : b;
+    }
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: lastTimeRewardApplicable(), txdata: 0x80faa57d, value: 0x0

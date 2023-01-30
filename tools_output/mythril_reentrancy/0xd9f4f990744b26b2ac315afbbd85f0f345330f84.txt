@@ -1,0 +1,375 @@
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: HordTicketManager
+Function name: getAmountOfTokensClaimed(uint256)
+PC address: 4846
+Estimated Gas Usage: 5267 - 74862
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/fdbd7c3feebc982ed55558eedf7f8c1f.sol:1229
+
+Withdrawn = new bool[](numberOfStakes);
+
+        fo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getAmountOfTokensClaimed(uint256), txdata: 0xcaedf94e0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: HordTicketManager
+Function name: addressToTokenIdToStakes(address,uint256,uint256)
+PC address: 4952
+Estimated Gas Usage: 1267 - 1742
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/fdbd7c3feebc982ed55558eedf7f8c1f.sol:1009
+
+     // Set minimal time to stake tokens
+        minTimeToStake = _minTimeToStak
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: addressToTokenIdToStakes(address,uint256,uint256), txdata: 0xe59d0a45000000000000000000000000010101010002000202020200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: HordTicketManager
+Function name: stakeAndReserveNFTs(uint256,uint256)
+PC address: 5339
+Estimated Gas Usage: 41200 - 233889
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/fdbd7c3feebc982ed55558eedf7f8c1f.sol:1132
+
+     UserStake [] storage userStakesForNft = addressToTokenIdToStakes[msg.sender][tokenId];
+
+        uint256 totalStakeToWith
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeAndReserveNFTs(uint256,uint256), txdata: 0xe9e3ac3300000000000000000000000001000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: HordTicketManager
+Function name: stakeAndReserveNFTs(uint256,uint256)
+PC address: 5419
+Estimated Gas Usage: 41200 - 233889
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/fdbd7c3feebc982ed55558eedf7f8c1f.sol:1139
+
+rNft[i];
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40100000008, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeAndReserveNFTs(uint256,uint256), txdata: 0xe9e3ac3300000000000000000000000001000000000000000000000000000000000000000101010101010000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: HordTicketManager
+Function name: stakeAndReserveNFTs(uint256,uint256)
+PC address: 5467
+Estimated Gas Usage: 41200 - 233889
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/fdbd7c3feebc982ed55558eedf7f8c1f.sol:1142
+
+          i++;
+                continue;
+            }
+
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40100000008, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeAndReserveNFTs(uint256,uint256), txdata: 0xe9e3ac3300000000000000000000000001000000000000000000000000000000000000000101010101010000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: HordTicketManager
+Function name: stakeAndReserveNFTs(uint256,uint256)
+PC address: 5474
+Estimated Gas Usage: 41200 - 233889
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/fdbd7c3feebc982ed55558eedf7f8c1f.sol:1142
+
+          i++;
+                continue;
+            }
+
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40100000008, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeAndReserveNFTs(uint256,uint256), txdata: 0xe9e3ac3300000000000000000000000001000000000000000000000000000000000000000101010101010000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: HordTicketManager
+Function name: stakeAndReserveNFTs(uint256,uint256)
+PC address: 5492
+Estimated Gas Usage: 41200 - 233889
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/fdbd7c3feebc982ed55558eedf7f8c1f.sol:1142
+
+          i++;
+                continue;
+            }
+
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40100000008, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeAndReserveNFTs(uint256,uint256), txdata: 0xe9e3ac3300000000000000000000000001000000000000000000000000000000000000000101010101010000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: HordTicketManager
+Function name: stakeAndReserveNFTs(uint256,uint256)
+PC address: 5503
+Estimated Gas Usage: 41200 - 233889
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/fdbd7c3feebc982ed55558eedf7f8c1f.sol:1142
+
+          i++;
+                continue;
+            }
+
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40100000008, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeAndReserveNFTs(uint256,uint256), txdata: 0xe9e3ac3300000000000000000000000001000000000000000000000000000000000000000101010101010000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: HordTicketManager
+Function name: stakeAndReserveNFTs(uint256,uint256)
+PC address: 5512
+Estimated Gas Usage: 41200 - 233889
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/fdbd7c3feebc982ed55558eedf7f8c1f.sol:1142
+
+          i++;
+                continue;
+            }
+
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40100000008, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeAndReserveNFTs(uint256,uint256), txdata: 0xe9e3ac3300000000000000000000000001000000000000000000000000000000000000000101010101010000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: HordTicketManager
+Function name: stakeAndReserveNFTs(uint256,uint256)
+PC address: 5524
+Estimated Gas Usage: 41200 - 233889
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/fdbd7c3feebc982ed55558eedf7f8c1f.sol:1142
+
+          i++;
+                continue;
+            }
+
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40100000008, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeAndReserveNFTs(uint256,uint256), txdata: 0xe9e3ac3300000000000000000000000001000000000000000000000000000000000000000101010101010000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: HordTicketManager
+Function name: stakeAndReserveNFTs(uint256,uint256)
+PC address: 5537
+Estimated Gas Usage: 41200 - 233889
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/fdbd7c3feebc982ed55558eedf7f8c1f.sol:1142
+
+          i++;
+                continue;
+            }
+
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40100000008, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeAndReserveNFTs(uint256,uint256), txdata: 0xe9e3ac3300000000000000000000000001000000000000000000000000000000000000000101010101010000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: HordTicketManager
+Function name: stakeAndReserveNFTs(uint256,uint256)
+PC address: 5571
+Estimated Gas Usage: 41200 - 233889
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/fdbd7c3feebc982ed55558eedf7f8c1f.sol:1146
+
+amountStaked);
+            ticketsToWithdraw = ticketsToWithdraw.add(stake.amountOfTicke
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40100000008, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeAndReserveNFTs(uint256,uint256), txdata: 0xe9e3ac3300000000000000000000000001000000000000000000000000000000000000000101010101010000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: HordTicketManager
+Function name: stakeAndReserveNFTs(uint256,uint256)
+PC address: 5684
+Estimated Gas Usage: 8111 - 78563
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/fdbd7c3feebc982ed55558eedf7f8c1f.sol:838
+
+6) {
+        if (a == 0) return 0;
+        uin
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeAndReserveNFTs(uint256,uint256), txdata: 0xe9e3ac3300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0

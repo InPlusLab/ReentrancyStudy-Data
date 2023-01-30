@@ -1,0 +1,314 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: GILLIONTOKEN
+Function name: constructor
+PC address: 194
+Estimated Gas Usage: 34420 - 158281
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/29e1d17bdb3ff5d8763c237c936d1e92.sol:255
+
+-------------
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: GILLIONTOKEN
+Function name: constructor
+PC address: 202
+Estimated Gas Usage: 34420 - 158281
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/29e1d17bdb3ff5d8763c237c936d1e92.sol:257
+
+ supply
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: GILLIONTOKEN
+Function name: fallback
+PC address: 276
+Estimated Gas Usage: 863 - 958
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/29e1d17bdb3ff5d8763c237c936d1e92.sol:443
+
+balances[msg.sender] = safeAdd(bal
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10000002000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: unknown, txdata: 0x, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: GILLIONTOKEN
+Function name: fallback
+PC address: 290
+Estimated Gas Usage: 1696 - 1791
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/29e1d17bdb3ff5d8763c237c936d1e92.sol:443
+
+        balances[msg.sender] = safeAdd(bala
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: unknown, txdata: 0x, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: GILLIONTOKEN
+Function name: fallback
+PC address: 304
+Estimated Gas Usage: 2518 - 2613
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/29e1d17bdb3ff5d8763c237c936d1e92.sol:445
+
+ _totalSupply = safeAdd(_totalSupply, tokens);
+
+        Transfer(address(0), msg.sender, tokens);
+
+        owner.transfer(msg.value);
+
+    }
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000040024108, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Ballot
+Function name: fallback
+PC address: 555
+Estimated Gas Usage: 11357 - 33342
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/29e1d17bdb3ff5d8763c237c936d1e92.sol:543
+
+egate;
+
+        if (to == msg.sender) return;
+
+        sender.voted = true;
+
+        sender.delegate = to;
+
+        Voter storage delegateTo = voters[to];
+
+        if (delegateTo.voted)
+
+            proposals[delegateTo.vote].voteCount += sender.weight;
+
+        else
+
+            delegateTo.weight += sender.weight;
+
+    }
+
+
+
+    /// Give a single vote to proposal $(toProposal).
+
+    function vote(uint8 toProposal) public {
+
+        Voter storage sender = voters[msg.sender];
+
+        if (sender.voted || toProposal >= proposals.length) return;
+
+        sender.voted = true;
+
+        sender.vote = to
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x800055400804c208, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4004, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: delegate(address), txdata: 0x5c19a95c, value: 0x0
+Caller: [ATTACKER], function: delegate(address), txdata: 0x5c19a95c000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: GILLIONTOKEN
+Function name: fallback
+PC address: 1345
+Estimated Gas Usage: 2330 - 4071
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/29e1d17bdb3ff5d8763c237c936d1e92.sol:213
+
+ate;
+
+    uint publ
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x140040462, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: name(), txdata: 0x06fdde03, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: GILLIONTOKEN
+Function name: symbol()
+PC address: 2091
+Estimated Gas Usage: 2566 - 4307
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/29e1d17bdb3ff5d8763c237c936d1e92.sol:211
+
+ply;
+
+    uint publi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: symbol(), txdata: 0x95d89b41, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: GILLIONTOKEN
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 2648
+Estimated Gas Usage: 9308 - 69120
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/29e1d17bdb3ff5d8763c237c936d1e92.sol:423
+
+00 FWD Tokens per 1 ETH
+
+    // -----------------------------------------------
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000000501, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca51000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000004, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: GILLIONTOKEN
+Function name: transferAnyERC20Token(address,uint256)
+PC address: 2833
+Estimated Gas Usage: 3904 - 39927
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/29e1d17bdb3ff5d8763c237c936d1e92.sol:489
+
+ruct Proposal {
+
+        uint voteCount;
+
+    }
+
+
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferAnyERC20Token(address,uint256), txdata: 0xdc39d06d000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+

@@ -1,0 +1,168 @@
+==== Unprotected Ether Withdrawal ====
+SWC ID: 105
+Severity: High
+Contract: CooldownEndTimeResetEffect
+Function name: withdraw() or withdraw() or withdraw()
+PC address: 1332
+Estimated Gas Usage: 4972 - 40243
+Any sender can withdraw Ether from the contract account.
+Arbitrary senders other than the contract creator can profitably extract Ether from the contract account. Verify the business logic carefully and make sure that appropriate security controls are in place to prevent unexpected loss of funds.
+--------------------
+In file: /tmp/d4795ec7b29724720452a0bba0033ffb.sol:323
+
+run(
+        uint40,
+        uint256,
+        address
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x240002000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x42120297b5051efef, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x1
+Caller: [CREATOR], function: setup(address,uint16), txdata: 0xe410a0c6000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: withdraw(), txdata: 0x3ccfd60b, value: 0x0
+
+==== Unprotected Ether Withdrawal ====
+SWC ID: 105
+Severity: High
+Contract: CooldownEndTimeResetEffect
+Function name: onRemove() or onRemove() or onRemove()
+PC address: 1332
+Estimated Gas Usage: 5850 - 41451
+Any sender can withdraw Ether from the contract account.
+Arbitrary senders other than the contract creator can profitably extract Ether from the contract account. Verify the business logic carefully and make sure that appropriate security controls are in place to prevent unexpected loss of funds.
+--------------------
+In file: /tmp/d4795ec7b29724720452a0bba0033ffb.sol:323
+
+run(
+        uint40,
+        uint256,
+        address
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x120000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x40000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x1
+Caller: [CREATOR], function: setup(address,uint16), txdata: 0xe410a0c6000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: onRemove(), txdata: 0x11952369, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: CooldownEndTimeResetEffect
+Function name: runSigned(uint40,uint256,address) or runSigned(uint40,uint256,address) or runSigned(uint40,uint256,address)
+PC address: 2262
+Estimated Gas Usage: 4560 - 40207
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/d4795ec7b29724720452a0bba0033ffb.sol:356
+Initial State:
+
+Account: [CREATOR], balance: 0x22, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setup(address,uint16), txdata: 0xe410a0c6000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: runSigned(uint40,uint256,address), txdata: 0x9652713e, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: CooldownEndTimeResetEffect
+Function name: setup(address,uint16) or setup(address,uint16)
+PC address: 2838
+Estimated Gas Usage: 14670 - 90222
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d4795ec7b29724720452a0bba0033ffb.sol:259
+
+require(msg.sender == owner);
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20005000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setup(address,uint16), txdata: 0xe410a0c6000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CooldownEndTimeResetEffect
+Function name: setup(address,uint16) or setup(address,uint16)
+PC address: 2881
+Estimated Gas Usage: 14670 - 90222
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d4795ec7b29724720452a0bba0033ffb.sol:261
+
+rFee = _fee;
+    }
+
+    /// @dev
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40803000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setup(address,uint16), txdata: 0xe410a0c6000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CooldownEndTimeResetEffect
+Function name: setup(address,uint16) or setup(address,uint16)
+PC address: 2934
+Estimated Gas Usage: 14670 - 90222
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d4795ec7b29724720452a0bba0033ffb.sol:261
+
+rFee = _fee;
+    }
+
+    /// @dev
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40803000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setup(address,uint16), txdata: 0xe410a0c6000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

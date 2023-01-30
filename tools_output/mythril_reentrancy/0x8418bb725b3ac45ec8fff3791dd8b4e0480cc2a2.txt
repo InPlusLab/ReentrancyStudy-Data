@@ -1,0 +1,77 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: WethPayoutRecipient
+Function name: receiveClosePositionPayout(bytes32,uint256,address,address,address,uint256,uint256,bool) or receiveClosePositionPayout(bytes32,uint256,address,address,address,uint256,uint256,bool)
+PC address: 797
+Estimated Gas Usage: 3717 - 72985
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/f9a6e76de192fb0ae0775c7784e68c4a.sol:188
+
+WETH9(WETH).withdraw(payout)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x800000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 404040404040404040404040deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: receiveClosePositionPayout(bytes32,uint256,address,address,address,uint256,uint256,bool), txdata: 0x9432f0c7, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: WethPayoutRecipient
+Function name: receiveClosePositionPayout(bytes32,uint256,address,address,address,uint256,uint256,bool) or receiveClosePositionPayout(bytes32,uint256,address,address,address,uint256,uint256,bool)
+PC address: 866
+Estimated Gas Usage: 3717 - 72985
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/f9a6e76de192fb0ae0775c7784e68c4a.sol:189
+
+closer.transfer(payout)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x48a040c0120081013, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: receiveClosePositionPayout(bytes32,uint256,address,address,address,uint256,uint256,bool), txdata: 0x9432f0c7, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: WethPayoutRecipient
+Function name: receiveClosePositionPayout(bytes32,uint256,address,address,address,uint256,uint256,bool) or receiveClosePositionPayout(bytes32,uint256,address,address,address,uint256,uint256,bool)
+PC address: 866
+Estimated Gas Usage: 3717 - 72985
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/f9a6e76de192fb0ae0775c7784e68c4a.sol:189
+
+closer.transfer(payout)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20001, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: f0f0f0f0f0f0f0f0f0f0f0f0deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: receiveClosePositionPayout(bytes32,uint256,address,address,address,uint256,uint256,bool), txdata: 0x9432f0c7, value: 0x0

@@ -1,0 +1,1569 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Competition
+Function name: constructor
+PC address: 409
+Estimated Gas Usage: 51244 - 238343
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:161
+
+e part in the compe
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Competition
+Function name: finalizeAndPayoutForHopeful(uint256,uint256,uint256,uint256)
+PC address: 2872
+Estimated Gas Usage: 2026 - 2451
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:103
+
+ge sender is KYC verified through CERTIFIER
+    /// @param x Address to 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000040000002002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 6161616161616161616161616161616161616161616161616161616161616161616161616161616161616161aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+Caller: [SOMEGUY], function: finalizeAndPayoutForHopeful(uint256,uint256,uint256,uint256), txdata: 0x11d8657a, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Competition
+Function name: isKYCVerified(address)
+PC address: 3754
+Estimated Gas Usage: 2891 - 38347
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:109
+
+{ return MELON_ASSET; 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: isKYCVerified(address), txdata: 0x54b7636e, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 3754
+Estimated Gas Usage: 113504 - 534101
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:109
+
+{ return MELON_ASSET; 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000080499, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10000000100000001040001100004000000000110d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 3754
+Estimated Gas Usage: 113504 - 534101
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:109
+
+{ return MELON_ASSET; 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 4102
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:183
+
+);
+        require(buyinQuantity 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 4235
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:184
+
+y && hopefuls.length <= maxHopefulsNumber
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 4267
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:185
+
+g.sender;
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 4355
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:186
+
+HopefulIds[
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 4445
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:186
+
+.length, exists:
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 4458
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:187
+
+er(hopefuls.lengt
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 4462
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:186
+
+e});
+        Re
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 4550
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:187
+
+.sender);
+        hopefuls.push(Hopeful({
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 4603
+Estimated Gas Usage: 113504 - 534101
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:187
+
+.sender);
+        hopefuls.push(Hopeful({
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 4619
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:191
+
+ant: msg.sender
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 4706
+Estimated Gas Usage: 113504 - 534101
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:189
+
+ fund,
+          manager: manager,
+          registrant: msg.sender,
+          hasS
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 4723
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:189
+
+ fund,
+          manager: manager,
+          registrant: msg.sender,
+          hasS
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 4737
+Estimated Gas Usage: 113504 - 534101
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:189
+
+ fund,
+          manager: manager,
+          registrant: msg.sender,
+          hasS
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 4778
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:193
+
+   buyinAsset: 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 4909
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5196
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5249
+Estimated Gas Usage: 113504 - 534101
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5267
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5320
+Estimated Gas Usage: 113504 - 534101
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5338
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5391
+Estimated Gas Usage: 113504 - 534101
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5409
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5423
+Estimated Gas Usage: 113504 - 534101
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5441
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5494
+Estimated Gas Usage: 113504 - 534101
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5512
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5565
+Estimated Gas Usage: 113504 - 534101
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5576
+Estimated Gas Usage: 113504 - 534101
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5586
+Estimated Gas Usage: 113504 - 534101
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5604
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5657
+Estimated Gas Usage: 113504 - 534101
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5676
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5690
+Estimated Gas Usage: 113504 - 534101
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5709
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5723
+Estimated Gas Usage: 113504 - 534101
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5735
+Estimated Gas Usage: 113504 - 534101
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 5746
+Estimated Gas Usage: 113504 - 534101
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:194
+
+set: payoutAsset,
+          payoutAddress: payoutAddress,
+          buyinQuantity: buyinQuantity,
+          payoutQuantity: 0,
+          isCompeting: true,
+          isDisqualified: false,
+          finalSharePrice: 0,
+          finalCompetitionRank: 0
+        }));
+    }
+
+    /// @notice Disqualify and participant
+    /// @dev Only the oracle can call this function
+    /// @param withId Index of Hopeful to disqualify
+    function disqualifyHopeful(
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Low
+Contract: Competition
+Function name: getCompetitionStatusOfHopefuls()
+PC address: 5831
+Estimated Gas Usage: 2475 - 3702
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values). This issue is reported for internal compiler generated code.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: getCompetitionStatusOfHopefuls(), txdata: 0xb387ed6d, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Competition
+Function name: disqualifyHopeful(uint256)
+PC address: 6399
+Estimated Gas Usage: 2366 - 2791
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:103
+
+ge sender is KYC verified through CERTIFIER
+    /// @param x Address to 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+Caller: [SOMEGUY], function: disqualifyHopeful(uint256), txdata: 0xe1d7fadc, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Competition
+Function name: hopefuls(uint256)
+PC address: 6844
+Estimated Gas Usage: 1515 - 1610
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/6b43e4d7c645912069bbe4c21212ef55.sol:68
+
+ly accessed
+    mapping (
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: hopefuls(uint256), txdata: 0xf3669ec9, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 7180
+Estimated Gas Usage: 113504 - 534101
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state. This issue is reported for internal compiler generated code.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Competition
+Function name: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32)
+PC address: 7183
+Estimated Gas Usage: 113504 - 534101
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state. This issue is reported for internal compiler generated code.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc00000303ab, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: d1d1d1d1d1d1d1d1d1d1d1d10000000000000000000000000000000000000000d1d1d1d1d1d1d1d1d1d1d1d10101104020011010200404100101000080041008d1d1d1d1d1d1d1d1d1d1d1d1deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: registerForCompetition(address,address,address,address,address,uint256,uint8,bytes32,bytes32), txdata: 0xb19c0f5e, value: 0x0

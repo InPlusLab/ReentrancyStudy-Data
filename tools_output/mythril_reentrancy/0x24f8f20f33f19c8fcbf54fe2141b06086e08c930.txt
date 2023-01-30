@@ -1,0 +1,119 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MarzCoin
+Function name: transferFrom(address,address,uint256) or transferFrom(address,address,uint256)
+PC address: 3444
+Estimated Gas Usage: 384 - 479
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/8779686deef279c1938882246704a18e.sol:493
+
+ransfer(_from, _to, _amount);
+
+        return true;
+
+    }
+
+    
+
+    function approve(address _spender, uint256 _value) public returns (bool success) {
+
+        // mitigates the ERC20 spend/approval race condition
+
+        if (_value != 0 && allowed[msg.sender][_spender] != 0) { return false; }
+
+        allowed[msg.sender][_spender] = _value;
+
+        Approval(msg.sender, _spender, _value);
+
+        return true;
+
+    }
+
+    
+
+    function allowance(address _owner, address _spender) constant public returns (uint256) {
+
+        return allowed[_owner
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21c0000000000002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transferFrom(address,address,uint256), txdata: 0x23b872dd, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MarzCoin
+Function name: transfer(address,uint256) or transfer(address,uint256) or transfer(address,uint256) or transfer(address,uint256)
+PC address: 6549
+Estimated Gas Usage: 615 - 710
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/8779686deef279c1938882246704a18e.sol:475
+
+s _to, uint256 _amount) onlyPayloadSize(3 * 32) public returns (bool success) {
+
+
+
+        require(_to != address(0));
+
+        require(_amount <= balances[_from]);
+
+        require(_amount <= allowed[_from][msg.sender]);
+
+        
+
+        balances[_from] = balances[_from].sub(_amount);
+
+        allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_amount);
+
+        balances[_to] = balances[_to].add(_amo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transfer(address,uint256), txdata: 0xa9059cbb, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MarzCoin
+Function name: getTokenBalance(address,address)
+PC address: 7283
+Estimated Gas Usage: 2402 - 37340
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/8779686deef279c1938882246704a18e.sol:559
+
+balances[burner]
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8000108060002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getTokenBalance(address,address), txdata: 0xc489744b000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

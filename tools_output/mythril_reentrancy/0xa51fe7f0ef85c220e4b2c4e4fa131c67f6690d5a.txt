@@ -1,0 +1,93 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ImmAirDropB
+Function name: signupUserWhitelist(address[],uint256)
+PC address: 157
+Estimated Gas Usage: 5205 - 44933
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/9834ec89846e5f2fdfba760fb3ba2352.sol:151
+
+_amttype * (10 ** uint256(decimals));
+
+    	for (uint256 i = 0; i < _userlist.length; i++) {
+
+    		if(_userlist[i] != address(0)){
+
+    			token.transfer(_userlist[i], useamt);
+
+    		}
+
+    	}
+
+    }
+
+	
+
+	function () external payable {
+
+		revert();
+
+	}
+
+	
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000022, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: signupUserWhitelist(address[],uint256), txdata: 0x17158228ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ImmAirDropB
+Function name: signupUserWhitelist(address[],uint256)
+PC address: 787
+Estimated Gas Usage: 5044 - 44493
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/9834ec89846e5f2fdfba760fb3ba2352.sol:175
+Initial State:
+
+Account: [CREATOR], balance: 0x80, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: signupUserWhitelist(address[],uint256), txdata: 0x17158228ff, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ImmAirDropB
+Function name: signupUserWhitelist(address[],uint256)
+PC address: 1002
+Estimated Gas Usage: 5205 - 44933
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/9834ec89846e5f2fdfba760fb3ba2352.sol:175
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: signupUserWhitelist(address[],uint256), txdata: 0x1715822880, value: 0x0

@@ -1,0 +1,182 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MultiTransfer
+Function name: transfer(address,address[],uint256[])
+PC address: 374
+Estimated Gas Usage: 10230 - 123892
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/eca4f162bd39c862652b9ed2b663e23d.sol:27
+
+_token, address[] _to, uint256[] _value) public returns(bool) {
+
+    require(_to.length != 0);
+    require(_value.length != 0);
+    require(_to.length == _value.length);
+
+    uint256 sum = 0;
+
+    for (uint256 i = 0; i < _to.length; i++) {
+      require(_to[i] != address(0));
+      sum += _value[i];
+    }
+
+    assert(balanceOf(_token, msg.sender) >= sum);
+
+    for (i = 0; i < _to.length; i++) {
+      require(DetailedERC20Basic(_token).transfer(_to[i], _value[i]));
+      emit Transfer(msg.sender, _to[i], _value[i]);
+    }
+
+    return true;
+  }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transfer(address,address[],uint256[]), txdata: 0x72a503be0000000000000000014008104080012008804020402010404010200800000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdcff, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MultiTransfer
+Function name: transfer(address,address[],uint256[])
+PC address: 1624
+Estimated Gas Usage: 10230 - 123892
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/eca4f162bd39c862652b9ed2b663e23d.sol:43
+
+, _value[i]));
+      emit Transfer(msg.sender, _to[i],
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transfer(address,address[],uint256[]), txdata: 0x72a503be000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef8000000000000008000000000000000003ffffffffffffffffffffffffffff0180, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: MultiTransfer
+Function name: transfer(address,address[],uint256[])
+PC address: 1624
+Estimated Gas Usage: 10230 - 123892
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/eca4f162bd39c862652b9ed2b663e23d.sol:43
+
+, _value[i]));
+      emit Transfer(msg.sender, _to[i],
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transfer(address,address[],uint256[]), txdata: 0x72a503be000000000000000000000000000000000000000000000000000000000000000284, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MultiTransfer
+Function name: decimals(address)
+PC address: 2223
+Estimated Gas Usage: 1958 - 36801
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/eca4f162bd39c862652b9ed2b663e23d.sol:25
+
+n).decimals(); }
+  function balanceOf
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40080000000000031, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: decimals(address), txdata: 0xd449a832000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MultiTransfer
+Function name: balanceOf(address,address)
+PC address: 2446
+Estimated Gas Usage: 2046 - 36984
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/eca4f162bd39c862652b9ed2b663e23d.sol:26
+
+).balanceOf(_who); }
+  function transfer(a
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2104000207bbf7, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: balanceOf(address,address), txdata: 0xf7888aec000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MultiTransfer
+Function name: transfer(address,address[],uint256[])
+PC address: 2446
+Estimated Gas Usage: 10230 - 123892
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/eca4f162bd39c862652b9ed2b663e23d.sol:26
+
+).balanceOf(_who); }
+  function transfer(a
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transfer(address,address[],uint256[]), txdata: 0x72a503be000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef8000000000000008000000000000000003ffffffffffffffffffffffffffff0180, value: 0x0

@@ -1,0 +1,209 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ASTRDrop
+Function name: multisend(address[])
+PC address: 206
+Estimated Gas Usage: 21337 - 136481
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/198dbc7f836532dd9b749984b05f6412.sol:79
+
+  ownerAddress    = ERC20(0x3EFAe2e152F62F5cc12cc0794b816d22d416a721); // 
+    token           = ERC20(0x80E7a4d750aDe616Da896C49049B7EdE9e04C191); //  
+
+      uint256 i = 0;
+      while (i < dests.length) { // probably want to keep this to only 20 or 30 addresses at a time
+        token.transferFrom(ownerAddress, dests[i], AIRDROP_AMOUNT);
+         i += 1;
+      }
+      return(i);
+    }
+
+  // Change the airdrop rate
+  function setAirdropAmount(uint256 _astrAirdrop) onlyOw
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000002004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address[]), txdata: 0x4d2e1b7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: ASTRDrop
+Function name: multisend(address[])
+PC address: 558
+Estimated Gas Usage: 21337 - 136481
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/198dbc7f836532dd9b749984b05f6412.sol:86
+
+}
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address[]), txdata: 0x4d2e1b7f80, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: ASTRDrop
+Function name: multisend(address[])
+PC address: 561
+Estimated Gas Usage: 21337 - 136481
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/198dbc7f836532dd9b749984b05f6412.sol:88
+
+    }
+
+  // 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address[]), txdata: 0x4d2e1b7f80, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: ASTRDrop
+Function name: multisend(address[])
+PC address: 605
+Estimated Gas Usage: 21337 - 136481
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/198dbc7f836532dd9b749984b05f6412.sol:90
+
+irdrop rate
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address[]), txdata: 0x4d2e1b7f80, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: ASTRDrop
+Function name: multisend(address[])
+PC address: 724
+Estimated Gas Usage: 21337 - 136481
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/198dbc7f836532dd9b749984b05f6412.sol:86
+
+}
+      return(i);
+    }
+
+  // Change the airdrop rate
+  f
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address[]), txdata: 0x4d2e1b7f80, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: ASTRDrop
+Function name: multisend(address[])
+PC address: 724
+Estimated Gas Usage: 21337 - 136481
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/198dbc7f836532dd9b749984b05f6412.sol:86
+
+}
+      return(i);
+    }
+
+  // Change the airdrop rate
+  f
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address[]), txdata: 0x4d2e1b7f80, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ASTRDrop
+Function name: setAirdropAmount(uint256)
+PC address: 830
+Estimated Gas Usage: 6920 - 27345
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/198dbc7f836532dd9b749984b05f6412.sol:99
+
+ resetAirdropAmount() onlyOwner p
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setAirdropAmount(uint256), txdata: 0xa5500c3002, value: 0x0
+
+

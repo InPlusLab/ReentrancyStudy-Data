@@ -1,0 +1,188 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: WUSDNoteController
+Function name: onERC1155BatchReceived(address,address,uint256[],uint256[],bytes) or onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)
+PC address: 2440
+Estimated Gas Usage: 5172 - 19563
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/b547b6b933610e358cc3df288739f47e.sol:276
+
+llection, "Only WUSD collection allowed here");
+            uint256[] memory usdIds = new uint256[](ids.length);
+            uint256[] memory usdValues = new uint256[](ids.length);
+            for(uint256 i = 0; i < ids.length; i++) {
+                require(ids[i] == wusdNoteObjectId, "Only WUSD Note allowed here");
+                usdIds[i] = wusdObjectId;
+                usdValues[i] = values[i] * multiplier;
+            }
+            INativeV1 collection = INativeV1(wusdCollection);
+            collection.burnBatch(ids, values);
+            collection.safeBatchTransferFrom(address(this), from, usdIds, usdValues, data);
+            return this.onERC1155BatchReceived.selector;
+    }
+
+    function onERC1155Received(
+        address,
+        address from,
+        uint256 id,
+        uint256 value,
+        bytes calldata data
+    )
+        public
+        override
+        returns(bytes4) {
+            require(msg.sender == wusdCollection, "Only WUSD collection allowed
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0xa09a38008021, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: init(address,uint256,uint256,uint256), txdata: 0x98c36c094e2312e00000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa000000000000000000000000000000000000000000000000000000000000000002002080100102041020408040041004080180040200104000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [SOMEGUY], function: onERC1155BatchReceived(address,address,uint256[],uint256[],bytes), txdata: 0xbc197c8100000000000000000000000000000000000000000000000000000000000000000000000000000001020020801001020410204080400410040801800402001040000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: WUSDNoteController
+Function name: onERC1155Received(address,address,uint256,uint256,bytes) or onERC1155Received(address,address,uint256,uint256,bytes)
+PC address: 3628
+Estimated Gas Usage: 8225 - 80982
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/b547b6b933610e358cc3df288739f47e.sol:307
+Initial State:
+
+Account: [CREATOR], balance: 0x1c0080000001102, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: init(address,uint256,uint256,uint256), txdata: 0x98c36c09000000010000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000001010101010101010101010101010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [ATTACKER], function: onERC1155Received(address,address,uint256,uint256,bytes), txdata: 0xf23a6e6100000000909090909090909090909090900000000000000000000000000000000000000000000000000000000000000037909090909090909090909090909090010101010101010101010101010101010101010101010101010101010101010190909090909090909090909090909090909090909090909090909090909090900000000000000000000000000000000000000000000000000000000000000011, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: WUSDNoteController
+Function name: onERC1155Received(address,address,uint256,uint256,bytes) or onERC1155Received(address,address,uint256,uint256,bytes)
+PC address: 3682
+Estimated Gas Usage: 8225 - 80982
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/b547b6b933610e358cc3df288739f47e.sol:307
+Initial State:
+
+Account: [CREATOR], balance: 0x40000040101, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x100000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: init(address,uint256,uint256,uint256), txdata: 0x98c36c09000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000001010101010101010101010101010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [ATTACKER], function: onERC1155Received(address,address,uint256,uint256,bytes), txdata: 0xf23a6e614e2312e0909090909090909090909090000000000000000000000000000000000000000000000000000000000000000890909090909090909090909090909090010101010101010101010101010101010101010101010101010101010101010190909090909090909090909090909090909090909090909090909090909090900000000000000000000000000000000000000000000000000000000000000010, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: WUSDNoteController
+Function name: onERC1155Received(address,address,uint256,uint256,bytes) or onERC1155Received(address,address,uint256,uint256,bytes)
+PC address: 3685
+Estimated Gas Usage: 8225 - 80982
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/b547b6b933610e358cc3df288739f47e.sol:307
+Initial State:
+
+Account: [CREATOR], balance: 0x40000040101, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x100000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: init(address,uint256,uint256,uint256), txdata: 0x98c36c09000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000001010101010101010101010101010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [ATTACKER], function: onERC1155Received(address,address,uint256,uint256,bytes), txdata: 0xf23a6e614e2312e0909090909090909090909090000000000000000000000000000000000000000000000000000000000000000890909090909090909090909090909090010101010101010101010101010101010101010101010101010101010101010190909090909090909090909090909090909090909090909090909090909090900000000000000000000000000000000000000000000000000000000000000010, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: WUSDNoteController
+Function name: onERC1155Received(address,address,uint256,uint256,bytes) or onERC1155Received(address,address,uint256,uint256,bytes)
+PC address: 3861
+Estimated Gas Usage: 8225 - 80982
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/b547b6b933610e358cc3df288739f47e.sol:307
+Initial State:
+
+Account: [CREATOR], balance: 0x1c0080000001102, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: init(address,uint256,uint256,uint256), txdata: 0x98c36c09000000010000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000001010101010101010101010101010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [ATTACKER], function: onERC1155Received(address,address,uint256,uint256,bytes), txdata: 0xf23a6e6100000000909090909090909090909090900000000000000000000000000000000000000000000000000000000000000037909090909090909090909090909090010101010101010101010101010101010101010101010101010101010101010190909090909090909090909090909090909090909090909090909090909090900000000000000000000000000000000000000000000000000000000000000011, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: WUSDNoteController
+Function name: onERC1155Received(address,address,uint256,uint256,bytes) or onERC1155Received(address,address,uint256,uint256,bytes)
+PC address: 3861
+Estimated Gas Usage: 8225 - 80982
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/b547b6b933610e358cc3df288739f47e.sol:307
+Initial State:
+
+Account: [CREATOR], balance: 0xf1987, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: init(address,uint256,uint256,uint256), txdata: 0x98c36c09000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000001010101010101010101010101010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [ATTACKER], function: onERC1155Received(address,address,uint256,uint256,bytes), txdata: 0xf23a6e614e2312e0030303030300000000000000000000000000000000000000000000000000000000000000380303030303030303030303030303030303030303030303010101010101010101010101010101010101010101010101010101010101010103030303030303030303030303030303030303030303030303030303030303030000000000000000000000000000000000000000000000000000000000000009, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: WUSDNoteController
+Function name: onERC1155Received(address,address,uint256,uint256,bytes) or onERC1155Received(address,address,uint256,uint256,bytes)
+PC address: 3861
+Estimated Gas Usage: 8225 - 80982
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/b547b6b933610e358cc3df288739f47e.sol:307
+Initial State:
+
+Account: [CREATOR], balance: 0x40000040101, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x100000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: init(address,uint256,uint256,uint256), txdata: 0x98c36c09000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000001010101010101010101010101010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [ATTACKER], function: onERC1155Received(address,address,uint256,uint256,bytes), txdata: 0xf23a6e614e2312e0909090909090909090909090000000000000000000000000000000000000000000000000000000000000000890909090909090909090909090909090010101010101010101010101010101010101010101010101010101010101010190909090909090909090909090909090909090909090909090909090909090900000000000000000000000000000000000000000000000000000000000000010, value: 0x0

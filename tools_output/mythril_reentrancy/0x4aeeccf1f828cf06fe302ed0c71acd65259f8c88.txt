@@ -1,0 +1,211 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: RemmeSANITY
+Function name: emergy_withdraw(address)
+PC address: 3901
+Estimated Gas Usage: 1277 - 1372
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/5dc5cf97cc3e249f37a0ef82e0bc62c1.sol:94
+
+contract_token_balance = token.balanceOf(add
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: emergy_withdraw(address), txdata: 0xf68297f3, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: RemmeSANITY
+Function name: emergy_withdraw(address)
+PC address: 4078
+Estimated Gas Usage: 15577 - 125787
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5dc5cf97cc3e249f37a0ef82e0bc62c1.sol:96
+
+ = true;
+    balances[msg.send
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40100018803, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: emergy_withdraw(address), txdata: 0xf68297f3000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: RemmeSANITY
+Function name: emergy_withdraw(address)
+PC address: 4129
+Estimated Gas Usage: 15577 - 125787
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/5dc5cf97cc3e249f37a0ef82e0bc62c1.sol:98
+
+to prevent loss of fu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2041040000000003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: emergy_withdraw(address), txdata: 0xf68297f342000aa60000000000010001deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: RemmeSANITY
+Function name: emergy_withdraw(address)
+PC address: 4143
+Estimated Gas Usage: 15577 - 125787
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/5dc5cf97cc3e249f37a0ef82e0bc62c1.sol:98
+
+to prevent loss of fu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2041040000000003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: emergy_withdraw(address), txdata: 0xf68297f342000aa60000000000010001deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: RemmeSANITY
+Function name: emergy_withdraw(address)
+PC address: 4211
+Estimated Gas Usage: 15577 - 125787
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/5dc5cf97cc3e249f37a0ef82e0bc62c1.sol:99
+
+  require(token.transfer
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2041040000000003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: emergy_withdraw(address), txdata: 0xf68297f342000aa60000000000010001deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: RemmeSANITY
+Function name: emergy_withdraw(address)
+PC address: 4389
+Estimated Gas Usage: 15577 - 125787
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5dc5cf97cc3e249f37a0ef82e0bc62c1.sol:102
+
+er sends ETH to the contract.
+  function () payabl
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40100018803, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: emergy_withdraw(address), txdata: 0xf68297f3000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: RemmeSANITY
+Function name: emergy_withdraw(address)
+PC address: 4389
+Estimated Gas Usage: 15577 - 125787
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/5dc5cf97cc3e249f37a0ef82e0bc62c1.sol:102
+
+er sends ETH to the contract.
+  function () payabl
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: emergy_withdraw(address), txdata: 0xf68297f3, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: RemmeSANITY
+Function name: emergy_withdraw(address)
+PC address: 4389
+Estimated Gas Usage: 15577 - 125787
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/5dc5cf97cc3e249f37a0ef82e0bc62c1.sol:102
+
+er sends ETH to the contract.
+  function () payabl
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2041040000000003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: emergy_withdraw(address), txdata: 0xf68297f342000aa60000000000010001deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

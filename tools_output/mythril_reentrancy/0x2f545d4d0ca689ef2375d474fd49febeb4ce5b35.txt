@@ -1,0 +1,96 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ERC20Proxy
+Function name: fallback
+PC address: 464
+Estimated Gas Usage: 2056 - 38926
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/e0e4698cdf06ee76c1ea9f7172d7b8e3.sol:647
+
+does not return a bool. In this case we expect it to revert
+
+                // on failure, which was handled above.
+
+                // If the token does return data, we require that it is a single
+
+                // nonzero 32 bytes value.
+
+                // So the transfer succeeded if the call succeeded and either
+
+                // returned nothing, or returned a non-zero 32 byte value. 
+
+                success := and(success, or(
+
+                    iszero(returndatas
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3400000003f800000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addAuthorizedAddress(address), txdata: 0x42f1181e000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0xa85e59e480, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MixinAuthorizable
+Function name: authorities(uint256) or authorities(uint256)
+PC address: 1506
+Estimated Gas Usage: 1036 - 1131
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/e0e4698cdf06ee76c1ea9f7172d7b8e3.sol:263
+
+horized[target],
+
+          
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: authorities(uint256), txdata: 0x494503d4, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ERC20Proxy
+Function name: authorities(uint256) or authorities(uint256)
+PC address: 2074
+Estimated Gas Usage: 1036 - 1131
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/e0e4698cdf06ee76c1ea9f7172d7b8e3.sol:263
+
+horized[target],
+
+          
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: authorities(uint256), txdata: 0x494503d4, value: 0x0

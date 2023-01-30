@@ -1,0 +1,86 @@
+/**
+ *Submitted for verification at Etherscan.io on 2020-02-25
+*/
+
+/**
+ *Submitted for verification at Etherscan.io on 2020-01-09
+*/
+
+pragma solidity ^0.5.0;
+pragma experimental ABIEncoderV2;
+
+library Decimal {
+    struct D256 {
+        uint256 value;
+    }
+}
+
+library Monetary {
+
+    struct Price {
+        uint256 value;
+    }
+
+    struct Value {
+        uint256 value;
+    }
+}
+
+contract TestStructs {
+    struct RiskParams {
+        Decimal.D256 marginRatio;
+        Decimal.D256 liquidationSpread;
+        Decimal.D256 earningsRate;
+        Monetary.Value minBorrowedValue;
+    }
+    
+    event raiseEvent(YetAnotherNestedStruct rP);
+    
+    struct YetAnotherNestedStruct {
+        RiskParams[] internalRiskParams;
+        uint256 aRandomNumber;
+    }
+    
+	YetAnotherNestedStruct public rP;
+	
+	constructor() public { createNewStruct(); }
+	
+	function createNewStruct() public {
+	    rP.aRandomNumber = 9876;
+		
+		RiskParams memory tmp;
+	    tmp.marginRatio = Decimal.D256(111);
+	    tmp.liquidationSpread = Decimal.D256(222);
+	    tmp.earningsRate = Decimal.D256(333);
+	    tmp.minBorrowedValue = Monetary.Value(444);
+	    rP.internalRiskParams.push(tmp);
+	    
+	    tmp.marginRatio = Decimal.D256(111);
+	    tmp.liquidationSpread = Decimal.D256(222);
+	    tmp.earningsRate = Decimal.D256(333);
+	    tmp.minBorrowedValue = Monetary.Value(444);
+	    rP.internalRiskParams.push(tmp);
+	    
+	    emit raiseEvent(rP);
+	}
+	
+	function enterNewStruct(RiskParams memory _x) public {
+	    rP.internalRiskParams.push(_x);
+	}
+	
+	function returnStruct() public view returns (YetAnotherNestedStruct memory) {
+	    return rP;
+	}
+	
+	function returnStructWithInput(uint256 _x) public view returns (YetAnotherNestedStruct memory) {
+	    if(_x > 0) {
+	        return rP;
+	    }
+	}
+	
+    function testingTupleInput(RiskParams memory _x) public view returns (YetAnotherNestedStruct memory) {
+	    if(_x.marginRatio.value > 0 && _x.minBorrowedValue.value > 0) {
+	        return rP;
+	    }
+	}
+}

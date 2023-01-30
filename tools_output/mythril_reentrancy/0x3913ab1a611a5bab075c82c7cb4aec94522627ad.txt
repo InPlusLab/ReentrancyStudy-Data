@@ -1,0 +1,463 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ANBXTimelock
+Function name: constructor
+PC address: 137
+Estimated Gas Usage: 22047 - 107970
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2d8697581c7e76d8aedb091bad93b4d0.sol:82
+
+ 1 days;
+  }
+
+  /**
+   * @n
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000802201853c4001300a44c8922c4cf4fcc9666b339e666d3333333339ae130801, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ANBXTimelock
+Function name: constructor
+PC address: 139
+Estimated Gas Usage: 22047 - 107970
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2d8697581c7e76d8aedb091bad93b4d0.sol:82
+
+Days * 1 days;
+  }
+
+  /**
+   * @n
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004f44c000000000000000000000000243e651626e37c9ca300ccc34e200000020, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ANBXTimelock
+Function name: constructor
+PC address: 144
+Estimated Gas Usage: 22047 - 107970
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2d8697581c7e76d8aedb091bad93b4d0.sol:86
+
+melock to beneficiary.
+   */
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000044010010104010101100404018000014001010201020480022010800101800440, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ANBXTimelock
+Function name: constructor
+PC address: 145
+Estimated Gas Usage: 22047 - 107970
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2d8697581c7e76d8aedb091bad93b4d0.sol:86
+
+ by timelock to beneficiary.
+   */
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040102408001100102010101200180200420024004100420800102012080800141, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ANBXTimelock
+Function name: release()
+PC address: 309
+Estimated Gas Usage: 1797 - 1892
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2d8697581c7e76d8aedb091bad93b4d0.sol:92
+
+.balanceOf(this);
+      require(amount > 0);
+      token.safeTransfer(beneficiary, amount);
+      secondReleaseTime = 0;
+    } else if (firstReleaseTime != 0 && block.timestamp >= firstReleaseTime) {
+      amount = token.balanceOf(this);
+      require(amount > 0);
+      token.safeTransfer(beneficiary, amount / 2);
+      firstReleaseTime = 0;
+    }
+  }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x101000002042612, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800200800802100040804002020202004020040202011004011002040002100820, value: 0x0
+Caller: [ATTACKER], function: release(), txdata: 0x86d1a69f, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ANBXTimelock
+Function name: release()
+PC address: 415
+Estimated Gas Usage: 14360 - 105324
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2d8697581c7e76d8aedb091bad93b4d0.sol:94
+
+unt);
+      secondRel
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80002010a20, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 858585858585858585858585deadbeefdeadbeefdeadbeefdeadbeefdeadbeef858585858585858585858585858585858585858585858585858585858585858502eb2407f0d7b9f2a9efbb62856f939d3800000000000000000000000000000009, value: 0x0
+Caller: [CREATOR], function: release(), txdata: 0x86d1a69f, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ANBXTimelock
+Function name: release()
+PC address: 474
+Estimated Gas Usage: 14360 - 105324
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2d8697581c7e76d8aedb091bad93b4d0.sol:96
+
+ock.timesta
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20006400020500061, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000020000000100001019c064000020019c00000000000000000000000000000000021, value: 0x0
+Caller: [SOMEGUY], function: release(), txdata: 0x86d1a69f, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ANBXTimelock
+Function name: release()
+PC address: 477
+Estimated Gas Usage: 14360 - 105324
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2d8697581c7e76d8aedb091bad93b4d0.sol:96
+
+easeT
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20006400020500061, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000020000000100001019c064000020019c00000000000000000000000000000000021, value: 0x0
+Caller: [SOMEGUY], function: release(), txdata: 0x86d1a69f, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ANBXTimelock
+Function name: release()
+PC address: 511
+Estimated Gas Usage: 14360 - 105324
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2d8697581c7e76d8aedb091bad93b4d0.sol:96
+
+Time) {
+      amount 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20006400020500061, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000020000000100001019c064000020019c00000000000000000000000000000000021, value: 0x0
+Caller: [SOMEGUY], function: release(), txdata: 0x86d1a69f, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ANBXTimelock
+Function name: release()
+PC address: 540
+Estimated Gas Usage: 2643 - 2738
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2d8697581c7e76d8aedb091bad93b4d0.sol:97
+
+eOf(this);
+      require(amount > 0);
+      token.safeTransfer(beneficiary, amount / 2);
+      firstReleaseTime = 0;
+    }
+  }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000c00000a00a8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: bfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbf030000959ffff001bfffbfb7fff9ffffffffc6acff800000000000000000000081, value: 0x0
+Caller: [SOMEGUY], function: release(), txdata: 0x86d1a69f, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ANBXTimelock
+Function name: release()
+PC address: 646
+Estimated Gas Usage: 14360 - 105324
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2d8697581c7e76d8aedb091bad93b4d0.sol:99
+
+ 2);
+      firstRelea
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80002010a20, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 858585858585858585858585deadbeefdeadbeefdeadbeefdeadbeefdeadbeef858585858585858585858585858585858585858585858585858585858585858502eb2407f0d7b9f2a9efbb62856f939d3800000000000000000000000000000009, value: 0x0
+Caller: [CREATOR], function: release(), txdata: 0x86d1a69f, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ANBXTimelock
+Function name: release()
+PC address: 705
+Estimated Gas Usage: 14360 - 105324
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2d8697581c7e76d8aedb091bad93b4d0.sol:103
+Initial State:
+
+Account: [CREATOR], balance: 0x20006400020500061, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000020000000100001019c064000020019c00000000000000000000000000000000021, value: 0x0
+Caller: [SOMEGUY], function: release(), txdata: 0x86d1a69f, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ANBXTimelock
+Function name: release()
+PC address: 708
+Estimated Gas Usage: 14360 - 105324
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2d8697581c7e76d8aedb091bad93b4d0.sol:103
+Initial State:
+
+Account: [CREATOR], balance: 0x20006400020500061, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000020000000100001019c064000020019c00000000000000000000000000000000021, value: 0x0
+Caller: [SOMEGUY], function: release(), txdata: 0x86d1a69f, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ANBXTimelock
+Function name: release()
+PC address: 739
+Estimated Gas Usage: 14360 - 105324
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2d8697581c7e76d8aedb091bad93b4d0.sol:103
+Initial State:
+
+Account: [CREATOR], balance: 0x20006400020500061, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000020000000100001019c064000020019c00000000000000000000000000000000021, value: 0x0
+Caller: [SOMEGUY], function: release(), txdata: 0x86d1a69f, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ANBXTimelock
+Function name: release()
+PC address: 897
+Estimated Gas Usage: 14360 - 105324
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2d8697581c7e76d8aedb091bad93b4d0.sol:31
+
+ }
+
+  function safeTransf
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80002010a20, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 858585858585858585858585deadbeefdeadbeefdeadbeefdeadbeefdeadbeef858585858585858585858585858585858585858585858585858585858585858502eb2407f0d7b9f2a9efbb62856f939d3800000000000000000000000000000009, value: 0x0
+Caller: [CREATOR], function: release(), txdata: 0x86d1a69f, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: ANBXTimelock
+Function name: release()
+PC address: 897
+Estimated Gas Usage: 14360 - 105324
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2d8697581c7e76d8aedb091bad93b4d0.sol:31
+
+ }
+
+  function safeTransf
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x81000100010921, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a03fa828125400000000002500a23af3bfc20f78f775cf5bfff2edf9fe45f4ba008, value: 0x0
+Caller: [ATTACKER], function: release(), txdata: 0x86d1a69f, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ANBXTimelock
+Function name: release()
+PC address: 897
+Estimated Gas Usage: 14360 - 105324
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2d8697581c7e76d8aedb091bad93b4d0.sol:31
+
+ }
+
+  function safeTransf
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20006400020500061, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000020000000100001019c064000020019c00000000000000000000000000000000021, value: 0x0
+Caller: [SOMEGUY], function: release(), txdata: 0x86d1a69f, value: 0x0
+
+

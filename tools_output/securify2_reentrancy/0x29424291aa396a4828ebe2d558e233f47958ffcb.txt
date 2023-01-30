@@ -1,0 +1,463 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+pragma directive defines a prior version to 0.6.11. Changing pragma version to 0.6.11....
+[0;31mSeverity:    INFO
+Pattern:     Assembly Usage
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    DssExec
+Line:        78
+Source: 
+>         address _action = _spellAction;  // Required for assembly access
+>         assembly { _tag := extcodehash(_action) }
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         tag = _tag;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    DssExec
+Line:        84
+Source: 
+>         require(now <= expiration, "This contract has expired");
+>         require(eta == 0, "This spell has already been scheduled");
+>                 ^^^^^^^^
+>         eta = now + PauseAbstract(pause).delay();
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DssExec
+Line:        82
+Source: 
+> 
+>     function schedule() public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(now <= expiration, "This contract has expired");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DssExec
+Line:        89
+Source: 
+> 
+>     function cast() public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(!done, "spell-already-cast");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DssExecFactory
+Line:        129
+Source: 
+> 
+>     function newWeeklyExec(string memory description, address spellAction) public returns (address exec) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         exec = newExec(description, now + 30 days, spellAction);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DssExecFactory
+Line:        133
+Source: 
+> 
+>     function newMonthlyExec(string memory description, address spellAction) public returns (address exec) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         exec = newExec(description, now + 4 days, spellAction);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    DssExecFactory
+Line:        125
+Source: 
+>     // @param spellAction  The address of the spell action contract (DssAction)
+>     function newExec(string memory description, uint256 expiration, address spellAction) public returns (address exec) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         exec = address(new DssExec(description, expiration, spellAction));
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    DssExecFactory
+Line:        129
+Source: 
+> 
+>     function newWeeklyExec(string memory description, address spellAction) public returns (address exec) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         exec = newExec(description, now + 30 days, spellAction);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    DssExecFactory
+Line:        133
+Source: 
+> 
+>     function newMonthlyExec(string memory description, address spellAction) public returns (address exec) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         exec = newExec(description, now + 4 days, spellAction);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    DssExec
+Line:        85
+Source: 
+>         require(eta == 0, "This spell has already been scheduled");
+>         eta = now + PauseAbstract(pause).delay();
+>                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         pause.plot(action, tag, sig, eta);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    DssExec
+Line:        86
+Source: 
+>         eta = now + PauseAbstract(pause).delay();
+>         pause.plot(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    DssExec
+Line:        92
+Source: 
+>         done = true;
+>         pause.exec(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    DssExec
+Line:        48
+Source: 
+> 
+>     Changelog      constant public log   = Changelog(0xdA0Ab1e0017DEbCd72Be8599041a2aa3bA7e740F);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256                 public eta;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    DssExec
+Line:        76
+Source: 
+>         sig = abi.encodeWithSignature("execute()");
+>         bytes32 _tag;                    // Required for assembly access
+>         ^^^^^^^^^^^^
+>         address _action = _spellAction;  // Required for assembly access
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    DssExec
+Line:        77
+Source: 
+>         bytes32 _tag;                    // Required for assembly access
+>         address _action = _spellAction;  // Required for assembly access
+>         ^^^^^^^^^^^^^^^
+>         assembly { _tag := extcodehash(_action) }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        6
+Source: 
+> // SPDX-License-Identifier: AGPL-3.0-or-later
+> pragma solidity >=0.6.7 <0.7.0;
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    DssExec
+Line:        85
+Source: 
+>         require(eta == 0, "This spell has already been scheduled");
+>         eta = now + PauseAbstract(pause).delay();
+>                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         pause.plot(action, tag, sig, eta);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    DssExec
+Line:        63
+Source: 
+>     function officeHours() external view returns (bool) {
+>         return SpellAction(action).officeHours();
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    DssExec
+Line:        70
+Source: 
+>     constructor(string memory _description, uint256 _expiration, address _spellAction) public {
+>         pause       = PauseAbstract(log.getAddress("MCD_PAUSE"));
+>                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         description = _description;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    DssExec
+Line:        86
+Source: 
+>         eta = now + PauseAbstract(pause).delay();
+>         pause.plot(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    DssExec
+Line:        92
+Source: 
+>         done = true;
+>         pause.exec(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Uninitialized Local Variables
+Description: A variable is declared but never initialized.
+Type:        Violation
+Contract:    DssExec
+Line:        79
+Source: 
+>         assembly { _tag := extcodehash(_action) }
+>         tag = _tag;
+>               ^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    DssExec
+Line:        49
+Source: 
+>     Changelog      constant public log   = Changelog(0xdA0Ab1e0017DEbCd72Be8599041a2aa3bA7e740F);
+>     uint256                 public eta;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     bytes                   public sig;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    DssExec
+Line:        50
+Source: 
+>     uint256                 public eta;
+>     bytes                   public sig;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     bool                    public done;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    DssExec
+Line:        51
+Source: 
+>     bytes                   public sig;
+>     bool                    public done;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     bytes32       immutable public tag;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    DssExec
+Line:        52
+Source: 
+>     bool                    public done;
+>     bytes32       immutable public tag;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address       immutable public action;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    DssExec
+Line:        53
+Source: 
+>     bytes32       immutable public tag;
+>     address       immutable public action;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256       immutable public expiration;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    DssExec
+Line:        54
+Source: 
+>     address       immutable public action;
+>     uint256       immutable public expiration;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     PauseAbstract immutable public pause;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    DssExec
+Line:        55
+Source: 
+>     uint256       immutable public expiration;
+>     PauseAbstract immutable public pause;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    DssExec
+Line:        60
+Source: 
+>     // Hash: seth keccak -- "$(wget https://<executive-vote-canonical-post> -q -O - 2>/dev/null)"
+>     string                  public description;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    DssExec
+Line:        85
+Source: 
+>         require(eta == 0, "This spell has already been scheduled");
+>         eta = now + PauseAbstract(pause).delay();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         pause.plot(action, tag, sig, eta);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    DssExec
+Line:        91
+Source: 
+>         require(!done, "spell-already-cast");
+>         done = true;
+>         ^^^^^^^^^^^
+>         pause.exec(action, tag, sig, eta);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    DssExec
+Line:        92
+Source: 
+>         done = true;
+>         pause.exec(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    DssExec
+Line:        60
+Source: 
+>     // Hash: seth keccak -- "$(wget https://<executive-vote-canonical-post> -q -O - 2>/dev/null)"
+>     string                  public description;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m

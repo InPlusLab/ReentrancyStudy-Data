@@ -1,0 +1,667 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: revoke(uint256)
+PC address: 1698
+Estimated Gas Usage: 1078 - 1173
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:114
+
+d].endTime <= now);
+    
+    Issuer issuer = Issuer(orderBook[_id].issuer);
+    issuer.transfer(msg.sender, orderBook[_id].tokenId);    
+    orderBook[_id] = orderBook[orderBookSize-1];
+    orderBookSize -= 1;
+  }
+}
+
+interface Issuer {
+  function transferFrom(address _from, address _to, uint256 _tokenId) external;  
+  function tra
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: revoke(uint256), txdata: 0x20c5429b, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: allOf(uint256)
+PC address: 2687
+Estimated Gas Usage: 1162 - 1257
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:70
+
+ddress _owner, address _issuer, uint256 _tokenId, uint256 _price, uint256 _startTime, uint256 _endTime) {
+    return (orderBook[_id].creator, orderBook[_id].owner, orderBook[_id].issuer, orderBook[_id].tokenId, orderBook[_id].price, orderBook[_id].startTime, orderBook[_id].endTime);
+  }  
+  
+  /* Util */
+  function isContract(address addr) internal view re
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: allOf(uint256), txdata: 0x2e4f43bf, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 3180
+Estimated Gas Usage: 56038 - 307945
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:91
+
+), _tokenId);
+    if (or
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xb, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 3451
+Estimated Gas Usage: 56038 - 307945
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:92
+
+ok.length) {
+      orderBook.push(Order(msg.sender, msg.
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xb, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 3451
+Estimated Gas Usage: 56038 - 307945
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:92
+
+ok.length) {
+      orderBook.push(Order(msg.sender, msg.
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000882, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca8644700000000000000000000000000000000000000000000000000000001010101010000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 3469
+Estimated Gas Usage: 56038 - 307945
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:93
+
+_price, _startTi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000080003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 3474
+Estimated Gas Usage: 56038 - 307945
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:93
+
+ssuer, _token
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000080003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 3484
+Estimated Gas Usage: 56038 - 307945
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:93
+
+e));
+    } else {    
+      orderBook[orderBookSize] = Order(msg.sender, msg.sender,  _issuer, 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000080003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 3656
+Estimated Gas Usage: 56038 - 307945
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:93
+
+e));
+    } else {    
+      orderBook[orderBookSize] = Order(msg.sender, msg.sender,  _issuer, 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000080003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 3709
+Estimated Gas Usage: 56038 - 307945
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:93
+
+e));
+    } else {    
+      orderBook[orderBookSize] = Order(msg.sender, msg.sender,  _issuer, 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000080003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 3727
+Estimated Gas Usage: 56038 - 307945
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:93
+
+e));
+    } else {    
+      orderBook[orderBookSize] = Order(msg.sender, msg.sender,  _issuer, 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000080003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 3780
+Estimated Gas Usage: 56038 - 307945
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:93
+
+e));
+    } else {    
+      orderBook[orderBookSize] = Order(msg.sender, msg.sender,  _issuer, 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000080003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 3798
+Estimated Gas Usage: 56038 - 307945
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:93
+
+e));
+    } else {    
+      orderBook[orderBookSize] = Order(msg.sender, msg.sender,  _issuer, 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000080003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 3851
+Estimated Gas Usage: 56038 - 307945
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:93
+
+e));
+    } else {    
+      orderBook[orderBookSize] = Order(msg.sender, msg.sender,  _issuer, 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000080003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 3862
+Estimated Gas Usage: 56038 - 307945
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:93
+
+e));
+    } else {    
+      orderBook[orderBookSize] = Order(msg.sender, msg.sender,  _issuer, 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000080003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 3872
+Estimated Gas Usage: 56038 - 307945
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:93
+
+e));
+    } else {    
+      orderBook[orderBookSize] = Order(msg.sender, msg.sender,  _issuer, 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000080003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 3882
+Estimated Gas Usage: 56038 - 307945
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:93
+
+e));
+    } else {    
+      orderBook[orderBookSize] = Order(msg.sender, msg.sender,  _issuer, 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000080003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 3892
+Estimated Gas Usage: 56038 - 307945
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:93
+
+e));
+    } else {    
+      orderBook[orderBookSize] = Order(msg.sender, msg.sender,  _issuer, 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000080003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 4315
+Estimated Gas Usage: 56038 - 307945
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:100
+
+erBook[_id].price)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000080003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 4322
+Estimated Gas Usage: 56038 - 307945
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:100
+
+erBook[_id].price)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000080003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DecentralizedExchangeHotPotato
+Function name: getNextPrice(uint256)
+PC address: 4697
+Estimated Gas Usage: 514 - 890
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:86
+
+okenId, uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000006, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: getNextPrice(uint256), txdata: 0x976e0da920, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: DecentralizedExchangeHotPotato
+Function name: buy(uint256)
+PC address: 4728
+Estimated Gas Usage: 1232 - 1327
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/7238fb10e995ceb1c6ea9b2940edb5fa.sol:101
+
+ire(msg.sender != orderBook[_id].owner);
+    require(!isContract(msg.sender));
+    require(orderBook[_id].startTime <= now && now <= orderBook[_id].endTime);
+    orderBook[_id].owner.transfer(orderBook[_id].price*24/25); // 96%
+    orderBook[_id].creator.transfer(orderBook[_id].price/50);  // 2%    
+    if (msg.value > orderBook[_id].price) {
+        msg.sender.transfer(msg.value - orderBook[_id].price);
+    }
+    orderBook[_id].owner = msg.sender;
+    orderBook[_id].price = getNextPrice(orderBook[_id].price);
+  }
+  function revoke(uint256 _id) public {
+    require(msg.sender == orderBook[_id].owner);
+    require(orderBoo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: buy(uint256), txdata: 0xd96a094a, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 5698
+Estimated Gas Usage: 56038 - 307945
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state. This issue is reported for internal compiler generated code.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000080003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: DecentralizedExchangeHotPotato
+Function name: put(address,uint256,uint256,uint256,uint256)
+PC address: 5701
+Estimated Gas Usage: 56038 - 307945
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state. This issue is reported for internal compiler generated code.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000080003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: put(address,uint256,uint256,uint256,uint256), txdata: 0x5ca86447000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

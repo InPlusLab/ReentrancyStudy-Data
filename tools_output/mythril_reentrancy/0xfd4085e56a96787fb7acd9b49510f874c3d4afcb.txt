@@ -1,0 +1,59 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: FlashFloss
+Function name: floss()
+PC address: 289
+Estimated Gas Usage: 13441 - 88261
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1b533edf6f9d014d084a7b86d65d3901.sol:21
+
+e(address(this).balance)("");
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x210400000183e02a3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000013900, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: floss(), txdata: 0x6b85fa9c, value: 0x1
+Caller: [ATTACKER], function: floss(), txdata: 0x6b85fa9c, value: 0x2
+
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: FlashFloss
+Function name: floss()
+PC address: 289
+Estimated Gas Usage: 13441 - 88261
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1b533edf6f9d014d084a7b86d65d3901.sol:21
+
+e(address(this).balance)("");
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000800, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: floss(), txdata: 0x6b85fa9c, value: 0x1
+Caller: [CREATOR], function: floss(), txdata: 0x6b85fa9c, value: 0x2
+
+

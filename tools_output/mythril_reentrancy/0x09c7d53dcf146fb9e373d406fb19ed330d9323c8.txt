@@ -1,0 +1,72 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: DogKing
+Function name: burnCoin()
+PC address: 5521
+Estimated Gas Usage: 4746 - 5691
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/53ab4175fb4e53f4d20f62b04d5eca02.sol:192
+
+f (_centuryNum < 6) {
+            _centuryNum++;
+        }
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000000100004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: burnCoin(), txdata: 0x2d56af6c, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DogKing
+Function name: _gastoken(address)
+PC address: 9116
+Estimated Gas Usage: 4543 - 74187
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/53ab4175fb4e53f4d20f62b04d5eca02.sol:305
+Initial State:
+
+Account: [CREATOR], balance: 0x8004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: _gastoken(address), txdata: 0xdef8512d000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: DogKing
+Function name: _gastoken(address)
+PC address: 9116
+Estimated Gas Usage: 4543 - 74187
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/53ab4175fb4e53f4d20f62b04d5eca02.sol:305
+Initial State:
+
+Account: [CREATOR], balance: 0x804000200001002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: _gastoken(address), txdata: 0xdef8512d000000000000000000000000dc280ad6e77f68f1826e69928bc6aa06dd986ebf, value: 0x0

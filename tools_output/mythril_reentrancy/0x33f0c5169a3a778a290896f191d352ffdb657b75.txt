@@ -1,0 +1,279 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Utils
+Function name: recover(bytes32,bytes)
+PC address: 162
+Estimated Gas Usage: 557 - 3613
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/45e5a7e1726e6fffeb99359f1e34fe48.sol:205
+
+ddress(0));
+
+        }
+
+
+
+        assembly {
+
+            r := mload(add(_sig, 32))
+
+            s := mload(add(_sig, 64))
+
+            v := byte(0, mload(add(_sig, 96)))
+
+        }
+
+
+
+        if (v < 27) {
+
+            v += 27;
+
+        }
+
+
+
+        if (v != 27 && v != 28) {
+
+            return (address(0));
+
+        } else {
+
+            // solium-disable-next-line arg-overflow
+
+            return ecrecover(_hash, v, r, s);
+
+        }
+
+    }
+
+
+
+    function bytes32ToString(bytes32 _input) internal constant returns (string) {
+
+        bytes memory bytesString = new bytes(32);
+
+        uint charCount = 0;
+
+        for (uint j = 0; j < 32; j++) {
+
+            byte char = byte(bytes
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: recover(bytes32,bytes), txdata: 0x19045a250101010101010101010101010101010101010101010101010101010100000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Utils
+Function name: recover(bytes32,bytes)
+PC address: 168
+Estimated Gas Usage: 721 - 4056
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/45e5a7e1726e6fffeb99359f1e34fe48.sol:205
+
+ddress(0));
+
+        }
+
+
+
+        assembly {
+
+            r := mload(add(_sig, 32))
+
+            s := mload(add(_sig, 64))
+
+            v := byte(0, mload(add(_sig, 96)))
+
+        }
+
+
+
+        if (v < 27) {
+
+            v += 27;
+
+        }
+
+
+
+        if (v != 27 && v != 28) {
+
+            return (address(0));
+
+        } else {
+
+            // solium-disable-next-line arg-overflow
+
+            return ecrecover(_hash, v, r, s);
+
+        }
+
+    }
+
+
+
+    function bytes32ToString(bytes32 _input) internal constant returns (string) {
+
+        bytes memory bytesString = new bytes(32);
+
+        uint charCount = 0;
+
+        for (uint j = 0; j < 32; j++) {
+
+            byte char = byte(bytes
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1b3b, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: recover(bytes32,bytes), txdata: 0x19045a250000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Jump to an arbitrary instruction ====
+SWC ID: 127
+Severity: High
+Contract: Utils
+Function name: recover(bytes32,bytes)
+PC address: 1596
+Estimated Gas Usage: 1627 - 39716
+The caller can redirect execution to arbitrary bytecode locations.
+It is possible to redirect the control flow to arbitrary locations in the code. This may allow an attacker to bypass security controls or manipulate the business logic of the smart contract. Avoid using low-level-operations and assembly to prevent this issue.
+--------------------
+In file: /tmp/45e5a7e1726e6fffeb99359f1e34fe48.sol:205
+
+ddress(0));
+
+        }
+
+
+
+        assembly {
+
+            r := mload(add(_sig, 32))
+
+            s := mload(add(_sig, 64))
+
+            v := byte(0, mload(add(_sig, 96)))
+
+        }
+
+
+
+        if (v < 27) {
+
+            v += 27;
+
+        }
+
+
+
+        if (v != 27 && v != 28) {
+
+            return (address(0));
+
+        } else {
+
+            // solium-disable-next-line arg-overflow
+
+            return ecrecover(_hash, v, r, s);
+
+        }
+
+    }
+
+
+
+    function bytes32ToString(bytes32 _input) internal constant returns (string) {
+
+        bytes memory bytesString = new bytes(32);
+
+        uint charCount = 0;
+
+        for (uint j = 0; j < 32; j++) {
+
+            byte char = byte(bytes
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: recover(bytes32,bytes), txdata: 0x19045a25000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Utils
+Function name: balanceOf(address[],address)
+PC address: 1881
+Estimated Gas Usage: 4777 - 80949
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/45e5a7e1726e6fffeb99359f1e34fe48.sol:193
+
+c pure returns (address
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xbbfbb, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: balanceOf(address[],address), txdata: 0x37fd25c780, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Utils
+Function name: balanceOf(address[],address)
+PC address: 1881
+Estimated Gas Usage: 4777 - 80949
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/45e5a7e1726e6fffeb99359f1e34fe48.sol:193
+
+c pure returns (address
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: balanceOf(address[],address), txdata: 0x37fd25c780, value: 0x0

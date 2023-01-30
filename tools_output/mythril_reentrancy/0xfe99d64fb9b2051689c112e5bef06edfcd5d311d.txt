@@ -1,0 +1,136 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MultiTransfer
+Function name: withdrawToken(address,address,uint256)
+PC address: 1690
+Estimated Gas Usage: 2925 - 38288
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/7aca6c398f10c3ecb460e2ef687616db.sol:142
+
+56[] amounts) public payable retu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8000000000000003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawToken(address,address,uint256), txdata: 0x01e33667000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MultiTransfer
+Function name: bulkSendToken(address,address[],uint256[])
+PC address: 2025
+Estimated Gas Usage: 3573 - 44150
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/7aca6c398f10c3ecb460e2ef687616db.sol:153
+
+ltisendContractAddress));
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: bulkSendToken(address,address[],uint256[]), txdata: 0x046ef2bf000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef4000000000000000000000000000000000000000000000000000000000000004ff, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiTransfer
+Function name: bulkSendToken(address,address[],uint256[])
+PC address: 2184
+Estimated Gas Usage: 3347 - 43643
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/7aca6c398f10c3ecb460e2ef687616db.sol:143
+
+ue >= tokenSendFee);
+        uint total = 0;
+        address multisendContractAddress = this;
+        for(uint8 i = 0; i < amounts.length; i++){
+            total = total.add(amounts[i]);
+        }
+
+        require(total <= tokenAddr.balanceOf(msg.sender));
+        
+        // check if user has enough balance
+        // require(total <= tokenAddr.allowance(msg.sender, multisendContractAddress));
+        
+        // transfer token to addresses
+        for (uint8 j = 0; j < addresses.length; j++) {
+            require(tokenAddr.transferFrom(msg.sender, addresses[j], amounts[j]));
+        }
+
+        return true;        
+    }
+    
+    function setTokenFee(uint _tokenSendFee) public onlyOwner returns(bool success){
+        tokenSendFee = _tokenSendFee;
+        return true;
+    }
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x91005481c000611d, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: bulkSendToken(address,address[],uint256[]), txdata: 0x046ef2bf000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiTransfer
+Function name: bulkSendEth(address[],uint256[])
+PC address: 3169
+Estimated Gas Usage: 1918 - 7652
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/7aca6c398f10c3ecb460e2ef687616db.sol:54
+
+rns (uint256) {
+    uint256 c = a + b;
+    require(c >= a);
+
+    return c;
+  }
+
+  /**
+  * @dev Divides two numbers and returns the remai
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3553c084090220265, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: bulkSendEth(address[],uint256[]), txdata: 0x9bb3a22dfffffffffffffffffffffffffffffffffffffffffffffffffffffffff3f286027f, value: 0x0

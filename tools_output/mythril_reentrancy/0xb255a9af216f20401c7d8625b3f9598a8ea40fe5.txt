@@ -1,0 +1,61 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: BYBToken
+Function name: transferAndCall(address,uint256,bytes)
+PC address: 623
+Estimated Gas Usage: 17866 - 100791
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/8db89f45cfb4016851b73b75296a0e11.sol:182
+
+r, _value, this, _extraData); 
+			return true; 
+		}
+		else {
+            return false;
+        } 
+    }
+	
+	function approveAndCall(address _spender, uint _value, bytes _extraData) public returns (bool success) {
+		if(approve(_spender,_value)){
+			ApprovalReceiver(_spender).receiveApproval(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40142080841, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transferAndCall(address,uint256,bytes), txdata: 0x4000aea000000000000000000000000000004000000000020040080000010000010000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BYBToken
+Function name: transferAndCall(address,uint256,bytes)
+PC address: 1835
+Estimated Gas Usage: 17866 - 100791
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/8db89f45cfb4016851b73b75296a0e11.sol:190
+
+ress _spender, uint _value, bytes _extraData) public returns (bool success)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400010c0042054141, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transferAndCall(address,uint256,bytes), txdata: 0x4000aea0000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000080, value: 0x0

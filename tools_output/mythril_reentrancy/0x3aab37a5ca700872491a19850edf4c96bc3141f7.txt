@@ -1,0 +1,688 @@
+with mythril_dir
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MyBancorNetwork
+Function name: fallback
+PC address: 231
+Estimated Gas Usage: 4759 - 79105
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3eb71b6269f17718790f7c0b628e40e5.sol:2441
+
+()).div(MAX_CONVERSION_FEE);
+
+                amount -= fee;
+
+
+
+                // update the smart token supply for the next iteration
+
+                supply = smartToken.totalSupply() - amount;
+
+            }
+
+            else { // cross connector conversion
+
+                (amount, fee) = fixGetReturn(
+
+                    converter,
+
+                    abi.encodeWithSelector(
+
+                        converter.getReturn.selector,
+
+                        fromToken,
+
+                        toToken,
+
+                        amount
+
+                    )
+
+                );
+
+            }
+
+
+
+            prevSmartToken = smartToken;
+
+            fromToken = toToken;
+
+        }
+
+
+
+        return (amount, fee);
+
+    }
+
+    
+
+    function fixGetReturn(address destination, bytes data) internal returns(uint256 amount, uint256 fee) {
+
+        bytes memory ret = new bytes(64);
+
+        bool success;
+
+        assembly {
+
+            success := call(
+
+                sub(gas, 34710),
+
+                destination,
+
+                0,
+
+                add(data, 32),
+
+                mload(data),
+
+                add(ret, 32),
+
+                64
+
+            )
+
+        }
+
+        
+
+        if (success) {
+
+            assembly {
+
+                amount := mload(add(data, 32))
+
+                fee := mload(add(data, 64))
+
+            }
+
+        }
+
+    }
+
+    
+
+    /**
+
+        @dev returns true if connector sale is enabled
+
+
+
+        @param _converter       converter contract address
+
+        @param _connector       connector's address to read from
+
+
+
+        @return true if connector sale is enabled, otherwise - false
+
+    */
+
+    function getConnectorSaleEnabled(IBancorConverter _converter, IERC20Token _connector) 
+
+        private
+
+        view
+
+        returns(bool)
+
+    {
+
+        uint256 virtualBalance;
+
+        uint32 weight;
+
+        bool isVirtualBalanceEnabled;
+
+        bool isSaleEnabled;
+
+        bool isSet;
+
+        (virtualBalance, weight, isVirtualBalanceEnabled, isSaleEnabled, isSet) = _converter.connectors(_connector);
+
+        return isSaleEnabled;
+
+    }
+
+    
+
+    /**
+
+        @dev returns the connector weight
+
+
+
+        @param _converter       converter contract address
+
+        @param _connector       connector's address to read from
+
+
+
+        @return connector's weight
+
+    */
+
+    function getConnectorWeight(IBancorConverter _converter, IERC20Token _connector) 
+
+        private
+
+        view
+
+        returns(uint32)
+
+    {
+
+        uint256 virtualBalance;
+
+        uint32 weight;
+
+        bool isVirtualBalanceEnabled;
+
+        bool isSaleEnabled;
+
+        bool isSet;
+
+        (virtualBalance, weight, isVirtualBalanceEnabled, isSaleEnabled, isSet) = _converter.connectors(_connector);
+
+        return weight;
+
+    }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000040002008002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getReturnByPath(address[],uint256), txdata: 0x0c8496ccffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TokenHolder
+Function name: fallback
+PC address: 498
+Estimated Gas Usage: 2860 - 40066
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3eb71b6269f17718790f7c0b628e40e5.sol:689
+
+underflows
+
+
+
+        @param _x   minuend
+
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawTokens(address,address,uint256), txdata: 0x5e35359e000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000020, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: MyBancorNetwork
+Function name: fallback
+PC address: 839
+Estimated Gas Usage: 4759 - 79105
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3eb71b6269f17718790f7c0b628e40e5.sol:2463
+
+    fromToken,
+
+                        toToken,
+
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4010, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getReturnByPath(address[],uint256), txdata: 0x0c8496cc80, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MyBancorNetwork
+Function name: fallback
+PC address: 914
+Estimated Gas Usage: 4571 - 78355
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3eb71b6269f17718790f7c0b628e40e5.sol:2441
+
+()).div(MAX_CONVERSION_FEE);
+
+                amount -= fee;
+
+
+
+                // update the smart token supply for the next iteration
+
+                supply = smartToken.totalSupply() - amount;
+
+            }
+
+            else { // cross connector conversion
+
+                (amount, fee) = fixGetReturn(
+
+                    converter,
+
+                    abi.encodeWithSelector(
+
+                        converter.getReturn.selector,
+
+                        fromToken,
+
+                        toToken,
+
+                        amount
+
+                    )
+
+                );
+
+            }
+
+
+
+            prevSmartToken = smartToken;
+
+            fromToken = toToken;
+
+        }
+
+
+
+        return (amount, fee);
+
+    }
+
+    
+
+    function fixGetReturn(address destination, bytes data) internal returns(uint256 amount, uint256 fee) {
+
+        bytes memory ret = new bytes(64);
+
+        bool success;
+
+        assembly {
+
+            success := call(
+
+                sub(gas, 34710),
+
+                destination,
+
+                0,
+
+                add(data, 32),
+
+                mload(data),
+
+                add(ret, 32),
+
+                64
+
+            )
+
+        }
+
+        
+
+        if (success) {
+
+            assembly {
+
+                amount := mload(add(data, 32))
+
+                fee := mload(add(data, 64))
+
+            }
+
+        }
+
+    }
+
+    
+
+    /**
+
+        @dev returns true if connector sale is enabled
+
+
+
+        @param _converter       converter contract address
+
+        @param _connector       connector's address to read from
+
+
+
+        @return true if connector sale is enabled, otherwise - false
+
+    */
+
+    function getConnectorSaleEnabled(IBancorConverter _converter, IERC20Token _connector) 
+
+        private
+
+        view
+
+        returns(bool)
+
+    {
+
+        uint256 virtualBalance;
+
+        uint32 weight;
+
+        bool isVirtualBalanceEnabled;
+
+        bool isSaleEnabled;
+
+        bool isSet;
+
+        (virtualBalance, weight, isVirtualBalanceEnabled, isSaleEnabled, isSet) = _converter.connectors(_connector);
+
+        return isSaleEnabled;
+
+    }
+
+    
+
+    /**
+
+        @dev returns the connector weight
+
+
+
+        @param _converter       converter contract address
+
+        @param _connector       connector's address to read from
+
+
+
+        @return connector's weight
+
+    */
+
+    function getConnectorWeight(IBancorConverter _converter, IERC20Token _connector) 
+
+        private
+
+        view
+
+        returns(uint32)
+
+    {
+
+        uint256 virtualBalance;
+
+        uint32 weight;
+
+        bool isVirtualBalanceEnabled;
+
+        bool isSaleEnabled;
+
+        bool isSet;
+
+        (virtualBalance, weight, isVirtualBalanceEnabled, isSaleEnabled, isSet) = _converter.connectors(_connector);
+
+        return weight;
+
+    }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: getReturnByPath(address[],uint256), txdata: 0x0c8496cc, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MyBancorNetwork
+Function name: fallback
+PC address: 983
+Estimated Gas Usage: 4752 - 79001
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3eb71b6269f17718790f7c0b628e40e5.sol:2441
+
+()).div(MAX_CONVERSION_FEE);
+
+                amount -= fee;
+
+
+
+                // update the smart token supply for the next iteration
+
+                supply = smartToken.totalSupply() - amount;
+
+            }
+
+            else { // cross connector conversion
+
+                (amount, fee) = fixGetReturn(
+
+                    converter,
+
+                    abi.encodeWithSelector(
+
+                        converter.getReturn.selector,
+
+                        fromToken,
+
+                        toToken,
+
+                        amount
+
+                    )
+
+                );
+
+            }
+
+
+
+            prevSmartToken = smartToken;
+
+            fromToken = toToken;
+
+        }
+
+
+
+        return (amount, fee);
+
+    }
+
+    
+
+    function fixGetReturn(address destination, bytes data) internal returns(uint256 amount, uint256 fee) {
+
+        bytes memory ret = new bytes(64);
+
+        bool success;
+
+        assembly {
+
+            success := call(
+
+                sub(gas, 34710),
+
+                destination,
+
+                0,
+
+                add(data, 32),
+
+                mload(data),
+
+                add(ret, 32),
+
+                64
+
+            )
+
+        }
+
+        
+
+        if (success) {
+
+            assembly {
+
+                amount := mload(add(data, 32))
+
+                fee := mload(add(data, 64))
+
+            }
+
+        }
+
+    }
+
+    
+
+    /**
+
+        @dev returns true if connector sale is enabled
+
+
+
+        @param _converter       converter contract address
+
+        @param _connector       connector's address to read from
+
+
+
+        @return true if connector sale is enabled, otherwise - false
+
+    */
+
+    function getConnectorSaleEnabled(IBancorConverter _converter, IERC20Token _connector) 
+
+        private
+
+        view
+
+        returns(bool)
+
+    {
+
+        uint256 virtualBalance;
+
+        uint32 weight;
+
+        bool isVirtualBalanceEnabled;
+
+        bool isSaleEnabled;
+
+        bool isSet;
+
+        (virtualBalance, weight, isVirtualBalanceEnabled, isSaleEnabled, isSet) = _converter.connectors(_connector);
+
+        return isSaleEnabled;
+
+    }
+
+    
+
+    /**
+
+        @dev returns the connector weight
+
+
+
+        @param _converter       converter contract address
+
+        @param _connector       connector's address to read from
+
+
+
+        @return connector's weight
+
+    */
+
+    function getConnectorWeight(IBancorConverter _converter, IERC20Token _connector) 
+
+        private
+
+        view
+
+        returns(uint32)
+
+    {
+
+        uint256 virtualBalance;
+
+        uint32 weight;
+
+        bool isVirtualBalanceEnabled;
+
+        bool isSaleEnabled;
+
+        bool isSet;
+
+        (virtualBalance, weight, isVirtualBalanceEnabled, isSaleEnabled, isSet) = _converter.connectors(_connector);
+
+        return weight;
+
+    }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: getReturnByPath(address[],uint256), txdata: 0x0c8496cc80, value: 0x0
+
+

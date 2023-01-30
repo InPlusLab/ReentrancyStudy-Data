@@ -1,0 +1,273 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: BatchedPayments
+Function name: multisend(address,bytes32,address[],uint256[])
+PC address: 258
+Estimated Gas Usage: 12206 - 112382
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/ae723368e60c46630a15b51f8dda769f.sol:153
+
+int256[] values)
+
+    public onlyOwner
+
+    returns (uint256)
+
+     {
+
+
+
+        require(dests.length > 0);
+
+        require(values.length >= dests.length);
+
+        require(successfulPayments[paymentId] != true);
+
+
+
+        uint256 i = 0;
+
+        while (i < dests.length) {
+
+           require(ERC20(_tokenAddr).transfer(dests[i], values[i]));
+
+           i += 1;
+
+        }
+
+
+
+        successfulPayments[paymentId] = true;
+
+
+
+        return (i);
+
+
+
+    }
+
+
+
+
+
+
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address,bytes32,address[],uint256[]), txdata: 0x206ec7a101010101010101010101018001010101010101010101010100000000000000000400000800000000020004020040080800100008080880802000800010200001ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: BatchedPayments
+Function name: multisend(address,bytes32,address[],uint256[])
+PC address: 281
+Estimated Gas Usage: 12206 - 112382
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/ae723368e60c46630a15b51f8dda769f.sol:153
+
+int256[] values)
+
+    public onlyOwner
+
+    returns (uint256)
+
+     {
+
+
+
+        require(dests.length > 0);
+
+        require(values.length >= dests.length);
+
+        require(successfulPayments[paymentId] != true);
+
+
+
+        uint256 i = 0;
+
+        while (i < dests.length) {
+
+           require(ERC20(_tokenAddr).transfer(dests[i], values[i]));
+
+           i += 1;
+
+        }
+
+
+
+        successfulPayments[paymentId] = true;
+
+
+
+        return (i);
+
+
+
+    }
+
+
+
+
+
+
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address,bytes32,address[],uint256[]), txdata: 0x206ec7a1000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BatchedPayments
+Function name: send(address,address,uint256)
+PC address: 621
+Estimated Gas Usage: 2845 - 40188
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/ae723368e60c46630a15b51f8dda769f.sol:153
+
+(address _tokenAddr, bytes32 paymentId,
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: send(address,address,uint256), txdata: 0x0779afe6000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BatchedPayments
+Function name: multisend(address,bytes32,address[],uint256[])
+PC address: 920
+Estimated Gas Usage: 12206 - 112382
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/ae723368e60c46630a15b51f8dda769f.sol:183
+
+     successfulPayments[paymentId] = true;
+
+
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address,bytes32,address[],uint256[]), txdata: 0x206ec7a1000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000020008000080, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: BatchedPayments
+Function name: multisend(address,bytes32,address[],uint256[])
+PC address: 920
+Estimated Gas Usage: 12206 - 112382
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/ae723368e60c46630a15b51f8dda769f.sol:183
+
+     successfulPayments[paymentId] = true;
+
+
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address,bytes32,address[],uint256[]), txdata: 0x206ec7a10000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: BatchedPayments
+Function name: multisend(address,bytes32,address[],uint256[])
+PC address: 999
+Estimated Gas Usage: 12206 - 112382
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ae723368e60c46630a15b51f8dda769f.sol:199
+Initial State:
+
+Account: [CREATOR], balance: 0x4c020004044a08081, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address,bytes32,address[],uint256[]), txdata: 0x206ec7a1000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000010002008080, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: BatchedPayments
+Function name: multisend(address,bytes32,address[],uint256[])
+PC address: 1008
+Estimated Gas Usage: 12206 - 112382
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ae723368e60c46630a15b51f8dda769f.sol:199
+Initial State:
+
+Account: [CREATOR], balance: 0x4c020004044a08081, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address,bytes32,address[],uint256[]), txdata: 0x206ec7a1000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000010002008080, value: 0x0

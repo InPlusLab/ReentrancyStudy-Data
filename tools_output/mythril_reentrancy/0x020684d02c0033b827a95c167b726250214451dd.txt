@@ -1,0 +1,72 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: BouncyCoinSelfdrop
+Function name: fallback
+PC address: 1308
+Estimated Gas Usage: 2757 - 3512
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/9b003f730c7af5ff33fd0a68f8f15635.sol:293
+
+first_round_base_multiplier;
+
+    } else {
+
+      base_multiplier = 0;
+
+    }
+
+
+
+    uint256 multiplier;
+
+    if (msg.value >= 1 ether) multiplier = base_multiplier + 10;
+
+    else multiplier = base_multiplier;
+
+
+
+    uint256 amountRemaining = msg.value;
+
+
+
+    uint256 tokensAvailable = MAX_TOKENS_SOLD - tokensSold;
+
+    uint256 baseTokens = amountRemaining * 10**18 / PRIC
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x778ffcc4008000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000010001010100010001010101010101000101010100000000000000000000000080, value: 0x0
+Caller: [CREATOR], function: start(), txdata: 0xbe9a6555, value: 0x0
+Caller: [ATTACKER], function: unknown, txdata: 0x, value: 0x2386f26fc10000
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BouncyCoinSelfdrop
+Function name: transferERC20Token(address,address,uint256)
+PC address: 2953
+Estimated Gas Usage: 3076 - 38158
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/9b003f730c7af5ff33fd0a68f8f15635.sol:447
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000010101010101010101010101010101000001000000000000000000000000000002, value: 0x0
+Caller: [CREATOR], function: transferERC20Token(address,address,uint256), txdata: 0x92940bf9020202020202020202020202deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

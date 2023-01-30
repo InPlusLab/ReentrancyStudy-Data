@@ -1,0 +1,359 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: FoamTokenController
+Function name: constructor
+PC address: 369
+Estimated Gas Usage: 12063 - 55589
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/fa1ee5ab230907c3fa1aa35eb5b6f426.sol:373
+
+telisted(address _whitelisted) public {
+
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: FoamTokenController
+Function name: constructor
+PC address: 771
+Estimated Gas Usage: 51459 - 288393
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/fa1ee5ab230907c3fa1aa35eb5b6f426.sol:387
+
+ntributions(_whitelisted
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000000001000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef01, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: FoamTokenController
+Function name: constructor
+PC address: 834
+Estimated Gas Usage: 51459 - 288393
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/fa1ee5ab230907c3fa1aa35eb5b6f426.sol:387
+
+ require(sale.unitContributions(_whitelisted
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000010000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef01, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: FoamTokenController
+Function name: constructor
+PC address: 841
+Estimated Gas Usage: 51459 - 288393
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/fa1ee5ab230907c3fa1aa35eb5b6f426.sol:391
+
+sg.s
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000010000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef01, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: FoamTokenController
+Function name: constructor
+PC address: 973
+Estimated Gas Usage: 51459 - 288393
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/fa1ee5ab230907c3fa1aa35eb5b6f426.sol:391
+
+sg.sender] = _whitelisted
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000000001000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef01, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: FoamTokenController
+Function name: constructor
+PC address: 973
+Estimated Gas Usage: 51459 - 288393
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/fa1ee5ab230907c3fa1aa35eb5b6f426.sol:391
+
+sg.sender] = _whitelisted
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000010101010101010101010101010101010101010101, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: FoamTokenController
+Function name: constructor
+PC address: 973
+Estimated Gas Usage: 51459 - 288393
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/fa1ee5ab230907c3fa1aa35eb5b6f426.sol:391
+
+sg.sender] = _whitelisted
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000010000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef01, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: FoamTokenController
+Function name: constructor
+PC address: 1036
+Estimated Gas Usage: 51459 - 288393
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/fa1ee5ab230907c3fa1aa35eb5b6f426.sol:391
+
+       proposedPair[msg.sender] = _whitelisted
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000010000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef01, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: FoamTokenController
+Function name: transferAllowed(address,address) or transferAllowed(address,address)
+PC address: 2856
+Estimated Gas Usage: 6817 - 9793
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/fa1ee5ab230907c3fa1aa35eb5b6f426.sol:529
+
+     return true;
+
+         
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x608c002000002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000000000000100000000000000000000000000000000000000000000000000000002040011002048040208001404004801001000480ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff, value: 0x0
+Caller: [SOMEGUY], function: transferAllowed(address,address), txdata: 0x214e52ca80000000000000000000000004, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: FoamTokenController
+Function name: transferAllowed(address,address) or transferAllowed(address,address)
+PC address: 2864
+Estimated Gas Usage: 4917 - 7092
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/fa1ee5ab230907c3fa1aa35eb5b6f426.sol:527
+
+         if (secondAddress == 0) {
+
+                return true;
+
+            } else {
+
+                contributed = sale.unitContributions(secondAddress);
+
+            }
+
+        }
+
+
+
+        uint256 tokensStaked 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000008000400000000000401, value: 0x0
+Caller: [ATTACKER], function: transferAllowed(address,address), txdata: 0x214e52ca020202020202020202020202000000000000000000000000000000000000000002020202020202020202020240, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: FoamTokenController
+Function name: transferAllowed(address,address) or transferAllowed(address,address)
+PC address: 2882
+Estimated Gas Usage: 6817 - 9793
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/fa1ee5ab230907c3fa1aa35eb5b6f426.sol:533
+
+ions(secondAddress);
+
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000000000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000000000000000000000000000000000400000000000000000000000000000000002080808020010408084004010404800220100208ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe2, value: 0x0
+Caller: [SOMEGUY], function: transferAllowed(address,address), txdata: 0x214e52cac0480000000000000000000080, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: FoamTokenController
+Function name: transferAllowed(address,address) or transferAllowed(address,address)
+PC address: 2888
+Estimated Gas Usage: 5748 - 7923
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/fa1ee5ab230907c3fa1aa35eb5b6f426.sol:533
+
+ibutions(secondAddress);
+
+            }
+
+        }
+
+
+
+        uint256 tokensStaked 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000040000000001020000000204040104000000007f, value: 0x0
+Caller: [CREATOR], function: transferAllowed(address,address), txdata: 0x214e52ca00000000000000000000000000009fffffffffffffffffffffffffffffffffcef8f8f8f8f8f8f8f8f8f8f8f801, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: FoamTokenController
+Function name: setPlatformLaunchDate(uint256)
+PC address: 4320
+Estimated Gas Usage: 1198 - 1623
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/fa1ee5ab230907c3fa1aa35eb5b6f426.sol:479
+
+ acceptedAddress) {
+
+                return tru
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x400, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000080000000010000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: setPlatformLaunchDate(uint256), txdata: 0x3ddc5b3b02, value: 0x0

@@ -1,0 +1,493 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Ownable
+Line:        27
+Source: 
+> 
+>     function getOwner() public view returns (address) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return owner;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Ownable
+Line:        35
+Source: 
+>      */
+>     function transferOwnership(address _newOwner) public onlyOwner returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(_newOwner != address(0));
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Affiliates
+Line:        141
+Source: 
+>      */
+>     function createAffiliateValidator() public returns (AffiliateValidator) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         AffiliateValidator _affiliateValidator = new AffiliateValidator();
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Gas-dependent Reentrancy
+Description: Calls into external contracts that receive all remaining
+             gas and are followed by state changes may be reentrant.
+Type:        Warning
+Contract:    Affiliates
+Line:        143
+Source: 
+>         AffiliateValidator _affiliateValidator = new AffiliateValidator();
+>         _affiliateValidator.transferOwnership(msg.sender);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         affiliateValidators[address(_affiliateValidator)] = true;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    AffiliateValidator
+Line:        83
+Source: 
+>      */
+>     function addKey(bytes32 _key, uint256 _salt, bytes32 _r, bytes32 _s, uint8 _v) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(!usedSalts[_salt], "Salt already used");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    AffiliateValidator
+Line:        62
+Source: 
+>      */
+>     function addOperator(address _operator) external onlyOwner {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         operators[_operator] = true;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    AffiliateValidator
+Line:        70
+Source: 
+>      */
+>     function removeOperator(address _operator) external onlyOwner {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         operators[_operator] = false;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    AffiliateValidator
+Line:        98
+Source: 
+>      */
+>     function getKeyHash(bytes32 _key, address _account, uint256 _salt) public view returns (bytes32) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return keccak256(abi.encodePacked(_key, _account, address(this), _salt));
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    AffiliateValidator
+Line:        102
+Source: 
+> 
+>     function isValidSignature(bytes32 _hash, bytes32 _r, bytes32 _s, uint8 _v) public view returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         address recovered = ecrecover(
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Affiliates
+Line:        152
+Source: 
+>      */
+>     function setFingerprint(bytes32 _fingerprint) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         fingerprints[msg.sender] = _fingerprint;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Affiliates
+Line:        175
+Source: 
+>      */
+>     function getAccountFingerprint(address _account) external view returns (bytes32) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return fingerprints[_account];
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Affiliates
+Line:        184
+Source: 
+>      */
+>     function getReferrer(address _account) external view returns (address) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return referrals[_account];
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    AffiliateValidator
+Line:        85
+Source: 
+>         require(!usedSalts[_salt], "Salt already used");
+>         bytes32 _hash = getKeyHash(_key, msg.sender, _salt);
+>         ^^^^^^^^^^^^^
+>         require(isValidSignature(_hash, _r, _s, _v), "Signature invalid");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    AffiliateValidator
+Line:        116
+Source: 
+>     function validateReference(address _account, address _referrer) external view returns (bool) {
+>         bytes32 _accountKey = keys[_account];
+>         ^^^^^^^^^^^^^^^^^^^
+>         bytes32 _referralKey = keys[_referrer];
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    AffiliateValidator
+Line:        117
+Source: 
+>         bytes32 _accountKey = keys[_account];
+>         bytes32 _referralKey = keys[_referrer];
+>         ^^^^^^^^^^^^^^^^^^^^
+>         if (_accountKey == bytes32(0) || _referralKey == bytes32(0)) {
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Affiliates
+Line:        142
+Source: 
+>     function createAffiliateValidator() public returns (AffiliateValidator) {
+>         AffiliateValidator _affiliateValidator = new AffiliateValidator();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _affiliateValidator.transferOwnership(msg.sender);
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Affiliates
+Line:        189
+Source: 
+>     function getAndValidateReferrer(address _account, IAffiliateValidator _affiliateValidator) external view returns (address) {
+>         address _referrer = referrals[_account];
+>         ^^^^^^^^^^^^^^^^^
+>         if (_referrer == address(0) || _account == _referrer) {
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Affiliates
+Line:        196
+Source: 
+>         }
+>         bool _success = _affiliateValidator.validateReference(_account, _referrer);
+>         ^^^^^^^^^^^^^
+>         if (!_success) {
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     State Variable Shadowing
+Description: State variables in inherited contract should not be named
+             identically to inherited variables
+Type:        Warning
+Contract:    Ownable
+Line:        9
+Source: 
+> contract Ownable is IOwnable {
+>     address internal owner;
+>     ^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     State Variable Shadowing
+Description: State variables in inherited contract should not be named
+             identically to inherited variables
+Type:        Warning
+Contract:    AffiliateValidator
+Line:        52
+Source: 
+>     // Mapping of affiliate address to their key
+>     mapping (address => bytes32) public keys;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     State Variable Shadowing
+Description: State variables in inherited contract should not be named
+             identically to inherited variables
+Type:        Warning
+Contract:    AffiliateValidator
+Line:        54
+Source: 
+> 
+>     mapping (address => bool) public operators;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     State Variable Shadowing
+Description: State variables in inherited contract should not be named
+             identically to inherited variables
+Type:        Warning
+Contract:    AffiliateValidator
+Line:        56
+Source: 
+> 
+>     mapping (uint256 => bool) public usedSalts;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     State Variable Shadowing
+Description: State variables in inherited contract should not be named
+             identically to inherited variables
+Type:        Warning
+Contract:    Affiliates
+Line:        129
+Source: 
+>     // Maps an account to their fingerprint. Used to naively filter out attempts at self reference
+>     mapping (address => bytes32) public fingerprints;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     State Variable Shadowing
+Description: State variables in inherited contract should not be named
+             identically to inherited variables
+Type:        Warning
+Contract:    Affiliates
+Line:        132
+Source: 
+>     // Maps an account to the referral account. Used to apply affiliate fees on settlement.
+>     mapping (address => address) public referrals;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     State Variable Shadowing
+Description: State variables in inherited contract should not be named
+             identically to inherited variables
+Type:        Warning
+Contract:    Affiliates
+Line:        135
+Source: 
+>     // Mapping of valid Affiliate Validators
+>     mapping (address => bool) public affiliateValidators;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Warning
+Contract:    Affiliates
+Line:        196
+Source: 
+>         }
+>         bool _success = _affiliateValidator.validateReference(_account, _referrer);
+>                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (!_success) {
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    Affiliates
+Line:        143
+Source: 
+>         AffiliateValidator _affiliateValidator = new AffiliateValidator();
+>         _affiliateValidator.transferOwnership(msg.sender);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         affiliateValidators[address(_affiliateValidator)] = true;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    Affiliates
+Line:        196
+Source: 
+>         }
+>         bool _success = _affiliateValidator.validateReference(_account, _referrer);
+>                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (!_success) {
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Affiliates
+Line:        196
+Source: 
+>         }
+>         bool _success = _affiliateValidator.validateReference(_account, _referrer);
+>                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (!_success) {
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Affiliates
+Line:        143
+Source: 
+>         AffiliateValidator _affiliateValidator = new AffiliateValidator();
+>         _affiliateValidator.transferOwnership(msg.sender);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         affiliateValidators[address(_affiliateValidator)] = true;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted Ether Flow
+Description: The execution of ether flows should be restricted to an
+             authorized set of users.
+Type:        Violation
+Contract:    Affiliates
+Line:        143
+Source: 
+>         AffiliateValidator _affiliateValidator = new AffiliateValidator();
+>         _affiliateValidator.transferOwnership(msg.sender);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         affiliateValidators[address(_affiliateValidator)] = true;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted Ether Flow
+Description: The execution of ether flows should be restricted to an
+             authorized set of users.
+Type:        Violation
+Contract:    Affiliates
+Line:        196
+Source: 
+>         }
+>         bool _success = _affiliateValidator.validateReference(_account, _referrer);
+>                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (!_success) {
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    AffiliateValidator
+Line:        87
+Source: 
+>         require(isValidSignature(_hash, _r, _s, _v), "Signature invalid");
+>         usedSalts[_salt] = true;
+>         ^^^^^^^^^^^^^^^^^^^^^^^
+>         keys[msg.sender] = _key;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Affiliates
+Line:        144
+Source: 
+>         _affiliateValidator.transferOwnership(msg.sender);
+>         affiliateValidators[address(_affiliateValidator)] = true;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return _affiliateValidator;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Affiliates
+Line:        143
+Source: 
+>         AffiliateValidator _affiliateValidator = new AffiliateValidator();
+>         _affiliateValidator.transferOwnership(msg.sender);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         affiliateValidators[address(_affiliateValidator)] = true;
+
+[0m

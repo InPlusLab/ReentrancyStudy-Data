@@ -1,0 +1,552 @@
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    ChefsTable
+Line:        47
+Source: 
+>     uint public proposalCount;
+>     uint public period = 3 days; // voting period in blocks ~ 17280 3 days for 15s/block
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public lock = 3 days;   // vote lock in blocks ~ 17280 3 days for 15s/block
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    ChefsTable
+Line:        48
+Source: 
+>     uint public period = 3 days; // voting period in blocks ~ 17280 3 days for 15s/block
+>     uint public lock = 3 days;   // vote lock in blocks ~ 17280 3 days for 15s/block
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public minimum = 1e18; // you need 1 PASTA to propose
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    ChefsTable
+Line:        49
+Source: 
+>     uint public lock = 3 days;   // vote lock in blocks ~ 17280 3 days for 15s/block
+>     uint public minimum = 1e18; // you need 1 PASTA to propose
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public govLock;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    ChefsTable
+Line:        58
+Source: 
+> 
+>     function join(uint amount) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint bal = spaghetti.balanceOf(address(this));
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    ChefsTable
+Line:        64
+Source: 
+> 
+>     function free(uint amount) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(voteLock[msg.sender] < block.timestamp, "still votelocked");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    ChefsTable
+Line:        71
+Source: 
+> 
+>     function propose(address _newFood, address _newGov) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(block.timestamp >= govLock, "No governance for 2 weeks");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    ChefsTable
+Line:        88
+Source: 
+> 
+>     function voteFor(uint id) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(proposals[id].start < block.timestamp , "<start");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    ChefsTable
+Line:        98
+Source: 
+> 
+>     function voteAgainst(uint id) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(proposals[id].start < block.timestamp , "<start");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    ChefsTable
+Line:        108
+Source: 
+> 
+>     function execute(uint id) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         // If the proposal is over, has passed, and has passed a 3 day pause 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    ChefsTable
+Line:        58
+Source: 
+> 
+>     function join(uint amount) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint bal = spaghetti.balanceOf(address(this));
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    ChefsTable
+Line:        71
+Source: 
+> 
+>     function propose(address _newFood, address _newGov) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(block.timestamp >= govLock, "No governance for 2 weeks");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    ChefsTable
+Line:        59
+Source: 
+>     function join(uint amount) public {
+>         uint bal = spaghetti.balanceOf(address(this));
+>                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(spaghetti.transferFrom(msg.sender, address(this), amount), "join/transferFrom-fail");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    ChefsTable
+Line:        60
+Source: 
+>         uint bal = spaghetti.balanceOf(address(this));
+>         require(spaghetti.transferFrom(msg.sender, address(this), amount), "join/transferFrom-fail");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         balances[msg.sender] += spaghetti.balanceOf(address(this)) - bal;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    ChefsTable
+Line:        61
+Source: 
+>         require(spaghetti.transferFrom(msg.sender, address(this), amount), "join/transferFrom-fail");
+>         balances[msg.sender] += spaghetti.balanceOf(address(this)) - bal;
+>                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    ChefsTable
+Line:        68
+Source: 
+>         balances[msg.sender] = sub(balances[msg.sender], amount);
+>         require(spaghetti.transfer(msg.sender, amount), "free/transfer-failed");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        1
+Source: 
+> pragma solidity ^0.5.12;
+> ^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> interface PASTA {
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    ChefsTable
+Line:        27
+Source: 
+>     // token contract
+>     PASTA spaghetti;
+>     ^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    ChefsTable
+Line:        60
+Source: 
+>         uint bal = spaghetti.balanceOf(address(this));
+>         require(spaghetti.transferFrom(msg.sender, address(this), amount), "join/transferFrom-fail");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         balances[msg.sender] += spaghetti.balanceOf(address(this)) - bal;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    ChefsTable
+Line:        68
+Source: 
+>         balances[msg.sender] = sub(balances[msg.sender], amount);
+>         require(spaghetti.transfer(msg.sender, amount), "free/transfer-failed");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    ChefsTable
+Line:        59
+Source: 
+>     function join(uint amount) public {
+>         uint bal = spaghetti.balanceOf(address(this));
+>                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(spaghetti.transferFrom(msg.sender, address(this), amount), "join/transferFrom-fail");
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    ChefsTable
+Line:        61
+Source: 
+>         require(spaghetti.transferFrom(msg.sender, address(this), amount), "join/transferFrom-fail");
+>         balances[msg.sender] += spaghetti.balanceOf(address(this)) - bal;
+>                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    ChefsTable
+Line:        112
+Source: 
+>             if (proposals[id].newFood != address(0)) {
+>                 spaghetti.setFoodbank(proposals[id].newFood);
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    ChefsTable
+Line:        115
+Source: 
+>             if (proposals[id].newGov != address(0)) {
+>                 spaghetti.setGovernance(proposals[id].newGov);
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Uninitialized Local Variables
+Description: A variable is declared but never initialized.
+Type:        Violation
+Contract:    ChefsTable
+Line:        15
+Source: 
+>     function add(uint x, uint y) internal pure returns (uint z) {
+>         require((z = x + y) >= x);
+>                  ^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Uninitialized Local Variables
+Description: A variable is declared but never initialized.
+Type:        Violation
+Contract:    ChefsTable
+Line:        19
+Source: 
+>     function sub(uint x, uint y) internal pure returns (uint z) {
+>         require((z = x - y) <= x);
+>                  ^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Uninitialized Local Variables
+Description: A variable is declared but never initialized.
+Type:        Violation
+Contract:    ChefsTable
+Line:        23
+Source: 
+>     function mul(uint x, uint y) internal pure returns (uint z) {
+>         require(y == 0 || (z = x * y) / y == x);
+>                            ^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    ChefsTable
+Line:        46
+Source: 
+>     mapping (uint => Proposal) public proposals;
+>     uint public proposalCount;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public period = 3 days; // voting period in blocks ~ 17280 3 days for 15s/block
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    ChefsTable
+Line:        92
+Source: 
+>         uint votes = sub(balances[msg.sender], proposals[id].forVotes[msg.sender]);
+>         proposals[id].totalForVotes = add(votes, proposals[id].totalForVotes);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         proposals[id].forVotes[msg.sender] = balances[msg.sender];
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    ChefsTable
+Line:        102
+Source: 
+>         uint votes = sub(balances[msg.sender], proposals[id].againstVotes[msg.sender]);
+>         proposals[id].totalAgainstVotes = add(votes, proposals[id].totalAgainstVotes);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         proposals[id].againstVotes[msg.sender] = balances[msg.sender];
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    ChefsTable
+Line:        55
+Source: 
+>         spaghetti = PASTA(_spaghetti);
+>         govLock = block.timestamp + 14 days;
+>                   ^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    ChefsTable
+Line:        65
+Source: 
+>     function free(uint amount) public {
+>         require(voteLock[msg.sender] < block.timestamp, "still votelocked");
+>                                        ^^^^^^^^^^^^^^^
+>         require(balances[msg.sender] <= amount, "amount too high");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    ChefsTable
+Line:        72
+Source: 
+>     function propose(address _newFood, address _newGov) public {
+>         require(block.timestamp >= govLock, "No governance for 2 weeks");
+>                 ^^^^^^^^^^^^^^^
+>         require(balances[msg.sender] > minimum, "<minimum");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    ChefsTable
+Line:        80
+Source: 
+>             start: block.timestamp,
+>             end: add(block.timestamp, period),
+>                      ^^^^^^^^^^^^^^^
+>             newFood: _newFood,
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    ChefsTable
+Line:        85
+Source: 
+> 
+>         voteLock[msg.sender] = add(block.timestamp, lock);
+>                                    ^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    ChefsTable
+Line:        89
+Source: 
+>     function voteFor(uint id) public {
+>         require(proposals[id].start < block.timestamp , "<start");
+>                                       ^^^^^^^^^^^^^^^
+>         require(proposals[id].end > block.timestamp , ">end");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    ChefsTable
+Line:        90
+Source: 
+>         require(proposals[id].start < block.timestamp , "<start");
+>         require(proposals[id].end > block.timestamp , ">end");
+>                                     ^^^^^^^^^^^^^^^
+>         uint votes = sub(balances[msg.sender], proposals[id].forVotes[msg.sender]);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    ChefsTable
+Line:        95
+Source: 
+> 
+>         voteLock[msg.sender] = add(block.timestamp, lock);
+>                                    ^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    ChefsTable
+Line:        99
+Source: 
+>     function voteAgainst(uint id) public {
+>         require(proposals[id].start < block.timestamp , "<start");
+>                                       ^^^^^^^^^^^^^^^
+>         require(proposals[id].end > block.timestamp , ">end");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    ChefsTable
+Line:        100
+Source: 
+>         require(proposals[id].start < block.timestamp , "<start");
+>         require(proposals[id].end > block.timestamp , ">end");
+>                                     ^^^^^^^^^^^^^^^
+>         uint votes = sub(balances[msg.sender], proposals[id].againstVotes[msg.sender]);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    ChefsTable
+Line:        105
+Source: 
+> 
+>         voteLock[msg.sender] = add(block.timestamp, lock);
+>                                    ^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    ChefsTable
+Line:        110
+Source: 
+>         // If the proposal is over, has passed, and has passed a 3 day pause 
+>         if ((proposals[id].end + lock) < block.timestamp && proposals[id].totalForVotes > proposals[id].totalAgainstVotes) {
+>                                          ^^^^^^^^^^^^^^^
+>             if (proposals[id].newFood != address(0)) {
+
+[0m

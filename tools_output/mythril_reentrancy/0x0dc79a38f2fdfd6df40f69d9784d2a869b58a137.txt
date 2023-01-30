@@ -1,0 +1,159 @@
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: WrapperChildImpl
+Function name: onERC721Received(address,address,uint256,bytes)
+PC address: 526
+Estimated Gas Usage: 5194 - 77944
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: onERC721Received(address,address,uint256,bytes), txdata: 0x150b7a020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b291984262259bcfe6aa02b66a06e9769c5c1ef30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005d, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: WrapperChildImpl
+Function name: onERC721Received(address,address,uint256,bytes)
+PC address: 608
+Estimated Gas Usage: 5194 - 77944
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0d8f8048e5f6d4d88a644f8fa06e4e58.sol:598
+
+WET.transferFrom(user, address(this), num * 5490 ether);
+    WAIFU
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: onERC721Received(address,address,uint256,bytes), txdata: 0x150b7a020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b291984262259bcfe6aa02b66a06e9769c5c1ef300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: WrapperChildImpl
+Function name: onERC721Received(address,address,uint256,bytes)
+PC address: 608
+Estimated Gas Usage: 5194 - 77944
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0d8f8048e5f6d4d88a644f8fa06e4e58.sol:598
+
+WET.transferFrom(user, address(this), num * 5490 ether);
+    WAIFU
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: onERC721Received(address,address,uint256,bytes), txdata: 0x150b7a020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b291984262259bcfe6aa02b66a06e9769c5c1ef30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005d, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: WrapperChildImpl
+Function name: onERC721Received(address,address,uint256,bytes)
+PC address: 608
+Estimated Gas Usage: 5194 - 77944
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0d8f8048e5f6d4d88a644f8fa06e4e58.sol:598
+
+WET.transferFrom(user, address(this), num * 5490 ether);
+    WAIFU
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: onERC721Received(address,address,uint256,bytes), txdata: 0x150b7a020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b291984262259bcfe6aa02b66a06e9769c5c1ef30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005d, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: NFTXDungeonWrapper
+Function name: revealWaifusWithNFTX()
+PC address: 709
+Estimated Gas Usage: 36936 - 110446
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0d8f8048e5f6d4d88a644f8fa06e4e58.sol:649
+
+g.sender); 
+    }
+    return properWrapper;
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000080, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x3, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: revealWaifusWithNFTX(), txdata: 0x5aa842e4, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: NFTXDungeonWrapper
+Function name: commitWaifusWithNFTX(uint256)
+PC address: 815
+Estimated Gas Usage: 37080 - 110685
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0d8f8048e5f6d4d88a644f8fa06e4e58.sol:647
+
+), msg.sender));
+      address wrapper = Clones.clo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x3, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: commitWaifusWithNFTX(uint256), txdata: 0x79a074660000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+

@@ -1,0 +1,145 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: WrapAndUnWrap
+Function name: wrap(address,address[],uint256)
+PC address: 6130
+Estimated Gas Usage: 668 - 3538
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/f39f3709d07dadd9bfac8fa962c08bb2.sol:151
+
+ = ERC20(sourceToken);
+    ERC20 dToken = ERC20(destinationTokens[0]);
+
+
+
+
+
+
+
+      if(destinationTokens.length==1){
+
+        if(sourceToken != ETH_TOKEN_ADDRESS){
+          require(sToken.transferFrom(msg.sender, address(this), amount), "You have not approved this contract or do not have enough token for this transfer 1");
+          sToken.approve(uniAddress, approvalAmount);
+        }
+
+        conductUniswap(sourceToken, destinationTokens[0], amount);
+        uint256 thisBalance = dToken.balanceOf(address(this));
+        dToken.transfer(msg.sender, thisBalance);
+        return (destinationTokens[0], thisBalance);
+
+      }
+
+      else{
+
+        bool updatedweth =false;
+        if(sourceToken == ETH_TOKEN_ADDRESS){
+          WrappedETH sToken1 = WrappedETH(WETH_TOKEN_ADDRESS);
+          sToken1.deposit{value:msg.value}();
+          sToken = ERC20(WETH_TOKEN_ADDRESS);
+          amount = msg.value;
+          sourceToken = WETH_TOKEN_ADDRESS;
+          updatedweth =true;
+        }
+
+
+        if(sourceToken != ETH_TOKEN_ADDRESS && updatedweth==false){
+          require(sToken.transferFrom(msg.sender, address(this), amount), "You have not approved this contract or do not have enough token for this transfer  2");
+          sToken.approve(uniAddress, approvalAmount);
+        }
+
+        if(destinationTokens[0] == ETH_TOKEN_ADDRESS){
+              destinationTokens[0] = WETH_TOKEN_ADDRESS;
+        }
+        if(destinationTokens[1] == ETH_TOKEN_ADDRESS){
+            destinationTokens[1] = WETH_TOKEN_ADDRESS;
+        }
+
+
+
+        if(sourceToken !=destinationTokens[0]){
+            conductUniswap(sourceToken, destinationTokens[0], amount.div(2));
+        }
+        if(sourceToken !=destinationTokens[1]){
+
+            conductUniswap(sourceToken, destinationTokens[1], amount.div(2));
+        }
+
+        ERC20 dToken2 = ERC20(destinationTokens[1]);
+        uint256 dTokenBalance = dToken.balanceOf(address(this));
+        uint256 dTokenBalance2 = dToken2.balanceOf(address(this));
+
+        dToken.approve(uniAddress, approvalAmount);
+        dToken2.approve(uniAddress, approvalAmount);
+
+
+
+
+
+        (,,uint liquidityCoins)  = uniswapExchange.addLiquidity(destinationTokens[0],destinationTokens[1], dTokenBalance, dTokenBalance2, 1,1, msg.sender, longTimeFromNow);
+
+
+        address thisPairAddress = factory.getPair(destinationTokens[0],destinationTokens[1]);
+        ERC20 lpToken = ERC20(thisPairAddress);
+        lpTokenAddressToPairs[thisPairAddress] =[destinationTokens[0], destinationTokens[1]];
+        uint256 thisBalance =lpToken.balanceOf(address(this));
+        lpToken.transfer(msg.sender, thisBalance);
+        return (thisPairAddress,thisBalance) ;
+      }
+
+
+
+    }
+
+
+      function unwrap(address sourceToken, address destinationToken, uint256 amount) public payable returns( uint256){
+
+        ERC20 sToken = ERC20(sourceToken);
+        ERC20 dToken = ERC20(destinationToken);
+
+
+
+
+        if(sou
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x242040000000103, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: wrap(address,address[],uint256), txdata: 0x93d31e01000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: WrapAndUnWrap
+Function name: adminEmergencyWithdrawTokens(address,uint256,address)
+PC address: 11481
+Estimated Gas Usage: 3886 - 39579
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/f39f3709d07dadd9bfac8fa962c08bb2.sol:387
+
+lic onlyOwner {
+         selfdestruct(ow
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: adminEmergencyWithdrawTokens(address,uint256,address), txdata: 0xa8534191000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0

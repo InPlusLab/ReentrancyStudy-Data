@@ -1,0 +1,226 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: OlympusStakingDistributor
+Function name: distribute()
+PC address: 1412
+Estimated Gas Usage: 1060 - 1155
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/522c7151c338e5a0d4f436c6c491420c.sol:642
+
+;
+
+        return true;
+    }
+    
+    function setBlocksInEpoch( uint _blocksInEpoch ) external returns ( bool ) {
+        require( msg.sender == owner);
+        blocksInEpoch = _blocksInEpoch;
+        return true;
+    }
+    
+    // reward rate is in hundreths i.e. 50 = 0.5%
+    function setRewardRate( uint _rewardRate ) external returns ( bool ) {
+        requ
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: distribute(), txdata: 0xe4fc6b6d, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: OlympusStakingDistributor
+Function name: convertDAIToOHM(uint256)
+PC address: 2079
+Estimated Gas Usage: 6838 - 76247
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/522c7151c338e5a0d4f436c6c491420c.sol:663
+
+rn tr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: convertDAIToOHM(uint256), txdata: 0xed5bf47d0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: OlympusStakingDistributor
+Function name: convertDAIToOHM(uint256)
+PC address: 2157
+Estimated Gas Usage: 6838 - 76247
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/522c7151c338e5a0d4f436c6c491420c.sol:663
+
+    return true;
+    }
+
+    function setStaking( ad
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: convertDAIToOHM(uint256), txdata: 0xed5bf47d0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: OlympusStakingDistributor
+Function name: convertDAIToOHM(uint256)
+PC address: 2157
+Estimated Gas Usage: 6838 - 76247
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/522c7151c338e5a0d4f436c6c491420c.sol:663
+
+    return true;
+    }
+
+    function setStaking( ad
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: convertDAIToOHM(uint256), txdata: 0xed5bf47d0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: OlympusStakingDistributor
+Function name: transferOHMToDAO()
+PC address: 3239
+Estimated Gas Usage: 7692 - 79590
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/522c7151c338e5a0d4f436c6c491420c.sol:484
+
+         revert(add(32, returndata),
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferOHMToDAO(), txdata: 0xea2bbd50, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: OlympusStakingDistributor
+Function name: transferDAIToDAO()
+PC address: 3239
+Estimated Gas Usage: 7716 - 79614
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/522c7151c338e5a0d4f436c6c491420c.sol:484
+
+         revert(add(32, returndata),
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferDAIToDAO(), txdata: 0x3636ac2f, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: OlympusStakingDistributor
+Function name: transferOHMToDAO()
+PC address: 3302
+Estimated Gas Usage: 7692 - 79590
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/522c7151c338e5a0d4f436c6c491420c.sol:484
+
+         revert(add(32, returndata),
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferOHMToDAO(), txdata: 0xea2bbd50, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: OlympusStakingDistributor
+Function name: transferDAIToDAO()
+PC address: 3302
+Estimated Gas Usage: 7716 - 79614
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/522c7151c338e5a0d4f436c6c491420c.sol:484
+
+         revert(add(32, returndata),
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferDAIToDAO(), txdata: 0x3636ac2f, value: 0x0

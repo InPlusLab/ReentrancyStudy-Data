@@ -1,0 +1,68 @@
+/**
+ *Submitted for verification at Etherscan.io on 2019-08-06
+*/
+
+pragma solidity ^0.4.18;
+ 
+contract Ownable {
+  address public owner;
+
+
+  event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+  /**
+   * @dev The Ownable constructor sets the original `owner` of the contract to the sender
+   * account.
+   */
+  function Ownable() public {
+    owner = msg.sender;
+  }
+
+
+  /**
+   * @dev Throws if called by any account other than the owner.
+   */
+  modifier onlyOwner() {
+    require(msg.sender == owner);
+    _;
+  }
+
+
+  /**
+   * @dev Allows the current owner to transfer control of the contract to a newOwner.
+   * @param newOwner The address to transfer ownership to.
+   */
+  function transferOwnership(address newOwner) public onlyOwner {
+    require(newOwner != address(0));
+    OwnershipTransferred(owner, newOwner);
+    owner = newOwner;
+  }
+
+}
+
+interface Token {
+  function balanceOf(address _owner) public constant returns (uint256 );
+  function transfer(address _to, uint256 _value) public ;
+  event Transfer(address indexed _from, address indexed _to, uint256 _value);
+}
+
+contract Airdropper is Ownable {
+    
+    function AirTransfer(address[] _recipients, uint _values, address _tokenAddress) onlyOwner public returns (bool) {
+        require(_recipients.length > 0);
+
+        Token token = Token(_tokenAddress);
+        
+        for(uint j = 0; j < _recipients.length; j++){
+            token.transfer(_recipients[j], _values);
+        }
+ 
+        return true;
+    }
+ 
+     function withdrawalToken(address _tokenAddress) onlyOwner public { 
+        Token token = Token(_tokenAddress);
+        token.transfer(owner, token.balanceOf(this));
+    }
+
+}

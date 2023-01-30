@@ -1,0 +1,195 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: AirDropContract
+Function name: drop(address,uint256,uint256,uint256,uint256,uint256,address[])
+PC address: 189
+Estimated Gas Usage: 7461 - 114860
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/76ec5b9184685801e987909c57e67bc0.sol:31
+
+s tokenAddress,
+        uint amount,
+        uint minTokenBalance,
+        uint maxTokenBalance,
+        uint minEthBalance,
+        uint maxEthBalance,
+        address[] recipients) public {
+
+        require(tokenAddress != 0x0);
+        require(amount > 0);
+        require(maxTokenBalance >= minTokenBalance);
+        require(maxEthBalance >= minEthBalance);
+
+        ERC20 token = ERC20(tokenAddress);
+
+        uint balance = token.balanceOf(msg.sender);
+        uint allowance = token.allowance(msg.sender, address(this));
+        uint available = balance > allowance ? allowance : balance;
+
+        for (uint i = 0; i < recipients.length; i++) {
+            require(available >= amount);
+            address recipient = recipients[i];
+            if (isQualitifiedAddress(
+                token,
+                recipient,
+                minTokenBalance,
+                maxTokenBalance,
+                minEthBalance,
+                maxEthBalance
+            )) {
+                available -= amount;
+                require(token.transferFrom(msg.sender, recipient, amount));
+
+                AirDropped(recipient, amount);
+            }
+        }
+    }
+
+    function isQualitifiedAddress(
+        ERC20 token,
+        
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000001003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: drop(address,uint256,uint256,uint256,uint256,uint256,address[]), txdata: 0x23b4a836000000000000000001010101020101010101010101010101010101020102400800a082310000000000000000004000009ed875000000d7d1ded6672fdeaebf9d2000080140000000002004101000000200020404000000020480010000040809280008014000000000200410100000004002040400000002048001000000080801010101010101010401010101000001028080010101010101020000000000014001010101010101010101010001010101010101010101010100000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: AirDropContract
+Function name: drop(address,uint256,uint256,uint256,uint256,uint256,address[])
+PC address: 659
+Estimated Gas Usage: 7461 - 114860
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/76ec5b9184685801e987909c57e67bc0.sol:47
+
+owance = token.allowance(ms
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x9c3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: drop(address,uint256,uint256,uint256,uint256,uint256,address[]), txdata: 0x23b4a836000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00a08231000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab0000000000000000000000000000000000000000000018000000000200000001000000000000000000000000000000000000000000001a0000000002000000000880020482008002101080802000400040048000102080400100018001088821100002008040200200000000080000000000000010204000000001000008802180, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: AirDropContract
+Function name: drop(address,uint256,uint256,uint256,uint256,uint256,address[])
+PC address: 903
+Estimated Gas Usage: 7461 - 114860
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/76ec5b9184685801e987909c57e67bc0.sol:48
+
+      uint available = balance > allowance
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x9c3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: drop(address,uint256,uint256,uint256,uint256,uint256,address[]), txdata: 0x23b4a836000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00a08231000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab0000000000000000000000000000000000000000000018000000000200000001000000000000000000000000000000000000000000001a0000000002000000000880020482008002101080802000400040048000102080400100018001088821100002008040200200000000080000000000000010204000000001000008802180, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: AirDropContract
+Function name: drop(address,uint256,uint256,uint256,uint256,uint256,address[])
+PC address: 903
+Estimated Gas Usage: 7461 - 114860
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/76ec5b9184685801e987909c57e67bc0.sol:48
+
+      uint available = balance > allowance
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80010000005b03, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: drop(address,uint256,uint256,uint256,uint256,uint256,address[]), txdata: 0x23b4a836000000000000000000000000000000000000000000000000000000000000000100a08231000000000000000001, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: AirDropContract
+Function name: isQualitifiedAddress(address,address,uint256,uint256,uint256,uint256)
+PC address: 1721
+Estimated Gas Usage: 3741 - 38867
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/76ec5b9184685801e987909c57e67bc0.sol:87
+
+           ethBalance
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4020fbff9, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: isQualitifiedAddress(address,address,uint256,uint256,uint256,uint256), txdata: 0x91650189000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000002, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: AirDropContract
+Function name: drop(address,uint256,uint256,uint256,uint256,uint256,address[])
+PC address: 1721
+Estimated Gas Usage: 7461 - 114860
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/76ec5b9184685801e987909c57e67bc0.sol:87
+
+           ethBalance
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x9c3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: drop(address,uint256,uint256,uint256,uint256,uint256,address[]), txdata: 0x23b4a836000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00a08231000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab0000000000000000000000000000000000000000000018000000000200000001000000000000000000000000000000000000000000001a0000000002000000000880020482008002101080802000400040048000102080400100018001088821100002008040200200000000080000000000000010204000000001000008802180, value: 0x0

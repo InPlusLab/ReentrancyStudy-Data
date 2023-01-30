@@ -1,0 +1,118 @@
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: B
+Function name: go()
+PC address: 240
+Estimated Gas Usage: 3224 - 72021
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: /tmp/ff90a5c4b797aa6f1870d8de95ea01cf.sol:25
+
+lue)();
+
+        owner.transfe
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21c1008000000003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: go(), txdata: 0x0f59f83a, value: 0x0
+Caller: [SOMEGUY], function: go(), txdata: 0x0f59f83a, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: B
+Function name: go()
+PC address: 250
+Estimated Gas Usage: 3224 - 72021
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ff90a5c4b797aa6f1870d8de95ea01cf.sol:27
+
+s).ba
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1f39, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: go(), txdata: 0x0f59f83a, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: B
+Function name: go()
+PC address: 349
+Estimated Gas Usage: 3224 - 72021
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/ff90a5c4b797aa6f1870d8de95ea01cf.sol:27
+
+s).balance);
+
+    }
+
+    
+
+    functi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8000000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: go(), txdata: 0x0f59f83a, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: B
+Function name: go()
+PC address: 349
+Estimated Gas Usage: 3224 - 72021
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ff90a5c4b797aa6f1870d8de95ea01cf.sol:27
+
+s).balance);
+
+    }
+
+    
+
+    functi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1f39, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: go(), txdata: 0x0f59f83a, value: 0x0

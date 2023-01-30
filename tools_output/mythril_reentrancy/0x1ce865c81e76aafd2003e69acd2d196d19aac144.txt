@@ -1,0 +1,322 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: BiddableEscrow
+Function name: deposit(string,uint256,bytes,uint8,bytes32,bytes32)
+PC address: 328
+Estimated Gas Usage: 31573 - 168966
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/e6da4da428852875fa7447292498c743.sol:257
+
+tAmount);
+
+    // Throw if a deposit with this id already exists
+    require(!escrows[_id].exists);
+
+    bytes32 hash = keccak256(_id, _depositAmount, _data);
+    bytes memory prefix = "\x19Ethereum Signed Message:\n32";
+
+    address recoveredAddress = ecrecover(
+      keccak256(prefix, hash),
+      _v,
+      _r,
+      _s
+    );
+
+    // Throw if the signature wasn't created by the arbitrator
+    require(recoveredAddress == arbitrator);
+
+    escrows[_id] = EscrowDeposit(
+      true,
+      msg.sender,
+      _data,
+      msg.value);
+
+    emit Created(msg.sender, _id, _data);
+  }
+
+  uint256 public constant RELEASE_GAS_FEES = 45989;
+
+  /// @dev This event is emitted when funds have been released from escrow at which time
+  ///  the escrow will be removed from storage (i.e., destroyed).
+  event Released(address indexed sender, address indexed bidder, uint25
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40100000000000002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: deposit(string,uint256,bytes,uint8,bytes32,bytes32), txdata: 0x40b00033801106a380100000400000070880004f1fffffffdffffff7fffffe079400ffea0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: CanReclaimToken
+Function name: reclaimToken(address) or reclaimToken(address)
+PC address: 540
+Estimated Gas Usage: 5167 - 75141
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/e6da4da428852875fa7447292498c743.sol:131
+
+s with safety checks 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CanReclaimToken
+Function name: reclaimToken(address) or reclaimToken(address)
+PC address: 571
+Estimated Gas Usage: 5167 - 75141
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/e6da4da428852875fa7447292498c743.sol:133
+
+brary
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: CanReclaimToken
+Function name: reclaimToken(address) or reclaimToken(address)
+PC address: 1185
+Estimated Gas Usage: 5167 - 75141
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/e6da4da428852875fa7447292498c743.sol:45
+
+on safeTransferFrom(
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: CanReclaimToken
+Function name: reclaimToken(address) or reclaimToken(address)
+PC address: 1185
+Estimated Gas Usage: 5167 - 75141
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/e6da4da428852875fa7447292498c743.sol:45
+
+on safeTransferFrom(
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80130, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CanReclaimToken
+Function name: reclaimToken(address) or reclaimToken(address)
+PC address: 1185
+Estimated Gas Usage: 5167 - 75141
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/e6da4da428852875fa7447292498c743.sol:45
+
+on safeTransferFrom(
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BiddableEscrow
+Function name: reclaimToken(address) or reclaimToken(address)
+PC address: 1282
+Estimated Gas Usage: 5167 - 75141
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/e6da4da428852875fa7447292498c743.sol:131
+
+s with safety checks 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x101, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: BiddableEscrow
+Function name: reclaimToken(address) or reclaimToken(address)
+PC address: 1313
+Estimated Gas Usage: 5167 - 75141
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/e6da4da428852875fa7447292498c743.sol:133
+
+brary
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x192, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BiddableEscrow
+Function name: reclaimToken(address) or reclaimToken(address)
+PC address: 4260
+Estimated Gas Usage: 5167 - 75141
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/e6da4da428852875fa7447292498c743.sol:45
+
+on safeTransferFrom(
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x101, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: BiddableEscrow
+Function name: reclaimToken(address) or reclaimToken(address)
+PC address: 4260
+Estimated Gas Usage: 5167 - 75141
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/e6da4da428852875fa7447292498c743.sol:45
+
+on safeTransferFrom(
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: BiddableEscrow
+Function name: reclaimToken(address) or reclaimToken(address)
+PC address: 4260
+Estimated Gas Usage: 5167 - 75141
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/e6da4da428852875fa7447292498c743.sol:45
+
+on safeTransferFrom(
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x192, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

@@ -1,0 +1,456 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: KRCICOContract
+Function name: constructor
+PC address: 90
+Estimated Gas Usage: 16805 - 80001
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/36d340539b873e33f5e9595915b58133.sol:389
+
+imumContribution = 150e18
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: KRCICOContract
+Function name: searchWhitelist(address)
+PC address: 1491
+Estimated Gas Usage: 1814 - 3604
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/36d340539b873e33f5e9595915b58133.sol:347
+
+weis paid for purchase
+
+   * @param
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x202, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 1001010002000200000200000000008000800000000000000000000000000e0200000000000000000000000010, value: 0x0
+Caller: [ATTACKER], function: searchWhitelist(address), txdata: 0x9908f272, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: KRCICOContract
+Function name: buyTokens(address)
+PC address: 1667
+Estimated Gas Usage: 3304 - 4059
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/36d340539b873e33f5e9595915b58133.sol:579
+
+  uint received = msg.va
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 040000000000000001010120000000000000000000000000000000000000010100000000000000000000000080, value: 0x0
+Caller: [ATTACKER], function: buyTokens(address), txdata: 0xec8ac4d880808080808080808080808001, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: KRCICOContract
+Function name: takeTokensBack()
+PC address: 2556
+Estimated Gas Usage: 6872 - 77083
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/36d340539b873e33f5e9595915b58133.sol:783
+
+ be called from owner wallet
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 7002000000000000000000000000100000000000000000000000000000000000000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: takeTokensBack(), txdata: 0x58c6f08b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KRCICOContract
+Function name: takeTokensBack()
+PC address: 2600
+Estimated Gas Usage: 6872 - 77083
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/36d340539b873e33f5e9595915b58133.sol:787
+
+  fun
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 7422000000000000000000000000000000000000f00400000000000000000000000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: takeTokensBack(), txdata: 0x58c6f08b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KRCICOContract
+Function name: takeTokensBack()
+PC address: 2604
+Estimated Gas Usage: 6872 - 77083
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/36d340539b873e33f5e9595915b58133.sol:787
+
+drawL
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 7422000000000000000000000000000000000000f00400000000000000000000000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: takeTokensBack(), txdata: 0x58c6f08b, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: KRCICOContract
+Function name: takeTokensBack()
+PC address: 2717
+Estimated Gas Usage: 6872 - 77083
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/36d340539b873e33f5e9595915b58133.sol:787
+
+  function withdrawLongTermFoundationBudget() publ
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 7002000000000000000000000000100000000000000000000000000000000000000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: takeTokensBack(), txdata: 0x58c6f08b, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: KRCICOContract
+Function name: takeTokensBack()
+PC address: 2717
+Estimated Gas Usage: 6872 - 77083
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/36d340539b873e33f5e9595915b58133.sol:787
+
+  function withdrawLongTermFoundationBudget() publ
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80080, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000fe6dcf0000000008000000000000000000040003700002f6c40000008000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: takeTokensBack(), txdata: 0x58c6f08b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: KRCICOContract
+Function name: takeTokensBack()
+PC address: 2717
+Estimated Gas Usage: 6872 - 77083
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/36d340539b873e33f5e9595915b58133.sol:787
+
+  function withdrawLongTermFoundationBudget() publ
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 7422000000000000000000000000000000000000f00400000000000000000000000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: takeTokensBack(), txdata: 0x58c6f08b, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: KRCICOContract
+Function name: WhitelistsAccts(uint256)
+PC address: 2769
+Estimated Gas Usage: 1156 - 1251
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/36d340539b873e33f5e9595915b58133.sol:313
+
+ns (address[]) {
+
+    	return Wh
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2042000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: ffffffe00000000000000200000000000000000000000000000000000000084000000000000000000000000001, value: 0x0
+Caller: [SOMEGUY], function: WhitelistsAccts(uint256), txdata: 0x71445c60, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: KRCICOContract
+Function name: buyTokens(address)
+PC address: 3915
+Estimated Gas Usage: 2361 - 3116
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/36d340539b873e33f5e9595915b58133.sol:681
+
+    
+
+    /**
+
+    * function to c
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 9fffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0e10400000000000000000000000080, value: 0x0
+Caller: [SOMEGUY], function: buyTokens(address), txdata: 0xec8ac4d880808080808080808080808001, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: KRCICOContract
+Function name: buyTokens(address)
+PC address: 3961
+Estimated Gas Usage: 3241 - 3996
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/36d340539b873e33f5e9595915b58133.sol:693
+
+er{
+
+        startTime = startT
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0431ac4200001fea01c0034044cc00000000000000000000003d008fffc5048100000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: buyTokens(address), txdata: 0xec8ac4d880808080808080808080808001, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: KRCICOContract
+Function name: buyTokens(address)
+PC address: 3970
+Estimated Gas Usage: 3261 - 4016
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/36d340539b873e33f5e9595915b58133.sol:693
+
+er{
+
+        startTime = startTimeUnixTimestamp;
+
+    }
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 04000000000000000101010100000000000000020003ffffffffffffffc4ad0100000000000000000000000080, value: 0x0
+Caller: [ATTACKER], function: buyTokens(address), txdata: 0xec8ac4d8ffffffffffffffffffffffff01, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: KRCICOContract
+Function name: buyTokens(address)
+PC address: 4053
+Estimated Gas Usage: 7648 - 8403
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/36d340539b873e33f5e9595915b58133.sol:491
+
+s.mul(bonusInPhase2); 
+
+            bonus = bonus.div(100);
+
+            tokens = tokens.add(bonus);
+
+            require (TOKENS_SOLD.add(tokens) <= maxTokensToSale);
+
+        }
+
+        //Phase 3 (15 days)
+
+        else if (timeElapsedInDays >=30 && timeElapsedInDays <45)
+
+        {
+
+            tokens = value.mul(ratePerWei);
+
+            bonus = tokens.mul(bonusInPhase3); 
+
+            bonus = bonus.div(100);
+
+            tokens = tokens.add(bonus);
+
+            require (TOKENS_SOLD.add(tokens) <= maxTokensToSale);
+
+        }
+
+        else 
+
+        {
+
+            bonus = 0;
+
+        }
+
+    }
+
+
+
+  // low level token purchase function
+
+  
+
+  function buyTokens(address beneficiary) public payable {
+
+    require(beneficiary != 0x0);
+
+    require(isCrowdsalePaused == false);
+
+    require(validPurchase());
+
+
+
+    
+
+    require(TOKENS_SOLD<maxTokensToSale);
+
+   
+
+    uint256 weiAmount = msg.value.div(10**16);
+
+    
+
+    uint256 tokens = calculateTokens(weiAmount);
+
+    require(TOKENS_SOLD.add(tokens)<=maxTokensToSale);
+
+    // update state
+
+    weiRaised = weiRaised.add(msg.value);
+
+    
+
+    token.transf
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x283dc0c0810040081, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0055af92bd601c80000000000000001843ff800000000000000000000000450100000000000000000000000080, value: 0x0
+Caller: [SOMEGUY], function: buyTokens(address), txdata: 0xec8ac4d880808080808080808080808001, value: 0x6f05b59d3b20000
+
+

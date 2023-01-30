@@ -1,0 +1,159 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Token
+Function name: setJackpot(address)
+PC address: 5573
+Estimated Gas Usage: 29915 - 147355
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/ff3ba1a75857e74cc8ee58c41b4a82eb.sol:175
+
+to The address of 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setJackpot(address), txdata: 0x7e95385c000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Token
+Function name: setJackpot(address)
+PC address: 5604
+Estimated Gas Usage: 29915 - 147355
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ff3ba1a75857e74cc8ee58c41b4a82eb.sol:175
+
+// @param _to The address of 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x800100, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setJackpot(address), txdata: 0x7e95385c000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Token
+Function name: setJackpot(address)
+PC address: 5657
+Estimated Gas Usage: 29915 - 147355
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ff3ba1a75857e74cc8ee58c41b4a82eb.sol:175
+
+// @param _to The address of 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x800100, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setJackpot(address), txdata: 0x7e95385c000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Token
+Function name: transfer(address,uint256) or transfer(address,uint256)
+PC address: 5841
+Estimated Gas Usage: 560 - 655
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/ff3ba1a75857e74cc8ee58c41b4a82eb.sol:205
+
+ackpot)) {
+            // It is a token bet. Ignoring _value, only using 1 token
+            _burnFromAccount(msg.sender, 1);
+            jackpot.betToken(msg.sender);
+            return true;
+        }
+
+        if (_to == croupier && msg.sender != house) {
+            // It&#39;s a deposit to Croupier. In addition to transferring the token,
+            // mark it in the deposits table
+
+            // House can&#39;t make deposits. If House is transferring something to
+            // Croupier, it&#39;s just a transfer, nothing more
+
+            depositOf[msg.sender] += _value;
+            totalDeposit = totalDeposit.add(_value);
+
+            Deposit(msg.sender, _value, 0, depositOf[msg.sender]);
+        }
+
+        // In all cases but Jackpot transfer (which is terminated by a return), actually
+        // do perform the transfer
+        return _transfer(msg.sender, _to, _value);
+    }
+
+    /// @dev Transfer tokens from one address to another
+    /// @param _from address The address which you want to send tokens from
+    /// @param _to address The address which you want to transfer to
+    /// @param _value u
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transfer(address,uint256), txdata: 0xa9059cbb, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Jackpot
+Function name: killAborted()
+PC address: 7805
+Estimated Gas Usage: 2735 - 3490
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/ff3ba1a75857e74cc8ee58c41b4a82eb.sol:830
+
+ns < 40000) {
+            newIcoTo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000080, value: 0x0
+Caller: [CREATOR], function: abort(), txdata: 0x35a063b4, value: 0x0
+Caller: [CREATOR], function: killAborted(), txdata: 0x042ae62b, value: 0x0

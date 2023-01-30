@@ -1,0 +1,53 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BankrollNetworkStackPlus
+Function name: totalTokenBalance()
+PC address: 5897
+Estimated Gas Usage: 2889 - 38157
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/bc48ce3b60fbdc26cc9ce5b05e241b7d.sol:559
+
+tomerAddress = msg.sender;
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100021000000000a7, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0d0d0d0d0d0d0d0d0d0d0d0ddeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: totalTokenBalance(), txdata: 0x3d4b2c2c, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BankrollNetworkStackPlus
+Function name: calculateTokensReceived(uint256)
+PC address: 15593
+Estimated Gas Usage: 414 - 509
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bc48ce3b60fbdc26cc9ce5b05e241b7d.sol:627
+
+feMath.sub(_eth, _dividends);
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42000000000004181, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: calculateTokensReceived(uint256), txdata: 0x10d0ffdd34, value: 0x0

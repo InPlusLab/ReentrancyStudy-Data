@@ -1,0 +1,119 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Airdropper
+Function name: fallback
+PC address: 161
+Estimated Gas Usage: 4239 - 79849
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/72e7ab5c1b242d5aa0eb21de8b7c6fbd.sol:22
+
+ress _token, address[] _dsts, uint256[] _values) 
+        public
+        payable
+    {
+        ERC20Token token = ERC20Token(_token);
+        for (uint32 i = 0; i < _dsts.length; i++) {
+            token.transferFrom(msg.sender, _dsts[i], _values[i]);
+        }
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transfer(address,address[],uint256[]), txdata: 0x72a503be01010101010101010101010101010101010101010101010101010102000000008000000000000000000000000000000000000000000000000000000000000008fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Airdropper
+Function name: fallback
+PC address: 324
+Estimated Gas Usage: 650 - 6291
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/72e7ab5c1b242d5aa0eb21de8b7c6fbd.sol:30
+
+}
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20b0552054068d19, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transfer(address,address[],uint256[]), txdata: 0x72a503be000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Airdropper
+Function name: fallback
+PC address: 457
+Estimated Gas Usage: 4239 - 79849
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/72e7ab5c1b242d5aa0eb21de8b7c6fbd.sol:28
+
+er, _dsts[i], _values[i]);
+        }
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transfer(address,address[],uint256[]), txdata: 0x72a503be010101010101010101010101deadbeefdeadbeefdeadbeefdeadbeefdeadbeef80, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Airdropper
+Function name: fallback
+PC address: 457
+Estimated Gas Usage: 4239 - 79849
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/72e7ab5c1b242d5aa0eb21de8b7c6fbd.sol:28
+
+er, _dsts[i], _values[i]);
+        }
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10000000003bfbe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transfer(address,address[],uint256[]), txdata: 0x72a503be0000000000000000000000000000000000000000000000000000000000000002, value: 0x0

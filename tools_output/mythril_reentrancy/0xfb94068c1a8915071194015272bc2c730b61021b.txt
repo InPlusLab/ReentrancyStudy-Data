@@ -1,0 +1,59 @@
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: TWMToken
+Function name: flushEth()
+PC address: 5617
+Estimated Gas Usage: 3433 - 38374
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: /tmp/80bf47215b252a80231dbbbb499571c3.sol:195
+
+{
+        return locked;
+    }
+
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x180000480800002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: flushEth(), txdata: 0x1d4233b9, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TWMToken
+Function name: sendToken(address,address,uint256)
+PC address: 5980
+Estimated Gas Usage: 3061 - 38424
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/80bf47215b252a80231dbbbb499571c3.sol:190
+
+ce;
+}
+
+    // Public getter
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: sendToken(address,address,uint256), txdata: 0x2fdcfbd2000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000001010101010101000101010101010101010101010000000000000000000000000000000000000000000000000000000000000000, value: 0x0

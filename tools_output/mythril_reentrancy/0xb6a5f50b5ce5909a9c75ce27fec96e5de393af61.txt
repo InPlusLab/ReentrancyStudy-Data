@@ -1,0 +1,86 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: EtheraffleDisbursal
+Function name: upgrade(address)
+PC address: 661
+Estimated Gas Usage: 10718 - 66481
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d4d23c1bd0a9332f6d7f3a81efd90d40.sol:153
+
+**
+
+     * @dev   Standard receive ether function, forward-
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21000c0000081338, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 090909090909090909090909aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+Caller: [SOMEGUY], function: upgrade(address), txdata: 0x0900f010, value: 0x0
+Caller: [SOMEGUY], function: upgrade(address), txdata: 0x0900f010010101010101010101010101deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Unprotected Ether Withdrawal ====
+SWC ID: 105
+Severity: High
+Contract: EtheraffleDisbursal
+Function name: upgrade(address)
+PC address: 661
+Estimated Gas Usage: 10718 - 66481
+Any sender can withdraw Ether from the contract account.
+Arbitrary senders other than the contract creator can profitably extract Ether from the contract account. Verify the business logic carefully and make sure that appropriate security controls are in place to prevent unexpected loss of funds.
+--------------------
+In file: /tmp/d4d23c1bd0a9332f6d7f3a81efd90d40.sol:153
+
+**
+
+     * @dev   Standard receive ether function, forward-
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1f6fdbfedc7fefe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0xffffffffffffffff, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 090909090909090909090909deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: receiveEther(), txdata: 0xa3912ec8, value: 0x1
+Caller: [ATTACKER], function: upgrade(address), txdata: 0x0900f010090909090909090909090909deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Unprotected Selfdestruct ====
+SWC ID: 106
+Severity: High
+Contract: EtheraffleDisbursal
+Function name: selfDestruct(address)
+PC address: 821
+Estimated Gas Usage: 1925 - 2680
+Any sender can cause the contract to self-destruct.
+Any sender can trigger execution of the SELFDESTRUCT instruction to destroy this contract account and withdraw its balance to an arbitrary address. Review the transaction trace generated for this issue and make sure that appropriate security controls are in place to prevent unrestricted access.
+--------------------
+In file: /tmp/d4d23c1bd0a9332f6d7f3a81efd90d40.sol:211
+
+ its
+
+     *       
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 090909090909090909090909deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: upgrade(address), txdata: 0x0900f010, value: 0x0
+Caller: [ATTACKER], function: selfDestruct(address), txdata: 0x3f5a0bdd8e8e8e8e8e8e8e8e8e8e8e8edeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

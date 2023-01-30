@@ -1,0 +1,860 @@
+[0;31mSeverity:    INFO
+Pattern:     Assembly Usage
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        354
+Source: 
+>         uint size;
+>         assembly { size := extcodesize(addr) }
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return size > 0;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Assembly Usage
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    Address
+Line:        399
+Source: 
+>         bytes32 accountHash = 0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470;
+>         assembly { codehash := extcodehash(account) }
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return (codehash != 0x0 && codehash != accountHash);
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        15
+Source: 
+>     uint constant public BASE_PERCENT = 1000; // 10%
+>     uint public REFERRAL_PERCENTS = 1000;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint constant public MARKETING_FEE = 800;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    SafeMath
+Line:        422
+Source: 
+>     function mul(uint256 a, uint256 b) internal pure returns (uint256) {
+>         if (a == 0) {
+>             ^^^^^^
+>             return 0;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    SafeMath
+Line:        427
+Source: 
+>         uint256 c = a * b;
+>         require(c / a == b, "SafeMath: multiplication overflow");
+>                 ^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        73
+Source: 
+> 
+>     function invest(uint depAmount, address referrer) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(!isContract(msg.sender) && msg.sender == tx.origin);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        138
+Source: 
+> 
+>     function withdraw() public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         User storage user = users[msg.sender];
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        193
+Source: 
+> 
+>     function setRefback(uint16 rbackPercent) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(rbackPercent <= 10000);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        307
+Source: 
+> 
+>     function getUserDeposits(address userAddress, uint last, uint first) public view returns (uint[] memory, uint[] memory, uint[] memory, uint[] memory) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         User storage user = users[userAddress];
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        332
+Source: 
+> 
+>     function getSiteStats() public view returns (uint, uint, uint, uint) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return (totalInvested, totalDeposits, getContractBalance(), contractPercent);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        336
+Source: 
+> 
+>     function getUserStats(address userAddress) public view returns (uint, uint, uint, uint, uint) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint userPerc = getUserPercentRate(userAddress);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        346
+Source: 
+> 
+>     function getUserReferralsStats(address userAddress) public view returns (address, uint16, uint16, uint256, uint256, uint24) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         User storage user = users[userAddress];
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        358
+Source: 
+> 
+>     function recieveMarketing() public payable {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(marketingAvailable > 0, "nothing to recieve");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        369
+Source: 
+> 
+>     function recievePlatform() public payable {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(platformAvailable > 0, "nothing to recieve");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        208
+Source: 
+>     function getContractBalanceRate() internal view returns (uint) {
+>         uint contractBalance = token.balanceOf(address(this));
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint contractBalancePercent = BASE_PERCENT.add(contractBalance.div(CONTRACT_BALANCE_STEP).mul(2)); // +0.02% per 88m coins
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        82
+Source: 
+> 
+>         token.transferFrom(msg.sender, address(this), depAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        178
+Source: 
+> 
+>         uint contractBalance = token.balanceOf(address(this));
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (contractBalance < totalAmount) {
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        186
+Source: 
+> 
+>         token.transfer(msg.sender, totalAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        204
+Source: 
+>     function getContractBalance() public view returns (uint) {
+>         return token.balanceOf(address(this));
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        364
+Source: 
+> 
+>         token.transfer(marketingAddress, value);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        375
+Source: 
+> 
+>         token.transfer(platformAddress, value);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Locked Ether
+Description: Contracts that may receive ether must also allow users to
+             extract the deposited ether from the contract.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        7
+Source: 
+> 
+> contract SHIBADOUBLER {
+> ^^^^^^^^^^^^^^^^^^^^^^^
+>     using SafeMath for uint;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        218
+Source: 
+> 
+>     function getUserPercentRate(address userAddress) public view returns (uint) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         User storage user = users[userAddress];
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        273
+Source: 
+> 
+>     function isActive(address userAddress) public view returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         User storage user = users[userAddress];
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        336
+Source: 
+> 
+>     function getUserStats(address userAddress) public view returns (uint, uint, uint, uint, uint) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint userPerc = getUserPercentRate(userAddress);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        279
+Source: 
+> 
+>     function getUserAmountOfDeposits(address userAddress) public view returns (uint) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return users[userAddress].deposits.length;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        307
+Source: 
+> 
+>     function getUserDeposits(address userAddress, uint last, uint first) public view returns (uint[] memory, uint[] memory, uint[] memory, uint[] memory) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         User storage user = users[userAddress];
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        346
+Source: 
+> 
+>     function getUserReferralsStats(address userAddress) public view returns (address, uint16, uint16, uint256, uint256, uint24) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         User storage user = users[userAddress];
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    SafeMath
+Line:        426
+Source: 
+> 
+>         uint256 c = a * b;
+>                     ^^^^^
+>         require(c / a == b, "SafeMath: multiplication overflow");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        82
+Source: 
+> 
+>         token.transferFrom(msg.sender, address(this), depAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        178
+Source: 
+> 
+>         uint contractBalance = token.balanceOf(address(this));
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (contractBalance < totalAmount) {
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        186
+Source: 
+> 
+>         token.transfer(msg.sender, totalAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        364
+Source: 
+> 
+>         token.transfer(marketingAddress, value);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        375
+Source: 
+> 
+>         token.transfer(platformAddress, value);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        15
+Source: 
+>     uint constant public BASE_PERCENT = 1000; // 10%
+>     uint public REFERRAL_PERCENTS = 1000;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint constant public MARKETING_FEE = 800;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        5
+Source: 
+> 
+> pragma solidity ^0.5.8;
+> ^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        13
+Source: 
+>     uint constant public DEPOSITS_MAX = 100;
+>     uint constant public INVEST_MIN_AMOUNT = 1000000 * (10 ** 18); // 1m
+>                                              ^^^^^^^
+>     uint constant public BASE_PERCENT = 1000; // 10%
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        21
+Source: 
+>     uint constant public PERCENTS_DIVIDER = 10000;
+>     uint constant public CONTRACT_BALANCE_STEP = 88000000 * (10 ** 18); // 88m
+>                                                  ^^^^^^^^
+>     uint constant public TIME_STEP = 1 days;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        208
+Source: 
+>     function getContractBalanceRate() internal view returns (uint) {
+>         uint contractBalance = token.balanceOf(address(this));
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint contractBalancePercent = BASE_PERCENT.add(contractBalance.div(CONTRACT_BALANCE_STEP).mul(2)); // +0.02% per 88m coins
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        178
+Source: 
+> 
+>         uint contractBalance = token.balanceOf(address(this));
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (contractBalance < totalAmount) {
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        82
+Source: 
+> 
+>         token.transferFrom(msg.sender, address(this), depAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        186
+Source: 
+> 
+>         token.transfer(msg.sender, totalAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        204
+Source: 
+>     function getContractBalance() public view returns (uint) {
+>         return token.balanceOf(address(this));
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        364
+Source: 
+> 
+>         token.transfer(marketingAddress, value);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        375
+Source: 
+> 
+>         token.transfer(platformAddress, value);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Uninitialized Local Variables
+Description: A variable is declared but never initialized.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        355
+Source: 
+>         assembly { size := extcodesize(addr) }
+>         return size > 0;
+>                ^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Uninitialized Local Variables
+Description: A variable is declared but never initialized.
+Type:        Violation
+Contract:    Address
+Line:        400
+Source: 
+>         assembly { codehash := extcodehash(account) }
+>         return (codehash != 0x0 && codehash != accountHash);
+>                 ^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        24
+Source: 
+> 
+>     uint public totalDeposits;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public totalInvested;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        25
+Source: 
+>     uint public totalDeposits;
+>     uint public totalInvested;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public totalWithdrawn;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        26
+Source: 
+>     uint public totalInvested;
+>     uint public totalWithdrawn;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        50
+Source: 
+> 
+>     uint256 public marketingAvailable;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public platformAvailable;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        51
+Source: 
+>     uint256 public marketingAvailable;
+>     uint256 public platformAvailable;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        362
+Source: 
+>         uint value = marketingAvailable;
+>         marketingAvailable = 0;
+>         ^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    SHIBADOUBLER
+Line:        373
+Source: 
+>         uint value = platformAvailable;
+>         platformAvailable = 0;
+>         ^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        82
+Source: 
+> 
+>         token.transferFrom(msg.sender, address(this), depAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        186
+Source: 
+> 
+>         token.transfer(msg.sender, totalAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        364
+Source: 
+> 
+>         token.transfer(marketingAddress, value);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        375
+Source: 
+> 
+>         token.transfer(platformAddress, value);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        222
+Source: 
+>         if (isActive(userAddress)) {
+>             uint timeMultiplier = (block.timestamp.sub(uint(user.checkpoint))).div(TIME_STEP).mul(100); // +1% per day
+>                                    ^^^^^^^^^^^^^^^
+>             if (timeMultiplier > MAX_HOLD_PERCENT) {
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        247
+Source: 
+>                     dividends = (uint(user.deposits[i].amount).mul(userPercentRate).div(PERCENTS_DIVIDER))
+>                         .mul(block.timestamp.sub(uint(user.deposits[i].start)))
+>                              ^^^^^^^^^^^^^^^
+>                         .div(TIME_STEP);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    SHIBADOUBLER
+Line:        253
+Source: 
+>                     dividends = (uint(user.deposits[i].amount).mul(userPercentRate).div(PERCENTS_DIVIDER))
+>                         .mul(block.timestamp.sub(uint(user.checkpoint)))
+>                              ^^^^^^^^^^^^^^^
+>                         .div(TIME_STEP);
+
+[0m
+[0;35mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Conflict
+Contract:    SHIBADOUBLER
+Line:        153
+Source: 
+>                     dividends = (uint(user.deposits[i].amount).mul(userPercentRate).div(PERCENTS_DIVIDER))
+>                         .mul(block.timestamp.sub(uint(user.deposits[i].start)))
+>                              ^^^^^^^^^^^^^^^
+>                         .div(TIME_STEP);
+
+[0m
+[0;35mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Conflict
+Contract:    SHIBADOUBLER
+Line:        159
+Source: 
+>                     dividends = (uint(user.deposits[i].amount).mul(userPercentRate).div(PERCENTS_DIVIDER))
+>                         .mul(block.timestamp.sub(uint(user.checkpoint)))
+>                              ^^^^^^^^^^^^^^^
+>                         .div(TIME_STEP);
+
+[0m

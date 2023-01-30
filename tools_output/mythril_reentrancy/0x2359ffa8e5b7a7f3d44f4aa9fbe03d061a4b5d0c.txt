@@ -1,0 +1,301 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DistributeTokens
+Function name: distributeVariable(address[],uint256[])
+PC address: 523
+Estimated Gas Usage: 6771 - 82995
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/c7b52616a44b080912d59abd5a8e2c60.sol:105
+
+ _bals) onlyOwner{
+
+    for(uint i = 0; i < _addrs.length; ++i){
+
+      tokenReward.transfer(_addrs[i],_bals[i]);
+
+    }
+
+  }
+
+
+
+  function distributeFixed(address[] _addrs, uint _a
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setTokenReward(address), txdata: 0x2e1dc4b8, value: 0x0
+Caller: [CREATOR], function: distributeVariable(address[],uint256[]), txdata: 0xa028aa1b800101010101010110013ffffffffffffe007fe0000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DistributeTokens
+Function name: withdrawTokens(uint256)
+PC address: 1318
+Estimated Gas Usage: 4368 - 39924
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/c7b52616a44b080912d59abd5a8e2c60.sol:135
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setTokenReward(address), txdata: 0x2e1dc4b8000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: withdrawTokens(uint256), txdata: 0x315a095d, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DistributeTokens
+Function name: distributeVariable(address[],uint256[])
+PC address: 1530
+Estimated Gas Usage: 4164 - 45122
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/c7b52616a44b080912d59abd5a8e2c60.sol:114
+
+
+
+
+  functi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setTokenReward(address), txdata: 0x2e1dc4b8000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: distributeVariable(address[],uint256[]), txdata: 0xa028aa1b81, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: DistributeTokens
+Function name: distributeVariable(address[],uint256[])
+PC address: 1623
+Estimated Gas Usage: 2490 - 8791
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/c7b52616a44b080912d59abd5a8e2c60.sol:105
+
+ _bals) onlyOwner{
+
+    for(uint i = 0; i < _addrs.length; ++i){
+
+      tokenReward.transfer(_addrs[i],_bals[i]);
+
+    }
+
+  }
+
+
+
+  function distributeFixed(address[] _addrs, uint _a
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x221c1200000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: distributeVariable(address[],uint256[]), txdata: 0xa028aa1bfffffffffffffffffffffbffffffffffffffffffbfffffffffffffff5d0000e6ff, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DistributeTokens
+Function name: distributeVariable(address[],uint256[])
+PC address: 1770
+Estimated Gas Usage: 6771 - 82995
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/c7b52616a44b080912d59abd5a8e2c60.sol:114
+
+
+
+
+  function distributeFixed(address[] 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setTokenReward(address), txdata: 0x2e1dc4b8000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: distributeVariable(address[],uint256[]), txdata: 0xa028aa1bf3, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: DistributeTokens
+Function name: distributeVariable(address[],uint256[])
+PC address: 1770
+Estimated Gas Usage: 6771 - 82995
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/c7b52616a44b080912d59abd5a8e2c60.sol:114
+
+
+
+
+  function distributeFixed(address[] 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setTokenReward(address), txdata: 0x2e1dc4b8, value: 0x0
+Caller: [CREATOR], function: distributeVariable(address[],uint256[]), txdata: 0xa028aa1b82, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DistributeTokens
+Function name: distributeFixed(address[],uint256)
+PC address: 1920
+Estimated Gas Usage: 6524 - 79789
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/c7b52616a44b080912d59abd5a8e2c60.sol:128
+
+
+  function
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setTokenReward(address), txdata: 0x2e1dc4b8000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: distributeFixed(address[],uint256), txdata: 0xf09bfcc2e7, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DistributeTokens
+Function name: distributeFixed(address[],uint256)
+PC address: 2137
+Estimated Gas Usage: 6524 - 79789
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/c7b52616a44b080912d59abd5a8e2c60.sol:128
+
+
+  function withdrawTokens(uint _amount) onl
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setTokenReward(address), txdata: 0x2e1dc4b8000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: distributeFixed(address[],uint256), txdata: 0xf09bfcc2e0, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: DistributeTokens
+Function name: distributeFixed(address[],uint256)
+PC address: 2137
+Estimated Gas Usage: 6524 - 79789
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/c7b52616a44b080912d59abd5a8e2c60.sol:128
+
+
+  function withdrawTokens(uint _amount) onl
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setTokenReward(address), txdata: 0x2e1dc4b8, value: 0x0
+Caller: [CREATOR], function: distributeFixed(address[],uint256), txdata: 0xf09bfcc280, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DistributeTokens
+Function name: distributeFixed(address[],uint256)
+PC address: 2137
+Estimated Gas Usage: 6524 - 79789
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/c7b52616a44b080912d59abd5a8e2c60.sol:128
+
+
+  function withdrawTokens(uint _amount) onl
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setTokenReward(address), txdata: 0x2e1dc4b8000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: distributeFixed(address[],uint256), txdata: 0xf09bfcc2e7, value: 0x0

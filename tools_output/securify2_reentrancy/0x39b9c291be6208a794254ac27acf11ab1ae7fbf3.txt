@@ -1,0 +1,3745 @@
+[0;33mSeverity:    LOW
+Pattern:     Benign Reentrancy
+Description: Reentrancy is equivalent with two consecutive calls of
+             the function
+Type:        Warning
+Contract:    LEURLogic
+Line:        288
+Source: 
+>         if (actualDebt(_vault) < auszahlung) amountToRepay = actualDebt(_vault);
+>         leurInstance.debtToken().destroy(msg.sender, amountToRepay);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setRawDebt(_vault.rawDebt().minus(debtActualToRaw(auszahlung)));
+
+[0m
+[0;33mSeverity:    LOW
+Pattern:     Benign Reentrancy
+Description: Reentrancy is equivalent with two consecutive calls of
+             the function
+Type:        Warning
+Contract:    LEURLogic
+Line:        289
+Source: 
+>         leurInstance.debtToken().destroy(msg.sender, amountToRepay);
+>         _vault.setRawDebt(_vault.rawDebt().minus(debtActualToRaw(auszahlung)));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().minus(amountToRepay));
+
+[0m
+[0;33mSeverity:    LOW
+Pattern:     Benign Reentrancy
+Description: Reentrancy is equivalent with two consecutive calls of
+             the function
+Type:        Warning
+Contract:    LEURLogic
+Line:        290
+Source: 
+>         _vault.setRawDebt(_vault.rawDebt().minus(debtActualToRaw(auszahlung)));
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().minus(amountToRepay));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>        // auszahlung = amountToRepay.times(2e18);
+
+[0m
+[0;33mSeverity:    LOW
+Pattern:     Benign Reentrancy
+Description: Reentrancy is equivalent with two consecutive calls of
+             the function
+Type:        Warning
+Contract:    LEURLogic
+Line:        292
+Source: 
+>        // auszahlung = amountToRepay.times(2e18);
+>         leurInstance.emitRepay(_vault, amountToRepay);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>        // if (_vault.owner() == msg.sender) auszahlung = amountToRepay;
+
+[0m
+[0;33mSeverity:    LOW
+Pattern:     Benign Reentrancy
+Description: Reentrancy is equivalent with two consecutive calls of
+             the function
+Type:        Warning
+Contract:    LEURLogic
+Line:        294
+Source: 
+>        // if (_vault.owner() == msg.sender) auszahlung = amountToRepay;
+>        _vault.payoutPEG(msg.sender, auszahlung);
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>        leurInstance.emitWithdraw(_vault, auszahlung);
+
+[0m
+[0;33mSeverity:    LOW
+Pattern:     Benign Reentrancy
+Description: Reentrancy is equivalent with two consecutive calls of
+             the function
+Type:        Warning
+Contract:    LEURLogic
+Line:        295
+Source: 
+>        _vault.payoutPEG(msg.sender, auszahlung);
+>        leurInstance.emitWithdraw(_vault, auszahlung);
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    DebtToken
+Line:        483
+Source: 
+>     string public symbol_debt;
+>     uint8 public decimals_debt = 18;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    SafeMath
+Line:        56
+Source: 
+>         int256 c = _a * _b;
+>         assert(c / _a == _b);
+>                ^^^^^^^^^^^^
+>         return c;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    AntiERC20Sink
+Line:        11
+Source: 
+>     constructor() public { deployer = msg.sender; }
+>     function transferERC20Token(IERC20Token _token, address _to, uint256 _amount) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == deployer);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Vault
+Line:        131
+Source: 
+> 
+>     function setOwner(address _newOwner) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         owner = _newOwner;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Vault
+Line:        135
+Source: 
+> 
+>     function setRawDebt(uint _newRawDebt) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         rawDebt = _newRawDebt;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Vault
+Line:        139
+Source: 
+> 
+>     function setTotalBorrowed(uint _totalBorrowed) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         totalBorrowed = _totalBorrowed;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Vault
+Line:        143
+Source: 
+> 
+>     function setTimestamp(uint256 _timestamp) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         timestamp = _timestamp;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Vault
+Line:        147
+Source: 
+> 
+>     function payoutPEG(address _to, uint _amount) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         leurInstance.pegNetworkToken().transfer(_to, _amount);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Vault
+Line:        151
+Source: 
+> 
+>     function burnPEG(uint _amount) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         leurInstance.pegNetworkToken().destroy(address(this), _amount);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Vault
+Line:        155
+Source: 
+> 
+>     function transferERC20Token(IERC20Token _token, address _to, uint256 _amount) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _token.transfer(_to, _amount);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    IPegOracle
+Line:        175
+Source: 
+>     
+>     function getValue() public view returns (uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint256 oldoracle = oraclevalue;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    IPegOracle
+Line:        180
+Source: 
+>     
+>     function setValue(uint256 neworaclevalue) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         oraclevalue = neworaclevalue;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LocalMerchant
+Line:        201
+Source: 
+>     
+>     function getValue() public view returns (uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint256 actualMerchantBonus = MerchantBonus;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LocalMerchant
+Line:        206
+Source: 
+>     
+>     function setValue(uint256 newMerchantBonus) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         MerchantBonus = newMerchantBonus;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    AntiERC20Sink
+Line:        11
+Source: 
+>     constructor() public { deployer = msg.sender; }
+>     function transferERC20Token(IERC20Token _token, address _to, uint256 _amount) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == deployer);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURLogic
+Line:        257
+Source: 
+> 
+>     function newVault() public returns (Vault) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         // pegNetworkToken.destroy(msg.sender, 1e18); charge a fee?
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURLogic
+Line:        273
+Source: 
+> 
+>     function borrow(Vault _vault, uint256 _amount) public vaultExists(_vault) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(_vault.owner() == msg.sender && _amount.toInt256() <= getAvailableCredit(_vault));
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURLogic
+Line:        282
+Source: 
+> 
+>     function repay(Vault _vault, uint256 _amount) public vaultExists(_vault) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(_vault.owner() == msg.sender);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURLogic
+Line:        305
+Source: 
+> 
+>     function reportPriceToTargetValue(bool _aboveValue) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if(_aboveValue) {
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURLogic
+Line:        323
+Source: 
+> 
+>     function withdrawExcessCollateral(Vault _vault, address _to, uint256 _amount) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == _vault.owner());
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURInstance
+Line:        386
+Source: 
+> 
+>     function setDebtToken(DebtToken _debtToken) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit DebtTokenUpgrade(address(debtToken), address(_debtToken));
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURInstance
+Line:        391
+Source: 
+> 
+>     function setOracle(IPegOracle _oracle) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit OracleUpgrade(address(oracle), address(_oracle));
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURInstance
+Line:        396
+Source: 
+>     
+>     function setLocalMerchant(LocalMerchant _pMerchantBonus) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit LocalMerchantUpgrade(address(pMerchantBonus), address(_pMerchantBonus));
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURInstance
+Line:        401
+Source: 
+> 
+>     function setLEURLogic(LEURLogic _leurLogic) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit LogicUpgrade(address(leurLogic), address(_leurLogic));
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURInstance
+Line:        408
+Source: 
+>     
+>     function setTotalPayment(uint256 _amount) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         totalamount = _amount;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURInstance
+Line:        412
+Source: 
+> 
+>     function authorize(address _address, bool _auth) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Authorize(_address, _auth);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURInstance
+Line:        417
+Source: 
+> 
+>     function setMaxBorrowLTV(uint32 _maxBorrowLTV) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit MaxBorrowUpdate(maxBorrowLTV, _maxBorrowLTV);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURInstance
+Line:        422
+Source: 
+> 
+>     function setDebtTokenScalingRate(int256 _debtTokenScalingPerBlock) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit DebtTokenScalingRateUpdate(debtTokenScalingPerBlock, _debtTokenScalingPerBlock);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURInstance
+Line:        429
+Source: 
+> 
+>     function setDebtScalingRate(int256 _debtScalingPerBlock) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit DebtScalingRateUpdate(debtScalingPerBlock, _debtScalingPerBlock);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURInstance
+Line:        437
+Source: 
+> 
+>     function addNewVault(Vault _vault, address _vaultOwner) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit NewVault(address(_vault), _vaultOwner);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURInstance
+Line:        444
+Source: 
+> 
+>     function emitBorrow(Vault _vault, uint256 _amount) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Borrow(address(_vault), _amount);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURInstance
+Line:        448
+Source: 
+> 
+>     function emitRepay(Vault _vault, uint256 _amount) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Repay(address(_vault), _amount);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURInstance
+Line:        452
+Source: 
+> 
+>     function emitWithdraw(Vault _vault, uint256 _amount) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Withdraw(address(_vault), _amount);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURInstance
+Line:        456
+Source: 
+> 
+>     function getVaults() public view returns (address[] memory) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return vaults;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LEURInstance
+Line:        468
+Source: 
+> 
+>     function transferERC20Token(IERC20Token _token, address _to, uint256 _amount) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _token.transfer(_to, _amount);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    IERC20Token
+Line:        85
+Source: 
+>     // these functions aren't abstract since the compiler emits automatically generated getter functions as external
+>     function name() public view returns (string memory) {}
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     function symbol() public view returns (string memory) {}
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    IERC20Token
+Line:        86
+Source: 
+>     function name() public view returns (string memory) {}
+>     function symbol() public view returns (string memory) {}
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     function decimals() public view returns (uint8) {}
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    IERC20Token
+Line:        87
+Source: 
+>     function symbol() public view returns (string memory) {}
+>     function decimals() public view returns (uint8) {}
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     function totalSupply() public view returns (uint256) {}
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    IERC20Token
+Line:        88
+Source: 
+>     function decimals() public view returns (uint8) {}
+>     function totalSupply() public view returns (uint256) {}
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     function balanceOf(address _owner) public view returns (uint256) { _owner; }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    IERC20Token
+Line:        89
+Source: 
+>     function totalSupply() public view returns (uint256) {}
+>     function balanceOf(address _owner) public view returns (uint256) { _owner; }
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     function allowance(address _owner, address _spender) public view returns (uint256) { _owner; _spender; }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    IERC20Token
+Line:        90
+Source: 
+>     function balanceOf(address _owner) public view returns (uint256) { _owner; }
+>     function allowance(address _owner, address _spender) public view returns (uint256) { _owner; _spender; }
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DebtToken
+Line:        521
+Source: 
+> 
+>     function balanceOf(address _address) public view returns(uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return rawToActual(rawBalance[_address]);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DebtToken
+Line:        525
+Source: 
+> 
+>     function totalSupply() public view returns (uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return rawToActual(rawTotalSupply);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DebtToken
+Line:        529
+Source: 
+> 
+>     function allowance(address _owner, address _spender) public view returns (uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return rawToActual(rawAllowance[_owner][_spender]);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DebtToken
+Line:        533
+Source: 
+> 
+>     function transfer(address _to, uint256 _amount) public validAddress(_to) returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         rawBalance[msg.sender] = rawBalance[msg.sender].minus(actualToRaw(_amount));
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DebtToken
+Line:        540
+Source: 
+> 
+>     function transferFrom(address _from, address _to, uint256 _amount) public validAddress(_from) validAddress(_to) returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         rawAllowance[_from][msg.sender] = rawAllowance[_from][msg.sender].minus(actualToRaw(_amount));
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DebtToken
+Line:        548
+Source: 
+> 
+>     function approve(address _spender, uint256 _amount) public validAddress(_spender) returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(_amount == 0 || rawAllowance[msg.sender][_spender] == 0);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DebtToken
+Line:        555
+Source: 
+> 
+>     function issue(address _to, uint256 _amount) public validAddress(_to) authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         rawTotalSupply = rawTotalSupply.plus(actualToRaw(_amount));
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DebtToken
+Line:        562
+Source: 
+> 
+>     function destroy(address _from, uint256 _amount) public validAddress(_from) authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         rawBalance[_from] = rawBalance[_from].minus(actualToRaw(_amount));
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DebtToken
+Line:        569
+Source: 
+> 
+>     function setName(string memory _name) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         name_debt = _name;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DebtToken
+Line:        573
+Source: 
+> 
+>     function setSymbol(string memory _symbol) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         symbol_debt = _symbol;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DebtToken
+Line:        577
+Source: 
+> 
+>     function transferERC20Token(IERC20Token _token, address _to, uint256 _amount) validAddress(_to) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(leurInstance.authorized(msg.sender));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    LEURLogic
+Line:        264
+Source: 
+> 
+>     function getTotalCredit(Vault _vault) public view vaultExists(_vault) returns (int256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    LEURLogic
+Line:        269
+Source: 
+> 
+>     function getAvailableCredit(Vault _vault) public view returns (int256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return getTotalCredit(_vault).minus(actualDebt(_vault).toInt256());
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    LEURLogic
+Line:        273
+Source: 
+> 
+>     function borrow(Vault _vault, uint256 _amount) public vaultExists(_vault) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(_vault.owner() == msg.sender && _amount.toInt256() <= getAvailableCredit(_vault));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    LEURLogic
+Line:        282
+Source: 
+> 
+>     function repay(Vault _vault, uint256 _amount) public vaultExists(_vault) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(_vault.owner() == msg.sender);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    LEURLogic
+Line:        297
+Source: 
+>     }
+>     function requiredCollateral(Vault _vault) public view vaultExists(_vault) returns (uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return actualDebt(_vault).times(1e6) / leurInstance.maxBorrowLTV();
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    LEURLogic
+Line:        301
+Source: 
+> 
+>     function getExcessCollateral(Vault _vault) public view returns (int256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return int(leurNetworkToken.balanceOf(address(_vault))).minus(int(requiredCollateral(_vault)));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    LEURLogic
+Line:        315
+Source: 
+> 
+>     function debtRawToActual(uint256 _raw) public view returns(uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return _raw.times(1e18) / leurInstance.debtScalingFactor();
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    LEURLogic
+Line:        319
+Source: 
+> 
+>     function debtActualToRaw(uint256 _actual) public view returns(uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return _actual.times(leurInstance.debtScalingFactor()) / 1e18;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    LEURLogic
+Line:        323
+Source: 
+> 
+>     function withdrawExcessCollateral(Vault _vault, address _to, uint256 _amount) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == _vault.owner());
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    LEURInstance
+Line:        422
+Source: 
+> 
+>     function setDebtTokenScalingRate(int256 _debtTokenScalingPerBlock) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit DebtTokenScalingRateUpdate(debtTokenScalingPerBlock, _debtTokenScalingPerBlock);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    LEURInstance
+Line:        429
+Source: 
+> 
+>     function setDebtScalingRate(int256 _debtScalingPerBlock) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit DebtScalingRateUpdate(debtScalingPerBlock, _debtScalingPerBlock);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    DebtToken
+Line:        513
+Source: 
+> 
+>     function rawToActual(uint256 _raw) public view returns(uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return _raw.times(1e18) / leurInstance.debtTokenScalingFactor();
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    DebtToken
+Line:        517
+Source: 
+> 
+>     function actualToRaw(uint256 _actual) public view returns(uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return _actual.times(leurInstance.debtTokenScalingFactor()) / 1e18;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    DebtToken
+Line:        521
+Source: 
+> 
+>     function balanceOf(address _address) public view returns(uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return rawToActual(rawBalance[_address]);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    DebtToken
+Line:        529
+Source: 
+> 
+>     function allowance(address _owner, address _spender) public view returns (uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return rawToActual(rawAllowance[_owner][_spender]);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    DebtToken
+Line:        533
+Source: 
+> 
+>     function transfer(address _to, uint256 _amount) public validAddress(_to) returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         rawBalance[msg.sender] = rawBalance[msg.sender].minus(actualToRaw(_amount));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    DebtToken
+Line:        540
+Source: 
+> 
+>     function transferFrom(address _from, address _to, uint256 _amount) public validAddress(_from) validAddress(_to) returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         rawAllowance[_from][msg.sender] = rawAllowance[_from][msg.sender].minus(actualToRaw(_amount));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    DebtToken
+Line:        548
+Source: 
+> 
+>     function approve(address _spender, uint256 _amount) public validAddress(_spender) returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(_amount == 0 || rawAllowance[msg.sender][_spender] == 0);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    DebtToken
+Line:        555
+Source: 
+> 
+>     function issue(address _to, uint256 _amount) public validAddress(_to) authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         rawTotalSupply = rawTotalSupply.plus(actualToRaw(_amount));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    DebtToken
+Line:        562
+Source: 
+> 
+>     function destroy(address _from, uint256 _amount) public validAddress(_from) authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         rawBalance[_from] = rawBalance[_from].minus(actualToRaw(_amount));
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    AntiERC20Sink
+Line:        11
+Source: 
+>     constructor() public { deployer = msg.sender; }
+>     function transferERC20Token(IERC20Token _token, address _to, uint256 _amount) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == deployer);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Vault
+Line:        131
+Source: 
+> 
+>     function setOwner(address _newOwner) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         owner = _newOwner;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Vault
+Line:        135
+Source: 
+> 
+>     function setRawDebt(uint _newRawDebt) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         rawDebt = _newRawDebt;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Vault
+Line:        139
+Source: 
+> 
+>     function setTotalBorrowed(uint _totalBorrowed) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         totalBorrowed = _totalBorrowed;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Vault
+Line:        143
+Source: 
+> 
+>     function setTimestamp(uint256 _timestamp) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         timestamp = _timestamp;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Vault
+Line:        147
+Source: 
+> 
+>     function payoutPEG(address _to, uint _amount) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         leurInstance.pegNetworkToken().transfer(_to, _amount);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Vault
+Line:        151
+Source: 
+> 
+>     function burnPEG(uint _amount) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         leurInstance.pegNetworkToken().destroy(address(this), _amount);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Vault
+Line:        155
+Source: 
+> 
+>     function transferERC20Token(IERC20Token _token, address _to, uint256 _amount) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _token.transfer(_to, _amount);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    IPegOracle
+Line:        180
+Source: 
+>     
+>     function setValue(uint256 neworaclevalue) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         oraclevalue = neworaclevalue;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LocalMerchant
+Line:        206
+Source: 
+>     
+>     function setValue(uint256 newMerchantBonus) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         MerchantBonus = newMerchantBonus;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    AntiERC20Sink
+Line:        11
+Source: 
+>     constructor() public { deployer = msg.sender; }
+>     function transferERC20Token(IERC20Token _token, address _to, uint256 _amount) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == deployer);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LEURLogic
+Line:        330
+Source: 
+> 
+>     function actualDebt(Vault _vault) public view returns(uint) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return debtRawToActual(_vault.rawDebt());
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LEURInstance
+Line:        386
+Source: 
+> 
+>     function setDebtToken(DebtToken _debtToken) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit DebtTokenUpgrade(address(debtToken), address(_debtToken));
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LEURInstance
+Line:        391
+Source: 
+> 
+>     function setOracle(IPegOracle _oracle) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit OracleUpgrade(address(oracle), address(_oracle));
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LEURInstance
+Line:        396
+Source: 
+>     
+>     function setLocalMerchant(LocalMerchant _pMerchantBonus) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit LocalMerchantUpgrade(address(pMerchantBonus), address(_pMerchantBonus));
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LEURInstance
+Line:        401
+Source: 
+> 
+>     function setLEURLogic(LEURLogic _leurLogic) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit LogicUpgrade(address(leurLogic), address(_leurLogic));
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LEURInstance
+Line:        408
+Source: 
+>     
+>     function setTotalPayment(uint256 _amount) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         totalamount = _amount;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LEURInstance
+Line:        412
+Source: 
+> 
+>     function authorize(address _address, bool _auth) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Authorize(_address, _auth);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LEURInstance
+Line:        417
+Source: 
+> 
+>     function setMaxBorrowLTV(uint32 _maxBorrowLTV) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit MaxBorrowUpdate(maxBorrowLTV, _maxBorrowLTV);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LEURInstance
+Line:        437
+Source: 
+> 
+>     function addNewVault(Vault _vault, address _vaultOwner) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit NewVault(address(_vault), _vaultOwner);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LEURInstance
+Line:        444
+Source: 
+> 
+>     function emitBorrow(Vault _vault, uint256 _amount) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Borrow(address(_vault), _amount);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LEURInstance
+Line:        448
+Source: 
+> 
+>     function emitRepay(Vault _vault, uint256 _amount) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Repay(address(_vault), _amount);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LEURInstance
+Line:        452
+Source: 
+> 
+>     function emitWithdraw(Vault _vault, uint256 _amount) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Withdraw(address(_vault), _amount);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LEURInstance
+Line:        468
+Source: 
+> 
+>     function transferERC20Token(IERC20Token _token, address _to, uint256 _amount) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _token.transfer(_to, _amount);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    IERC20Token
+Line:        89
+Source: 
+>     function totalSupply() public view returns (uint256) {}
+>     function balanceOf(address _owner) public view returns (uint256) { _owner; }
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     function allowance(address _owner, address _spender) public view returns (uint256) { _owner; _spender; }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    IERC20Token
+Line:        90
+Source: 
+>     function balanceOf(address _owner) public view returns (uint256) { _owner; }
+>     function allowance(address _owner, address _spender) public view returns (uint256) { _owner; _spender; }
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    DebtToken
+Line:        569
+Source: 
+> 
+>     function setName(string memory _name) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         name_debt = _name;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    DebtToken
+Line:        573
+Source: 
+> 
+>     function setSymbol(string memory _symbol) public authOnly {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         symbol_debt = _symbol;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    DebtToken
+Line:        577
+Source: 
+> 
+>     function transferERC20Token(IERC20Token _token, address _to, uint256 _amount) validAddress(_to) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(leurInstance.authorized(msg.sender));
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    SafeMath
+Line:        46
+Source: 
+>         }
+>         uint256 c = _a * _b;
+>                     ^^^^^^^
+>         assert(c / _a == _b);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        248
+Source: 
+>     modifier vaultExists(Vault _vault) {
+>         require(leurInstance.vaultExists(address(_vault)));
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        274
+Source: 
+>     function borrow(Vault _vault, uint256 _amount) public vaultExists(_vault) {
+>         require(_vault.owner() == msg.sender && _amount.toInt256() <= getAvailableCredit(_vault));
+>                 ^^^^^^^^^^^^^^
+>         newDebt = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        275
+Source: 
+>         require(_vault.owner() == msg.sender && _amount.toInt256() <= getAvailableCredit(_vault));
+>         newDebt = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                                                                            ^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        275
+Source: 
+>         require(_vault.owner() == msg.sender && _amount.toInt256() <= getAvailableCredit(_vault));
+>         newDebt = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        275
+Source: 
+>         require(_vault.owner() == msg.sender && _amount.toInt256() <= getAvailableCredit(_vault));
+>         newDebt = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        275
+Source: 
+>         require(_vault.owner() == msg.sender && _amount.toInt256() <= getAvailableCredit(_vault));
+>         newDebt = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        276
+Source: 
+>         newDebt = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+>                           ^^^^^^^^^^^^^^^^
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().plus(_amount));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        276
+Source: 
+>         newDebt = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().plus(_amount));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        277
+Source: 
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().plus(_amount));
+>                                 ^^^^^^^^^^^^^^^^^^^^^^
+>         leurInstance.debtToken().issue(msg.sender, _amount);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        277
+Source: 
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().plus(_amount));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         leurInstance.debtToken().issue(msg.sender, _amount);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        278
+Source: 
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().plus(_amount));
+>         leurInstance.debtToken().issue(msg.sender, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^
+>         leurInstance.emitBorrow(_vault, _amount);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        278
+Source: 
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().plus(_amount));
+>         leurInstance.debtToken().issue(msg.sender, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         leurInstance.emitBorrow(_vault, _amount);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        279
+Source: 
+>         leurInstance.debtToken().issue(msg.sender, _amount);
+>         leurInstance.emitBorrow(_vault, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        248
+Source: 
+>     modifier vaultExists(Vault _vault) {
+>         require(leurInstance.vaultExists(address(_vault)));
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        283
+Source: 
+>     function repay(Vault _vault, uint256 _amount) public vaultExists(_vault) {
+>         require(_vault.owner() == msg.sender);
+>                 ^^^^^^^^^^^^^^
+>         uint256 amountToRepay = _amount;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        286
+Source: 
+>         // test3=pegInstance.pMerchantBonus().getValue().times(leurInstance.oracle().getValue().div(1e17));
+>         auszahlung = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                                                                               ^^^^^^^^^^^^^^^^^^^^^
+>         if (actualDebt(_vault) < auszahlung) amountToRepay = actualDebt(_vault);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        286
+Source: 
+>         // test3=pegInstance.pMerchantBonus().getValue().times(leurInstance.oracle().getValue().div(1e17));
+>         auszahlung = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (actualDebt(_vault) < auszahlung) amountToRepay = actualDebt(_vault);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        286
+Source: 
+>         // test3=pegInstance.pMerchantBonus().getValue().times(leurInstance.oracle().getValue().div(1e17));
+>         auszahlung = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (actualDebt(_vault) < auszahlung) amountToRepay = actualDebt(_vault);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        286
+Source: 
+>         // test3=pegInstance.pMerchantBonus().getValue().times(leurInstance.oracle().getValue().div(1e17));
+>         auszahlung = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (actualDebt(_vault) < auszahlung) amountToRepay = actualDebt(_vault);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        288
+Source: 
+>         if (actualDebt(_vault) < auszahlung) amountToRepay = actualDebt(_vault);
+>         leurInstance.debtToken().destroy(msg.sender, amountToRepay);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setRawDebt(_vault.rawDebt().minus(debtActualToRaw(auszahlung)));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        288
+Source: 
+>         if (actualDebt(_vault) < auszahlung) amountToRepay = actualDebt(_vault);
+>         leurInstance.debtToken().destroy(msg.sender, amountToRepay);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setRawDebt(_vault.rawDebt().minus(debtActualToRaw(auszahlung)));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        289
+Source: 
+>         leurInstance.debtToken().destroy(msg.sender, amountToRepay);
+>         _vault.setRawDebt(_vault.rawDebt().minus(debtActualToRaw(auszahlung)));
+>                           ^^^^^^^^^^^^^^^^
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().minus(amountToRepay));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        289
+Source: 
+>         leurInstance.debtToken().destroy(msg.sender, amountToRepay);
+>         _vault.setRawDebt(_vault.rawDebt().minus(debtActualToRaw(auszahlung)));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().minus(amountToRepay));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        290
+Source: 
+>         _vault.setRawDebt(_vault.rawDebt().minus(debtActualToRaw(auszahlung)));
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().minus(amountToRepay));
+>                                 ^^^^^^^^^^^^^^^^^^^^^^
+>        // auszahlung = amountToRepay.times(2e18);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        290
+Source: 
+>         _vault.setRawDebt(_vault.rawDebt().minus(debtActualToRaw(auszahlung)));
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().minus(amountToRepay));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>        // auszahlung = amountToRepay.times(2e18);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        292
+Source: 
+>        // auszahlung = amountToRepay.times(2e18);
+>         leurInstance.emitRepay(_vault, amountToRepay);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>        // if (_vault.owner() == msg.sender) auszahlung = amountToRepay;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        294
+Source: 
+>        // if (_vault.owner() == msg.sender) auszahlung = amountToRepay;
+>        _vault.payoutPEG(msg.sender, auszahlung);
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>        leurInstance.emitWithdraw(_vault, auszahlung);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LEURLogic
+Line:        295
+Source: 
+>        _vault.payoutPEG(msg.sender, auszahlung);
+>        leurInstance.emitWithdraw(_vault, auszahlung);
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    LocalMerchant
+Line:        189
+Source: 
+>     address public owner;
+>     uint256 MerchantBonus;
+>     ^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    LEURInstance
+Line:        343
+Source: 
+>     ISmartToken public pegNetworkToken;
+>     uint8 public constant version = 0;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     IPegOracle public oracle;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    DebtToken
+Line:        481
+Source: 
+> 
+>     string public name_debt;
+>     ^^^^^^^^^^^^^^^^^^^^^^^
+>     string public symbol_debt;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    DebtToken
+Line:        482
+Source: 
+>     string public name_debt;
+>     string public symbol_debt;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint8 public decimals_debt = 18;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    DebtToken
+Line:        483
+Source: 
+>     string public symbol_debt;
+>     uint8 public decimals_debt = 18;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        5
+Source: 
+> 
+> pragma solidity ^0.5.16;
+> ^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    IPegOracle
+Line:        163
+Source: 
+>     address public owner;
+>     uint256 oraclevalue;
+>     ^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LocalMerchant
+Line:        189
+Source: 
+>     address public owner;
+>     uint256 MerchantBonus;
+>     ^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LEURLogic
+Line:        247
+Source: 
+> 
+>     modifier vaultExists(Vault _vault) {
+>                          ^^^^^^^^^^^^
+>         require(leurInstance.vaultExists(address(_vault)));
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    DebtToken
+Line:        503
+Source: 
+> 
+>     modifier validAddress(address _address) {
+>                           ^^^^^^^^^^^^^^^^
+>         require(_address != address(0));
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    LEURInstance
+Line:        351
+Source: 
+>     mapping (address => bool) public authorized;
+>     uint32 public maxBorrowLTV = 1000000;
+>                                  ^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Vault
+Line:        127
+Source: 
+>     modifier authOnly() {
+>         require(leurInstance.authorized(msg.sender));
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    IPegOracle
+Line:        171
+Source: 
+>     modifier authOnly() {
+>         require(leurInstance.authorized(msg.sender));
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LocalMerchant
+Line:        197
+Source: 
+>     modifier authOnly() {
+>         require(leurInstance.authorized(msg.sender));
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        248
+Source: 
+>     modifier vaultExists(Vault _vault) {
+>         require(leurInstance.vaultExists(address(_vault)));
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        266
+Source: 
+>         
+>         return (leurNetworkToken.balanceOf(address (_vault)).times(leurInstance.maxBorrowLTV()) / 1e6).toInt256();
+>                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        266
+Source: 
+>         
+>         return (leurNetworkToken.balanceOf(address (_vault)).times(leurInstance.maxBorrowLTV()) / 1e6).toInt256();
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        331
+Source: 
+>     function actualDebt(Vault _vault) public view returns(uint) {
+>         return debtRawToActual(_vault.rawDebt());
+>                                ^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        248
+Source: 
+>     modifier vaultExists(Vault _vault) {
+>         require(leurInstance.vaultExists(address(_vault)));
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        274
+Source: 
+>     function borrow(Vault _vault, uint256 _amount) public vaultExists(_vault) {
+>         require(_vault.owner() == msg.sender && _amount.toInt256() <= getAvailableCredit(_vault));
+>                 ^^^^^^^^^^^^^^
+>         newDebt = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        275
+Source: 
+>         require(_vault.owner() == msg.sender && _amount.toInt256() <= getAvailableCredit(_vault));
+>         newDebt = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        275
+Source: 
+>         require(_vault.owner() == msg.sender && _amount.toInt256() <= getAvailableCredit(_vault));
+>         newDebt = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        276
+Source: 
+>         newDebt = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+>                           ^^^^^^^^^^^^^^^^
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().plus(_amount));
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        277
+Source: 
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().plus(_amount));
+>                                 ^^^^^^^^^^^^^^^^^^^^^^
+>         leurInstance.debtToken().issue(msg.sender, _amount);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        320
+Source: 
+>     function debtActualToRaw(uint256 _actual) public view returns(uint256) {
+>         return _actual.times(leurInstance.debtScalingFactor()) / 1e18;
+>                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        248
+Source: 
+>     modifier vaultExists(Vault _vault) {
+>         require(leurInstance.vaultExists(address(_vault)));
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        283
+Source: 
+>     function repay(Vault _vault, uint256 _amount) public vaultExists(_vault) {
+>         require(_vault.owner() == msg.sender);
+>                 ^^^^^^^^^^^^^^
+>         uint256 amountToRepay = _amount;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        286
+Source: 
+>         // test3=pegInstance.pMerchantBonus().getValue().times(leurInstance.oracle().getValue().div(1e17));
+>         auszahlung = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (actualDebt(_vault) < auszahlung) amountToRepay = actualDebt(_vault);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        286
+Source: 
+>         // test3=pegInstance.pMerchantBonus().getValue().times(leurInstance.oracle().getValue().div(1e17));
+>         auszahlung = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (actualDebt(_vault) < auszahlung) amountToRepay = actualDebt(_vault);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        289
+Source: 
+>         leurInstance.debtToken().destroy(msg.sender, amountToRepay);
+>         _vault.setRawDebt(_vault.rawDebt().minus(debtActualToRaw(auszahlung)));
+>                           ^^^^^^^^^^^^^^^^
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().minus(amountToRepay));
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        290
+Source: 
+>         _vault.setRawDebt(_vault.rawDebt().minus(debtActualToRaw(auszahlung)));
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().minus(amountToRepay));
+>                                 ^^^^^^^^^^^^^^^^^^^^^^
+>        // auszahlung = amountToRepay.times(2e18);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        248
+Source: 
+>     modifier vaultExists(Vault _vault) {
+>         require(leurInstance.vaultExists(address(_vault)));
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        302
+Source: 
+>     function getExcessCollateral(Vault _vault) public view returns (int256) {
+>         return int(leurNetworkToken.balanceOf(address(_vault))).minus(int(requiredCollateral(_vault)));
+>                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        253
+Source: 
+>     modifier authOnly() {
+>         require(leurInstance.authorized(msg.sender));
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        307
+Source: 
+>         if(_aboveValue) {
+>             leurInstance.setDebtScalingRate(leurInstance.debtScalingPerBlock().plus(1e12));
+>                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             leurInstance.setDebtTokenScalingRate(leurInstance.debtTokenScalingPerBlock().plus(1e12));
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        308
+Source: 
+>             leurInstance.setDebtScalingRate(leurInstance.debtScalingPerBlock().plus(1e12));
+>             leurInstance.setDebtTokenScalingRate(leurInstance.debtTokenScalingPerBlock().plus(1e12));
+>                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }else{
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        310
+Source: 
+>         }else{
+>             leurInstance.setDebtScalingRate(leurInstance.debtScalingPerBlock().minus(1e16));
+>                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             leurInstance.setDebtTokenScalingRate(leurInstance.debtTokenScalingPerBlock().minus(1e12));
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        311
+Source: 
+>             leurInstance.setDebtScalingRate(leurInstance.debtScalingPerBlock().minus(1e16));
+>             leurInstance.setDebtTokenScalingRate(leurInstance.debtTokenScalingPerBlock().minus(1e12));
+>                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LEURLogic
+Line:        324
+Source: 
+>     function withdrawExcessCollateral(Vault _vault, address _to, uint256 _amount) public {
+>         require(msg.sender == _vault.owner());
+>                               ^^^^^^^^^^^^^^
+>         require(_amount.toInt256() <= getExcessCollateral(_vault));
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    DebtToken
+Line:        518
+Source: 
+>     function actualToRaw(uint256 _actual) public view returns(uint256) {
+>         return _actual.times(leurInstance.debtTokenScalingFactor()) / 1e18;
+>                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    DebtToken
+Line:        509
+Source: 
+>     modifier authOnly() {
+>         require(leurInstance.authorized(msg.sender));
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    DebtToken
+Line:        578
+Source: 
+>     function transferERC20Token(IERC20Token _token, address _to, uint256 _amount) validAddress(_to) public {
+>         require(leurInstance.authorized(msg.sender));
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _token.transfer(_to, _amount);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    AntiERC20Sink
+Line:        13
+Source: 
+>         require(msg.sender == deployer);
+>         _token.transfer(_to, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Vault
+Line:        148
+Source: 
+>     function payoutPEG(address _to, uint _amount) public authOnly {
+>         leurInstance.pegNetworkToken().transfer(_to, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Vault
+Line:        148
+Source: 
+>     function payoutPEG(address _to, uint _amount) public authOnly {
+>         leurInstance.pegNetworkToken().transfer(_to, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Vault
+Line:        152
+Source: 
+>     function burnPEG(uint _amount) public authOnly {
+>         leurInstance.pegNetworkToken().destroy(address(this), _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Vault
+Line:        152
+Source: 
+>     function burnPEG(uint _amount) public authOnly {
+>         leurInstance.pegNetworkToken().destroy(address(this), _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Vault
+Line:        156
+Source: 
+>     function transferERC20Token(IERC20Token _token, address _to, uint256 _amount) public authOnly {
+>         _token.transfer(_to, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    AntiERC20Sink
+Line:        13
+Source: 
+>         require(msg.sender == deployer);
+>         _token.transfer(_to, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        260
+Source: 
+>         Vault vault = new Vault(leurInstance, msg.sender);
+>         leurInstance.addNewVault(vault, msg.sender);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return vault;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        316
+Source: 
+>     function debtRawToActual(uint256 _raw) public view returns(uint256) {
+>         return _raw.times(1e18) / leurInstance.debtScalingFactor();
+>                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        275
+Source: 
+>         require(_vault.owner() == msg.sender && _amount.toInt256() <= getAvailableCredit(_vault));
+>         newDebt = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                                                                            ^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        275
+Source: 
+>         require(_vault.owner() == msg.sender && _amount.toInt256() <= getAvailableCredit(_vault));
+>         newDebt = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        276
+Source: 
+>         newDebt = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().plus(_amount));
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        277
+Source: 
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().plus(_amount));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         leurInstance.debtToken().issue(msg.sender, _amount);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        278
+Source: 
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().plus(_amount));
+>         leurInstance.debtToken().issue(msg.sender, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^
+>         leurInstance.emitBorrow(_vault, _amount);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        278
+Source: 
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().plus(_amount));
+>         leurInstance.debtToken().issue(msg.sender, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         leurInstance.emitBorrow(_vault, _amount);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        279
+Source: 
+>         leurInstance.debtToken().issue(msg.sender, _amount);
+>         leurInstance.emitBorrow(_vault, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        286
+Source: 
+>         // test3=pegInstance.pMerchantBonus().getValue().times(leurInstance.oracle().getValue().div(1e17));
+>         auszahlung = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                                                                               ^^^^^^^^^^^^^^^^^^^^^
+>         if (actualDebt(_vault) < auszahlung) amountToRepay = actualDebt(_vault);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        286
+Source: 
+>         // test3=pegInstance.pMerchantBonus().getValue().times(leurInstance.oracle().getValue().div(1e17));
+>         auszahlung = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (actualDebt(_vault) < auszahlung) amountToRepay = actualDebt(_vault);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        288
+Source: 
+>         if (actualDebt(_vault) < auszahlung) amountToRepay = actualDebt(_vault);
+>         leurInstance.debtToken().destroy(msg.sender, amountToRepay);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setRawDebt(_vault.rawDebt().minus(debtActualToRaw(auszahlung)));
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        288
+Source: 
+>         if (actualDebt(_vault) < auszahlung) amountToRepay = actualDebt(_vault);
+>         leurInstance.debtToken().destroy(msg.sender, amountToRepay);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setRawDebt(_vault.rawDebt().minus(debtActualToRaw(auszahlung)));
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        289
+Source: 
+>         leurInstance.debtToken().destroy(msg.sender, amountToRepay);
+>         _vault.setRawDebt(_vault.rawDebt().minus(debtActualToRaw(auszahlung)));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().minus(amountToRepay));
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        290
+Source: 
+>         _vault.setRawDebt(_vault.rawDebt().minus(debtActualToRaw(auszahlung)));
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().minus(amountToRepay));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>        // auszahlung = amountToRepay.times(2e18);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        292
+Source: 
+>        // auszahlung = amountToRepay.times(2e18);
+>         leurInstance.emitRepay(_vault, amountToRepay);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>        // if (_vault.owner() == msg.sender) auszahlung = amountToRepay;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        294
+Source: 
+>        // if (_vault.owner() == msg.sender) auszahlung = amountToRepay;
+>        _vault.payoutPEG(msg.sender, auszahlung);
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>        leurInstance.emitWithdraw(_vault, auszahlung);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        295
+Source: 
+>        _vault.payoutPEG(msg.sender, auszahlung);
+>        leurInstance.emitWithdraw(_vault, auszahlung);
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        298
+Source: 
+>     function requiredCollateral(Vault _vault) public view vaultExists(_vault) returns (uint256) {
+>         return actualDebt(_vault).times(1e6) / leurInstance.maxBorrowLTV();
+>                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        307
+Source: 
+>         if(_aboveValue) {
+>             leurInstance.setDebtScalingRate(leurInstance.debtScalingPerBlock().plus(1e12));
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             leurInstance.setDebtTokenScalingRate(leurInstance.debtTokenScalingPerBlock().plus(1e12));
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        308
+Source: 
+>             leurInstance.setDebtScalingRate(leurInstance.debtScalingPerBlock().plus(1e12));
+>             leurInstance.setDebtTokenScalingRate(leurInstance.debtTokenScalingPerBlock().plus(1e12));
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }else{
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        310
+Source: 
+>         }else{
+>             leurInstance.setDebtScalingRate(leurInstance.debtScalingPerBlock().minus(1e16));
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             leurInstance.setDebtTokenScalingRate(leurInstance.debtTokenScalingPerBlock().minus(1e12));
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        311
+Source: 
+>             leurInstance.setDebtScalingRate(leurInstance.debtScalingPerBlock().minus(1e16));
+>             leurInstance.setDebtTokenScalingRate(leurInstance.debtTokenScalingPerBlock().minus(1e12));
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        326
+Source: 
+>         require(_amount.toInt256() <= getExcessCollateral(_vault));
+>         _vault.payoutPEG(_to, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         leurInstance.emitWithdraw(_vault, _amount);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURLogic
+Line:        327
+Source: 
+>         _vault.payoutPEG(_to, _amount);
+>         leurInstance.emitWithdraw(_vault, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    LEURInstance
+Line:        469
+Source: 
+>     function transferERC20Token(IERC20Token _token, address _to, uint256 _amount) public authOnly {
+>         _token.transfer(_to, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    DebtToken
+Line:        514
+Source: 
+>     function rawToActual(uint256 _raw) public view returns(uint256) {
+>         return _raw.times(1e18) / leurInstance.debtTokenScalingFactor();
+>                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    DebtToken
+Line:        579
+Source: 
+>         require(leurInstance.authorized(msg.sender));
+>         _token.transfer(_to, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    Vault
+Line:        117
+Source: 
+>     address public owner;
+>     uint256 public totalBorrowed;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public rawDebt;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    Vault
+Line:        118
+Source: 
+>     uint256 public totalBorrowed;
+>     uint256 public rawDebt;
+>     ^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public timestamp;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    Vault
+Line:        119
+Source: 
+>     uint256 public rawDebt;
+>     uint256 public timestamp;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    IPegOracle
+Line:        163
+Source: 
+>     address public owner;
+>     uint256 oraclevalue;
+>     ^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    LocalMerchant
+Line:        189
+Source: 
+>     address public owner;
+>     uint256 MerchantBonus;
+>     ^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    LEURLogic
+Line:        238
+Source: 
+>     LEURInstance public leurInstance;
+>     uint256 public auszahlung;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public newDebt;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    LEURLogic
+Line:        239
+Source: 
+>     uint256 public auszahlung;
+>     uint256 public newDebt;
+>     ^^^^^^^^^^^^^^^^^^^^^^
+>     // uint256 public test3;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    LEURInstance
+Line:        344
+Source: 
+>     uint8 public constant version = 0;
+>     IPegOracle public oracle;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^
+>     LocalMerchant public pMerchantBonus;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    LEURInstance
+Line:        345
+Source: 
+>     IPegOracle public oracle;
+>     LocalMerchant public pMerchantBonus;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     DebtToken public debtToken;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    LEURInstance
+Line:        346
+Source: 
+>     LocalMerchant public pMerchantBonus;
+>     DebtToken public debtToken;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     LEURLogic public leurLogic;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    LEURInstance
+Line:        347
+Source: 
+>     DebtToken public debtToken;
+>     LEURLogic public leurLogic;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address[] public vaults;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    LEURInstance
+Line:        354
+Source: 
+>     uint256 public lastDebtTokenScalingFactor = 1e18;
+>     uint256 public lastDebtTokenScalingRetarget;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     int256 public debtTokenScalingPerBlock;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    LEURInstance
+Line:        355
+Source: 
+>     uint256 public lastDebtTokenScalingRetarget;
+>     int256 public debtTokenScalingPerBlock;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    LEURInstance
+Line:        358
+Source: 
+>     uint256 public lastDebtScalingFactor = 1e18;
+>     uint256 public lastDebtScalingRetarget;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     int256 public debtScalingPerBlock;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    LEURInstance
+Line:        359
+Source: 
+>     uint256 public lastDebtScalingRetarget;
+>     int256 public debtScalingPerBlock;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    LEURInstance
+Line:        361
+Source: 
+> 
+>     uint256 public totalamount;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    DebtToken
+Line:        487
+Source: 
+> 
+>     uint256 public rawTotalSupply;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     mapping (address => uint256) public rawBalance;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    DebtToken
+Line:        556
+Source: 
+>     function issue(address _to, uint256 _amount) public validAddress(_to) authOnly {
+>         rawTotalSupply = rawTotalSupply.plus(actualToRaw(_amount));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         rawBalance[_to] = rawBalance[_to].plus(actualToRaw(_amount));
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    DebtToken
+Line:        564
+Source: 
+>         rawBalance[_from] = rawBalance[_from].minus(actualToRaw(_amount));
+>         rawTotalSupply = rawTotalSupply.minus(actualToRaw(_amount));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Transfer(_from, address(this), _amount);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Vault
+Line:        132
+Source: 
+>     function setOwner(address _newOwner) public authOnly {
+>         owner = _newOwner;
+>         ^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Vault
+Line:        136
+Source: 
+>     function setRawDebt(uint _newRawDebt) public authOnly {
+>         rawDebt = _newRawDebt;
+>         ^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Vault
+Line:        140
+Source: 
+>     function setTotalBorrowed(uint _totalBorrowed) public authOnly {
+>         totalBorrowed = _totalBorrowed;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Vault
+Line:        144
+Source: 
+>     function setTimestamp(uint256 _timestamp) public authOnly {
+>         timestamp = _timestamp;
+>         ^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    IPegOracle
+Line:        181
+Source: 
+>     function setValue(uint256 neworaclevalue) public authOnly {
+>         oraclevalue = neworaclevalue;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    LocalMerchant
+Line:        207
+Source: 
+>     function setValue(uint256 newMerchantBonus) public authOnly {
+>         MerchantBonus = newMerchantBonus;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    LEURInstance
+Line:        409
+Source: 
+>     function setTotalPayment(uint256 _amount) public {
+>         totalamount = _amount;
+>         ^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    DebtToken
+Line:        535
+Source: 
+>         rawBalance[msg.sender] = rawBalance[msg.sender].minus(actualToRaw(_amount));
+>         rawBalance[_to] = rawBalance[_to].plus(actualToRaw(_amount));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Transfer(msg.sender, _to, _amount);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    DebtToken
+Line:        542
+Source: 
+>         rawAllowance[_from][msg.sender] = rawAllowance[_from][msg.sender].minus(actualToRaw(_amount));
+>         rawBalance[_from] = rawBalance[_from].minus(actualToRaw(_amount));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         rawBalance[_to] = rawBalance[_to].plus(actualToRaw(_amount));
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    DebtToken
+Line:        543
+Source: 
+>         rawBalance[_from] = rawBalance[_from].minus(actualToRaw(_amount));
+>         rawBalance[_to] = rawBalance[_to].plus(actualToRaw(_amount));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Transfer(_from, _to, _amount);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    DebtToken
+Line:        557
+Source: 
+>         rawTotalSupply = rawTotalSupply.plus(actualToRaw(_amount));
+>         rawBalance[_to] = rawBalance[_to].plus(actualToRaw(_amount));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Issuance(_amount);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    DebtToken
+Line:        563
+Source: 
+>     function destroy(address _from, uint256 _amount) public validAddress(_from) authOnly {
+>         rawBalance[_from] = rawBalance[_from].minus(actualToRaw(_amount));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         rawTotalSupply = rawTotalSupply.minus(actualToRaw(_amount));
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    DebtToken
+Line:        570
+Source: 
+>     function setName(string memory _name) public authOnly {
+>         name_debt = _name;
+>         ^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    DebtToken
+Line:        574
+Source: 
+>     function setSymbol(string memory _symbol) public authOnly {
+>         symbol_debt = _symbol;
+>         ^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    AntiERC20Sink
+Line:        13
+Source: 
+>         require(msg.sender == deployer);
+>         _token.transfer(_to, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Vault
+Line:        148
+Source: 
+>     function payoutPEG(address _to, uint _amount) public authOnly {
+>         leurInstance.pegNetworkToken().transfer(_to, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Vault
+Line:        148
+Source: 
+>     function payoutPEG(address _to, uint _amount) public authOnly {
+>         leurInstance.pegNetworkToken().transfer(_to, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Vault
+Line:        152
+Source: 
+>     function burnPEG(uint _amount) public authOnly {
+>         leurInstance.pegNetworkToken().destroy(address(this), _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Vault
+Line:        156
+Source: 
+>     function transferERC20Token(IERC20Token _token, address _to, uint256 _amount) public authOnly {
+>         _token.transfer(_to, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    AntiERC20Sink
+Line:        13
+Source: 
+>         require(msg.sender == deployer);
+>         _token.transfer(_to, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    LEURLogic
+Line:        275
+Source: 
+>         require(_vault.owner() == msg.sender && _amount.toInt256() <= getAvailableCredit(_vault));
+>         newDebt = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                                                                            ^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    LEURLogic
+Line:        275
+Source: 
+>         require(_vault.owner() == msg.sender && _amount.toInt256() <= getAvailableCredit(_vault));
+>         newDebt = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setRawDebt(_vault.rawDebt().plus(debtActualToRaw(newDebt)));
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    LEURLogic
+Line:        278
+Source: 
+>         _vault.setTotalBorrowed(_vault.totalBorrowed().plus(_amount));
+>         leurInstance.debtToken().issue(msg.sender, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^
+>         leurInstance.emitBorrow(_vault, _amount);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    LEURLogic
+Line:        286
+Source: 
+>         // test3=pegInstance.pMerchantBonus().getValue().times(leurInstance.oracle().getValue().div(1e17));
+>         auszahlung = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                                                                               ^^^^^^^^^^^^^^^^^^^^^
+>         if (actualDebt(_vault) < auszahlung) amountToRepay = actualDebt(_vault);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    LEURLogic
+Line:        286
+Source: 
+>         // test3=pegInstance.pMerchantBonus().getValue().times(leurInstance.oracle().getValue().div(1e17));
+>         auszahlung = (_amount.times(leurInstance.pMerchantBonus().getValue().div(1e14)).times(leurInstance.oracle().getValue().div(1e14)))/1e8;
+>                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (actualDebt(_vault) < auszahlung) amountToRepay = actualDebt(_vault);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    LEURLogic
+Line:        288
+Source: 
+>         if (actualDebt(_vault) < auszahlung) amountToRepay = actualDebt(_vault);
+>         leurInstance.debtToken().destroy(msg.sender, amountToRepay);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^
+>         _vault.setRawDebt(_vault.rawDebt().minus(debtActualToRaw(auszahlung)));
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    LEURInstance
+Line:        469
+Source: 
+>     function transferERC20Token(IERC20Token _token, address _to, uint256 _amount) public authOnly {
+>         _token.transfer(_to, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    DebtToken
+Line:        579
+Source: 
+>         require(leurInstance.authorized(msg.sender));
+>         _token.transfer(_to, _amount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    Vault
+Line:        116
+Source: 
+>     LEURInstance public leurInstance;
+>     address public owner;
+>     ^^^^^^^^^^^^^^^^^^^^
+>     uint256 public totalBorrowed;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    Vault
+Line:        117
+Source: 
+>     address public owner;
+>     uint256 public totalBorrowed;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public rawDebt;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    Vault
+Line:        118
+Source: 
+>     uint256 public totalBorrowed;
+>     uint256 public rawDebt;
+>     ^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public timestamp;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    Vault
+Line:        119
+Source: 
+>     uint256 public rawDebt;
+>     uint256 public timestamp;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    IPegOracle
+Line:        162
+Source: 
+>     LEURInstance public leurInstance;
+>     address public owner;
+>     ^^^^^^^^^^^^^^^^^^^^
+>     uint256 oraclevalue;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    LocalMerchant
+Line:        188
+Source: 
+>     LEURInstance public leurInstance;
+>     address public owner;
+>     ^^^^^^^^^^^^^^^^^^^^
+>     uint256 MerchantBonus;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    LEURInstance
+Line:        342
+Source: 
+> 
+>     ISmartToken public pegNetworkToken;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint8 public constant version = 0;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    LEURInstance
+Line:        343
+Source: 
+>     ISmartToken public pegNetworkToken;
+>     uint8 public constant version = 0;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     IPegOracle public oracle;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    LEURInstance
+Line:        361
+Source: 
+> 
+>     uint256 public totalamount;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    DebtToken
+Line:        481
+Source: 
+> 
+>     string public name_debt;
+>     ^^^^^^^^^^^^^^^^^^^^^^^
+>     string public symbol_debt;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    DebtToken
+Line:        482
+Source: 
+>     string public name_debt;
+>     string public symbol_debt;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint8 public decimals_debt = 18;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    DebtToken
+Line:        483
+Source: 
+>     string public symbol_debt;
+>     uint8 public decimals_debt = 18;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m

@@ -1,0 +1,579 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    Presale
+Line:        84
+Source: 
+>     // how much the presale has already issued
+>     uint public presaleIssued = 0;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address public treasury;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    Presale
+Line:        126
+Source: 
+>         // no overflow because scarcity
+>         uint tokensPerETH = dollarsPerETH * tokensPerDollar;
+>                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         // no overflow, again because scarcity
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    Presale
+Line:        128
+Source: 
+>         // no overflow, again because scarcity
+>         uint tokensRequested = msg.value * tokensPerETH;
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Presale
+Line:        133
+Source: 
+>                                     sub(presaleSupply, presaleIssued), // don't exceed supply
+>                                     sub(maxPerWallet, MFI.balanceOf(msg.sender))); // don't exceed wallet max
+>                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Presale
+Line:        144
+Source: 
+>         payable(treasury).transfer(sub(msg.value, ethReturn));
+>         MFI.transferFrom(treasury, msg.sender, tokensToTransfer);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         disbursing = false;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Presale
+Line:        181
+Source: 
+>         if (quarter > lastVestedQuarter) {
+>             MFI.transfer(treasury, vestingQuarterly);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             lastVestedQuarter = quarter;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Warning
+Contract:    Presale
+Line:        139
+Source: 
+>             // send it back
+>             payable(msg.sender).transfer(ethReturn);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Warning
+Contract:    Presale
+Line:        143
+Source: 
+>         // send eth to treasury and tokens to buyer
+>         payable(treasury).transfer(sub(msg.value, ethReturn));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         MFI.transferFrom(treasury, msg.sender, tokensToTransfer);
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Presale
+Line:        80
+Source: 
+> 
+>     IERC20 public MFI;
+>     ^^^^^^^^^^^^^^^^^
+>     // these aren't ether, we're just using this for unit conversion
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Presale
+Line:        82
+Source: 
+>     // these aren't ether, we're just using this for unit conversion
+>     uint public constant presaleSupply = 4_000_000 ether;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     // how much the presale has already issued
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Presale
+Line:        87
+Source: 
+>     address constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+>     address constant uniRouter = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Presale
+Line:        93
+Source: 
+>     // 1_500_000 / 8
+>     uint public constant vestingQuarterly = 187_500 ether;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Presale
+Line:        99
+Source: 
+>     // initial best-guess ETH price
+>     uint constant initialDollarsPerETH = 1400;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     // updatable ETH price
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Presale
+Line:        102
+Source: 
+>     uint public dollarsPerETH = initialDollarsPerETH;
+>     uint public constant tokensPerDollar = 4;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Presale
+Line:        104
+Source: 
+> 
+>     uint public constant maxPerWallet = 10 ether * initialDollarsPerETH * tokensPerDollar;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    Presale
+Line:        86
+Source: 
+>     address public treasury;
+>     address constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address constant uniRouter = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    Presale
+Line:        87
+Source: 
+>     address constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+>     address constant uniRouter = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    Presale
+Line:        88
+Source: 
+>     address constant uniRouter = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
+>     address constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    Presale
+Line:        96
+Source: 
+>     // check for reentrancy
+>     bool disbursing;
+>     ^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    Presale
+Line:        99
+Source: 
+>     // initial best-guess ETH price
+>     uint constant initialDollarsPerETH = 1400;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     // updatable ETH price
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Warning
+Contract:    Presale
+Line:        143
+Source: 
+>         // send eth to treasury and tokens to buyer
+>         payable(treasury).transfer(sub(msg.value, ethReturn));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         MFI.transferFrom(treasury, msg.sender, tokensToTransfer);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    Presale
+Line:        139
+Source: 
+>             // send it back
+>             payable(msg.sender).transfer(ethReturn);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    Presale
+Line:        139
+Source: 
+>             // send it back
+>             payable(msg.sender).transfer(ethReturn);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    Presale
+Line:        143
+Source: 
+>         // send eth to treasury and tokens to buyer
+>         payable(treasury).transfer(sub(msg.value, ethReturn));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         MFI.transferFrom(treasury, msg.sender, tokensToTransfer);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    Presale
+Line:        139
+Source: 
+>             // send it back
+>             payable(msg.sender).transfer(ethReturn);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    Presale
+Line:        143
+Source: 
+>         // send eth to treasury and tokens to buyer
+>         payable(treasury).transfer(sub(msg.value, ethReturn));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         MFI.transferFrom(treasury, msg.sender, tokensToTransfer);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Presale
+Line:        133
+Source: 
+>                                     sub(presaleSupply, presaleIssued), // don't exceed supply
+>                                     sub(maxPerWallet, MFI.balanceOf(msg.sender))); // don't exceed wallet max
+>                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Presale
+Line:        153
+Source: 
+>         path[1] = USDC;
+>         dollarsPerETH = UniRouter(uniRouter).getAmountsOut(1 ether, path)[1] / 1 ether;
+>                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Presale
+Line:        144
+Source: 
+>         payable(treasury).transfer(sub(msg.value, ethReturn));
+>         MFI.transferFrom(treasury, msg.sender, tokensToTransfer);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         disbursing = false;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Presale
+Line:        181
+Source: 
+>         if (quarter > lastVestedQuarter) {
+>             MFI.transfer(treasury, vestingQuarterly);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             lastVestedQuarter = quarter;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Presale
+Line:        91
+Source: 
+>     uint public startDate;
+>     uint public lastVestedQuarter;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     // 1_500_000 / 8
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Presale
+Line:        96
+Source: 
+>     // check for reentrancy
+>     bool disbursing;
+>     ^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted Ether Flow
+Description: The execution of ether flows should be restricted to an
+             authorized set of users.
+Type:        Violation
+Contract:    Presale
+Line:        139
+Source: 
+>             // send it back
+>             payable(msg.sender).transfer(ethReturn);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted Ether Flow
+Description: The execution of ether flows should be restricted to an
+             authorized set of users.
+Type:        Violation
+Contract:    Presale
+Line:        143
+Source: 
+>         // send eth to treasury and tokens to buyer
+>         payable(treasury).transfer(sub(msg.value, ethReturn));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         MFI.transferFrom(treasury, msg.sender, tokensToTransfer);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Presale
+Line:        115
+Source: 
+>         require(!disbursing, "No re-entrancy");
+>         disbursing = true;
+>         ^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Presale
+Line:        145
+Source: 
+>         MFI.transferFrom(treasury, msg.sender, tokensToTransfer);
+>         disbursing = false;
+>         ^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Presale
+Line:        153
+Source: 
+>         path[1] = USDC;
+>         dollarsPerETH = UniRouter(uniRouter).getAmountsOut(1 ether, path)[1] / 1 ether;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Presale
+Line:        182
+Source: 
+>             MFI.transfer(treasury, vestingQuarterly);
+>             lastVestedQuarter = quarter;
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Presale
+Line:        144
+Source: 
+>         payable(treasury).transfer(sub(msg.value, ethReturn));
+>         MFI.transferFrom(treasury, msg.sender, tokensToTransfer);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         disbursing = false;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    Presale
+Line:        181
+Source: 
+>         if (quarter > lastVestedQuarter) {
+>             MFI.transfer(treasury, vestingQuarterly);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             lastVestedQuarter = quarter;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    Presale
+Line:        119
+Source: 
+>         // after start date
+>         require(block.timestamp >= startDate, "Presale hasn't started yet");
+>                 ^^^^^^^^^^^^^^^
+>         uint endDate = startDate + 2 days;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    Presale
+Line:        122
+Source: 
+>         // before end date
+>         require(endDate >= block.timestamp, "Presale is over");
+>                            ^^^^^^^^^^^^^^^
+> 
+
+[0m

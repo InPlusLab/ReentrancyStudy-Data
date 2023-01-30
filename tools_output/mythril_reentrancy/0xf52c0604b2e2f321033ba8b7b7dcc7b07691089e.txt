@@ -1,0 +1,122 @@
+with mythril_dir
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Airdroper
+Function name: fallback
+PC address: 579
+Estimated Gas Usage: 7377 - 64399
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/261130b057bb5734670edc27b8844712.sol:32
+
+der, this, _amount));
+        balances[_token][msg
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10001f8e6, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: deposit(address,uint256), txdata: 0x47e7ef24000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Airdroper
+Function name: fallback
+PC address: 631
+Estimated Gas Usage: 7377 - 64399
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/261130b057bb5734670edc27b8844712.sol:33
+
+mount);
+        return true;
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10003d9e6, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: deposit(address,uint256), txdata: 0x47e7ef24000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Airdroper
+Function name: fallback
+PC address: 678
+Estimated Gas Usage: 7377 - 64399
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/261130b057bb5734670edc27b8844712.sol:33
+
+ddit(balances[_token][msg.sender], _amount);
+        return true;
+    }
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10003d9e6, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: deposit(address,uint256), txdata: 0x47e7ef24000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Airdroper
+Function name: spread(address,address[],uint256[])
+PC address: 715
+Estimated Gas Usage: 625 - 6410
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/261130b057bb5734670edc27b8844712.sol:41
+
+] _addresses, uint[] _amounts) public returns (bool) {
+        uint l = _addresses.length;
+        for (uint i = 0; i < l; i++) {
+            require(balances[_token][tx.origin] >= _amounts[i]);
+            // 0xa9059cbb is function signature of `transfer(address,uint256)`
+            require(_token.call(0xa9059cbb, _addresses[i], _amounts[i]));
+            balances[_token][tx.origin] = subtr(balances[_token][tx.origin], _amounts[i]);
+        }
+        return true;
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x23408202800020021, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: spread(address,address[],uint256[]), txdata: 0xb29e201c000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+

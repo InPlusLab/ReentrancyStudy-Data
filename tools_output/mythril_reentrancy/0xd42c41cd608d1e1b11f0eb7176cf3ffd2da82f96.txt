@@ -1,0 +1,271 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Generic223Receiver
+Function name: tokenFallback(address,uint256,bytes)
+PC address: 555
+Estimated Gas Usage: 42562 - 226251
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/26b357b64794f3cdd4629a730ce69423.sol:363
+
+tokenPayable {
+
+        saveTokenValues();
+
+        calledFoo = true;
+
+    }
+
+
+
+    function getSig(bytes _data) private pure returns (bytes4 sig) {
+
+        uint lngth = _data.length < 4 ? _data.length : 4;
+
+        for (uint i = 0; i < lngth; i++) {
+
+            sig = bytes4(uint(sig) + uint(_data[i]) * (2 ** (8 * (lngth - 1
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000080000000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tokenFallback(address,uint256,bytes), txdata: 0xc0ee0b8a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Generic223Receiver
+Function name: tokenData()
+PC address: 644
+Estimated Gas Usage: 1356 - 2626
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/26b357b64794f3cdd4629a730ce69423.sol:337
+
+__isTokenFallback);
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: tokenData(), txdata: 0x024fd650, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Grizzly_Token
+Function name: fallback
+PC address: 1181
+Estimated Gas Usage: 2350 - 4091
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/26b357b64794f3cdd4629a730ce69423.sol:489
+
+afeTransferF
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000c00000b49a0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: name(), txdata: 0x06fdde03, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Generic223Receiver
+Function name: tokenFallback(address,uint256,bytes)
+PC address: 1189
+Estimated Gas Usage: 42154 - 222971
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/26b357b64794f3cdd4629a730ce69423.sol:379
+
+= bytes4(uint(sig) + uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20c1080000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tokenFallback(address,uint256,bytes), txdata: 0xc0ee0b8a, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Generic223Receiver
+Function name: tokenFallback(address,uint256,bytes)
+PC address: 1195
+Estimated Gas Usage: 42154 - 222971
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/26b357b64794f3cdd4629a730ce69423.sol:379
+
+= bytes4(uint(sig) + uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20c1080000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tokenFallback(address,uint256,bytes), txdata: 0xc0ee0b8a, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Generic223Receiver
+Function name: foo()
+PC address: 1219
+Estimated Gas Usage: 1116 - 1541
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/26b357b64794f3cdd4629a730ce69423.sol:381
+
+       }
+
+    }
+
+
+
+    function saveTokenValues() private {
+
+        tokenAddr = tkn.addr;
+
+        toke
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: foo(), txdata: 0xc2985578, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Generic223Receiver
+Function name: tokenFallback(address,uint256,bytes)
+PC address: 1375
+Estimated Gas Usage: 42562 - 226251
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/26b357b64794f3cdd4629a730ce69423.sol:413
+
+ate name_ = "Grizzly";
+
+    string private sy
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2145258002000036, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tokenFallback(address,uint256,bytes), txdata: 0xc0ee0b8a0000000000000000000000000000000000000000000000000000000000000001f5, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Generic223Receiver
+Function name: tokenFallback(address,uint256,bytes)
+PC address: 1390
+Estimated Gas Usage: 42562 - 226251
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/26b357b64794f3cdd4629a730ce69423.sol:409
+
+
+
+
+
+    string private name_ = "Grizzly";
+
+    string private sym
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tokenFallback(address,uint256,bytes), txdata: 0xc0ee0b8a0000000000000000000000000000000000000000000000000000000000000001a2, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Grizzly_Token
+Function name: symbol()
+PC address: 2861
+Estimated Gas Usage: 2586 - 4327
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/26b357b64794f3cdd4629a730ce69423.sol:491
+
+rFrom(_from, _
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4400004000008c00a, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: symbol(), txdata: 0x95d89b41, value: 0x0
+
+

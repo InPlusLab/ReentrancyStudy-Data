@@ -1,0 +1,84 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: LockedWallet
+Function name: withdraw()
+PC address: 786
+Estimated Gas Usage: 3685 - 4110
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/7905892d5cce75c95345383d626e393f.sol:442
+
+
+        token.transfer(owner(), amount);
+
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0100000040008000008000000100000204000100010002000101002001000201010101040110800101000101010110010108200101010101040101400110400100000000000000000000000080, value: 0x0
+Caller: [SOMEGUY], function: deposit(uint256), txdata: 0xb6b55f250808080808080808080808080808080808080808080808080808080808080808, value: 0x0
+Caller: [CREATOR], function: withdraw(), txdata: 0x3ccfd60b, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: LockedWallet
+Function name: deposit(uint256)
+PC address: 2005
+Estimated Gas Usage: 13668 - 88752
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/7905892d5cce75c95345383d626e393f.sol:427
+
+ken.balanceOf(address(this));
+
+        uint256 amount
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8008, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 01100108010101010101010101010101100100000000000001000110010802000102010101010101010202010101010101010101010102010101010101010101000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: deposit(uint256), txdata: 0xb6b55f250000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: LockedWallet
+Function name: withdraw()
+PC address: 2129
+Estimated Gas Usage: 3530 - 3955
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/7905892d5cce75c95345383d626e393f.sol:313
+
+      return c;
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x400000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000010000010100000000010000020100010080010000000000010101010000010201080110010101020804040101100101080102010101020402102002100100000000000000000000000080, value: 0x0
+Caller: [ATTACKER], function: deposit(uint256), txdata: 0xb6b55f251010101010101010101010101010101010101010101010101010101010101010, value: 0x0
+Caller: [CREATOR], function: withdraw(), txdata: 0x3ccfd60b, value: 0x0

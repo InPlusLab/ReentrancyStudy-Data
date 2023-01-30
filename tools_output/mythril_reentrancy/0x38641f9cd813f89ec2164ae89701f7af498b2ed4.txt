@@ -1,0 +1,54 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: UniversalProtocol
+Function name: burnPool()
+PC address: 4722
+Estimated Gas Usage: 4698 - 5313
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/9d1dc97c4064f46c2f2f07b96f2123b8.sol:137
+
+ balances[poolAddr] = balances[poolAddr].sub(_
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x180004000820249, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: burnPool(), txdata: 0xa54b2a73, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: UniversalProtocol
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 6613
+Estimated Gas Usage: 9212 - 67565
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/9d1dc97c4064f46c2f2f07b96f2123b8.sol:91
+
+rn true;
+    }
+
+  function transferFrom(address from, address to, uint256 value
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x880008000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca51000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

@@ -1,0 +1,877 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Owned
+Function name: transferOwnership(address) or transferOwnership(address) or transferOwnership(address)
+PC address: 982
+Estimated Gas Usage: 1079 - 1504
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:61
+
+er {
+        require(_newOwner != owner);
+        newOwner = _newOwner;
+    }
+
+    function acceptOwnership() public {
+        require(msg.s
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80080100078711, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transferOwnership(address), txdata: 0xf2fde38b, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Lockable
+Function name: lockUntil(uint256,string)
+PC address: 1115
+Estimated Gas Usage: 1276 - 4288
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:93
+
+_untilBlock;
+    ContractLocked(_untilBlock, _reason);
+  }
+}
+contract ReentrnacyHandlingContract{
+
+    bool locked;
+
+    modifier noReentrancy() {
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: lockUntil(uint256,string), txdata: 0xb26eafe4, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Lockable
+Function name: transferOwnership(address) or transferOwnership(address) or transferOwnership(address)
+PC address: 1425
+Estimated Gas Usage: 1141 - 1566
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:61
+
+er {
+        require(_newOwner != owner);
+        newOwner = _newOwner;
+    }
+
+    function acceptOwnership() public {
+        require(msg.s
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x500000002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transferOwnership(address), txdata: 0xf2fde38b, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: MusiconomiCrowdsale
+Function name: fallback
+PC address: 2475
+Estimated Gas Usage: 9285 - 30040
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:212
+
+ Check if state needs to be changed
+        crowdsaleState = state.priorityPas
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x1
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: MusiconomiCrowdsale
+Function name: fallback
+PC address: 2488
+Estimated Gas Usage: 9302 - 30057
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:212
+
+  // Check if state needs to be changed
+        crowdsaleState = state.priorityPass;                                              // Set new state
+        PresaleStarted(block.number);                                                     // Raise event
+        return true;
+      }
+    }else if(block.number > presaleUnlimitedStartBlock && block.number <= crowdsaleStartBlock){ // Check if we are in presale unlimited phase
+      if (crowdsaleState != state.openedPriorityPass){                                          // Check if state needs to be changed
+        crowdsaleState = state.openedPriorityPass;                                              // Set new state
+        PresaleUnlimitedStarted(block.number);                                                  // Raise event
+        return true;
+      }
+    }else if(block.number > crowdsaleStartBlock && block.number <= crowdsaleEndedBlock){        // Check if we are in crowdsale state
+      if (crowdsaleState != state.crowdsale){                                                   // Check if state needs to be changed
+        crowdsaleState = state.crowdsale;                                                       // Set new state
+        CrowdsaleStarted(block.number);                                                         // Raise event
+        return true;
+      }
+    }else{
+      if (crowdsaleState != state.crowdsaleEnded && block.number > crowdsaleEndedBlock){        // Check if crowdsale is over
+        crowdsaleState = state.crowdsaleEnded;                                                  // Set new state
+        CrowdsaleEnded(block.number);                                                           // Raise event
+        return true;
+      }
+    }
+    return false;
+  }
+
+  //
+  // Decide if throw or only return ether
+  //
+  function refundTransaction(bool _stateChanged) internal{
+    if (_stateChanged){
+      msg.sender.transfer(msg.value);
+    }else{
+      revert();
+    }
+  }
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40100083643, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x1
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: MusiconomiCrowdsale
+Function name: fallback
+PC address: 2651
+Estimated Gas Usage: 10130 - 30885
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:218
+
+         // Check if state needs to be changed
+        crowdsaleState = state.op
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100040000078563, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x1
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: MusiconomiCrowdsale
+Function name: fallback
+PC address: 2664
+Estimated Gas Usage: 10147 - 30902
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:218
+
+            // Check if state needs to be changed
+        crowdsaleState = state.openedPriorityPass;                                              // Set new state
+        PresaleUnlimitedStarted(block.number);                                                  // Raise event
+        return true;
+      }
+    }else if(block.number > crowdsaleStartBlock && block.number <= crowdsaleEndedBlock){        // Check if we are in crowdsale state
+      if (crowdsaleState != state.crowdsale){                                                   // Check if state needs to be changed
+        crowdsaleState = state.crowdsale;                                                       // Set new state
+        CrowdsaleStarted(block.number);                                                         // Raise event
+        return true;
+      }
+    }else{
+      if (crowdsaleState != state.crowdsaleEnded && block.number > crowdsaleEndedBlock){        // Check if crowdsale is over
+        crowdsaleState = state.crowdsaleEnded;                                                  // Set new state
+        CrowdsaleEnded(block.number);                                                           // Raise event
+        return true;
+      }
+    }
+    return false;
+  }
+
+  //
+  // Decide if throw or only return ether
+  //
+  function refundTransaction(bool _stateChanged) internal{
+    if (_stateChanged){
+      msg.sender.transfer(msg.value);
+    }else{
+      revert();
+    }
+  }
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40378040100010021, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x1
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: MusiconomiCrowdsale
+Function name: fallback
+PC address: 2827
+Estimated Gas Usage: 10975 - 31730
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:224
+
+eck if state needs to be changed
+        crowdsaleState = state.crowdsale
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: unknown, txdata: 0x, value: 0x1
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: MusiconomiCrowdsale
+Function name: fallback
+PC address: 2840
+Estimated Gas Usage: 10992 - 31747
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:224
+
+ Check if state needs to be changed
+        crowdsaleState = state.crowdsale;                                                       // Set new state
+        CrowdsaleStarted(block.number);                                                         // Raise event
+        return true;
+      }
+    }else{
+      if (crowdsaleState != state.crowdsaleEnded && block.number > crowdsaleEndedBlock){        // Check if crowdsale is over
+        crowdsaleState = state.crowdsaleEnded;                                                  // Set new state
+        CrowdsaleEnded(block.number);                                                           // Raise event
+        return true;
+      }
+    }
+    return false;
+  }
+
+  //
+  // Decide if throw or only return ether
+  //
+  function refundTransaction(bool _stateChanged) internal{
+    if (_stateChanged){
+      msg.sender.transfer(msg.value);
+    }else{
+      revert();
+    }
+  }
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: unknown, txdata: 0x, value: 0x1
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: MusiconomiCrowdsale
+Function name: fallback
+PC address: 3051
+Estimated Gas Usage: 12739 - 33824
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:231
+
+ate
+        CrowdsaleEnded(block.number);                                                           // Raise event
+        return true;
+      }
+    }
+    return false;
+  }
+
+  //
+  // Decide if throw or only return ether
+  //
+  function refundTransaction(bool _stateChanged) internal{
+    if (_stateChanged){
+      msg.sender.transfer(msg.value);
+    }else{
+      revert();
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: unknown, txdata: 0x, value: 0x1
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MusiconomiCrowdsale
+Function name: setMultisigAddress(address)
+PC address: 4305
+Estimated Gas Usage: 1031 - 1456
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:395
+
+to) onlyOwner{
+    require(crowdsaleState == state.crowdsaleEnded);              // Check if crowdsa
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000000003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: setMultisigAddress(address), txdata: 0x05540534, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MusiconomiCrowdsale
+Function name: setToken(address)
+PC address: 4507
+Estimated Gas Usage: 1075 - 1500
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:397
+
+   // Check if owner has allready claimed tokens
+
+    uint devReward = maxTokenSupply - 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000000003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: setToken(address), txdata: 0x144fa6d7, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MusiconomiCrowdsale
+Function name: withdrawRemainingBalanceForManualRecovery()
+PC address: 4672
+Estimated Gas Usage: 1079 - 1504
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:375
+
+  multisigAddress.transfer(this.balance);                      // Withdraw to multisig
+  }
+
+  //
+  // Owner can set multisig address for crowdsale
+  //
+  function setMultisigAddress(address _newAddress) onlyOwner{
+    multisigAddress = _newAddress;
+  }
+
+  //
+  // Owner can set token address where mints will happen
+  //
+  function setToken(address _newAddress) onlyOwner{
+    token = IToken(_newAddress);
+  }
+
+  //
+  // Owner can claim teams tokens when crowdsale 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: withdrawRemainingBalanceForManualRecovery(), txdata: 0x2165e1aa, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: MusiconomiCrowdsale
+Function name: withdrawRemainingBalanceForManualRecovery()
+PC address: 4723
+Estimated Gas Usage: 2634 - 3059
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:381
+
+Address(address _newAddress) onlyOwner{
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x1
+Caller: [CREATOR], function: withdrawRemainingBalanceForManualRecovery(), txdata: 0x2165e1aa, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: MusiconomiCrowdsale
+Function name: claimEthIfFailed()
+PC address: 5782
+Estimated Gas Usage: 1134 - 1229
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:338
+
+lready claimed his eth
+
+    uint ethContributed = contri
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20c00000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: claimEthIfFailed(), txdata: 0x7d6651b9, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: MusiconomiCrowdsale
+Function name: claimEthIfFailed()
+PC address: 5797
+Estimated Gas Usage: 1154 - 1249
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:338
+
+or has already claimed his eth
+
+    uint ethContributed = contrib
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000000003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: claimEthIfFailed(), txdata: 0x7d6651b9, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MusiconomiCrowdsale
+Function name: batchReturnEthIfFailed(uint256)
+PC address: 6392
+Estimated Gas Usage: 1254 - 1679
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:355
+
+dexes[nextContributorToClaim];         // Get next unclaimed participant
+      if (currentParticipantAddress == 0x0) return;                                   // Check if all the participants were compensated
+      if (!hasClaimedEthWhenFail[currentParticipantAddress]) {                        // Check if participant has already claimed
+        contribution = contributorList[currentParticipantAddress].contributionAmount; // Get contribution of participant
+        hasClaimedEthWhenFail[currentParticipantAddress] = true;                      // Set that he has claimed
+        if (!currentParticipantAddress.send(contribution)){                           // Refund eth
+          ErrorSendingETH(currentParticipantAddress, contribution);                   // If there is an issue raise event for manual recovery
+        }
+      }
+      nextContributorToClaim += 1;                                                    // Repeat
+    }
+  }
+
+  //
+  // If there were any issue/attach with refund owner can withraw eth at the end for manual recovery
+  //
+  function withdrawRemainingBalanceForManualRecovery() onlyOwner{
+    require(this.balance != 0);                                  // Check if there are any eth to claim
+    require(block.number > crowdsaleEndedBlock);                 // Check if crowd
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x52be500002bf81c00, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: batchReturnEthIfFailed(uint256), txdata: 0x7f860330, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: MusiconomiCrowdsale
+Function name: batchReturnEthIfFailed(uint256)
+PC address: 6404
+Estimated Gas Usage: 2072 - 2497
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:356
+
+if (currentParticipantAddress == 0x0) return;           
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: batchReturnEthIfFailed(uint256), txdata: 0x7f860330, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: MusiconomiCrowdsale
+Function name: batchReturnEthIfFailed(uint256)
+PC address: 6419
+Estimated Gas Usage: 2092 - 2517
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:355
+
+t
+      if (currentParticipantAddress == 0x0) return;            
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: batchReturnEthIfFailed(uint256), txdata: 0x7f860330, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MusiconomiCrowdsale
+Function name: claimCoreTeamsTokens(address)
+PC address: 7109
+Estimated Gas Usage: 1320 - 1745
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:400
+
+f cofoundit has claimed tokens its ok if not set aside cofounditReward
+    token.mintTokens(_to, devReward);                             // Issue Teams tokens
+    ownerHasClaimedTokens = true;                                 // Block further mints from this function
+  }
+
+  //
+  // Cofoundit can claim their tokens
+  //
+  function claimCofounditTokens(){
+    require(msg.sender == cofounditAddress);            // Check if sender is cofoundit
+    require(crowdsaleState == state.crowdsaleEnded);    // Check if crowdsale has ended
+    require(!cofounditHasClaimedTokens);                // Check if cofoundit has allready claimed tokens
+
+    token.mintTokens(cofounditAddr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000000003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: claimCoreTeamsTokens(address), txdata: 0x91de4f88, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MusiconomiCrowdsale
+Function name: salvageTokensFromContract(address,address,uint256)
+PC address: 7798
+Estimated Gas Usage: 1415 - 1840
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:329
+
+ multisigAddress.transfer(this.balance);
+  }
+
+  //
+  // Users can claim their contribution if min cap is not raised
+  //
+  function claimEthIfFailed(){
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: salvageTokensFromContract(address,address,uint256), txdata: 0xa0929cda, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MusiconomiCrowdsale
+Function name: salvageTokensFromContract(address,address,uint256)
+PC address: 7976
+Estimated Gas Usage: 3070 - 38340
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:333
+
+ is not raised
+  //
+  function claimEthIfFailed()
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: salvageTokensFromContract(address,address,uint256), txdata: 0xa0929cda000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MusiconomiCrowdsale
+Function name: withdrawEth()
+PC address: 8093
+Estimated Gas Usage: 1343 - 1768
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:336
+
+);    // Check if crowdsale has failed
+    require(contributorList[msg.sender].contributionAmount > 0);          // Check if contributor has contributed 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000b0200040000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: withdrawEth(), txdata: 0xa0ef91df, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MusiconomiCrowdsale
+Function name: editContributors(address[],uint256[],uint256[])
+PC address: 8366
+Estimated Gas Usage: 1906 - 10092
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:304
+
+ributorAddresses.length == _contributorPPAllowances.length && _contributorAddresses.length == _contributorCommunityAllowance.length); // Check if input data is correct
+
+    for(uint cnt = 0; cnt < _contributorAddresses.length; cnt++){
+      contributorList[_contributorAddresses[cnt]].isActive = true;                                        // Activate contributor
+      contributorList[_contributorAddresses[cnt]].priorityPassAllowance = _contributorPPAllowances[cnt];  // Set PP allowance
+      contributorList[_contributorAddresses[cnt]].communityAllowance = _contributorCommunityAllowance[cnt];// Set community whitelist allowance
+      contributorIndexes[nextContributorIndex] = _contributorAddresses[cnt];                              // Set users index
+      nextContributorIndex++;
+    }
+  }
+
+  //
+  // Method is needed for recovering tokens accedentaly sent to token address
+  //
+  function salvageTokensFromContract(address _tokenAddress, address _to, uint _amount) onlyOwner{
+    IERC20Token(_tokenAddress).transfer(_to, _amount);
+  }
+
+  //
+  // withdrawEth when minimum cap is reached
+  //
+  functio
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: editContributors(address[],uint256[],uint256[]), txdata: 0xad7b6884, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MusiconomiCrowdsale
+Function name: transferOwnership(address) or transferOwnership(address) or transferOwnership(address)
+PC address: 9509
+Estimated Gas Usage: 1515 - 1940
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bb913cdd22b88fc51eba7d7e5e110143.sol:61
+
+er {
+        require(_newOwner != owner);
+        newOwner = _newOwner;
+    }
+
+    function acceptOwnership() public {
+        require(msg.s
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000000003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transferOwnership(address), txdata: 0xf2fde38b, value: 0x0

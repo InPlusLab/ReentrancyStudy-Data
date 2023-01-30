@@ -1,0 +1,63 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DigiWillToken
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 799
+Estimated Gas Usage: 10550 - 73098
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/22c7708ffa8bda4f18ffe0a8f94caf64.sol:180
+
+ (approve(_spender, _value)) {
+            spender.receiveApproval(msg.sender, _value, this, _extraData);
+            return true;
+        }
+    }
+
+    function burn(uint256 _value) public onlyOwner {
+        require(balances[msg.sender] >= _value);
+        balances[msg.sender] = balances[msg.sender].sub(_value);
+        totalS
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1020fbfb2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca5100000000000000000000000000000000000000000000000000000000000001000000010001010100010001010101010001010101010004010100010101010101ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DigiWillToken
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 2033
+Estimated Gas Usage: 10551 - 72769
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/22c7708ffa8bda4f18ffe0a8f94caf64.sol:187
+
+es[msg.sender] >= _value);
+        balances[msg.sender] = bal
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000001a682, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca51000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef020401010101010101200201800101010802011001010104800101010102400180, value: 0x0
+
+

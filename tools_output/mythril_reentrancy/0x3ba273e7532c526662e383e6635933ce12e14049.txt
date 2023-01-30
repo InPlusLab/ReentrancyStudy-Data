@@ -1,0 +1,143 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TokenPool
+Function name: rescueFunds(address,address,uint256)
+PC address: 1193
+Estimated Gas Usage: 3804 - 39497
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/a1f005082c7560375d3fdea9ab9b242a.sol:289
+
+(address indexed user, uint256 amount, uin
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: rescueFunds(address,address,uint256), txdata: 0x6ccae054000000000000000000000000010101010100010101010101010101010101010100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [CREATOR], function: rescueFunds(address,address,uint256), txdata: 0x6ccae054010101010101010101010101deadbeefdeadbeefdeadbeefdeadbeefdeadbeef01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TokenPool
+Function name: transfer(address,uint256) or transfer(address,uint256)
+PC address: 1656
+Estimated Gas Usage: 3747 - 39440
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/a1f005082c7560375d3fdea9ab9b242a.sol:274
+
+ERC20(tokenToRescue).tran
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4010000020000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: bebebebebebebebebebebebedeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: rescueFunds(address,address,uint256), txdata: 0x6ccae054000000000000000000000000010101010101010101010101010101010101010100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [CREATOR], function: transfer(address,uint256), txdata: 0xa9059cbb01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: TokenGeyser
+Function name: unlockSchedules(uint256)
+PC address: 3429
+Estimated Gas Usage: 1216 - 1311
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/a1f005082c7560375d3fdea9ab9b242a.sol:357
+
+ingToken);
+        _unlockedPool = new 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: unlockSchedules(uint256), txdata: 0x5c94bcb20000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: TokenGeyser
+Function name: addTokens(uint256)
+PC address: 5311
+Estimated Gas Usage: 2209 - 2304
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/a1f005082c7560375d3fdea9ab9b242a.sol:585
+
+
+
+          totalLockedTokens = lockedTokens.add(amount);
+
+          require(_lockedPool.token().transferFrom(msg.sender, address(_lockedPool), amount),
+              'TokenGeyser: transfer into locked pool failed');
+          emit TokensLocked(amount, 60 * 60 * 24 * 135, totalLocked());
+        } else {
+          // normalize the amount weight to offset lost time
+          uint256 mintedLockedShares = amount.mul(schedule.durationSec.div(schedule.endAtSec.sub(now)));
+          schedule.initialLockedTokens = schedule.initialLockedTokens.add(mintedLockedShares);
+
+          uint256 balanceBefore = _lockedPool.token().balanceOf(address(_lockedPool));
+          require(_lockedPool.token().transferFrom(msg.sender, address(_lockedPool), amount),
+              'TokenGeyser: transfer into locked pool failed');
+          uint256 balanceAfter = _lockedPool.token().balanceOf(address(_lockedPool));
+
+          totalLockedTokens = totalLockedTokens.add(balanceAfter.sub(balanceBefore));
+          emit TokensAdded(balanceAfter.sub(balanceBefore), totalLocked());
+        }
+
+    }
+
+    function unlockTokens() public returns (uint256) {
+        uint256 unlockedTokens = 0;
+
+        if (totalLockedTokens == 0) {
+            unlockedTokens = totalLocked();
+        } else {
+            for (uint256 s = 0; s < unlockSchedules.length; s++) {
+                unlockedTokens = unlockedTokens.add(unlockScheduleShares(s));
+            }
+            totalLockedTokens = totalLockedTokens.sub(unlockedTokens);
+        }
+
+        if (unlockedTokens > 0) {
+            require(_lockedPool.transfer(address(_unlockedPool), unlockedTokens),
+                'TokenGeyser: transfer out of locked po
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: addTokens(uint256), txdata: 0xc6ed89900000000000000000000000000000000000000000000000000000000000000000, value: 0x0

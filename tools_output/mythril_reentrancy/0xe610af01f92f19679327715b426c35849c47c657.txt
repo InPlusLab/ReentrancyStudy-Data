@@ -1,0 +1,229 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Log
+Function name: AddMessage(address,uint256,string)
+PC address: 153
+Estimated Gas Usage: 76761 - 341187
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/d4d0692c9298af155aa6c8071d61a25d.sol:66
+
+lic
+    {
+        LastMsg.Sender = _adr;
+        LastMsg.Time = now;
+        LastMsg.Val = _val;
+        LastMsg.Data = _data;
+        History.push(LastMsg);
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000000007, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x10, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: AddMessage(address,uint256,string), txdata: 0x4c2f04a400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Log
+Function name: History(uint256)
+PC address: 364
+Estimated Gas Usage: 6420 - 7791
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/d4d0692c9298af155aa6c8071d61a25d.sol:65
+
+ function AddMessage(add
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21c10c00020f9fbb, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: AddMessage(address,uint256,string), txdata: 0x4c2f04a40000000000000000000000000000000000000000000000000000000000000020, value: 0x0
+Caller: [SOMEGUY], function: History(uint256), txdata: 0xa21f0368, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: PIGGY_BANK
+Function name: fallback
+PC address: 632
+Estimated Gas Usage: 13618 - 88989
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d4d0692c9298af155aa6c8071d61a25d.sol:24
+
+sender,msg.value,"Put");
+        putBlock = bl
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: c2c2c2c2c2c2c2c2c2c2c2c2deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x01010101, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: PIGGY_BANK
+Function name: Put(address)
+PC address: 632
+Estimated Gas Usage: 13656 - 89027
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d4d0692c9298af155aa6c8071d61a25d.sol:24
+
+sender,msg.value,"Put");
+        putBlock = bl
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80000000002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x800000002, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 3f3f3f3f3f3f3f3f3f3f3f3fdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: Put(address), txdata: 0xe5b5fe72, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: PIGGY_BANK
+Function name: fallback
+PC address: 652
+Estimated Gas Usage: 13507 - 88878
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d4d0692c9298af155aa6c8071d61a25d.sol:25
+
+
+    }
+    
+    functio
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Log
+Function name: AddMessage(address,uint256,string)
+PC address: 746
+Estimated Gas Usage: 76761 - 341187
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/d4d0692c9298af155aa6c8071d61a25d.sol:74
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: AddMessage(address,uint256,string), txdata: 0x4c2f04a40000000000000000000000000000000000000000000000000000000000000040, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Log
+Function name: History(uint256)
+PC address: 805
+Estimated Gas Usage: 1009 - 1104
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/d4d0692c9298af155aa6c8071d61a25d.sol:65
+
+ function AddMessage(add
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20800000048cb, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: History(uint256), txdata: 0xa21f0368, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: PIGGY_BANK
+Function name: Collect(uint256)
+PC address: 816
+Estimated Gas Usage: 3594 - 4069
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/d4d0692c9298af155aa6c8071d61a25d.sol:32
+
+ && _am<=Accounts[msg.sender] && block.number>putBlock)
+        {
+            if(msg.sender.call.value(_am)())
+            {
+                Accounts[msg.sender]-=_am;
+                LogFile.AddMessage(msg.sender,_am,"Collect");
+            }
+        }
+    }
+    
+    function() 
+    public
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1424204100480e1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0xde0b6b3a7640000
+Caller: [SOMEGUY], function: Collect(uint256), txdata: 0x3fe43822, value: 0x0

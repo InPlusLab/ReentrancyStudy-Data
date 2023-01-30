@@ -1,0 +1,267 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: TagMembership
+Function name: getMyMembership(string)
+PC address: 3265
+Estimated Gas Usage: 1676 - 5861
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/6595b6639fc74c6d303d6cd60e540a4f.sol:239
+
+ {
+    uint activationPrice = _type == Type.M
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000102240082, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: getMyMembership(string), txdata: 0x70b2bdba80, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: TagMembership
+Function name: drain()
+PC address: 4023
+Estimated Gas Usage: 13374 - 189351
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/6595b6639fc74c6d303d6cd60e540a4f.sol:199
+
+IONS
+
+  function activateMembership(Type _type, string _use
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x140000000000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: drain(), txdata: 0x9890220b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: TagMembership
+Function name: drain()
+PC address: 4068
+Estimated Gas Usage: 13374 - 189351
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6595b6639fc74c6d303d6cd60e540a4f.sol:201
+
+thod _met
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x41000040000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: drain(), txdata: 0x9890220b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: TagMembership
+Function name: drain()
+PC address: 4072
+Estimated Gas Usage: 13374 - 189351
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6595b6639fc74c6d303d6cd60e540a4f.sol:201
+
+c {
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x41000040000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: drain(), txdata: 0x9890220b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: TagMembership
+Function name: drain()
+PC address: 4164
+Estimated Gas Usage: 13374 - 189351
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6595b6639fc74c6d303d6cd60e540a4f.sol:202
+
+ uint tokenAmount = calculateToken
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x41000040000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: drain(), txdata: 0x9890220b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: TagMembership
+Function name: drain()
+PC address: 4284
+Estimated Gas Usage: 13374 - 189351
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6595b6639fc74c6d303d6cd60e540a4f.sol:201
+
+thod _method) public {
+    uint tokenAmount = calculateTokenA
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x41000040000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: drain(), txdata: 0x9890220b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: TagMembership
+Function name: drain()
+PC address: 4307
+Estimated Gas Usage: 13374 - 189351
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6595b6639fc74c6d303d6cd60e540a4f.sol:202
+
+type,
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x41000040020004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: drain(), txdata: 0x9890220b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: TagMembership
+Function name: drain()
+PC address: 4341
+Estimated Gas Usage: 13374 - 189351
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6595b6639fc74c6d303d6cd60e540a4f.sol:202
+
+type, _method);
+    if (_method == Me
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x41000040020004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: drain(), txdata: 0x9890220b, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: TagMembership
+Function name: fallback
+PC address: 4564
+Estimated Gas Usage: 459 - 3471
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/6595b6639fc74c6d303d6cd60e540a4f.sol:247
+
+
+  function isMembers
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: activateMembership(uint8,string,uint8), txdata: 0x18d814c80000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: TagMembership
+Function name: fallback
+PC address: 4597
+Estimated Gas Usage: 1317 - 4329
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/6595b6639fc74c6d303d6cd60e540a4f.sol:248
+
+(bool) {
+    return m
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: activateMembership(uint8,string,uint8), txdata: 0x18d814c8000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002, value: 0x0

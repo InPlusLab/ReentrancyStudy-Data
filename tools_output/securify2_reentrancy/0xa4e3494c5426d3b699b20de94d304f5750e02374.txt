@@ -1,0 +1,605 @@
+[0;31mSeverity:    INFO
+Pattern:     Assembly Usage
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    Address
+Line:        233
+Source: 
+>         // solhint-disable-next-line no-inline-assembly
+>         assembly { size := extcodesize(account) }
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return size > 0;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    RewardLockPool
+Line:        356
+Source: 
+>     function rewardPerToken() public view returns (uint256) {
+>         if (totalSupply == 0) {
+>             ^^^^^^^^^^^^^^^^
+>             return rewardPerTokenStored;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    RewardLockPool
+Line:        338
+Source: 
+> 
+>     function start(address stake_token, address reward_token, uint256 reward, uint256 duration) public onlyOwner {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(!started, "already started");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    RewardLockPool
+Line:        377
+Source: 
+> 
+>     function stake(uint256 amount) public updateReward(msg.sender) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(started, "Not start yet");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Low Level Calls
+Description: Usage of <address>.call should be avoided
+Type:        Violation
+Contract:    SafeERC20
+Line:        278
+Source: 
+>         // solhint-disable-next-line avoid-low-level-calls
+>         (bool success, bytes memory returndata) = address(token).call(data);
+>                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+>       
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    RewardLockPool
+Line:        369
+Source: 
+> 
+>     function earned(address account) public view returns (uint256) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        338
+Source: 
+> 
+>     function start(address stake_token, address reward_token, uint256 reward, uint256 duration) public onlyOwner {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(!started, "already started");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        436
+Source: 
+>     // Add Lock Time Begin:
+>     function canWithdraw(address account) public view returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return started && (balanceOf[account] > 0) && 
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    RewardLockPool
+Line:        380
+Source: 
+>         require(amount > 0, "Cannot stake 0");
+>         require(stakeToken.balanceOf(msg.sender) >= amount, "insufficient balance to stake");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint256 beforeT = stakeToken.balanceOf(address(this));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    RewardLockPool
+Line:        381
+Source: 
+>         require(stakeToken.balanceOf(msg.sender) >= amount, "insufficient balance to stake");
+>         uint256 beforeT = stakeToken.balanceOf(address(this));
+>                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    RewardLockPool
+Line:        387
+Source: 
+>         
+>         uint256 afterT = stakeToken.balanceOf(address(this));
+>                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    RewardLockPool
+Line:        405
+Source: 
+> 
+>         uint256 beforeT = stakeToken.balanceOf(address(this));
+>                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    RewardLockPool
+Line:        411
+Source: 
+> 
+>         uint256 afterT = stakeToken.balanceOf(address(this));
+>                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Withdrawn(msg.sender, amount, beforeT, afterT);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    RewardLockPool
+Line:        427
+Source: 
+>             rewards[msg.sender] = 0;
+>             uint256 beforeT = rewardToken.balanceOf(address(this));
+>                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             rewardToken.mint(msg.sender, reward);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    RewardLockPool
+Line:        428
+Source: 
+>             uint256 beforeT = rewardToken.balanceOf(address(this));
+>             rewardToken.mint(msg.sender, reward);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             //rewardToken.safeTransfer(msg.sender, reward);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    RewardLockPool
+Line:        430
+Source: 
+>             //rewardToken.safeTransfer(msg.sender, reward);
+>             uint256 afterT = rewardToken.balanceOf(address(this));
+>                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             emit RewardPaid(msg.sender, reward, beforeT, afterT);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        9
+Source: 
+> 
+> pragma solidity ^0.5.8;
+> ^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    RewardLockPool
+Line:        319
+Source: 
+> 
+>     modifier updateReward(address account) {
+>                           ^^^^^^^^^^^^^^^
+>         rewardPerTokenStored = rewardPerToken();
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    RewardLockPool
+Line:        380
+Source: 
+>         require(amount > 0, "Cannot stake 0");
+>         require(stakeToken.balanceOf(msg.sender) >= amount, "insufficient balance to stake");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint256 beforeT = stakeToken.balanceOf(address(this));
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        381
+Source: 
+>         require(stakeToken.balanceOf(msg.sender) >= amount, "insufficient balance to stake");
+>         uint256 beforeT = stakeToken.balanceOf(address(this));
+>                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        387
+Source: 
+>         
+>         uint256 afterT = stakeToken.balanceOf(address(this));
+>                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        405
+Source: 
+> 
+>         uint256 beforeT = stakeToken.balanceOf(address(this));
+>                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        411
+Source: 
+> 
+>         uint256 afterT = stakeToken.balanceOf(address(this));
+>                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit Withdrawn(msg.sender, amount, beforeT, afterT);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        427
+Source: 
+>             rewards[msg.sender] = 0;
+>             uint256 beforeT = rewardToken.balanceOf(address(this));
+>                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             rewardToken.mint(msg.sender, reward);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        428
+Source: 
+>             uint256 beforeT = rewardToken.balanceOf(address(this));
+>             rewardToken.mint(msg.sender, reward);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             //rewardToken.safeTransfer(msg.sender, reward);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        430
+Source: 
+>             //rewardToken.safeTransfer(msg.sender, reward);
+>             uint256 afterT = rewardToken.balanceOf(address(this));
+>                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             emit RewardPaid(msg.sender, reward, beforeT, afterT);
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Uninitialized Local Variables
+Description: A variable is declared but never initialized.
+Type:        Violation
+Contract:    Address
+Line:        234
+Source: 
+>         assembly { size := extcodesize(account) }
+>         return size > 0;
+>                ^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        299
+Source: 
+> 
+>     IERC20 public stakeToken;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^
+>     IMinableERC20 public rewardToken;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        300
+Source: 
+>     IERC20 public stakeToken;
+>     IMinableERC20 public rewardToken;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        302
+Source: 
+>     
+>     bool public started;
+>     ^^^^^^^^^^^^^^^^^^^
+>     uint256 public totalSupply;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        303
+Source: 
+>     bool public started;
+>     uint256 public totalSupply;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public rewardFinishTime = 0;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        306
+Source: 
+>     uint256 public rewardRate = 0;
+>     uint256 public lastUpdateTime;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public rewardPerTokenStored;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        307
+Source: 
+>     uint256 public lastUpdateTime;
+>     uint256 public rewardPerTokenStored;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     mapping(address => uint256) public userRewardPerTokenPaid;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    RewardLockPool
+Line:        320
+Source: 
+>     modifier updateReward(address account) {
+>         rewardPerTokenStored = rewardPerToken();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastUpdateTime = lastTimeRewardApplicable();
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    RewardLockPool
+Line:        321
+Source: 
+>         rewardPerTokenStored = rewardPerToken();
+>         lastUpdateTime = lastTimeRewardApplicable();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (account != address(0)) {
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    RewardLockPool
+Line:        320
+Source: 
+>     modifier updateReward(address account) {
+>         rewardPerTokenStored = rewardPerToken();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastUpdateTime = lastTimeRewardApplicable();
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    RewardLockPool
+Line:        321
+Source: 
+>         rewardPerTokenStored = rewardPerToken();
+>         lastUpdateTime = lastTimeRewardApplicable();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (account != address(0)) {
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    RewardLockPool
+Line:        320
+Source: 
+>     modifier updateReward(address account) {
+>         rewardPerTokenStored = rewardPerToken();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastUpdateTime = lastTimeRewardApplicable();
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    RewardLockPool
+Line:        321
+Source: 
+>         rewardPerTokenStored = rewardPerToken();
+>         lastUpdateTime = lastTimeRewardApplicable();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (account != address(0)) {
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        352
+Source: 
+>     function lastTimeRewardApplicable() internal view returns (uint256) {
+>         return block.timestamp < rewardFinishTime ? block.timestamp : rewardFinishTime;
+>                ^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        352
+Source: 
+>     function lastTimeRewardApplicable() internal view returns (uint256) {
+>         return block.timestamp < rewardFinishTime ? block.timestamp : rewardFinishTime;
+>                                                     ^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        390
+Source: 
+>         // Add Lock Time Begin:
+>         lockTimeOf[msg.sender] = block.timestamp.add(2 hours);
+>                                  ^^^^^^^^^^^^^^^
+>         // Add Lock Time End!!!
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        438
+Source: 
+>         return started && (balanceOf[account] > 0) && 
+>             (block.timestamp >= lockTimeOf[account] || block.timestamp >= rewardFinishTime);
+>              ^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    RewardLockPool
+Line:        438
+Source: 
+>         return started && (balanceOf[account] > 0) && 
+>             (block.timestamp >= lockTimeOf[account] || block.timestamp >= rewardFinishTime);
+>                                                        ^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;35mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Conflict
+Contract:    RewardLockPool
+Line:        348
+Source: 
+>         lastUpdateTime = block.timestamp;
+>         rewardFinishTime = block.timestamp.add(duration);
+>                            ^^^^^^^^^^^^^^^
+>     }
+
+[0m

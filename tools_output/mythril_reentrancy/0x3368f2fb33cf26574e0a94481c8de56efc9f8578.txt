@@ -1,0 +1,107 @@
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: AntiCryptoman_Prize
+Function name: grabPrize(bool)
+PC address: 643
+Estimated Gas Usage: 5080 - 74634
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: /tmp/d441bf5a10539620d3547183e957e1ee.sol:101
+
+       owner.transfer(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x480001e38c0000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: grabPrize(bool), txdata: 0x2e876c810201010101010101011008010101010101010101010101200101020101010101, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: AntiCryptoman_Prize
+Function name: grabPrize(bool)
+PC address: 709
+Estimated Gas Usage: 5080 - 74634
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d441bf5a10539620d3547183e957e1ee.sol:109
+
+wner 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x15100068042, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: grabPrize(bool), txdata: 0x2e876c810101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: AntiCryptoman_Prize
+Function name: grabPrize(bool)
+PC address: 742
+Estimated Gas Usage: 5007 - 74278
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/d441bf5a10539620d3547183e957e1ee.sol:109
+
+wner {
+
+        owner.transfer(addres
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x280800000a8009, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: grabPrize(bool), txdata: 0x2e876c810101010101010110010101010101000102010101010101010101200101010101, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: AntiCryptoman_Prize
+Function name: grabPrize(bool)
+PC address: 742
+Estimated Gas Usage: 5080 - 74634
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d441bf5a10539620d3547183e957e1ee.sol:109
+
+wner {
+
+        owner.transfer(addres
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x15100068042, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: grabPrize(bool), txdata: 0x2e876c810101010101010101010101010101010101010101010101010101010101010101, value: 0x0

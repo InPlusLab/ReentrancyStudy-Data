@@ -1,0 +1,764 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+[0;31mSeverity:    INFO
+Pattern:     Assembly Usage
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    Governance
+Line:        492
+Source: 
+>         uint chainId;
+>         assembly { chainId := chainid() }
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return chainId;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Governance
+Line:        345
+Source: 
+> 
+>     function propose(address[] memory targets, uint[] memory values, string[] memory signatures, bytes[] memory calldatas, string memory description) public returns (uint) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(VOTER.getPriorVotes(msg.sender, block.number.sub(1)) > proposalThreshold(), "Governance::propose: proposer votes below proposal threshold");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Governance
+Line:        385
+Source: 
+> 
+>     function queue(uint proposalId) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(state(proposalId) == ProposalState.Succeeded, "Governance::queue: proposal can only be queued if it is succeeded");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Governance
+Line:        401
+Source: 
+> 
+>     function execute(uint proposalId) public payable {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(state(proposalId) == ProposalState.Queued, "Governance::execute: proposal can only be executed if it is queued");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Governance
+Line:        411
+Source: 
+> 
+>     function cancel(uint proposalId) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         ProposalState state = state(proposalId);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Governance
+Line:        426
+Source: 
+> 
+>     function getActions(uint proposalId) public view returns (address[] memory targets, uint[] memory values, string[] memory signatures, bytes[] memory calldatas) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         Proposal storage p = proposals[proposalId];
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Governance
+Line:        431
+Source: 
+> 
+>     function getReceipt(uint proposalId, address voter) public view returns (Receipt memory) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return proposals[proposalId].receipts[voter];
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Governance
+Line:        457
+Source: 
+> 
+>     function castVote(uint proposalId, bool support) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return _castVote(msg.sender, proposalId, support);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Governance
+Line:        461
+Source: 
+> 
+>     function castVoteBySig(uint proposalId, bool support, uint8 v, bytes32 r, bytes32 s) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         bytes32 domainSeparator = keccak256(abi.encode(DOMAIN_TYPEHASH, keccak256(bytes(name)), getChainId(), address(this)));
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    Governance
+Line:        515
+Source: 
+> 
+>     function setDelay(uint delay_) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == address(this), "Timelock::setDelay: Call must come from Timelock.");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    Governance
+Line:        223
+Source: 
+>     function quorumVotes() public view returns (uint) {
+>         return VOTER.totalSupply().mul(_quorumVotes).div(BASE);
+>                ^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    Governance
+Line:        227
+Source: 
+>     function proposalThreshold() public view returns (uint) {
+>         return VOTER.totalSupply().mul(_proposalThreshold).div(BASE);
+>                ^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    Governance
+Line:        563
+Source: 
+>         // solium-disable-next-line security/no-call-value
+>         (bool success, bytes memory returnData) = target.call.value(value)(callData);
+>                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(success, "Timelock::executeTransaction: Transaction execution reverted.");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    Governance
+Line:        475
+Source: 
+>         require(receipt.hasVoted == false, "Governance::_castVote: voter already voted");
+>         uint votes = VOTER.getPriorVotes(voter, proposal.startBlock);
+>                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Gas-dependent Reentrancy
+Description: Calls into external contracts that receive all remaining
+             gas and are followed by state changes may be reentrant.
+Type:        Warning
+Contract:    Governance
+Line:        563
+Source: 
+>         // solium-disable-next-line security/no-call-value
+>         (bool success, bytes memory returnData) = target.call.value(value)(callData);
+>                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(success, "Timelock::executeTransaction: Transaction execution reverted.");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Low Level Calls
+Description: Usage of <address>.call should be avoided
+Type:        Violation
+Contract:    Governance
+Line:        563
+Source: 
+>         // solium-disable-next-line security/no-call-value
+>         (bool success, bytes memory returnData) = target.call.value(value)(callData);
+>                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(success, "Timelock::executeTransaction: Transaction execution reverted.");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Governance
+Line:        411
+Source: 
+> 
+>     function cancel(uint proposalId) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         ProposalState state = state(proposalId);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Governance
+Line:        457
+Source: 
+> 
+>     function castVote(uint proposalId, bool support) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return _castVote(msg.sender, proposalId, support);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Governance
+Line:        461
+Source: 
+> 
+>     function castVoteBySig(uint proposalId, bool support, uint8 v, bytes32 r, bytes32 s) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         bytes32 domainSeparator = keccak256(abi.encode(DOMAIN_TYPEHASH, keccak256(bytes(name)), getChainId(), address(this)));
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Governance
+Line:        217
+Source: 
+>     
+>     function setQuorum(uint quorum_) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == address(this), "Governance::setQuorum: timelock only");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Governance
+Line:        230
+Source: 
+>     
+>     function setThreshold(uint threshold_) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == address(this), "Governance::setQuorum: timelock only");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Governance
+Line:        345
+Source: 
+> 
+>     function propose(address[] memory targets, uint[] memory values, string[] memory signatures, bytes[] memory calldatas, string memory description) public returns (uint) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(VOTER.getPriorVotes(msg.sender, block.number.sub(1)) > proposalThreshold(), "Governance::propose: proposer votes below proposal threshold");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Governance
+Line:        426
+Source: 
+> 
+>     function getActions(uint proposalId) public view returns (address[] memory targets, uint[] memory values, string[] memory signatures, bytes[] memory calldatas) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         Proposal storage p = proposals[proposalId];
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Governance
+Line:        431
+Source: 
+> 
+>     function getReceipt(uint proposalId, address voter) public view returns (Receipt memory) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return proposals[proposalId].receipts[voter];
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Governance
+Line:        435
+Source: 
+> 
+>     function state(uint proposalId) public view returns (ProposalState) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(proposalCount >= proposalId && proposalId > 0, "Governance::state: invalid proposal id");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Governance
+Line:        524
+Source: 
+> 
+>     function queueTransaction(address target, uint value, string memory signature, bytes memory data, uint eta) public returns (bytes32) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == address(this), "Timelock::queueTransaction: Call must come from admin.");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Governance
+Line:        535
+Source: 
+> 
+>     function cancelTransaction(address target, uint value, string memory signature, bytes memory data, uint eta) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == address(this), "Timelock::cancelTransaction: Call must come from admin.");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    GovernanceFactory
+Line:        583
+Source: 
+> contract GovernanceFactory {
+>     function deploy(address voter) external returns (address) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return address(new Governance(voter));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    Governance
+Line:        346
+Source: 
+>     function propose(address[] memory targets, uint[] memory values, string[] memory signatures, bytes[] memory calldatas, string memory description) public returns (uint) {
+>         require(VOTER.getPriorVotes(msg.sender, block.number.sub(1)) > proposalThreshold(), "Governance::propose: proposer votes below proposal threshold");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(targets.length == values.length && targets.length == signatures.length && targets.length == calldatas.length, "Governance::propose: proposal function information arity mismatch");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Shadowed Local Variable
+Description: Reports local variable declarations that shadow
+             declarations from outer scopes.
+Type:        Violation
+Contract:    Governance
+Line:        412
+Source: 
+>     function cancel(uint proposalId) public {
+>         ProposalState state = state(proposalId);
+>         ^^^^^^^^^^^^^^^^^^^
+>         require(state != ProposalState.Executed, "Governance::cancel: cannot cancel executed proposal");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Governance
+Line:        207
+Source: 
+>     /// @notice The name of this contract
+>     string public constant name = "Governance";
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Governance
+Line:        210
+Source: 
+>     /// @notice The number of votes in support of a proposal required in order for a quorum to be reached and for a vote to succeed
+>     uint public _quorumVotes = 400; // % of total supply required
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Governance
+Line:        213
+Source: 
+>     /// @notice The number of votes required in order for a voter to become a proposer
+>     uint public _proposalThreshold = 100; 
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Governance
+Line:        245
+Source: 
+>     /// @notice The address of the governance token
+>     DelegateInterface public VOTER;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        16
+Source: 
+> 
+> pragma solidity ^0.5.17;
+> ^^^^^^^^^^^^^^^^^^^^^^^^
+> pragma experimental ABIEncoderV2;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Warning
+Contract:    Governance
+Line:        563
+Source: 
+>         // solium-disable-next-line security/no-call-value
+>         (bool success, bytes memory returnData) = target.call.value(value)(callData);
+>                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(success, "Timelock::executeTransaction: Transaction execution reverted.");
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Warning
+Contract:    Governance
+Line:        563
+Source: 
+>         // solium-disable-next-line security/no-call-value
+>         (bool success, bytes memory returnData) = target.call.value(value)(callData);
+>                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(success, "Timelock::executeTransaction: Transaction execution reverted.");
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    Governance
+Line:        563
+Source: 
+>         // solium-disable-next-line security/no-call-value
+>         (bool success, bytes memory returnData) = target.call.value(value)(callData);
+>                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(success, "Timelock::executeTransaction: Transaction execution reverted.");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Governance
+Line:        223
+Source: 
+>     function quorumVotes() public view returns (uint) {
+>         return VOTER.totalSupply().mul(_quorumVotes).div(BASE);
+>                ^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Governance
+Line:        227
+Source: 
+>     function proposalThreshold() public view returns (uint) {
+>         return VOTER.totalSupply().mul(_proposalThreshold).div(BASE);
+>                ^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    Governance
+Line:        475
+Source: 
+>         require(receipt.hasVoted == false, "Governance::_castVote: voter already voted");
+>         uint votes = VOTER.getPriorVotes(voter, proposal.startBlock);
+>                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Governance
+Line:        346
+Source: 
+>     function propose(address[] memory targets, uint[] memory values, string[] memory signatures, bytes[] memory calldatas, string memory description) public returns (uint) {
+>         require(VOTER.getPriorVotes(msg.sender, block.number.sub(1)) > proposalThreshold(), "Governance::propose: proposer votes below proposal threshold");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(targets.length == values.length && targets.length == signatures.length && targets.length == calldatas.length, "Governance::propose: proposal function information arity mismatch");
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    Governance
+Line:        416
+Source: 
+>         Proposal storage proposal = proposals[proposalId];
+>         require(VOTER.getPriorVotes(proposal.proposer, block.number.sub(1)) < proposalThreshold(), "Governance::cancel: proposer above threshold");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    Governance
+Line:        248
+Source: 
+>     /// @notice The total number of proposals
+>     uint public proposalCount;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Governance
+Line:        392
+Source: 
+>         }
+>         proposal.eta = eta;
+>         ^^^^^^^^^^^^^^^^^^
+>         emit ProposalQueued(proposalId, eta);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Governance
+Line:        404
+Source: 
+>         Proposal storage proposal = proposals[proposalId];
+>         proposal.executed = true;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^
+>         for (uint i = 0; i < proposal.targets.length; i++) {
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Governance
+Line:        418
+Source: 
+> 
+>         proposal.canceled = true;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^
+>         for (uint i = 0; i < proposal.targets.length; i++) {
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Governance
+Line:        478
+Source: 
+>         if (support) {
+>             proposal.forVotes = proposal.forVotes.add(votes);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         } else {
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Governance
+Line:        483
+Source: 
+> 
+>         receipt.hasVoted = true;
+>         ^^^^^^^^^^^^^^^^^^^^^^^
+>         receipt.support = support;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Governance
+Line:        484
+Source: 
+>         receipt.hasVoted = true;
+>         receipt.support = support;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^
+>         receipt.votes = votes;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Governance
+Line:        485
+Source: 
+>         receipt.support = support;
+>         receipt.votes = votes;
+>         ^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Governance
+Line:        480
+Source: 
+>         } else {
+>             proposal.againstVotes = proposal.againstVotes.add(votes);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    Governance
+Line:        573
+Source: 
+>         // solium-disable-next-line security/no-block-members
+>         return block.timestamp;
+>                ^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;35mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Conflict
+Contract:    Governance
+Line:        450
+Source: 
+>             return ProposalState.Executed;
+>         } else if (block.timestamp >= proposal.eta.add(GRACE_PERIOD)) {
+>                    ^^^^^^^^^^^^^^^
+>             return ProposalState.Expired;
+
+[0m
+[0;35mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Conflict
+Contract:    Governance
+Line:        388
+Source: 
+>         Proposal storage proposal = proposals[proposalId];
+>         uint eta = block.timestamp.add(delay);
+>                    ^^^^^^^^^^^^^^^
+>         for (uint i = 0; i < proposal.targets.length; i++) {
+
+[0m

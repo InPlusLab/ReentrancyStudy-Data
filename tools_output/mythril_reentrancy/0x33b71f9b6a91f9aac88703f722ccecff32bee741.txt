@@ -1,0 +1,169 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: CompoundBasicProxy
+Function name: payback(address,address,uint256)
+PC address: 1373
+Estimated Gas Usage: 2725 - 71287
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/825789c5ed27bb7d588648b927beb1f2.sol:137
+
+end back the extra eth
+        }
+    }
+
+    function withdr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x180, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: payback(address,address,uint256), txdata: 0x1d2adf0f000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: CompoundBasicProxy
+Function name: payback(address,address,uint256)
+PC address: 1443
+Estimated Gas Usage: 2725 - 71287
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/825789c5ed27bb7d588648b927beb1f2.sol:141
+
+s _tokenAddr) public {
+        if (_tokenA
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20000000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: payback(address,address,uint256), txdata: 0x1d2adf0f000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CompoundBasicProxy
+Function name: payback(address,address,uint256)
+PC address: 1443
+Estimated Gas Usage: 2725 - 71287
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/825789c5ed27bb7d588648b927beb1f2.sol:141
+
+s _tokenAddr) public {
+        if (_tokenA
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20c08606090001000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: payback(address,address,uint256), txdata: 0x1d2adf0f000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: CompoundBasicProxy
+Function name: withdrawTokens(address)
+PC address: 2375
+Estimated Gas Usage: 3655 - 72969
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/825789c5ed27bb7d588648b927beb1f2.sol:145
+
+his).balance);
+        }
+    }
+
+    function enterMarket(address _cTokenAddr) publ
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x7bee1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: withdrawTokens(address), txdata: 0x49df728c000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: CompoundBasicProxy
+Function name: withdrawTokens(address)
+PC address: 2375
+Estimated Gas Usage: 3655 - 72969
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/825789c5ed27bb7d588648b927beb1f2.sol:145
+
+his).balance);
+        }
+    }
+
+    function enterMarket(address _cTokenAddr) publ
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2f9b, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: withdrawTokens(address), txdata: 0x49df728c0000000000000000000000000101010101010101010101010101010101010101, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: CompoundBasicProxy
+Function name: deposit(address,address,uint256,bool)
+PC address: 4653
+Estimated Gas Usage: 2062 - 36438
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/825789c5ed27bb7d588648b927beb1f2.sol:96
+
+   /// @param _isCAmount If true _amount is cTokens 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xa00000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: deposit(address,address,uint256,bool), txdata: 0xf4d770e4000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010102010101010101010101010101, value: 0x0

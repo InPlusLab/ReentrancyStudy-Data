@@ -1,0 +1,386 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Multiplexer
+Function name: sendEth(address[],uint256[])
+PC address: 506
+Estimated Gas Usage: 562 - 6017
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bcb6b2bda123005273e024db10844f5f.sol:18
+
+address[] _to, uint256[] _value) payable returns (bool _success) {
+		// input validation
+		assert(_to.length == _value.length);
+		assert(_to.length <= 255);
+		// count values for refunding sender
+		uint256 beforeValue = msg.value;
+		uint256 afterValue = 0;
+		// loop through to addresses and send value
+		for (uint8 i = 0; i < _to.length; i++) {
+			afterValue = afterValue + _value[i];
+			assert(_to[i].send(_value[i]));
+		}
+		// send back remaining value to sender
+		uint256 remainingValue = beforeValue - afterValue;
+		if (remainingValue > 0) {
+			assert(msg.sender.send(remainingValue));
+		}
+
+		return true;
+	}
+
+	function sendErc20(address _token
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xf5, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: sendEth(address[],uint256[]), txdata: 0x25245b2680, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Multiplexer
+Function name: sendEth(address[],uint256[])
+PC address: 520
+Estimated Gas Usage: 597 - 6145
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bcb6b2bda123005273e024db10844f5f.sol:18
+
+address[] _to, uint256[] _value) payable returns (bool _success) {
+		// input validation
+		assert(_to.length == _value.length);
+		assert(_to.length <= 255);
+		// count values for refunding sender
+		uint256 beforeValue = msg.value;
+		uint256 afterValue = 0;
+		// loop through to addresses and send value
+		for (uint8 i = 0; i < _to.length; i++) {
+			afterValue = afterValue + _value[i];
+			assert(_to[i].send(_value[i]));
+		}
+		// send back remaining value to sender
+		uint256 remainingValue = beforeValue - afterValue;
+		if (remainingValue > 0) {
+			assert(msg.sender.send(remainingValue));
+		}
+
+		return true;
+	}
+
+	function sendErc20(address _token
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xbbfbb, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: sendEth(address[],uint256[]), txdata: 0x25245b26fe, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Multiplexer
+Function name: sendEth(address[],uint256[])
+PC address: 676
+Estimated Gas Usage: 3749 - 113531
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/bcb6b2bda123005273e024db10844f5f.sol:29
+
+}
+		// send back remai
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8000000008afba, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: sendEth(address[],uint256[]), txdata: 0x25245b26fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe00ff, value: 0x1
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Multiplexer
+Function name: sendEth(address[],uint256[])
+PC address: 688
+Estimated Gas Usage: 1669 - 42054
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bcb6b2bda123005273e024db10844f5f.sol:18
+
+address[] _to, uint256[] _value) payable returns (bool _success) {
+		// input validation
+		assert(_to.length == _value.length);
+		assert(_to.length <= 255);
+		// count values for refunding sender
+		uint256 beforeValue = msg.value;
+		uint256 afterValue = 0;
+		// loop through to addresses and send value
+		for (uint8 i = 0; i < _to.length; i++) {
+			afterValue = afterValue + _value[i];
+			assert(_to[i].send(_value[i]));
+		}
+		// send back remaining value to sender
+		uint256 remainingValue = beforeValue - afterValue;
+		if (remainingValue > 0) {
+			assert(msg.sender.send(remainingValue));
+		}
+
+		return true;
+	}
+
+	function sendErc20(address _token
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: sendEth(address[],uint256[]), txdata: 0x25245b26febffe0000000000000000000000000000000000000000000000000000000006ff, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Multiplexer
+Function name: sendEth(address[],uint256[])
+PC address: 764
+Estimated Gas Usage: 2670 - 77615
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/bcb6b2bda123005273e024db10844f5f.sol:33
+
+;
+		}
+
+		return true;
+	}
+
+	func
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000000000039, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: sendEth(address[],uint256[]), txdata: 0x25245b26fffffffffffffffffffffeffffffffffffffffffffffffffffffffffdefffea081, value: 0x1
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Multiplexer
+Function name: sendEth(address[],uint256[])
+PC address: 776
+Estimated Gas Usage: 1493 - 41320
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bcb6b2bda123005273e024db10844f5f.sol:18
+
+address[] _to, uint256[] _value) payable returns (bool _success) {
+		// input validation
+		assert(_to.length == _value.length);
+		assert(_to.length <= 255);
+		// count values for refunding sender
+		uint256 beforeValue = msg.value;
+		uint256 afterValue = 0;
+		// loop through to addresses and send value
+		for (uint8 i = 0; i < _to.length; i++) {
+			afterValue = afterValue + _value[i];
+			assert(_to[i].send(_value[i]));
+		}
+		// send back remaining value to sender
+		uint256 remainingValue = beforeValue - afterValue;
+		if (remainingValue > 0) {
+			assert(msg.sender.send(remainingValue));
+		}
+
+		return true;
+	}
+
+	function sendErc20(address _token
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21c10c04020fbb98, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: sendEth(address[],uint256[]), txdata: 0x25245b26, value: 0x1
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Multiplexer
+Function name: sendErc20(address,address[],uint256[])
+PC address: 809
+Estimated Gas Usage: 635 - 6090
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bcb6b2bda123005273e024db10844f5f.sol:39
+
+ss, address[] _to, uint256[] _value) returns (bool _success) {
+		// input validation
+		assert(_to.length == _value.length);
+		assert(_to.length <= 255);
+		// use the erc20 abi
+		ERC20 token = ERC20(_tokenAddress);
+		// loop through to addresses and send value
+		for (uint8 i = 0; i < _to.length; i++) {
+			assert(token.transferFrom(msg.sender, _to[i], _value[i]) == true);
+		}
+		return true;
+	}
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: sendErc20(address,address[],uint256[]), txdata: 0xaee256130412083c840400700100000010002000000040010001201000e200012030200880, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Multiplexer
+Function name: sendErc20(address,address[],uint256[])
+PC address: 823
+Estimated Gas Usage: 670 - 6218
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/bcb6b2bda123005273e024db10844f5f.sol:39
+
+ss, address[] _to, uint256[] _value) returns (bool _success) {
+		// input validation
+		assert(_to.length == _value.length);
+		assert(_to.length <= 255);
+		// use the erc20 abi
+		ERC20 token = ERC20(_tokenAddress);
+		// loop through to addresses and send value
+		for (uint8 i = 0; i < _to.length; i++) {
+			assert(token.transferFrom(msg.sender, _to[i], _value[i]) == true);
+		}
+		return true;
+	}
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: sendErc20(address,address[],uint256[]), txdata: 0xaee2561301, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Multiplexer
+Function name: sendErc20(address,address[],uint256[])
+PC address: 1118
+Estimated Gas Usage: 4701 - 81057
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/bcb6b2bda123005273e024db10844f5f.sol:47
+
+i]) == true);
+		}
+		return true;
+	}
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x41, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: sendErc20(address,address[],uint256[]), txdata: 0xaee25613000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeefa00000000000000000000000000000000000000000000000000000ffffffffc0ff, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Multiplexer
+Function name: sendErc20(address,address[],uint256[])
+PC address: 1118
+Estimated Gas Usage: 4701 - 81057
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/bcb6b2bda123005273e024db10844f5f.sol:47
+
+i]) == true);
+		}
+		return true;
+	}
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: sendErc20(address,address[],uint256[]), txdata: 0xaee256130000000000000000000000000000000000000000000000000000000000000002, value: 0x0

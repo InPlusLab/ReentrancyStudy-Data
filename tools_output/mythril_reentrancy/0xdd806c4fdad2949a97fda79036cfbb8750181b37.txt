@@ -1,0 +1,458 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Governance
+Function name: proposals(uint256) or proposals(uint256)
+PC address: 1178
+Estimated Gas Usage: 1195 - 1290
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/d3b963812c23395767abf6d4ccb81bb0.sol:293
+
+ mapping (address => uint) 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x502021b09, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: proposals(uint256), txdata: 0x013cf08b0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Governance
+Function name: finalize(uint256) or finalize(uint256)
+PC address: 1532
+Estimated Gas Usage: 1220 - 1315
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/d3b963812c23395767abf6d4ccb81bb0.sol:515
+
+          require(token.transfer(proposal.feeRecipient, proposal.fee), "Governance::finalize: Return proposal fee failed");
+
+            proposal.target.call(proposal.data);
+
+
+
+            emit Execute(proposalId);
+
+        } else {
+
+            require(_time > proposal.startTime.add(OPEN_VOTE_PERIOD), "Governance::finalize: Proposal cannot be terminated until end of yes vote period");
+
+
+
+            proposal.result = Result.No;
+
+            require(token.transfer(address(void), proposal.fee), "Governance::finalize: Transfer to void failed");
+
+
+
+            emit Terminate(proposalId);
+
+        }
+
+    }
+
+
+
+    function setProposalFee(uint fee) public {
+
+        require(msg.sender == address(this), "Governance::setProposalFee: Proposal fee can only be set via governance");
+
+        proposalFee = fee;
+
+    }
+
+
+
+    function time() public view returns (uint) {
+
+        return block.timestamp;
+
+    }
+
+
+
+    function getProposal(uint proposalId) external view returns (Proposal memory) {
+
+        return proposals[proposalId];
+
+    }
+
+
+
+    function getProposalsCount() external view returns (uint) {
+
+        return proposals.length;
+
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x502079aa3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: finalize(uint256), txdata: 0x05261aea0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Governance
+Function name: voteNo(uint256) or voteNo(uint256)
+PC address: 2922
+Estimated Gas Usage: 1197 - 1292
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/d3b963812c23395767abf6d4ccb81bb0.sol:431
+
+);
+
+
+
+        uint _deposit = deposits[msg.sender];
+
+        uint weight = _deposit.sub(noVotes[proposalId][msg.sender]);
+
+        proposal.noCount = proposal.noCount.add(weight);
+
+        noVotes[proposalId][msg.sender] = _deposit;
+
+
+
+        emit Vote(proposalId, msg.sender, false, weight);
+
+
+
+        // Finalize the vote and burn the proposal fee if no votes outnumber yes votes and open voting has ended
+
+        if (_time > proposal.startTime.add(OPEN_VOTE_PERIOD) && proposal.noCount >= proposal.yesCount) {
+
+            proposal.result = Result.No;
+
+            require(token.transfer(address(void), proposal.fee), "Governance::voteNo: Transfer to void failed");
+
+            emit Terminate(proposalId);
+
+        } else if (proposalEndTime > withdrawTimes[msg.sender]) {
+
+            withdrawTimes[msg.sender] = proposalEndTime;
+
+        }
+
+
+
+    }
+
+
+
+    function removeVote(uint proposalId) public {
+
+        Proposal storage proposal = proposals[proposalId];
+
+        require(proposal.result == Result.Pending, "Governance::removeVote: Proposal is already finalized");
+
+        require(time() <= proposal.startTime.add(TOTAL_VOTE_PERIOD), "Governance::removeVote: Proposal is no longer in voting period");
+
+
+
+        proposal.yesCount = proposal.yesCount.sub(yesVotes[proposalId][msg.sender]);
+
+        proposal
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x70981, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: voteNo(uint256), txdata: 0x1a6f7be50000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Governance
+Function name: withdraw(uint256) or withdraw(uint256)
+PC address: 4168
+Estimated Gas Usage: 1323 - 1608
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/d3b963812c23395767abf6d4ccb81bb0.sol:337
+
+ytes memory data) public returns (uint) {
+
+        return proposeWithFeeRecipient(msg.sender, target, data);
+
+    }
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdraw(uint256), txdata: 0x2e1a7d4d0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Governance
+Function name: withdraw(uint256) or withdraw(uint256)
+PC address: 4498
+Estimated Gas Usage: 10472 - 66219
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d3b963812c23395767abf6d4ccb81bb0.sol:345
+
+ry data) public returns (uint) {
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000010000002001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 7d7d7d7d7d7d7d7d7d7d7d7ddeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: withdraw(uint256), txdata: 0x2e1a7d4d0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Governance
+Function name: removeVote(uint256) or removeVote(uint256)
+PC address: 4631
+Estimated Gas Usage: 1241 - 1336
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/d3b963812c23395767abf6d4ccb81bb0.sol:483
+
+roposal.noCount.sub(noVotes[proposalId][msg.sender]);
+
+        delete yesVotes[proposalId][msg.sender];
+
+        delete noVotes[proposalId][msg.sender];
+
+
+
+        emit RemoveVote(proposalId, msg.sender);
+
+    }
+
+
+
+    function finalize(uint proposalId) public {
+
+        Proposal storage proposal = proposals[proposalId];
+
+        require(proposal.result == Result.Pending, "Governance::finalize: Proposal is already finalized");
+
+        uint _time = time();
+
+
+
+        if (proposal.yesCount > proposal.noCount) {
+
+            require(_time > proposal.startTime.add(TOTAL_VOTE_PERIOD), "Governance::finalize: Proposal cannot be executed until end of veto period");
+
+
+
+            proposal.result = Res
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: removeVote(uint256), txdata: 0x3f68fde40000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Governance
+Function name: voteYes(uint256) or voteYes(uint256)
+PC address: 5338
+Estimated Gas Usage: 1285 - 1380
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/d3b963812c23395767abf6d4ccb81bb0.sol:401
+
+g.sender] = proposalEndTime;
+
+
+
+        uint weight = deposits[msg.sender].sub(yesVotes[proposalId][msg.sender]);
+
+        proposal.yesCount = proposal.yesCount.add(weight);
+
+        yesVotes[proposalId][msg.sender] = deposits[msg.sender];
+
+
+
+        emit Vote(proposalId, msg.sender, true, weight);
+
+    }
+
+
+
+    function voteNo(uint proposalId) public {
+
+        Proposal storage proposal = proposals[proposalId];
+
+        require(proposal.result == Result.Pending, "Governance::voteNo: Proposal is already finalized");
+
+
+
+        uint proposalEndTime = proposal.startTime.add(TOTAL_VOTE_PERIOD);
+
+        uint _time = time();
+
+        require(_time <= proposalEndTime, "Governance::voteNo: Proposal is no longer in vo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: voteYes(uint256), txdata: 0x6a1cf7210000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Governance
+Function name: deposit(uint256) or deposit(uint256)
+PC address: 6288
+Estimated Gas Usage: 9743 - 65395
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d3b963812c23395767abf6d4ccb81bb0.sol:327
+
+oposal cannot withdraw");
+
+        deposits[msg.sende
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 131313131313131313131313deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: deposit(uint256), txdata: 0xb6b55f25000000205000258c210000000000070003fc082000000121c041100004694a01, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Governance
+Function name: deposit(uint256) or deposit(uint256)
+PC address: 6472
+Estimated Gas Usage: 9743 - 65395
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d3b963812c23395767abf6d4ccb81bb0.sol:331
+
+nder, amount), "Gove
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xe80800801003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: e5e5e5e5e5e5e5e5e5e5e5e5deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: deposit(uint256), txdata: 0xb6b55f25000002900120000000aa0802c0000000000400000000003400000108e2900008, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Governance
+Function name: deposit(uint256) or deposit(uint256)
+PC address: 6552
+Estimated Gas Usage: 9743 - 65395
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d3b963812c23395767abf6d4ccb81bb0.sol:331
+
+e(token.transfer(msg.sender, amount), "Governance::with
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xe80800801003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: e5e5e5e5e5e5e5e5e5e5e5e5deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: deposit(uint256), txdata: 0xb6b55f25000002900120000000aa0802c0000000000400000000003400000108e2900008, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Low
+Contract: Governance
+Function name: getProposal(uint256) or getProposal(uint256)
+PC address: 6582
+Estimated Gas Usage: 1449 - 2587
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values). This issue is reported for internal compiler generated code.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getProposal(uint256), txdata: 0xc7f758a80410000201004020010004020000000000000000000000000000000000000000, value: 0x0

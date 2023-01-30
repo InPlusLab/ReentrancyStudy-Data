@@ -1,0 +1,522 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Autobid
+Function name: fallback
+PC address: 204
+Estimated Gas Usage: 1719 - 2144
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:49
+
+ modifier autobidExpired() {
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Autobid
+Function name: fallback
+PC address: 427
+Estimated Gas Usage: 16999 - 109161
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:88
+
+expired (i.e. is empty)
+    expirationCheck();
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9deadbeefdeadbeefdeadbeefdeadbeefdeadbeeff0a082310404024020080001008000800901d12ebe1b195e5aa8748e62bd773503, value: 0x0
+Caller: [ATTACKER], function: unknown, txdata: 0x01021001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Autobid
+Function name: fallback
+PC address: 506
+Estimated Gas Usage: 16756 - 108918
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:95
+
+*****
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x34000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8d8ddeadbeefdeadbeefdeadbeefdeadbeefdeadbeeff8208301008000012040080400108080090511519d0319ca5aaa548f03035d358d, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Autobid
+Function name: fallback
+PC address: 1165
+Estimated Gas Usage: 16999 - 109161
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:124
+
+int remainingT
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9deadbeefdeadbeefdeadbeefdeadbeefdeadbeeff0a082310000800002400120010000800901d12ebe1b195e5aa8748e62bd773580, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x04040104, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Autobid
+Function name: expirationCheck()
+PC address: 1172
+Estimated Gas Usage: 1002 - 1097
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:123
+
+ires
+    uint remainingTokenSupply = Token(token).balance
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: expirationCheck(), txdata: 0x6a1b52e1, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Autobid
+Function name: fallback
+PC address: 1206
+Estimated Gas Usage: 16999 - 109161
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:130
+
+*****
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9deadbeefdeadbeefdeadbeefdeadbeefdeadbeeff0a082310000800002400120010000800901d12ebe1b195e5aa8748e62bd773580, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x04040104, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Autobid
+Function name: expirationCheck()
+PC address: 1403
+Estimated Gas Usage: 16036 - 91871
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:130
+
+****************************
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 5252525252525252525252525252525252525252525252525252525252525252525252525252525252525252deadbeefdeadbeefdeadbeefdeadbeefdeadbeefb2, value: 0x0
+Caller: [CREATOR], function: expirationCheck(), txdata: 0x6a1b52e1, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Autobid
+Function name: fallback
+PC address: 1403
+Estimated Gas Usage: 16999 - 109161
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:130
+
+****************************
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9deadbeefdeadbeefdeadbeefdeadbeefdeadbeeff0a082310404024020080001008000800901d12ebe1b195e5aa8748e62bd773503, value: 0x0
+Caller: [ATTACKER], function: unknown, txdata: 0x01021001, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Autobid
+Function name: fallback
+PC address: 1403
+Estimated Gas Usage: 16999 - 109161
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:130
+
+****************************
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b98101010101010101010101010101200000000000000000000028748e62bd773540, value: 0x0
+Caller: [ATTACKER], function: unknown, txdata: 0x80000101, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Autobid
+Function name: fallback
+PC address: 1403
+Estimated Gas Usage: 16999 - 109161
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:130
+
+****************************
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9deadbeefdeadbeefdeadbeefdeadbeefdeadbeeff0a082310000800002400120010000800901d12ebe1b195e5aa8748e62bd773580, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x04040104, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Autobid
+Function name: expirationCheck()
+PC address: 1429
+Estimated Gas Usage: 16036 - 91871
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:131
+
+aw function 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21800c00020f65f9, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 5252525252525252525252525252525252525252525252525252525252525252525252525252525252525252deadbeefdeadbeefdeadbeefdeadbeefdeadbeefc0, value: 0x0
+Caller: [SOMEGUY], function: expirationCheck(), txdata: 0x6a1b52e1, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Autobid
+Function name: expirationCheck()
+PC address: 1448
+Estimated Gas Usage: 16036 - 91871
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:132
+
+ @param amount
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21800c00020f65f9, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 5252525252525252525252525252525252525252525252525252525252525252525252525252525252525252deadbeefdeadbeefdeadbeefdeadbeefdeadbeefc0, value: 0x0
+Caller: [SOMEGUY], function: expirationCheck(), txdata: 0x6a1b52e1, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Autobid
+Function name: expirationCheck()
+PC address: 1462
+Estimated Gas Usage: 16036 - 91871
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:132
+
+ @param amount
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21800c00020f65f9, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 5252525252525252525252525252525252525252525252525252525252525252525252525252525252525252deadbeefdeadbeefdeadbeefdeadbeefdeadbeefc0, value: 0x0
+Caller: [SOMEGUY], function: expirationCheck(), txdata: 0x6a1b52e1, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Autobid
+Function name: redeemTokens(uint256)
+PC address: 2901
+Estimated Gas Usage: 1964 - 2389
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:49
+
+ modifier autobidExpired() {
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: redeemTokens(uint256), txdata: 0xa6e158f8, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Autobid
+Function name: redeemTokens(uint256)
+PC address: 3169
+Estimated Gas Usage: 7005 - 77613
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:105
+
+e; 
+
+    msg.sender.transfer(redemptionValue);
+
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000442, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00c60208846000200101214d089280000240100201400000800000000000000141, value: 0x0
+Caller: [SOMEGUY], function: redeemTokens(uint256), txdata: 0xa6e158f8, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Autobid
+Function name: redeemTokens(uint256)
+PC address: 3204
+Estimated Gas Usage: 7005 - 77613
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:110
+
+sg.sender, a
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21119, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9deadbeefdeadbeefdeadbeefdeadbeefdeadbeef400000080000000000000000000000000000000000000000000000000000000202, value: 0x0
+Caller: [SOMEGUY], function: redeemTokens(uint256), txdata: 0xa6e158f8, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Autobid
+Function name: redeemTokens(uint256)
+PC address: 3213
+Estimated Gas Usage: 5327 - 41022
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:101
+
+once the sender has approved 
+    // the RedemptionContract address for the deposit amount 
+    require(Token(token).transferFrom(msg.sender, this, amount));
+
+    uint redemptionValue = amount / exchangeRate; 
+
+    msg.sender.transfer(redemptionValue);
+
+    // Fire Redemption event
+    Redemption(msg.sender, amount, redemptionValue);
+  }
+
+  /**************************************************************\
+   *  @dev Expires contract if any expira
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+Caller: [SOMEGUY], function: redeemTokens(uint256), txdata: 0xa6e158f8, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Autobid
+Function name: redeemTokens(uint256)
+PC address: 3265
+Estimated Gas Usage: 7005 - 77613
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:110
+
+emptionValue);
+  }
+
+  /*************
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000040020403, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x44101c0808001, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b90008800680808001040a2008208080041001010120200480028080041010200101, value: 0x0
+Caller: [ATTACKER], function: redeemTokens(uint256), txdata: 0xa6e158f8, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Autobid
+Function name: redeemTokens(uint256)
+PC address: 3265
+Estimated Gas Usage: 7005 - 77613
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d4029de6addb8117ea3cd0b4237f6797.sol:110
+
+emptionValue);
+  }
+
+  /*************
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21119, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9b9deadbeefdeadbeefdeadbeefdeadbeefdeadbeef400000080000000000000000000000000000000000000000000000000000000202, value: 0x0
+Caller: [SOMEGUY], function: redeemTokens(uint256), txdata: 0xa6e158f8, value: 0x0

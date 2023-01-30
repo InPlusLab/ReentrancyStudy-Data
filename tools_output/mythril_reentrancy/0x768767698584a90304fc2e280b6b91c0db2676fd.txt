@@ -1,0 +1,43 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: SmoothyV1
+Function name: swap(address,address,uint256,uint256,address,bytes)
+PC address: 426
+Estimated Gas Usage: 4680 - 75130
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/8515c0d6824cc13ee4c167f4dd76e3d6.sol:750
+Initial State:
+
+Account: [CREATOR], balance: 0x82020, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: swap(address,address,uint256,uint256,address,bytes), txdata: 0xb69cbf9f000000000000000000000000000000000000000000000000000000000000005700000000000000000000000000000000000000000000000000000000000000001d62ed3e0000000000000000000000000901d12ebe1b195e5aa8748e62bd77350000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: SmoothyV1
+Function name: swap(address,address,uint256,uint256,address,bytes)
+PC address: 426
+Estimated Gas Usage: 4680 - 75130
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/8515c0d6824cc13ee4c167f4dd76e3d6.sol:750
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: swap(address,address,uint256,uint256,address,bytes), txdata: 0xb69cbf9f000000000000000000000000000000000000000000000000000000000000005500000000000000000000000000000000000000000000000000000000000000001d62ed3e0201000200802080000000000901d12ebe1b195e5aa8748e62bd7735000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0

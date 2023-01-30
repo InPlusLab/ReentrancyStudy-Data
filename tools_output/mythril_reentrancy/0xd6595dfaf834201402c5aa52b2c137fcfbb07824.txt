@@ -1,0 +1,243 @@
+==== Unprotected Ether Withdrawal ====
+SWC ID: 105
+Severity: High
+Contract: CanReclaimToken
+Function name: reclaimToken(address) or reclaimToken(address)
+PC address: 499
+Estimated Gas Usage: 3559 - 38500
+Any sender can withdraw Ether from the contract account.
+Arbitrary senders other than the contract creator can profitably extract Ether from the contract account. Verify the business logic carefully and make sure that appropriate security controls are in place to prevent unexpected loss of funds.
+--------------------
+In file: /tmp/a8c841fdbdc105e8c9f6b917e9c6e812.sol:281
+
+Contract
+
+/// @dev It is ERC20 compli
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x1
+Caller: [CREATOR], function: transferOwnership(address), txdata: 0xf2fde38b000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: reclaimToken(address), txdata: 0x17ffc3205b5b5b5b5b5b5b5b5b5b5b5b0000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: CanReclaimToken
+Function name: reclaimToken(address) or reclaimToken(address)
+PC address: 854
+Estimated Gas Usage: 5384 - 75358
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/a8c841fdbdc105e8c9f6b917e9c6e812.sol:291
+
+ the default owner is the msg.
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc3200000000000000000000000000101010101010101010101010101010101010101, value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320ffffffffffffffffffffffffdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: CanReclaimToken
+Function name: reclaimToken(address) or reclaimToken(address)
+PC address: 854
+Estimated Gas Usage: 5384 - 75358
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/a8c841fdbdc105e8c9f6b917e9c6e812.sol:291
+
+ the default owner is the msg.
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42a00108058000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc3200000000000000000000000000180010101010101010110200101100101018001, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: DividendToken
+Function name: balanceOf(address) or balanceOf(address)
+PC address: 4122
+Estimated Gas Usage: 3141 - 4041
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/a8c841fdbdc105e8c9f6b917e9c6e812.sol:791
+
+ion totalSupplyAt(uint _blockNumber) public view returns(uint) {
+
+
+
+        // These next few lines are used when the totalSupply of the token is
+
+        //  requested before a check point was ever created for this token, it
+
+        //  requires that the `parentToken.totalSupplyAt` be queried at the
+
+        //  genesis block for this token as that contains totalSupply of this
+
+        //  token at this block number.
+
+        if ((totalSupplyHistory.length == 0)
+
+            || (totalSupplyHistory[0].fromBlock > _blockNumber)) {
+
+          
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x801, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: balanceOf(address), txdata: 0x70a08231808080808080808080808080affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: DividendToken
+Function name: totalSupply() or totalSupply()
+PC address: 5831
+Estimated Gas Usage: 2849 - 3369
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/a8c841fdbdc105e8c9f6b917e9c6e812.sol:849
+
+ the tokens are generated correctly
+
+    function mint(address _owner, uint _amount) external onlyOwner returns (bool) {
+
+        uint curTotalSupply = totalSupply();
+
+        require(curTotalSupply + _amount >= curTotalSupply); // Check for overflow
+
+        uint previousBalanceTo = balanceOf(_owner);
+
+        require(previousBalanceTo + _amount >= previousBalanceTo); // Check for overflow
+
+        updateValueAtNow(totalSupplyHistory, curTotalSupply + _amount);
+
+        updateValueAtNow(balances[_owner], previ
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: totalSupply(), txdata: 0x18160ddd, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: DividendToken
+Function name: transfer(address,uint256) or transfer(address,uint256)
+PC address: 7480
+Estimated Gas Usage: 1157 - 1252
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/a8c841fdbdc105e8c9f6b917e9c6e812.sol:535
+
+ //  sending the tokens
+
+        updateValu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transfer(address,uint256), txdata: 0xa9059cbb02020202020202020202020202020202020202020202020202020202020202020101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: DividendToken
+Function name: balanceOf(address) or balanceOf(address)
+PC address: 8288
+Estimated Gas Usage: 3879 - 4824
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/a8c841fdbdc105e8c9f6b917e9c6e812.sol:1013
+Initial State:
+
+Account: [CREATOR], balance: 0x400029080040001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000008, value: 0x0
+Caller: [SOMEGUY], function: balanceOf(address), txdata: 0x70a082310000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: DividendToken
+Function name: totalSupply() or totalSupply()
+PC address: 8412
+Estimated Gas Usage: 6272 - 7217
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/a8c841fdbdc105e8c9f6b917e9c6e812.sol:979
+
+        || (checkpoints[checkpoints.length -1].fromBlock < block.number)) {
+
+            Checkpoint storage newCheckPoin
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3100840041082003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: totalSupply(), txdata: 0x18160ddd, value: 0x0

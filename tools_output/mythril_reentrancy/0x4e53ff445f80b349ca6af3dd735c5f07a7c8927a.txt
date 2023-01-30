@@ -1,0 +1,233 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ExtraBoxCash
+Function name: transferFrom(address,address,uint256) or transferFrom(address,address,uint256)
+PC address: 2616
+Estimated Gas Usage: 329 - 424
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/9fa95ffb4a81d507bf34ef32626e0a33.sol:375
+
+er] = allowed[_from][msg.sender].sub(_amount);
+
+        balances[_to] = balances[_to].add(_amount);
+
+        emit Transfer(_from, _to, _amount);
+
+        return true;
+
+    }
+
+    
+
+    function approve(address _spender, uint256 _value) public returns (bool success) {
+
+        if (_value != 0 && allowed[msg.sender][_spender] != 0) { return false; }
+
+        allowed[msg.sender][_spender] = _value;
+
+        emit Approval(msg.sender, _spender, _value);
+
+        return true;
+
+    }
+
+    
+
+    function allowance(address _owner, address _spender) constant 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc1040400000002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transferFrom(address,address,uint256), txdata: 0x23b872dd, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ExtraBoxCash
+Function name: transfer(address,uint256) or transfer(address,uint256) or transfer(address,uint256) or transfer(address,uint256)
+PC address: 4620
+Estimated Gas Usage: 475 - 570
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/9fa95ffb4a81d507bf34ef32626e0a33.sol:355
+
+er(msg.sender, _to, _amount);
+
+        return true;
+
+    }
+
+    
+
+    function transferFrom(address _from, address _to, uint256 _amount) onlyPayloadSize(3 * 32) public returns (bool success) {
+
+        require(_to != address(0));
+
+        require(_amount <= balances[_from]);
+
+        require(_amount <= allowed[_from][msg.sender]);
+
+        
+
+        balances[_from] = balances[_from].sub(_amount);
+
+        allowed
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10000000200007d, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transfer(address,uint256), txdata: 0xa9059cbb, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ExtraBoxCash
+Function name: getTokenBalance(address,address)
+PC address: 5352
+Estimated Gas Usage: 2187 - 37125
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/9fa95ffb4a81d507bf34ef32626e0a33.sol:441
+
+  totalSupply = 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x7c0001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: getTokenBalance(address,address), txdata: 0xc489744b000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ExtraBoxCash
+Function name: withdrawForeignTokens(address)
+PC address: 5783
+Estimated Gas Usage: 5546 - 75801
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/9fa95ffb4a81d507bf34ef32626e0a33.sol:461
+Initial State:
+
+Account: [CREATOR], balance: 0x8004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawForeignTokens(address), txdata: 0xe58fc54c000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ExtraBoxCash
+Function name: withdrawForeignTokens(address)
+PC address: 5840
+Estimated Gas Usage: 5546 - 75801
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/9fa95ffb4a81d507bf34ef32626e0a33.sol:461
+Initial State:
+
+Account: [CREATOR], balance: 0x10000000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawForeignTokens(address), txdata: 0xe58fc54c000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ExtraBoxCash
+Function name: withdrawForeignTokens(address)
+PC address: 6004
+Estimated Gas Usage: 5546 - 75801
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/9fa95ffb4a81d507bf34ef32626e0a33.sol:461
+Initial State:
+
+Account: [CREATOR], balance: 0x8004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawForeignTokens(address), txdata: 0xe58fc54c000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: ExtraBoxCash
+Function name: withdrawForeignTokens(address)
+PC address: 6004
+Estimated Gas Usage: 5546 - 75801
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/9fa95ffb4a81d507bf34ef32626e0a33.sol:461
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawForeignTokens(address), txdata: 0xe58fc54c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ExtraBoxCash
+Function name: withdrawForeignTokens(address)
+PC address: 6004
+Estimated Gas Usage: 5546 - 75801
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/9fa95ffb4a81d507bf34ef32626e0a33.sol:461
+Initial State:
+
+Account: [CREATOR], balance: 0x10000000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawForeignTokens(address), txdata: 0xe58fc54c000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

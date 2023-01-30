@@ -1,0 +1,541 @@
+pragma directive defines a prior version to 0.6.12. Changing pragma version to 0.6.12....
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        70
+Source: 
+>     address payable public seller;
+>     uint256 public bidLength = 12 hours;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public auctionLength = 3 days;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        71
+Source: 
+>     uint256 public bidLength = 12 hours;
+>     uint256 public auctionLength = 3 days;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public minIncrease = 0.1 ether;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        72
+Source: 
+>     uint256 public auctionLength = 3 days;
+>     uint256 public minIncrease = 0.1 ether;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    EnglishAuction
+Line:        128
+Source: 
+>         require(!ended, "end already called");
+>         require(lastBidTime == 0, "There were bids");
+>                 ^^^^^^^^^^^^^^^^
+>         require(block.timestamp >= startBidTime.add(auctionLength), "Auction live");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    EnglishAuction
+Line:        91
+Source: 
+> 
+>     function bid() public payable {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(block.timestamp < startBidTime.add(auctionLength), "Auction ended");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    EnglishAuction
+Line:        108
+Source: 
+> 
+>     function end() public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^
+>         require(!ended, "end already called");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    EnglishAuction
+Line:        126
+Source: 
+> 
+>     function pull() public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(!ended, "end already called");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        144
+Source: 
+> 
+>     function onERC1155Received(address _operator, address _from, uint256 _id, uint256 _value, bytes calldata _data) external pure returns(bytes4) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    EnglishAuction
+Line:        132
+Source: 
+>         // transfer erc1155 to seller
+>         IERC1155(token).safeTransferFrom(address(this), seller, id, 1, new bytes(0x0));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Warning
+Contract:    EnglishAuction
+Line:        98
+Source: 
+>             require(block.timestamp < lastBidTime.add(bidLength), "Auction ended");
+>             winning.transfer(lastBid);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        118
+Source: 
+>         uint256 hausFee = balance.div(20).mul(3);
+>         haus.transfer(hausFee);
+>         ^^^^^^^^^^^^^^^^^^^^^^
+>         seller.transfer(address(this).balance);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        119
+Source: 
+>         haus.transfer(hausFee);
+>         seller.transfer(address(this).balance);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Warning
+Contract:    EnglishAuction
+Line:        118
+Source: 
+>         uint256 hausFee = balance.div(20).mul(3);
+>         haus.transfer(hausFee);
+>         ^^^^^^^^^^^^^^^^^^^^^^
+>         seller.transfer(address(this).balance);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        98
+Source: 
+>             require(block.timestamp < lastBidTime.add(bidLength), "Auction ended");
+>             winning.transfer(lastBid);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        119
+Source: 
+>         haus.transfer(hausFee);
+>         seller.transfer(address(this).balance);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        98
+Source: 
+>             require(block.timestamp < lastBidTime.add(bidLength), "Auction ended");
+>             winning.transfer(lastBid);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        118
+Source: 
+>         uint256 hausFee = balance.div(20).mul(3);
+>         haus.transfer(hausFee);
+>         ^^^^^^^^^^^^^^^^^^^^^^
+>         seller.transfer(address(this).balance);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        119
+Source: 
+>         haus.transfer(hausFee);
+>         seller.transfer(address(this).balance);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        98
+Source: 
+>             require(block.timestamp < lastBidTime.add(bidLength), "Auction ended");
+>             winning.transfer(lastBid);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        118
+Source: 
+>         uint256 hausFee = balance.div(20).mul(3);
+>         haus.transfer(hausFee);
+>         ^^^^^^^^^^^^^^^^^^^^^^
+>         seller.transfer(address(this).balance);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        119
+Source: 
+>         haus.transfer(hausFee);
+>         seller.transfer(address(this).balance);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        114
+Source: 
+>         // transfer erc1155 to winner
+>         IERC1155(token).safeTransferFrom(address(this), winning, id, 1, new bytes(0x0));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        132
+Source: 
+>         // transfer erc1155 to seller
+>         IERC1155(token).safeTransferFrom(address(this), seller, id, 1, new bytes(0x0));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        76
+Source: 
+>     uint256 public lastBid;
+>     uint256 public lastBidTime;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address payable public winning;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        77
+Source: 
+>     uint256 public lastBidTime;
+>     address payable public winning;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted Ether Flow
+Description: The execution of ether flows should be restricted to an
+             authorized set of users.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        98
+Source: 
+>             require(block.timestamp < lastBidTime.add(bidLength), "Auction ended");
+>             winning.transfer(lastBid);
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted Ether Flow
+Description: The execution of ether flows should be restricted to an
+             authorized set of users.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        118
+Source: 
+>         uint256 hausFee = balance.div(20).mul(3);
+>         haus.transfer(hausFee);
+>         ^^^^^^^^^^^^^^^^^^^^^^
+>         seller.transfer(address(this).balance);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted Ether Flow
+Description: The execution of ether flows should be restricted to an
+             authorized set of users.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        119
+Source: 
+>         haus.transfer(hausFee);
+>         seller.transfer(address(this).balance);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        101
+Source: 
+> 
+>         lastBid = msg.value;
+>         ^^^^^^^^^^^^^^^^^^^
+>         winning = msg.sender;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        102
+Source: 
+>         lastBid = msg.value;
+>         winning = msg.sender;
+>         ^^^^^^^^^^^^^^^^^^^^
+>         lastBidTime = block.timestamp;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        103
+Source: 
+>         winning = msg.sender;
+>         lastBidTime = block.timestamp;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        121
+Source: 
+> 
+>         ended = true;
+>         ^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        134
+Source: 
+> 
+>         ended = true;
+>         ^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        92
+Source: 
+>     function bid() public payable {
+>         require(block.timestamp < startBidTime.add(auctionLength), "Auction ended");
+>                 ^^^^^^^^^^^^^^^
+>         require(msg.value >= lastBid.add(minIncrease), "Bid too small");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        97
+Source: 
+>         if (lastBidTime != 0) {
+>             require(block.timestamp < lastBidTime.add(bidLength), "Auction ended");
+>                     ^^^^^^^^^^^^^^^
+>             winning.transfer(lastBid);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        103
+Source: 
+>         winning = msg.sender;
+>         lastBidTime = block.timestamp;
+>                       ^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        111
+Source: 
+>         require(lastBidTime != 0, "no bids");
+>         require(block.timestamp >= lastBidTime.add(bidLength) || block.timestamp >= startBidTime.add(auctionLength), "Auction live");
+>                 ^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        111
+Source: 
+>         require(lastBidTime != 0, "no bids");
+>         require(block.timestamp >= lastBidTime.add(bidLength) || block.timestamp >= startBidTime.add(auctionLength), "Auction live");
+>                                                                  ^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    EnglishAuction
+Line:        129
+Source: 
+>         require(lastBidTime == 0, "There were bids");
+>         require(block.timestamp >= startBidTime.add(auctionLength), "Auction live");
+>                 ^^^^^^^^^^^^^^^
+> 
+
+[0m

@@ -1,0 +1,127 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Proxy
+Function name: forward(address,uint256,bytes)
+PC address: 961
+Estimated Gas Usage: 3809 - 42389
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: forward(address,uint256,bytes), txdata: 0xd7f31eb9000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000090, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MetaIdentityManager
+Function name: addOwnerFromRecovery(address,address,address)
+PC address: 6087
+Estimated Gas Usage: 17160 - 60162
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/76cb3c5aed61f961f1b345f9847fbe29.sol:109
+
+(address addr) 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x800000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 8000000000040204010104014080200201004000000040082001400120048001c0000000000000000101000000000000000000000000000000000000000000008080808080808080808080808040808004404040404004404040404040401001000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: addOwnerFromRecovery(address,address,address), txdata: 0x754fd352, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: MetaIdentityManager
+Function name: addOwnerFromRecovery(address,address,address)
+PC address: 6219
+Estimated Gas Usage: 4067 - 5392
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/76cb3c5aed61f961f1b345f9847fbe29.sol:106
+
+  _;
+    }
+
+    modifier validAddress(address addr) { 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x200081a0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 001010011040010000000000000000000040400001800000000800000080010180101001104001000000000000000000004001000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: addOwnerFromRecovery(address,address,address), txdata: 0x754fd352, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MetaIdentityManager
+Function name: registerIdentity(address,address)
+PC address: 6860
+Estimated Gas Usage: 15332 - 57384
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/76cb3c5aed61f961f1b345f9847fbe29.sol:159
+
+ owner, recoveryKey
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 001081808080860101020100808084011011000000000000000000000000000001, value: 0x0
+Caller: [SOMEGUY], function: registerIdentity(address,address), txdata: 0x781f5a83020202020202020202020202000000000000000000000000000000000000000402020202020202020202020280, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MetaIdentityManager
+Function name: createIdentity(address,address)
+PC address: 10067
+Estimated Gas Usage: 52745 - 119496
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/76cb3c5aed61f961f1b345f9847fbe29.sol:135
+
+       LogIdentityC
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x119002a0111380001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 050080008080848101900101028082050010100410101010101010041010010109, value: 0x0
+Caller: [SOMEGUY], function: createIdentity(address,address), txdata: 0xd10e73ab909090909090909090909090000000000000000000000000000000000200000190909090909090909090909001, value: 0x0

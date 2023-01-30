@@ -1,0 +1,691 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Hodl
+Function name: fallback
+PC address: 1059
+Estimated Gas Usage: 1068 - 2013
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:251
+
+
+
+    */
+
+    uint256 public comission; //0..100
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42040000000029000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: _userSafes(address,uint256), txdata: 0x11a3311c, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Hodl
+Function name: _listedReserves(uint256)
+PC address: 1163
+Estimated Gas Usage: 1015 - 1440
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:285
+
+lic payable {
+
+        require(m
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: _listedReserves(uint256), txdata: 0x1c019a52, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 1726
+Estimated Gas Usage: 1209 - 2294
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:403
+
+d[tokenAddress], 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000010101010101010101010101010101010101010101, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 1851
+Estimated Gas Usage: 54338 - 273148
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:415
+
+fe
+
+    */
+
+    function UserRetireHodl(uint256 id) p
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeefbd118302350d9000461493010c008204020121100609100016015000a8046c0201, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 1935
+Estimated Gas Usage: 54338 - 273148
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:423
+
+
+
+        req
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0100100003281100187c4c08820320a05002a094c42042004804d0022800402402, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 1937
+Estimated Gas Usage: 54338 - 273148
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0100100003281100187c4c08820320a05002a094c42042004804d0022800402402, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 1942
+Estimated Gas Usage: 54338 - 273148
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0100100003281100187c4c08820320a05002a094c42042004804d0022800402402, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 1955
+Estimated Gas Usage: 54338 - 273148
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:421
+
+ge s = _safes[id];
+
+        
+
+        requ
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0100100003281100187c4c08820320a05002a094c42042004804d0022800402402, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 1965
+Estimated Gas Usage: 54338 - 273148
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:427
+
+ msg.sender);
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0100100003281100187c4c08820320a05002a094c42042004804d0022800402402, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 2012
+Estimated Gas Usage: 54338 - 273148
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:425
+
+);
+
+        require(s.user == msg.sender);
+
+        
+
+        RetireHodl(id);
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0100100003281100187c4c08820320a05002a094c42042004804d0022800402402, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 2019
+Estimated Gas Usage: 54338 - 273148
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:425
+
+);
+
+        require(s.user == msg.sender);
+
+        
+
+        RetireHodl(id);
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0100100003281100187c4c08820320a05002a094c42042004804d0022800402402, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 2050
+Estimated Gas Usage: 54338 - 273148
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:425
+
+);
+
+        require(s.user == msg.sender);
+
+        
+
+        RetireHodl(id);
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0100100003281100187c4c08820320a05002a094c42042004804d0022800402402, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 2057
+Estimated Gas Usage: 54338 - 273148
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:425
+
+);
+
+        require(s.user == msg.sender);
+
+        
+
+        RetireHodl(id);
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0100100003281100187c4c08820320a05002a094c42042004804d0022800402402, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 2072
+Estimated Gas Usage: 54338 - 273148
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:425
+
+);
+
+        require(s.user == msg.sender);
+
+        
+
+        RetireHodl(id);
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0100100003281100187c4c08820320a05002a094c42042004804d0022800402402, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 2078
+Estimated Gas Usage: 54338 - 273148
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:425
+
+);
+
+        require(s.user == msg.sender);
+
+        
+
+        RetireHodl(id);
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0100100003281100187c4c08820320a05002a094c42042004804d0022800402402, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 2086
+Estimated Gas Usage: 54338 - 273148
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:425
+
+);
+
+        require(s.user == msg.sender);
+
+        
+
+        RetireHodl(id);
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0100100003281100187c4c08820320a05002a094c42042004804d0022800402402, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 2094
+Estimated Gas Usage: 54338 - 273148
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:441
+
+    */
+
+    function Reti
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0100100003281100187c4c08820320a05002a094c42042004804d0022800402402, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 2133
+Estimated Gas Usage: 54338 - 273148
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:439
+
+rivate retire hodl safe action
+
+    */
+
+    function RetireHodl(ui
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0100100003281100187c4c08820320a05002a094c42042004804d0022800402402, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 2139
+Estimated Gas Usage: 54338 - 273148
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:445
+
+    Safe storag
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0100100003281100187c4c08820320a05002a094c42042004804d0022800402402, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Hodl
+Function name: ClaimHodlToken(address,uint256,uint256)
+PC address: 2144
+Estimated Gas Usage: 54338 - 273148
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:445
+
+    Safe storag
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: ClaimHodlToken(address,uint256,uint256), txdata: 0x3e0fddbd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0100100003281100187c4c08820320a05002a094c42042004804d0022800402402, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Hodl
+Function name: HodlEth(uint256)
+PC address: 2731
+Estimated Gas Usage: 1206 - 1631
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:381
+
+unction ClaimHodl
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: HodlEth(uint256), txdata: 0x8678c2b9, value: 0x1
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Hodl
+Function name: WithdrawSpecialToken(address,uint256)
+PC address: 3511
+Estimated Gas Usage: 5655 - 77706
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:813
+
+a == b * c + a % b); // There 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: WithdrawSpecialToken(address,uint256), txdata: 0xb65ae769000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Hodl
+Function name: WithdrawSpecialToken(address,uint256)
+PC address: 3670
+Estimated Gas Usage: 5655 - 77706
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:823
+
+    * @dev Subtracts two numbers, 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: WithdrawSpecialToken(address,uint256), txdata: 0xb65ae769000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Hodl
+Function name: WithdrawSpecialToken(address,uint256)
+PC address: 3670
+Estimated Gas Usage: 5655 - 77706
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/ca2c9aa951fcd574e249a491762a1b8f.sol:823
+
+    * @dev Subtracts two numbers, 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x800, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: WithdrawSpecialToken(address,uint256), txdata: 0xb65ae769, value: 0x0

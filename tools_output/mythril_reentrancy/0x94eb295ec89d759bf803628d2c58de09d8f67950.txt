@@ -1,0 +1,251 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ERC721BuyListing
+Function name: approveToken(address,uint256)
+PC address: 1122
+Estimated Gas Usage: 3563 - 39163
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/79c77dfd489ea3d29bcc4ebf6ee72d04.sol:102
+
+reateListing(uint256 tokenId, uint2
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x800000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: approveToken(address,uint256), txdata: 0x022fc88b000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ERC721BuyListing
+Function name: buyListing(uint256)
+PC address: 1669
+Estimated Gas Usage: 1977 - 2262
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/79c77dfd489ea3d29bcc4ebf6ee72d04.sol:115
+
+g.price;
+        delete tokenIdT
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: buyListing(uint256), txdata: 0x4884f459, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ERC721BuyListing
+Function name: withdrawBalance()
+PC address: 2546
+Estimated Gas Usage: 3466 - 38407
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/79c77dfd489ea3d29bcc4ebf6ee72d04.sol:95
+
+  }
+    function approveToken(address token, uint256 amount) onlyOwner external {
+        assert(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawBalance(), txdata: 0x5fd8c710, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC721BuyListing
+Function name: createListing(uint256,uint256,uint256)
+PC address: 2763
+Estimated Gas Usage: 25861 - 143977
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/79c77dfd489ea3d29bcc4ebf6ee72d04.sol:107
+
+g.seller);
+    }
+
+    function buyL
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x500000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: createListing(uint256,uint256,uint256), txdata: 0xb03053b60000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000401, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC721BuyListing
+Function name: createListing(uint256,uint256,uint256)
+PC address: 2816
+Estimated Gas Usage: 25861 - 143977
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/79c77dfd489ea3d29bcc4ebf6ee72d04.sol:107
+
+g.seller);
+    }
+
+    function buyL
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x500000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: createListing(uint256,uint256,uint256), txdata: 0xb03053b60000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000401, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC721BuyListing
+Function name: createListing(uint256,uint256,uint256)
+PC address: 2827
+Estimated Gas Usage: 25861 - 143977
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/79c77dfd489ea3d29bcc4ebf6ee72d04.sol:107
+
+g.seller);
+    }
+
+    function buyL
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x500000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: createListing(uint256,uint256,uint256), txdata: 0xb03053b60000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000401, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC721BuyListing
+Function name: createListing(uint256,uint256,uint256)
+PC address: 2837
+Estimated Gas Usage: 25861 - 143977
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/79c77dfd489ea3d29bcc4ebf6ee72d04.sol:107
+
+g.seller);
+    }
+
+    function buyL
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x500000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: createListing(uint256,uint256,uint256), txdata: 0xb03053b60000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000401, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC721BuyListing
+Function name: createListing(uint256,uint256,uint256)
+PC address: 2847
+Estimated Gas Usage: 25861 - 143977
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/79c77dfd489ea3d29bcc4ebf6ee72d04.sol:107
+
+g.seller);
+    }
+
+    function buyL
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x500000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: createListing(uint256,uint256,uint256), txdata: 0xb03053b60000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000401, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ERC721BuyListing
+Function name: createListing(uint256,uint256,uint256)
+PC address: 3484
+Estimated Gas Usage: 25861 - 143977
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/79c77dfd489ea3d29bcc4ebf6ee72d04.sol:89
+
+ge(uint256 percentage) external
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80000000000010, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: createListing(uint256,uint256,uint256), txdata: 0xb03053b60000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000001, value: 0x0

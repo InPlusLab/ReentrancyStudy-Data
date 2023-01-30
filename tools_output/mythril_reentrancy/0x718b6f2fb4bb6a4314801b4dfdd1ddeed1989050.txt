@@ -1,0 +1,107 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: StabinolBuyBackTreasury
+Function name: finishGovernanceChange()
+PC address: 718
+Estimated Gas Usage: 17695 - 58139
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/49c48e0b80cab3d538a741d2ecdf7406.sol:391
+
+eChange() external onlyGovernance 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8000000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: startGovernanceChange(address), txdata: 0xf80087760000000000000000000000000101010101010101010101010101010101010101, value: 0x0
+Caller: [CREATOR], function: finishGovernanceChange(), txdata: 0xb9195072, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: StabinolBuyBackTreasury
+Function name: finishGovernanceChange()
+PC address: 725
+Estimated Gas Usage: 7688 - 27783
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/49c48e0b80cab3d538a741d2ecdf7406.sol:391
+
+finishGovernanceChange() external onlyGovernance timelockConditionsMet(1) {
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: startGovernanceChange(address), txdata: 0xf80087760000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [CREATOR], function: finishGovernanceChange(), txdata: 0xb9195072, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: StabinolBuyBackTreasury
+Function name: withdrawTetherTypeTokenForGovernance(address,uint256)
+PC address: 1013
+Estimated Gas Usage: 3637 - 38203
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/49c48e0b80cab3d538a741d2ecdf7406.sol:369
+
+    uint256 private _timelockType; //
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawTokenForGovernance(address,uint256), txdata: 0xf0a111b500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [CREATOR], function: withdrawTetherTypeTokenForGovernance(address,uint256), txdata: 0xca560c51000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: StabinolBuyBackTreasury
+Function name: withdrawTokenForGovernance(address,uint256)
+PC address: 1234
+Estimated Gas Usage: 3697 - 38356
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/49c48e0b80cab3d538a741d2ecdf7406.sol:362
+
+ernance(uint256 _amount) external onl
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40080008000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawTokenForGovernance(address,uint256), txdata: 0xf0a111b500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [CREATOR], function: withdrawTokenForGovernance(address,uint256), txdata: 0xf0a111b5000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000000000000, value: 0x0

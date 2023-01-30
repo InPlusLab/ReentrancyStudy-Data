@@ -1,0 +1,229 @@
+/**
+
+ *Submitted for verification at Etherscan.io on 2019-03-18
+
+*/
+
+
+
+pragma solidity 0.4.24;
+
+
+
+
+
+/// @title SafeMath
+
+/// @dev Math operations with safety checks that throw on error
+
+library SafeMath {
+
+
+
+    /// @dev Multiply two numbers, throw on overflow.
+
+    function mul(uint256 a, uint256 b) internal pure returns (uint256 c) {
+
+        if (a == 0) {
+
+            return 0;
+
+        }
+
+        c = a * b;
+
+        assert(c / a == b);
+
+        return c;
+
+    }
+
+
+
+    /// @dev Substract two numbers, throw on overflow (i.e. if subtrahend is greater than minuend).
+
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+
+        assert(b <= a);
+
+        return a - b;
+
+    }
+
+
+
+    /// @dev Add two numbers, throw on overflow.
+
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+
+        uint256 c = a + b;
+
+        assert(c >= a);
+
+        return c;
+
+    }
+
+}
+
+
+
+/// @title Ownable
+
+/// @dev Provide a modifier that permits only a single user to call the function
+
+contract Ownable {
+
+    address public owner;
+
+
+
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+
+
+    /// @dev Set the original `owner` of the contract to the sender account.
+
+    constructor() public {
+
+        owner = msg.sender;
+
+    }
+
+
+
+    /// @dev Require that the modified function is only called by `owner`
+
+    modifier onlyOwner() {
+
+        require(msg.sender == owner);
+
+        _;
+
+    }
+
+
+
+    /// @dev Allow `owner` to transfer control of the contract to `newOwner`.
+
+    /// @param newOwner The address to transfer ownership to.
+
+    function transferOwnership(address newOwner) public onlyOwner {
+
+        require(newOwner != address(0));
+
+        emit OwnershipTransferred(owner, newOwner);
+
+        owner = newOwner;
+
+    }
+
+
+
+}
+
+
+
+/// @notice Abstract contract for vesting schedule
+
+/// @notice Implementations must provide vestedPercent()
+
+contract Schedule is Ownable {
+
+    using SafeMath for uint256;
+
+
+
+    /// The timestamp of the start of vesting
+
+    uint256 public tokenReleaseDate;
+
+
+
+    /// The timestamp of the vesting release interval
+
+    uint256 public releaseInterval = 30 days;
+
+
+
+    constructor(uint256 _tokenReleaseDate) public {
+
+        tokenReleaseDate = _tokenReleaseDate;
+
+    }
+
+
+
+    /// @notice Update the date that PLG trading unlocks
+
+    /// @param newReleaseDate The new PLG release timestamp
+
+    function setTokenReleaseDate(uint256 newReleaseDate) public onlyOwner {
+
+        tokenReleaseDate = newReleaseDate;
+
+    }
+
+
+
+    /// @notice Calculates the percent of tokens that may be claimed at this time
+
+    /// @return Number of tokens vested
+
+    function vestedPercent() public view returns (uint256);
+
+
+
+    /// @notice Helper for calculating the time of a specific release
+
+    /// @param intervals The number of interval periods to calculate a release date for
+
+    /// @return The timestamp of the release date
+
+    function getReleaseTime(uint256 intervals) public view returns (uint256) {
+
+        return tokenReleaseDate.add(releaseInterval.mul(intervals));
+
+    }
+
+}
+
+
+
+/// @title ScheduleHold
+
+/// @notice Holds tokens until six intervals after `tokenReleaseDate`
+
+contract ScheduleHold is Schedule {
+
+
+
+    constructor(uint256 _tokenReleaseDate) Schedule(_tokenReleaseDate) public {
+
+    }
+
+
+
+    /// @notice Calculates the percent of tokens that may be claimed at this time
+
+    /// @return Number of tokens vested
+
+    function vestedPercent() public view returns (uint256) {
+
+
+
+        if(now < tokenReleaseDate || now < getReleaseTime(6)) {
+
+            return 0;
+
+            
+
+        } else {
+
+            return 100;
+
+        }
+
+    }
+
+}

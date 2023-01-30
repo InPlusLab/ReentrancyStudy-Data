@@ -1,0 +1,250 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Object
+Function name: withdrawnTokens(address[],address)
+PC address: 797
+Estimated Gas Usage: 8372 - 153538
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/37575a422dbcdedd15107e7cb6fe11bf.sol:168
+
+}
+
+    function checkOnlyContractOwne
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawnTokens(address[],address), txdata: 0xd8f9659b80, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ATxPlatform
+Function name: issueAsset(bytes32,uint256,string,string,uint8,bool)
+PC address: 884
+Estimated Gas Usage: 4158 - 45074
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/37575a422dbcdedd15107e7cb6fe11bf.sol:651
+
+ption description for the asset.
+    /// @param _baseUnit number of decimals.
+    /// @param _isReissuable dynamic or fixed supply.
+    /// @param _account address where issued balance will be held
+    ///
+    /// @return success.
+    function issueAssetToAddress(b
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10040000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: issueAsset(bytes32,uint256,string,string,uint8,bool), txdata: 0x085a47057fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff81, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Object
+Function name: withdrawnTokens(address[],address)
+PC address: 973
+Estimated Gas Usage: 8372 - 153538
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/37575a422dbcdedd15107e7cb6fe11bf.sol:171
+
+(contractOwner == msg.sender) {
+           
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawnTokens(address[],address), txdata: 0xd8f9659b80, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Object
+Function name: withdrawnTokens(address[],address)
+PC address: 973
+Estimated Gas Usage: 8372 - 153538
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/37575a422dbcdedd15107e7cb6fe11bf.sol:171
+
+(contractOwner == msg.sender) {
+           
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawnTokens(address[],address), txdata: 0xd8f9659b80, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ATxPlatform
+Function name: issueAssetToAddress(bytes32,uint256,string,string,uint8,bool,address)
+PC address: 1858
+Estimated Gas Usage: 4501 - 45747
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/37575a422dbcdedd15107e7cb6fe11bf.sol:667
+
+rId : _createHolderId(msg.sender);
+
+        symbols.push(_symbol);
+        assets[_symbol] = Asset(creatorId, _value, _name, _description, _isReissuable, _baseUnit);
+        assets[_symbol].wallets[holderId].balance = _value;
+        // Internal Out Of Gas/Throw: revert this transaction too;
+        // Call Stack Depth Limit reached: n/a after HF 4;
+        // Recursive Call: safe, all changes already made.
+        Emitter(eventsHistory).emitIssue(_symbol, _value, _address(holderId));
+        return OK;
+    }
+
+    /// @notice Issues additional asset tokens if the asset have dynamic supply.
+    ///
+    /// Tokens issued with this call go straight to asset owner.
+    /// Can only be called by asset owner.
+    ///
+    /// @param _symbol asset symbol.
+    /// @param _value amount of additional tokens to issue.
+    ///
+    /// @return success.
+    function reissueAsset(bytes32 _symbol, uint _value) public onlyOneOfOwners(_symbol) returns (uint) {
+        // Should have positive value.
+        if (_value == 0) {
+            return _error(ATX_PLATFORM_INVALID_VALUE);
+        }
+        Asset storage asset = assets[_symbol];
+        // Should have dynamic supply.
+        if (!asse
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: issueAssetToAddress(bytes32,uint256,string,string,uint8,bool,address), txdata: 0x67069544ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffa0, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ATxPlatform
+Function name: name(bytes32)
+PC address: 5847
+Estimated Gas Usage: 1946 - 3406
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/37575a422dbcdedd15107e7cb6fe11bf.sol:508
+
+bool) {
+        return asse
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40004a090, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: name(bytes32), txdata: 0x691f3431, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ATxPlatform
+Function name: description(bytes32)
+PC address: 6955
+Estimated Gas Usage: 2198 - 3658
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/37575a422dbcdedd15107e7cb6fe11bf.sol:517
+
+ss) {
+        return holders[asset
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000002061100, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: description(bytes32), txdata: 0xbebcc045, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ATxPlatform
+Function name: symbols(uint256)
+PC address: 7569
+Estimated Gas Usage: 1873 - 2298
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/37575a422dbcdedd15107e7cb6fe11bf.sol:289
+
+n a root contract owner
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000e3fbe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: symbols(uint256), txdata: 0xccce413b, value: 0x0
+
+

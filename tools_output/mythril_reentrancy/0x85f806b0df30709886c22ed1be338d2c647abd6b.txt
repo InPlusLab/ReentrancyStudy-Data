@@ -1,0 +1,779 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: EthTokenToSmthSwaps
+Function name: fallback
+PC address: 746
+Estimated Gas Usage: 19782 - 133506
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:95
+
+SafeTime) > now);
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc200200a052002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea02020202020202020202020202020202020202020000000000000000000000000000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa08, value: 0x0
+Caller: [SOMEGUY], function: withdraw(bytes32,address), txdata: 0x1b258d500101010101010101010101010101010101010101010101010101010101010101010101010101010101010101aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: EthTokenToSmthSwaps
+Function name: fallback
+PC address: 841
+Estimated Gas Usage: 7065 - 44272
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:97
+
+balance);
+
+    swaps[_ownerAddress][msg.sen
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x23540000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x27d40000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea08080808080808080808080808080808080808080000000000000000000000000000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa04, value: 0x0
+Caller: [SOMEGUY], function: withdraw(bytes32,address), txdata: 0x1b258d500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: EthTokenToSmthSwaps
+Function name: fallback
+PC address: 961
+Estimated Gas Usage: 19782 - 133506
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:99
+
+nce = 0;
+    swaps[_ownerAddress][msg.sender].secret
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40080000e08, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x40080000e08, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea00202020202020202020202020202020202020202000000000000000000000000000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe1001010101010101010101010101010101010101010101010101010101010104000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: withdraw(bytes32,address), txdata: 0x1b258d50afafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: EthTokenToSmthSwaps
+Function name: fallback
+PC address: 961
+Estimated Gas Usage: 19782 - 133506
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:99
+
+nce = 0;
+    swaps[_ownerAddress][msg.sender].secret
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x260001000005a922, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x680200000010001, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa01, value: 0x0
+Caller: [SOMEGUY], function: withdraw(bytes32,address), txdata: 0x1b258d500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: fallback
+PC address: 1027
+Estimated Gas Usage: 19782 - 133506
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:100
+
+t;
+
+    Withdraw(_secret,msg.sender,swap.bal
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x420001a200001008, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe8080010101010101010101010101080101080220200180202001200180014001000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: withdraw(bytes32,address), txdata: 0x1b258d500101010101010101010101010101010101010101010101010101010101010101010101010101010101010101aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: fallback
+PC address: 1035
+Estimated Gas Usage: 19782 - 133506
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:103
+
+  }
+
+  // ETH Owner receive secret
+  function get
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x420001a200001008, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe8080010101010101010101010101080101080220200180202001200180014001000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: withdraw(bytes32,address), txdata: 0x1b258d500101010101010101010101010101010101010101010101010101010101010101010101010101010101010101aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: EthTokenToSmthSwaps
+Function name: testnetWithdrawn(address,uint256)
+PC address: 1280
+Estimated Gas Usage: 2676 - 38232
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:135
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008001, value: 0x0
+Caller: [CREATOR], function: testnetWithdrawn(address,uint256), txdata: 0x3af946d2000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: EthTokenToSmthSwaps
+Function name: createSwap(bytes20,address,uint256,address)
+PC address: 1576
+Estimated Gas Usage: 30877 - 169469
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:71
+
+g.sender][_participantAddress] = Swap(
+      _token,
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000000804, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea00000000000000000000000000000000000400000000000000000000000000000000000000000000000000000010000000101020020100104000280000000001001, value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea0020202020202020202020202020202020202020202020202020202020202020202020202020202020202020200000000000000000000000000000000000000000101010101010101010101000101010100010101010101010108010101010101020202020202020202020202deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: createSwap(bytes20,address,uint256,address)
+PC address: 1724
+Estimated Gas Usage: 30877 - 169469
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:73
+
+es32(0),
+      _secretHash,
+      now,
+      _value
+    );
+
+    CreateSwap(now);
+  }
+
+  function getBalance(address _ownerAddress) pu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xb88, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100020000000000000000000000000101010101010101010101010102010201010201010101010101010101010101000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: createSwap(bytes20,address,uint256,address)
+PC address: 1754
+Estimated Gas Usage: 30877 - 169469
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:73
+
+es32(0),
+      _secretHash,
+      now,
+      _value
+    );
+
+    CreateSwap(now);
+  }
+
+  function getBalance(address _ownerAddress) pu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xb88, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100020000000000000000000000000101010101010101010101010102010201010201010101010101010101010101000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: createSwap(bytes20,address,uint256,address)
+PC address: 1761
+Estimated Gas Usage: 30877 - 169469
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:73
+
+es32(0),
+      _secretHash,
+      now,
+      _value
+    );
+
+    CreateSwap(now);
+  }
+
+  function getBalance(address _ownerAddress) pu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xb88, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100020000000000000000000000000101010101010101010101010102010201010201010101010101010101010101000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: createSwap(bytes20,address,uint256,address)
+PC address: 1768
+Estimated Gas Usage: 30877 - 169469
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:73
+
+es32(0),
+      _secretHash,
+      now,
+      _value
+    );
+
+    CreateSwap(now);
+  }
+
+  function getBalance(address _ownerAddress) pu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xb88, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100020000000000000000000000000101010101010101010101010102010201010201010101010101010101010101000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: createSwap(bytes20,address,uint256,address)
+PC address: 1796
+Estimated Gas Usage: 30877 - 169469
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:73
+
+es32(0),
+      _secretHash,
+      now,
+      _value
+    );
+
+    CreateSwap(now);
+  }
+
+  function getBalance(address _ownerAddress) pu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xb88, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100020000000000000000000000000101010101010101010101010102010201010201010101010101010101010101000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: createSwap(bytes20,address,uint256,address)
+PC address: 1803
+Estimated Gas Usage: 30877 - 169469
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:73
+
+es32(0),
+      _secretHash,
+      now,
+      _value
+    );
+
+    CreateSwap(now);
+  }
+
+  function getBalance(address _ownerAddress) pu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xb88, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100020000000000000000000000000101010101010101010101010102010201010201010101010101010101010101000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: createSwap(bytes20,address,uint256,address)
+PC address: 1814
+Estimated Gas Usage: 30877 - 169469
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:73
+
+es32(0),
+      _secretHash,
+      now,
+      _value
+    );
+
+    CreateSwap(now);
+  }
+
+  function getBalance(address _ownerAddress) pu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xb88, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100020000000000000000000000000101010101010101010101010102010201010201010101010101010101010101000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: EthTokenToSmthSwaps
+Function name: refund(address)
+PC address: 2086
+Estimated Gas Usage: 5740 - 8294
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:121
+
+.sender, _participantAddress);
+
+    Refund(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x41412100001620841, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea00000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020, value: 0x0
+Caller: [SOMEGUY], function: refund(address), txdata: 0xfa89401a, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: EthTokenToSmthSwaps
+Function name: refund(address)
+PC address: 2206
+Estimated Gas Usage: 35067 - 173667
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:126
+
+ function clean(address _ownerAddress, address _part
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea0000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000202010101020201010140028080404080808040408080804040800202040101000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: refund(address), txdata: 0xfa89401a, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: refund(address)
+PC address: 2296
+Estimated Gas Usage: 5712 - 8266
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:121
+
+ _participantAddress);
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea00000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+Caller: [SOMEGUY], function: refund(address), txdata: 0xfa89401a, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: fallback
+PC address: 2296
+Estimated Gas Usage: 7037 - 44244
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:97
+
+;
+
+    swaps[_ownerAddress][
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea00808080808080808080808080808080808080808000000000000000000000000000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa02, value: 0x0
+Caller: [SOMEGUY], function: withdraw(bytes32,address), txdata: 0x1b258d500202020202020202020202020202020202020202020202020202020202020202020202020202020202020202aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: refund(address)
+PC address: 2347
+Estimated Gas Usage: 35067 - 173667
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:131
+
+t,uint val) {
+      require(msg.sender == owner)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1109c1030c81bc, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea0000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000204800810020108084010800440408020044002011008040110010408018080000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: refund(address), txdata: 0xfa89401a, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: refund(address)
+PC address: 2374
+Estimated Gas Usage: 35067 - 173667
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:131
+
+t,uint val) {
+      require(msg.sender == owner)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1109c1030c81bc, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea0000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000204800810020108084010800440408020044002011008040110010408018080000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: refund(address), txdata: 0xfa89401a, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: refund(address)
+PC address: 2381
+Estimated Gas Usage: 35067 - 173667
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:131
+
+t,uint val) {
+      require(msg.sender == owner)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1109c1030c81bc, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea0000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000204800810020108084010800440408020044002011008040110010408018080000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: refund(address), txdata: 0xfa89401a, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: refund(address)
+PC address: 2386
+Estimated Gas Usage: 35067 - 173667
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:131
+
+t,uint val) {
+      require(msg.sender == owner)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1109c1030c81bc, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea0000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000204800810020108084010800440408020044002011008040110010408018080000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: refund(address), txdata: 0xfa89401a, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: refund(address)
+PC address: 2392
+Estimated Gas Usage: 35067 - 173667
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:131
+
+t,uint val) {
+      require(msg.sender == owner)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1109c1030c81bc, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea0000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000204800810020108084010800440408020044002011008040110010408018080000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: refund(address), txdata: 0xfa89401a, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: refund(address)
+PC address: 2399
+Estimated Gas Usage: 35067 - 173667
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:131
+
+t,uint val) {
+      require(msg.sender == owner)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1109c1030c81bc, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea0000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000204800810020108084010800440408020044002011008040110010408018080000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: refund(address), txdata: 0xfa89401a, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: EthTokenToSmthSwaps
+Function name: refund(address)
+PC address: 2403
+Estimated Gas Usage: 35067 - 173667
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/094300dcf495e41f4fa8b15feb3616fe.sol:131
+
+t,uint val) {
+      require(msg.sender == owner)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1109c1030c81bc, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: createSwap(bytes20,address,uint256,address), txdata: 0xaa2e7ea0000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000204800810020108084010800440408020044002011008040110010408018080000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: refund(address), txdata: 0xfa89401a, value: 0x0
+
+

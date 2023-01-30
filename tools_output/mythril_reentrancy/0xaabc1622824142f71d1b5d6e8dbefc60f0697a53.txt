@@ -1,0 +1,66 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: LuckyStrikeTokens
+Function name: approveAllAndCall(address,bytes)
+PC address: 882
+Estimated Gas Usage: 12174 - 76338
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1b10a9eb116d277bd12d7ab3fe6589e8.sol:585
+
+to ICO tokens
+
+    */
+
+    function transferAndCall(address _to, uint256 _value, bytes _extraData) public returns (bool success){
+
+
+
+        transferFrom(msg.sender, _to, _value);
+
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42100080100000020, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: approveAllAndCall(address,bytes), txdata: 0x816c7da40000000000000000000000000101020102012001010108040101010101041004ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: LuckyStrikeTokens
+Function name: approveAllAndCall(address,bytes)
+PC address: 3288
+Estimated Gas Usage: 12174 - 76338
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1b10a9eb116d277bd12d7ab3fe6589e8.sol:633
+
+int256 invested, //................2
+
+        uint256 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000400, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: approveAllAndCall(address,bytes), txdata: 0x816c7da4000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef40, value: 0x0
+
+

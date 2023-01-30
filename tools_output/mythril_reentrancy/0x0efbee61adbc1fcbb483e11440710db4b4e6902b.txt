@@ -1,0 +1,91 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: TokenMultiSearch
+Function name: fallback
+PC address: 119
+Estimated Gas Usage: 4366 - 78893
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/d48a8f5e51e6f4ed3325c7a25752c6e7.sol:36
+
+c20, address[] searches) public constant returns (uint256[] balances)  
+    {
+        uint256 n = searches.length;
+        balances = new uint256[](n);
+        
+        ERC20Interface token = ERC20Interface(erc20);
+        
+        for (uint256 i = 0; i < n ; i++)
+        {
+            balances[i] = token.balanceOf(searches[i]);
+        }
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2081a, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: GetMultiBalance(address,address[]), txdata: 0xbf0752cb0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TokenMultiSearch
+Function name: fallback
+PC address: 489
+Estimated Gas Usage: 4366 - 78893
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d48a8f5e51e6f4ed3325c7a25752c6e7.sol:47
+
+}
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: GetMultiBalance(address,address[]), txdata: 0xbf0752cb000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef80, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: TokenMultiSearch
+Function name: fallback
+PC address: 489
+Estimated Gas Usage: 4366 - 78893
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/d48a8f5e51e6f4ed3325c7a25752c6e7.sol:47
+
+}
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: GetMultiBalance(address,address[]), txdata: 0xbf0752cb0000000000000000000000000000000000000000000000000000000000000002, value: 0x0

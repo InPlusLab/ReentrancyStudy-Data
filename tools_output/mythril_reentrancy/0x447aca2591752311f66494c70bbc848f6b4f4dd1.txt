@@ -1,0 +1,80 @@
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: MkrResolver
+Function name: swapToMkrOtc(address,uint256)
+PC address: 517
+Estimated Gas Usage: 12890 - 255939
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/e2315d7f4e28f6e008a5fcd8d2ea97b8.sol:158
+
+ TokenInterface(getWETHAddress());
+            weth.deposit.value(payAmt)()
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: swapToMkrOtc(address,uint256), txdata: 0xff33af1e00000000000000000000000001010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MkrResolver
+Function name: swapToMkrOtc(address,uint256)
+PC address: 786
+Estimated Gas Usage: 12890 - 255939
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/e2315d7f4e28f6e008a5fcd8d2ea97b8.sol:163
+
+
+        OtcInterface(getOtcAddress()).buyAllAmount(
+            address(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x940000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: swapToMkrOtc(address,uint256), txdata: 0xff33af1e000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MkrResolver
+Function name: swapToMkrOtc(address,uint256)
+PC address: 1478
+Estimated Gas Usage: 12890 - 255939
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/e2315d7f4e28f6e008a5fcd8d2ea97b8.sol:154
+
+ swapToMkrOtc(address tokenAddr, 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x940000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: swapToMkrOtc(address,uint256), txdata: 0xff33af1e000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000000000000, value: 0x0

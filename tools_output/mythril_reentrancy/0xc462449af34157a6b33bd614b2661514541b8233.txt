@@ -1,0 +1,138 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: testSend
+Function name: v(address,uint256)
+PC address: 125
+Estimated Gas Usage: 3251 - 106187
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/8bec467c6a9943de6b3a1c289d9a633c.sol:16
+
+ _amountETH}("");
+        _to.s
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x421400c010002fdfb, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x3, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: v(address,uint256), txdata: 0x65703fdc000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: testSend
+Function name: v(address,uint256)
+PC address: 125
+Estimated Gas Usage: 3178 - 105831
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: /tmp/8bec467c6a9943de6b3a1c289d9a633c.sol:16
+
+ _amountETH}("");
+        _to.s
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x880000004282, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: v(address,uint256), txdata: 0x65703fdc00000000000000000000000040402001012004088001201004000440404020010000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [CREATOR], function: v(address,uint256), txdata: 0x65703fdc00000000000000000000000000002020004020020240200020800100040202800000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: testSend
+Function name: v(address,uint256)
+PC address: 229
+Estimated Gas Usage: 3251 - 106187
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/8bec467c6a9943de6b3a1c289d9a633c.sol:17
+
+ETH);
+        _to.tr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21c10c040007bfbd, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: v(address,uint256), txdata: 0x65703fdc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: testSend
+Function name: v(address,uint256)
+PC address: 229
+Estimated Gas Usage: 3251 - 106187
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: /tmp/8bec467c6a9943de6b3a1c289d9a633c.sol:17
+
+ETH);
+        _to.tr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21c10c04000dbfbf, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x20000000000000000, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: v(address,uint256), txdata: 0x65703fdc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: testSend
+Function name: v(address,uint256)
+PC address: 283
+Estimated Gas Usage: 3178 - 105831
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/8bec467c6a9943de6b3a1c289d9a633c.sol:18
+
+untETH);
+        
+    }
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x541608414204108c3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0xa00, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: v(address,uint256), txdata: 0x65703fdc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [ATTACKER], function: v(address,uint256), txdata: 0x65703fdc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0

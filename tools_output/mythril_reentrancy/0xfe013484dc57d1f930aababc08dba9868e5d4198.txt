@@ -1,0 +1,162 @@
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: SingleTokenVestingNonRevocableDigg
+Function name: release()
+PC address: 880
+Estimated Gas Usage: 19701 - 144587
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/12f4bd93628f6e5bc30496764877b3a1.sol:682
+
+mount().sub(_released);
+    }
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: release(), txdata: 0x86d1a69f, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: SingleTokenVestingNonRevocableDigg
+Function name: release()
+PC address: 1120
+Estimated Gas Usage: 19701 - 144587
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/12f4bd93628f6e5bc30496764877b3a1.sol:687
+
+*/
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: release(), txdata: 0x86d1a69f, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: SingleTokenVestingNonRevocableDigg
+Function name: __SingleTokenVestingNonRevocable_init(address,address,uint256,uint256,uint256)
+PC address: 1661
+Estimated Gas Usage: 9603 - 29698
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/12f4bd93628f6e5bc30496764877b3a1.sol:627
+
+n vesting.
+     */
+    function cliff() public view returns (uint256) {
+        return _cliff;
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000100000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x10000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: __SingleTokenVestingNonRevocable_init(address,address,uint256,uint256,uint256), txdata: 0xe1c7b27a000000000000000000000000014080020120400202021010080101040101010000000000000000000000000008000101010880010101800108100120042010012e37688800b01ec69a801c9bbb978940098221ad9cd912af8bc64aef02b820010000000000008800208042402041000c000301110024000000c000480003e0000280b547df85701001980401012099080001411000480b212081b510fd81dfff, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: SingleTokenVestingNonRevocableDigg
+Function name: releasableAmount()
+PC address: 2511
+Estimated Gas Usage: 5216 - 39873
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/12f4bd93628f6e5bc30496764877b3a1.sol:715
+
+ransactions
+/// @author Richard Meissner - <[email protected]>
+
+contract ExecutorOnlyCall {
+    function execute(
+        address to,
+        uint256 value,
+        bytes memory data,
+        uint256 txGas
+    ) internal returns (bool success) {
+        success = executeCall(to, value, data, txGas);
+    }
+
+    function e
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40041080000011f81, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: releasableAmount(), txdata: 0x5b940081, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: SingleTokenVestingNonRevocableDigg
+Function name: releasableAmount()
+PC address: 2543
+Estimated Gas Usage: 6922 - 41579
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/12f4bd93628f6e5bc30496764877b3a1.sol:718
+
+ct ExecutorOnlyCall {
+    function execute(
+        address to,
+        uint256 value,
+        bytes memory data,
+        uint256 txGas
+    ) internal returns (bool success) {
+        success = executeCall(to, value, data, txGas);
+    }
+
+    function e
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x41080000003fbd, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: releasableAmount(), txdata: 0x5b940081, value: 0x0
+
+

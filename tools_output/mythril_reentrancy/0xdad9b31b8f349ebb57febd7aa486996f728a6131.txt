@@ -1,0 +1,81 @@
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: BatchTransferEtherAndVoken
+Function name: batchTtransferEther(address[],uint256)
+PC address: 1115
+Estimated Gas Usage: 3267 - 75160
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/4cc0a83d6e1890880c4f3a4cca9ecded.sol:301
+
+this));
+
+
+
+        require(__vok
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: batchTtransferEther(address[],uint256), txdata: 0x416c2d3b000000000000000000000000000000000000000000000000000000000000002100000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BatchTransferEtherAndVoken
+Function name: rescueTokens(address,address,uint256) or rescueTokens(address,address,uint256)
+PC address: 2334
+Estimated Gas Usage: 4645 - 74289
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/4cc0a83d6e1890880c4f3a4cca9ecded.sol:205
+
+dress owner) external view returns
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: rescueTokens(address,address,uint256), txdata: 0xcea9d26f000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000002001800480400801401004404008200840100804202082382004084002010800200800100001d84f020081609b0c012063807745, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: BatchTransferEtherAndVoken
+Function name: rescueTokens(address,address,uint256) or rescueTokens(address,address,uint256)
+PC address: 2334
+Estimated Gas Usage: 4645 - 74289
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/4cc0a83d6e1890880c4f3a4cca9ecded.sol:205
+
+dress owner) external view returns
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x28000000000200, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: rescueTokens(address,address,uint256), txdata: 0xcea9d26f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010101012040010108010408014001020102010100a082310000000000000000000000000901d12ebe1b195e5aa8748e62bd7735, value: 0x0

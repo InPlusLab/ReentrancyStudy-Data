@@ -1,0 +1,98 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: NIX
+Function name: withdrawUnclaimedTokens(address)
+PC address: 6243
+Estimated Gas Usage: 12911 - 103875
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/ba522ba895288b96c65acc03c8d1cf92.sol:218
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawUnclaimedTokens(address), txdata: 0xe3996410000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: NIX
+Function name: withdrawUnclaimedTokens(address)
+PC address: 6243
+Estimated Gas Usage: 12911 - 103875
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/ba522ba895288b96c65acc03c8d1cf92.sol:218
+Initial State:
+
+Account: [CREATOR], balance: 0x8000000022, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawUnclaimedTokens(address), txdata: 0xe39964100000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: NIX
+Function name: decreaseAllowance(address,uint256)
+PC address: 7390
+Estimated Gas Usage: 1401 - 1876
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/ba522ba895288b96c65acc03c8d1cf92.sol:205
+
+nternal {
+    require(amount != 0);
+    _balances[
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80040001a82b, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: decreaseAllowance(address,uint256), txdata: 0xa457c2d700000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000100000000000001010000000008, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: NIX
+Function name: addWork(address,uint256)
+PC address: 7419
+Estimated Gas Usage: 2248 - 2863
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/ba522ba895288b96c65acc03c8d1cf92.sol:212
+
+xternal onlyOwner {
+      curr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addWork(address,uint256), txdata: 0xe4730f0a00000000000000000000000093b3ff9fd671000f1e944922e825093f20cb67a1fffffffffffffffffffffffffffffffffffffffffffff0020040000a69e3000c, value: 0x0

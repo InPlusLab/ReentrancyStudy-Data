@@ -1,0 +1,226 @@
+pragma directive defines a prior version to 0.6.6. Changing pragma version to 0.6.6....
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    Outa
+Line:        27
+Source: 
+>    
+>    function registerUser(address payable referral) external payable {
+>    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     require(msg.value == 0.05 ether,"Amount should be equal to 0.05 ether");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    Outa
+Line:        42
+Source: 
+>    
+>    function isUserExists(address user) public view returns (bool) {
+>    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return (users[user].id != 0);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Violation
+Contract:    Outa
+Line:        34
+Source: 
+>     idToAddress[userCount] = msg.sender;
+>     referral.transfer(0.03 ether);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     users[referral].balance = users[referral].balance +  0.03 ether;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Violation
+Contract:    Outa
+Line:        37
+Source: 
+>     users[referral].partnersCount ++;
+>     owner.transfer(0.02 ether);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     earnedCount = earnedCount + msg.value;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    Outa
+Line:        34
+Source: 
+>     idToAddress[userCount] = msg.sender;
+>     referral.transfer(0.03 ether);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     users[referral].balance = users[referral].balance +  0.03 ether;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    Outa
+Line:        37
+Source: 
+>     users[referral].partnersCount ++;
+>     owner.transfer(0.02 ether);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     earnedCount = earnedCount + msg.value;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    Outa
+Line:        34
+Source: 
+>     idToAddress[userCount] = msg.sender;
+>     referral.transfer(0.03 ether);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     users[referral].balance = users[referral].balance +  0.03 ether;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    Outa
+Line:        37
+Source: 
+>     users[referral].partnersCount ++;
+>     owner.transfer(0.02 ether);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     earnedCount = earnedCount + msg.value;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Outa
+Line:        9
+Source: 
+>     uint public userCount;
+>     uint public earnedCount;
+>     ^^^^^^^^^^^^^^^^^^^^^^^
+>     address payable public owner;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted Ether Flow
+Description: The execution of ether flows should be restricted to an
+             authorized set of users.
+Type:        Warning
+Contract:    Outa
+Line:        34
+Source: 
+>     idToAddress[userCount] = msg.sender;
+>     referral.transfer(0.03 ether);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     users[referral].balance = users[referral].balance +  0.03 ether;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted Ether Flow
+Description: The execution of ether flows should be restricted to an
+             authorized set of users.
+Type:        Warning
+Contract:    Outa
+Line:        37
+Source: 
+>     users[referral].partnersCount ++;
+>     owner.transfer(0.02 ether);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     earnedCount = earnedCount + msg.value;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Outa
+Line:        31
+Source: 
+>     require(!isUserExists(msg.sender),'User already exist');
+>     userCount++;
+>     ^^^^^^^^^^^
+>     users[msg.sender] = User(userCount, 0, 0);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Outa
+Line:        33
+Source: 
+>     users[msg.sender] = User(userCount, 0, 0);
+>     idToAddress[userCount] = msg.sender;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     referral.transfer(0.03 ether);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Outa
+Line:        35
+Source: 
+>     referral.transfer(0.03 ether);
+>     users[referral].balance = users[referral].balance +  0.03 ether;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     users[referral].partnersCount ++;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Outa
+Line:        36
+Source: 
+>     users[referral].balance = users[referral].balance +  0.03 ether;
+>     users[referral].partnersCount ++;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     owner.transfer(0.02 ether);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    Outa
+Line:        38
+Source: 
+>     owner.transfer(0.02 ether);
+>     earnedCount = earnedCount + msg.value;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m

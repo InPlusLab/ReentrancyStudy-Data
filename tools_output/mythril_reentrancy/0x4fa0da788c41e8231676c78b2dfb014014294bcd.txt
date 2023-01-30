@@ -1,0 +1,199 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Airdrop
+Function name: dropEther(address[],uint256[])
+PC address: 174
+Estimated Gas Usage: 3936 - 46308
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/5de4023f43554a87e8bd5fff82f570cf.sol:116
+
+t total = 0;
+
+        for(uint j = 0; j < _amount.length; j++) {
+            total = total.add(_amount[j]);
+        }
+
+        require(total <= msg.value);
+        require(_recipients.length == _amount.length);
+
+
+        for (uint i = 0; i < _recipients.length; i++) {
+            require(_recipients[i] != address(0));
+
+            _recipients[i].transfer(_amount[i]);
+
+            emit EtherTransfer(_recipients[i], _amount[i]);
+        }
+
+        return true;
+    }
+
+    function updateTokenAddress(address newTokenAddr) public onlyOwner {
+        tokenAddr = newTokenAddr;
+    }
+
+    function withd
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x200000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: dropEther(address[],uint256[]), txdata: 0x3ff67514ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdca0, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Airdrop
+Function name: dropTokens(address[],uint256[])
+PC address: 434
+Estimated Gas Usage: 4442 - 46239
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/5de4023f43554a87e8bd5fff82f570cf.sol:105
+
+ require(_recipients.length == _amount.length);
+
+        for (uint i = 0; i < _recipients.length; i++) {
+            require(_recipients[i] != address(0));
+            require(Token(tokenAddr).transfer(_recipients[i], _amount[i]));
+        }
+
+        return true;
+    }
+
+    function dropEther(address[] _recipients, uint256[] _amount) public payable onlyOwner returns (bool) {
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: dropTokens(address[],uint256[]), txdata: 0x5422bdb5ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc80, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Airdrop
+Function name: withdrawTokens(address)
+PC address: 1904
+Estimated Gas Usage: 6123 - 76427
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5de4023f43554a87e8bd5fff82f570cf.sol:146
+
+dress(this).balance);
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 494949494949494949494949deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: withdrawTokens(address), txdata: 0x49df728c, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Airdrop
+Function name: withdrawTokens(address)
+PC address: 2096
+Estimated Gas Usage: 6123 - 76427
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5de4023f43554a87e8bd5fff82f570cf.sol:145
+
+Owner {
+        beneficiary.transfer(address(this).balance);
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 494949494949494949494949deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: withdrawTokens(address), txdata: 0x49df728c, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Airdrop
+Function name: withdrawTokens(address)
+PC address: 2096
+Estimated Gas Usage: 6123 - 76427
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/5de4023f43554a87e8bd5fff82f570cf.sol:145
+
+Owner {
+        beneficiary.transfer(address(this).balance);
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawTokens(address), txdata: 0x49df728c, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Airdrop
+Function name: dropTokens(address[],uint256[])
+PC address: 2619
+Estimated Gas Usage: 4442 - 46239
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5de4023f43554a87e8bd5fff82f570cf.sol:115
+
+dropEther(address[] _recipients, uint256[] _amount) p
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x26, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 808080808080808080808080deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: dropTokens(address[],uint256[]), txdata: 0x5422bdb5fffffffffffffffffffffffffffffffffffffffffffffffffffffffeffffff8080, value: 0x0

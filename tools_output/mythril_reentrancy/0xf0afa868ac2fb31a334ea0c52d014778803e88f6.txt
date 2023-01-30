@@ -1,0 +1,390 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Vesting
+Function name: unlockGrant()
+PC address: 919
+Estimated Gas Usage: 2689 - 2974
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/30d3c0ab6c57edca8590f77f1d793ad0.sol:307
+
+sub(grant.value);
+
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x417c9804080000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000040, value: 0x0
+Caller: [CREATOR], function: createGrant(address,uint256,uint256), txdata: 0xdde26ec9000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef02, value: 0x0
+Caller: [ATTACKER], function: unlockGrant(), txdata: 0x4438744b, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Vesting
+Function name: unlockGrant()
+PC address: 1076
+Estimated Gas Usage: 20468 - 96184
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/30d3c0ab6c57edca8590f77f1d793ad0.sol:321
+
+able {
+
+        revert();
+
+    }
+
+
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x23f1b2a0110010031, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: bebebebebebebebebebebebedeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createGrant(address,uint256,uint256), txdata: 0xdde26ec9adadadadadadadadadadadadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa35, value: 0x0
+Caller: [SOMEGUY], function: unlockGrant(), txdata: 0x4438744b, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Vesting
+Function name: unlockGrant()
+PC address: 1119
+Estimated Gas Usage: 20468 - 96184
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/30d3c0ab6c57edca8590f77f1d793ad0.sol:329
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createGrant(address,uint256,uint256), txdata: 0xdde26ec9bebebebebebebebebebebebeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa30, value: 0x0
+Caller: [SOMEGUY], function: unlockGrant(), txdata: 0x4438744b, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Vesting
+Function name: createGrant(address,uint256,uint256)
+PC address: 1408
+Estimated Gas Usage: 28638 - 147369
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/30d3c0ab6c57edca8590f77f1d793ad0.sol:231
+
+0);
+
+
+
+        grants[_to] = G
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 010101010101010101010101deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createGrant(address,uint256,uint256), txdata: 0xdde26ec9000000000000000000000000040800000010010200010080000000000000000401, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Vesting
+Function name: createGrant(address,uint256,uint256)
+PC address: 1452
+Estimated Gas Usage: 28638 - 147369
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/30d3c0ab6c57edca8590f77f1d793ad0.sol:231
+
+equire(grant
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 030303030303030303030303deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createGrant(address,uint256,uint256), txdata: 0xdde26ec9000000000000000000000000010000020101004000000401000010000800008003, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Vesting
+Function name: createGrant(address,uint256,uint256)
+PC address: 1504
+Estimated Gas Usage: 28638 - 147369
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/30d3c0ab6c57edca8590f77f1d793ad0.sol:241
+
+        transferr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 030303030303030303030303deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createGrant(address,uint256,uint256), txdata: 0xdde26ec9000000000000000000000000010000020101004000000401000010000800008003, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Vesting
+Function name: createGrant(address,uint256,uint256)
+PC address: 1568
+Estimated Gas Usage: 28638 - 147369
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/30d3c0ab6c57edca8590f77f1d793ad0.sol:243
+
+;
+
+
+
+        totalVesting = totalVesting.add(_value);
+
+
+
+        emit CreateGrant(_to, _value, _end);
+
+    }
+
+
+
+    /**
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 030303030303030303030303deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createGrant(address,uint256,uint256), txdata: 0xdde26ec9000000000000000000000000010000020101004000000401000010000800008003, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Vesting
+Function name: createGrant(address,uint256,uint256)
+PC address: 1574
+Estimated Gas Usage: 28638 - 147369
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/30d3c0ab6c57edca8590f77f1d793ad0.sol:243
+
+;
+
+
+
+        totalVesting = totalVesting.add(_value);
+
+
+
+        emit CreateGrant(_to, _value, _end);
+
+    }
+
+
+
+    /**
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 030303030303030303030303deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createGrant(address,uint256,uint256), txdata: 0xdde26ec9000000000000000000000000010000020101004000000401000010000800008003, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Vesting
+Function name: createGrant(address,uint256,uint256)
+PC address: 1580
+Estimated Gas Usage: 28638 - 147369
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/30d3c0ab6c57edca8590f77f1d793ad0.sol:243
+
+;
+
+
+
+        totalVesting = totalVesting.add(_value);
+
+
+
+        emit CreateGrant(_to, _value, _end);
+
+    }
+
+
+
+    /**
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 030303030303030303030303deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createGrant(address,uint256,uint256), txdata: 0xdde26ec9000000000000000000000000010000020101004000000401000010000800008003, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Vesting
+Function name: createGrant(address,uint256,uint256)
+PC address: 1593
+Estimated Gas Usage: 28638 - 147369
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/30d3c0ab6c57edca8590f77f1d793ad0.sol:243
+
+;
+
+
+
+        totalVesting = totalVesting.add(_value);
+
+
+
+        emit CreateGrant(_to, _value, _end);
+
+    }
+
+
+
+    /**
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 030303030303030303030303deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createGrant(address,uint256,uint256), txdata: 0xdde26ec9000000000000000000000000010000020101004000000401000010000800008003, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Vesting
+Function name: createGrant(address,uint256,uint256)
+PC address: 1596
+Estimated Gas Usage: 28638 - 147369
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/30d3c0ab6c57edca8590f77f1d793ad0.sol:259
+
+t for the sp
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 030303030303030303030303deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createGrant(address,uint256,uint256), txdata: 0xdde26ec9000000000000000000000000010000020101004000000401000010000800008003, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Vesting
+Function name: createGrant(address,uint256,uint256)
+PC address: 1609
+Estimated Gas Usage: 28638 - 147369
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/30d3c0ab6c57edca8590f77f1d793ad0.sol:259
+
+Revoke the grant for the specified addr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 030303030303030303030303deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: createGrant(address,uint256,uint256), txdata: 0xdde26ec9000000000000000000000000010000020101004000000401000010000800008003, value: 0x0
+
+

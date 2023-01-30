@@ -1,0 +1,138 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: TokenRecoverable
+Function name: recoverTokens(address,address,uint256)
+PC address: 1253
+Estimated Gas Usage: 5127 - 76366
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: recoverTokens(address,address,uint256), txdata: 0x5f3e849f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000101010101a082310101010101010101010101010901d12ebe1b195e5aa8748e62bd7735, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TokenRecoverable
+Function name: recoverTokens(address,address,uint256)
+PC address: 1317
+Estimated Gas Usage: 5127 - 76366
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/dee01a865af272b85ebb4f016e4d5c6e.sol:675
+
+o, amount);
+    }
+}
+
+inte
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferOwnership(address), txdata: 0xf2fde38b000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+Caller: [SOMEGUY], function: recoverTokens(address,address,uint256), txdata: 0x5f3e849f000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000101010101a082310101010101010101010101010901d12ebe1b195e5aa8748e62bd7735, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: TokenRecoverable
+Function name: recoverTokens(address,address,uint256)
+PC address: 1317
+Estimated Gas Usage: 5127 - 76366
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/dee01a865af272b85ebb4f016e4d5c6e.sol:675
+
+o, amount);
+    }
+}
+
+inte
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: recoverTokens(address,address,uint256), txdata: 0x5f3e849f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000101010101a082310101010101010101010101010901d12ebe1b195e5aa8748e62bd7736, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: CloudToken
+Function name: transferLocked(address,uint256,uint256)
+PC address: 5209
+Estimated Gas Usage: 407 - 502
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/dee01a865af272b85ebb4f016e4d5c6e.sol:796
+
+     uint256 tokens = 0;
+        uint256 n = locks
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x44200001100000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transferLocked(address,uint256,uint256), txdata: 0x92a950b6000000000000000000000000010201010101010101012001010101014001010101010101010101010101010101010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: CloudToken
+Function name: timelocks(address,uint256)
+PC address: 6404
+Estimated Gas Usage: 1167 - 1452
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/dee01a865af272b85ebb4f016e4d5c6e.sol:713
+
+isabled");
+        _;
+    }
+    
+    modifier o
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: timelocks(address,uint256), txdata: 0xea612ae800000000000000000000000000000000000000000000000010000102002010018000000000000000000000000000004000000000000000000000000000000000, value: 0x0

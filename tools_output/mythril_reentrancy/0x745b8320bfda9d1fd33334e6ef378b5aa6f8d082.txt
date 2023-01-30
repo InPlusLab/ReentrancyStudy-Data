@@ -1,0 +1,79 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ExchangerV2
+Function name: withdrawTokens(uint256)
+PC address: 2705
+Estimated Gas Usage: 3575 - 38801
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/a7b3bd88fd4a1e459b8462683a8119ed.sol:273
+
+withdrawEther(uint amountInWei) onlyOwner 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: withdrawTokens(uint256), txdata: 0x315a095d, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ExchangerV2
+Function name: getReserveBalances()
+PC address: 4970
+Estimated Gas Usage: 4475 - 39838
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/a7b3bd88fd4a1e459b8462683a8119ed.sol:417
+
+() public view returns(uint) 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x500000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: getReserveBalances(), txdata: 0x77d56a04, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ExchangerV2
+Function name: getReserveBalances()
+PC address: 5029
+Estimated Gas Usage: 4475 - 39838
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/a7b3bd88fd4a1e459b8462683a8119ed.sol:419
+
+rEther = 
+
+        fo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x80, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: getReserveBalances(), txdata: 0x77d56a04, value: 0x0

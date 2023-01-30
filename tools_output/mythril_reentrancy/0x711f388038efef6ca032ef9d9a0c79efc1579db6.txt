@@ -1,0 +1,99 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: BitcoinStore
+Function name: multisend(address,address[],uint256[])
+PC address: 1205
+Estimated Gas Usage: 3539 - 44448
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/469a7427fa2def21d9605049acab76b2.sol:111
+
+ uint i = 0;
+      while (i < dests.length) {
+         ERC20(_tokenAddr).transfer(dests[i], values[i]);
+         i += 1;
+      }
+      return(i);
+  }
+
+  /* fallback function for when ether is sent to the contract */
+  function () external payable {
+    require(eth_
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address,address[],uint256[]), txdata: 0xad8733ca0101010101010100010101010101010101010101010101010101010100000000fffffc0000000000000000000000000000000000000000000000000000000004fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BitcoinStore
+Function name: send(address,address,uint256)
+PC address: 1921
+Estimated Gas Usage: 2788 - 37684
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/469a7427fa2def21d9605049acab76b2.sol:108
+
+uint[] values)
+  onlyOwner
+  returns (u
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: send(address,address,uint256), txdata: 0x0779afe6000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BitcoinStore
+Function name: multisend(address,address[],uint256[])
+PC address: 2857
+Estimated Gas Usage: 1800 - 7771
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/469a7427fa2def21d9605049acab76b2.sol:111
+
+ uint i = 0;
+      while (i < dests.length) {
+         ERC20(_tokenAddr).transfer(dests[i], values[i]);
+         i += 1;
+      }
+      return(i);
+  }
+
+  /* fallback function for when ether is sent to the contract */
+  function () external payable {
+    require(eth_
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x24201001001e00011, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address,address[],uint256[]), txdata: 0xad8733ca000000000000000000000000000000000000000000000000000000000000000080, value: 0x0

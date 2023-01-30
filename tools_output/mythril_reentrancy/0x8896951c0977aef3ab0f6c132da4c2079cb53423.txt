@@ -1,0 +1,124 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DistributionContractETHandERC20
+Function name: distributeETH(address[],uint256[])
+PC address: 311
+Estimated Gas Usage: 3593 - 113096
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/8d9ab327febc38eb35ea3750699bbfc7.sol:59
+
+tion distributeETH(address[] _walletsToDistributeTo, uint[] _amountsToDistribute) public payable returns (bool success) {
+		require(_walletsToDistributeTo.length <= 200, "Too large array");
+		require(_walletsToDistributeTo.length == _amountsToDistribute.length, "the two arrays are not equal");
+
+		uint256 distributedETH = 0;
+		for (uint i = 0; i < _walletsToDistributeTo.length; i++) {
+			distributedETH += _amountsToDistribute[i];
+
+			_walletsToDistributeTo[i].transfer(_amountsToDistribute[i]);
+		}
+
+		// Refund if something is left
+		if (msg.value > distributedETH) {
+			msg.sender.transfer(msg.value - distributedETH);
+		}
+
+		return true;
+	}
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8049a, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: distributeETH(address[],uint256[]), txdata: 0xf8b7fabfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc80, value: 0x1
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DistributionContractETHandERC20
+Function name: fallback
+PC address: 796
+Estimated Gas Usage: 2546 - 43685
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/8d9ab327febc38eb35ea3750699bbfc7.sol:52
+
+nContract.transferFrom(msg.sender, _walletsToDistributeTo[i], _amountsToDistribute[i]),
+		
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x200000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: distributeERC20(address,address[],uint256[]), txdata: 0xb32d79dd000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef800000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: DistributionContractETHandERC20
+Function name: distributeETH(address[],uint256[])
+PC address: 1264
+Estimated Gas Usage: 3593 - 113096
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/8d9ab327febc38eb35ea3750699bbfc7.sol:67
+
+letsToDistributeTo[i].transfer(_amountsToDistribute[i]);
+		
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80407fb109008065, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x100000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: distributeETH(address[],uint256[]), txdata: 0xf8b7fabf800000000000000000000000000000000000000000000000000000000000000080, value: 0x1
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: DistributionContractETHandERC20
+Function name: distributeETH(address[],uint256[])
+PC address: 1350
+Estimated Gas Usage: 2549 - 77308
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/8d9ab327febc38eb35ea3750699bbfc7.sol:72
+
+sender.transfer(msg.value - distributedETH);
+		
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x134f0910083087083, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x40000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: distributeETH(address[],uint256[]), txdata: 0xf8b7fabf800000000000000000000000000000000000000000000000000000000000000080, value: 0x1

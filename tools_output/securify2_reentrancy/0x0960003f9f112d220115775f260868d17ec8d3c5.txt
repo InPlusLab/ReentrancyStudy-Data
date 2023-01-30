@@ -1,0 +1,381 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        81
+Source: 
+> 
+>     function withdraw(uint _amount) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(balance[msg.sender] >= _amount, "You do not have enough tokens!");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        93
+Source: 
+> 
+>     function getBalance(address _addr) public view returns (uint256 _balance) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return balance[_addr];
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        97
+Source: 
+>     
+>     function getLastWithdrawal(address _addr) public view returns (uint256 _lastWithdrawal) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return lastWithdrawal[_addr];
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        101
+Source: 
+>    
+>     function getTimeLeft() public view returns (uint256 _timeLeft) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(unfreezeDate > now, "The future is here!");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        110
+Source: 
+>     // the contract will call this one. 
+>     function receiveApproval(address _sender, uint256 _value, address _tokenContract, bytes memory _extraData) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(_tokenContract == tokenContract, "Can only deposit BSoV into this contract!");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        93
+Source: 
+> 
+>     function getBalance(address _addr) public view returns (uint256 _balance) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return balance[_addr];
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        97
+Source: 
+>     
+>     function getLastWithdrawal(address _addr) public view returns (uint256 _lastWithdrawal) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return lastWithdrawal[_addr];
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        110
+Source: 
+>     // the contract will call this one. 
+>     function receiveApproval(address _sender, uint256 _value, address _tokenContract, bytes memory _extraData) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(_tokenContract == tokenContract, "Can only deposit BSoV into this contract!");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LockMyBSOV
+Line:        86
+Source: 
+>         require(now >= lastWithdrawal[msg.sender] + timeBetweenWithdrawals, "Trying to withdraw too frequently!");
+>         require(ERC20Interface(tokenContract).transfer(msg.sender, _amount), "Could not withdraw BSoV!");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    LockMyBSOV
+Line:        113
+Source: 
+>         require(_value > 100, "Must be greater than 100 Mundos to keep people from whining about the math!");
+>         require(ERC20Interface(tokenContract).transferFrom(_sender, address(this), _value), "Could not transfer BSoV to Time Lock contract address.");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        54
+Source: 
+>     
+>     address constant tokenContract = 0x26946adA5eCb57f3A1F91605050Ce45c482C9Eb1;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        57
+Source: 
+>     uint constant PRECISION = 100000000;
+>     uint constant timeUntilUnlocked = 180 days;            // All tokens locked for 180 days after contract creation.
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint constant maxWithdrawalAmount = 1000 * PRECISION;  // Max withdrawal of 2.5k tokens per week per user once 180 days is hit.
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        58
+Source: 
+>     uint constant timeUntilUnlocked = 180 days;            // All tokens locked for 180 days after contract creation.
+>     uint constant maxWithdrawalAmount = 1000 * PRECISION;  // Max withdrawal of 2.5k tokens per week per user once 180 days is hit.
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint constant timeBetweenWithdrawals = 7 days;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        59
+Source: 
+>     uint constant maxWithdrawalAmount = 1000 * PRECISION;  // Max withdrawal of 2.5k tokens per week per user once 180 days is hit.
+>     uint constant timeBetweenWithdrawals = 7 days;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint unfreezeDate;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        115
+Source: 
+> 
+>         uint _adjustedValue = _value.mul(99).div(100);
+>         ^^^^^^^^^^^^^^^^^^^
+>         balance[_sender] += _adjustedValue;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        5
+Source: 
+> 
+> pragma solidity ^0.5.10;
+> ^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        54
+Source: 
+>     
+>     address constant tokenContract = 0x26946adA5eCb57f3A1F91605050Ce45c482C9Eb1;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        56
+Source: 
+> 
+>     uint constant PRECISION = 100000000;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint constant timeUntilUnlocked = 180 days;            // All tokens locked for 180 days after contract creation.
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        57
+Source: 
+>     uint constant PRECISION = 100000000;
+>     uint constant timeUntilUnlocked = 180 days;            // All tokens locked for 180 days after contract creation.
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint constant maxWithdrawalAmount = 1000 * PRECISION;  // Max withdrawal of 2.5k tokens per week per user once 180 days is hit.
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        58
+Source: 
+>     uint constant timeUntilUnlocked = 180 days;            // All tokens locked for 180 days after contract creation.
+>     uint constant maxWithdrawalAmount = 1000 * PRECISION;  // Max withdrawal of 2.5k tokens per week per user once 180 days is hit.
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint constant timeBetweenWithdrawals = 7 days;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        59
+Source: 
+>     uint constant maxWithdrawalAmount = 1000 * PRECISION;  // Max withdrawal of 2.5k tokens per week per user once 180 days is hit.
+>     uint constant timeBetweenWithdrawals = 7 days;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint unfreezeDate;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        60
+Source: 
+>     uint constant timeBetweenWithdrawals = 7 days;
+>     uint unfreezeDate;
+>     ^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        62
+Source: 
+> 
+> 	mapping (address => uint) balance;
+>  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 	mapping (address => uint) lastWithdrawal;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        63
+Source: 
+> 	mapping (address => uint) balance;
+> 	mapping (address => uint) lastWithdrawal;
+>  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        56
+Source: 
+> 
+>     uint constant PRECISION = 100000000;
+>                               ^^^^^^^^^
+>     uint constant timeUntilUnlocked = 180 days;            // All tokens locked for 180 days after contract creation.
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LockMyBSOV
+Line:        86
+Source: 
+>         require(now >= lastWithdrawal[msg.sender] + timeBetweenWithdrawals, "Trying to withdraw too frequently!");
+>         require(ERC20Interface(tokenContract).transfer(msg.sender, _amount), "Could not withdraw BSoV!");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    LockMyBSOV
+Line:        113
+Source: 
+>         require(_value > 100, "Must be greater than 100 Mundos to keep people from whining about the math!");
+>         require(ERC20Interface(tokenContract).transferFrom(_sender, address(this), _value), "Could not transfer BSoV to Time Lock contract address.");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    LockMyBSOV
+Line:        116
+Source: 
+>         uint _adjustedValue = _value.mul(99).div(100);
+>         balance[_sender] += _adjustedValue;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit TokensFrozen(msg.sender, _adjustedValue, now);
+
+[0m

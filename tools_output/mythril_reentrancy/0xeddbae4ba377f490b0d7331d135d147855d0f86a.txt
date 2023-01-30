@@ -1,0 +1,136 @@
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: AffiliateEscrow
+Function name: withdraw(address)
+PC address: 499
+Estimated Gas Usage: 11835 - 135246
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/e7d3dccc933ee5348e4f3e031b6d8fe2.sol:110
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: deposit(address), txdata: 0xf340fa010000000000000000000000008020202002100220001080108004020210000101, value: 0x1
+Caller: [CREATOR], function: withdraw(address), txdata: 0x51cff8d90202020202020202020202028020202002100220001080108004020210000101, value: 0x0
+
+==== Unprotected Ether Withdrawal ====
+SWC ID: 105
+Severity: High
+Contract: AffiliateEscrow
+Function name: withdraw(address)
+PC address: 499
+Estimated Gas Usage: 11835 - 135246
+Any sender can withdraw Ether from the contract account.
+Arbitrary senders other than the contract creator can profitably extract Ether from the contract account. Verify the business logic carefully and make sure that appropriate security controls are in place to prevent unexpected loss of funds.
+--------------------
+In file: /tmp/e7d3dccc933ee5348e4f3e031b6d8fe2.sol:110
+Initial State:
+
+Account: [CREATOR], balance: 0x2008d04000315f6, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20400000a007ffff, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: deposit(address), txdata: 0xf340fa01000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x1
+Caller: [ATTACKER], function: withdraw(address), txdata: 0x51cff8d9000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: AffiliateEscrow
+Function name: deposit(address)
+PC address: 613
+Estimated Gas Usage: 11194 - 100702
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/e7d3dccc933ee5348e4f3e031b6d8fe2.sol:110
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x140000000400000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0202020202020202020202020000000000000000000000000000000000000000020202020202020202020202deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: deposit(address), txdata: 0xf340fa010000000000000000000000000401010000000000000000000000200040020110, value: 0x1
+Caller: [ATTACKER], function: deposit(address), txdata: 0xf340fa010202020202020202020202020000000000000000000000000000000000000000, value: 0x1
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: AffiliateEscrow
+Function name: withdraw(address)
+PC address: 613
+Estimated Gas Usage: 11835 - 135246
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/e7d3dccc933ee5348e4f3e031b6d8fe2.sol:110
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0202020202020202020202020000000000000000000000000000000000000000020202020202020202020202deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: deposit(address), txdata: 0xf340fa01000000000000000000000000021001a000008000020404844000010100002008, value: 0x1
+Caller: [SOMEGUY], function: withdraw(address), txdata: 0x51cff8d9adadadadadadadadadadadad021001a000008000020404844000010100002008, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: AffiliateEscrow
+Function name: deposit(address)
+PC address: 613
+Estimated Gas Usage: 11194 - 100702
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/e7d3dccc933ee5348e4f3e031b6d8fe2.sol:110
+Initial State:
+
+Account: [CREATOR], balance: 0x205dfbe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: deposit(address), txdata: 0xf340fa010000000000000000000000000000000000000000000000000000000000000001, value: 0x1
+
+==== Unprotected Ether Withdrawal ====
+SWC ID: 105
+Severity: High
+Contract: AffiliateEscrow
+Function name: withdraw(address)
+PC address: 613
+Estimated Gas Usage: 11835 - 135246
+Any sender can withdraw Ether from the contract account.
+Arbitrary senders other than the contract creator can profitably extract Ether from the contract account. Verify the business logic carefully and make sure that appropriate security controls are in place to prevent unexpected loss of funds.
+--------------------
+In file: /tmp/e7d3dccc933ee5348e4f3e031b6d8fe2.sol:110
+Initial State:
+
+Account: [CREATOR], balance: 0x20, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: deposit(address), txdata: 0xf340fa01000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x1
+Caller: [ATTACKER], function: withdraw(address), txdata: 0x51cff8d9000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

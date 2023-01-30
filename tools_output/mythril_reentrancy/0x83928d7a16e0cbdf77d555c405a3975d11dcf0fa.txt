@@ -1,0 +1,92 @@
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: EtherheroStabilizationFund
+Function name: ReturnEthToEtherhero()
+PC address: 877
+Estimated Gas Usage: 12295 - 68054
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/620d25558711a10e251a933f2fd5c3bf.sol:151
+
+tion() external payable {
+
+       
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x01020420, value: 0x30d41
+Caller: [CREATOR], function: ReturnEthToEtherhero(), txdata: 0x0e216954, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Etherhero
+Function name: calculationOfPayment()
+PC address: 2788
+Estimated Gas Usage: 3142 - 3617
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/620d25558711a10e251a933f2fd5c3bf.sol:371
+
+tRate > 3) {
+
+                return (3);
+
+            } else {
+
+                return (interestRate);
+
+            }
+
+        }
+
+       
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10000000000010, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: calculationOfPayment(), txdata: 0xb7b33765, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Etherhero
+Function name: calculationOfPayment()
+PC address: 4907
+Estimated Gas Usage: 2060 - 2345
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/620d25558711a10e251a933f2fd5c3bf.sol:61
+
+ function add(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40180080000000194, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: calculationOfPayment(), txdata: 0xb7b33765, value: 0x0

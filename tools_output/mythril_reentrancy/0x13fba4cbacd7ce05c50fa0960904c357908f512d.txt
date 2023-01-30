@@ -1,0 +1,163 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Airdropper
+Function name: AirTransfer(address[],uint256[],address)
+PC address: 150
+Estimated Gas Usage: 5074 - 82662
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09d4f8596872b2e5d101510c9ff8f983.sol:28
+
+s[] _recipients, uint[] _values, address _tokenAddress) onlyOwner public returns (bool) {
+        require(_recipients.length > 0);
+
+        Token token = Token(_tokenAddress);
+        
+        for(uint j = 0; j < _recipients.length; j++){
+            token.transfer(_recipients[j], _values[j]);
+        }
+ 
+        return true;
+    }
+ 
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000010, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: AirTransfer(address[],uint256[],address), txdata: 0xd1e1e113ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Airdropper
+Function name: AirTransfer(address[],uint256[],address)
+PC address: 210
+Estimated Gas Usage: 5074 - 82662
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09d4f8596872b2e5d101510c9ff8f983.sol:28
+
+s[] _recipients, uint[] _values, address _tokenAddress) onlyOwner public returns (bool) {
+        require(_recipients.length > 0);
+
+        Token token = Token(_tokenAddress);
+        
+        for(uint j = 0; j < _recipients.length; j++){
+            token.transfer(_recipients[j], _values[j]);
+        }
+ 
+        return true;
+    }
+ 
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: AirTransfer(address[],uint256[],address), txdata: 0xd1e1e1138000000000000000000000000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Airdropper
+Function name: AirTransfer(address[],uint256[],address)
+PC address: 426
+Estimated Gas Usage: 1584 - 8308
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09d4f8596872b2e5d101510c9ff8f983.sol:37
+
+return tru
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400d200026850001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: AirTransfer(address[],uint256[],address), txdata: 0xd1e1e113800000000000000000000000000000000000000000000000000000000000000408, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Airdropper
+Function name: AirTransfer(address[],uint256[],address)
+PC address: 535
+Estimated Gas Usage: 3307 - 45299
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09d4f8596872b2e5d101510c9ff8f983.sol:34
+
+alues[j]);
+        }
+ 
+        return true
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: AirTransfer(address[],uint256[],address), txdata: 0xd1e1e11380000000000000000000000000000000000000000000000000000000000000047fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe3000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Airdropper
+Function name: AirTransfer(address[],uint256[],address)
+PC address: 535
+Estimated Gas Usage: 5074 - 82662
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/09d4f8596872b2e5d101510c9ff8f983.sol:34
+
+alues[j]);
+        }
+ 
+        return true
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: AirTransfer(address[],uint256[],address), txdata: 0xd1e1e11382, value: 0x0
+
+

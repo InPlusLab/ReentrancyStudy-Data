@@ -1,0 +1,118 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: EndowProtocol
+Function name: multiTransfer(address[],uint256[])
+PC address: 500
+Estimated Gas Usage: 30266 - 121322
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/974fce15799f994fdc29a97b1c5de24f.sol:73
+
+nts) public {
+    for (uint256 i = 0; i < receivers.length; i++) {
+      transfer(receivers[i], amounts[i]);
+    }
+  }
+
+  function approve(address spender, uint256 value) public returns (bool) {
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2080208080001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: multiTransfer(address[],uint256[]), txdata: 0x1e89d545ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc800000000000000180, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: EndowProtocol
+Function name: multiTransfer(address[],uint256[])
+PC address: 523
+Estimated Gas Usage: 30266 - 121322
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/974fce15799f994fdc29a97b1c5de24f.sol:73
+
+nts) public {
+    for (uint256 i = 0; i < receivers.length; i++) {
+      transfer(receivers[i], amounts[i]);
+    }
+  }
+
+  function approve(address spender, uint256 value) public returns (bool) {
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: multiTransfer(address[],uint256[]), txdata: 0x1e89d5458000000000000000000000000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: EndowProtocol
+Function name: multiTransfer(address[],uint256[])
+PC address: 1187
+Estimated Gas Usage: 690 - 6331
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/974fce15799f994fdc29a97b1c5de24f.sol:79
+
+ public re
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1200820113411, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multiTransfer(address[],uint256[]), txdata: 0x1e89d545800000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: EndowProtocol
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 2568
+Estimated Gas Usage: 9045 - 68388
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/974fce15799f994fdc29a97b1c5de24f.sol:90
+
+ return true;
+    }
+
+  function transferFrom(address from, address to, uint256 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc100000000079c, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca51000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

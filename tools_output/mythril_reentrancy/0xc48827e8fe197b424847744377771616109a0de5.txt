@@ -1,0 +1,295 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: tokenRecipient
+Function name: receiveApproval(address,uint256,address,bytes) or receiveApproval(address,uint256,address,bytes)
+PC address: 576
+Estimated Gas Usage: 3475 - 42906
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/7c0ba1ed4fd0be99799163acf5b23a2f.sol:57
+
+  emit receivedTokens(_from, _value, _token,
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: receiveApproval(address,uint256,address,bytes), txdata: 0x8f4ffcb1000000000000000000000000000000000000000000000000000000000000003d0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Levblockchain_LVE_DAO
+Function name: proposals(uint256)
+PC address: 2011
+Estimated Gas Usage: 1014 - 1109
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/7c0ba1ed4fd0be99799163acf5b23a2f.sol:101
+
+;
+
+
+
+    event ProposalAdde
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: proposals(uint256), txdata: 0x013cf08b, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Levblockchain_LVE_DAO
+Function name: executeProposal(uint256,bytes)
+PC address: 2320
+Estimated Gas Usage: 1279 - 3961
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/7c0ba1ed4fd0be99799163acf5b23a2f.sol:453
+
+i.encodePacked(p.recipient, p.amount, transactionBytecode))); // and the supplied code matches the proposal...
+
+
+
+
+
+        // ...then tally the results
+
+        uint quorum = 0;
+
+        uint yea = 0;
+
+        uint nay = 0;
+
+
+
+        for (uint i = 0; i <  p.votes.length; ++i) {
+
+            Vote storage v = p.votes[i];
+
+            uint voteWeight = sharesTokenAddress.balanceOf(v.voter);
+
+            quorum += voteWeight;
+
+            if (v.inSupport) {
+
+                yea += voteWeight;
+
+            } else {
+
+                nay += voteWeight;
+
+            }
+
+        }
+
+
+
+        require(quorum >= minimumQuorum); // Check if a minimum quorum has been reached
+
+
+
+        if (yea > nay ) {
+
+            // Proposal passed; execute the transaction
+
+
+
+            p.executed = true;
+
+            
+
+            bool success = p.recipient.call.value(p.amount)(transactionBytecode);
+
+            require(success);
+
+
+
+            p.proposalPassed = true;
+
+        } else {
+
+            // Proposal failed
+
+            p.proposalPassed = false;
+
+        }
+
+
+
+        // Fire Events
+
+        emit ProposalTallied(proposalNumber, yea - nay, quorum, p.proposalPassed);
+
+    }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: executeProposal(uint256,bytes), txdata: 0x237e9492, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Levblockchain_LVE_DAO
+Function name: receiveApproval(address,uint256,address,bytes) or receiveApproval(address,uint256,address,bytes)
+PC address: 4208
+Estimated Gas Usage: 3651 - 43082
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/7c0ba1ed4fd0be99799163acf5b23a2f.sol:57
+
+  emit receivedTokens(_from, _value, _token,
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: receiveApproval(address,uint256,address,bytes), txdata: 0x8f4ffcb1000000000000000000000000000000000000000000000000000000000000003d0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Levblockchain_LVE_DAO
+Function name: vote(uint256,bool)
+PC address: 6167
+Estimated Gas Usage: 3819 - 38806
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/7c0ba1ed4fd0be99799163acf5b23a2f.sol:415
+
+voted[msg.sender] = true;
+
+        p.numberOfVotes = voteID +1;
+
+        emit Voted(proposalNumber,  supportsProposal, msg.sender);
+
+        return voteID;
+
+    }
+
+
+
+    /**
+
+     * Finish vote
+
+     *
+
+     * Count the votes proposal #`proposalNumber` and execute it if approved
+
+     *
+
+     * @param proposalNumber proposal number
+
+     * @param transactionBytecode optional: if the transaction contained a bytecode, you need to send it
+
+     */
+
+    function executeProposal(uint proposalNumber, bytes memory transactionBytecode) public {
+
+        Proposal storage p = proposals[p
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: vote(uint256,bool), txdata: 0xc9d27afe, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Levblockchain_LVE_DAO
+Function name: checkProposalCode(uint256,address,uint256,bytes)
+PC address: 6732
+Estimated Gas Usage: 1563 - 4245
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/7c0ba1ed4fd0be99799163acf5b23a2f.sol:369
+
+neficiary, weiAmount, transactionBytecode));
+
+    }
+
+
+
+    /**
+
+     * Log a vote for a proposal
+
+     *
+
+     * Vote `supportsProposal? in support of : against` proposal #`proposalNumber`
+
+     *
+
+     * @param proposalNumber number of proposal
+
+     * @param supportsProposal either in favor or against it
+
+     */
+
+    function vote(
+
+        uint proposalNumber,
+
+        bool supportsProposal
+
+    )
+
+        onlySha
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10084020102c40016, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+Caller: [SOMEGUY], function: checkProposalCode(uint256,address,uint256,bytes), txdata: 0xeceb2945, value: 0x0

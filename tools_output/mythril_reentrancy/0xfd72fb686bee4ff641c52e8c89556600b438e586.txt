@@ -1,0 +1,641 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: LockedTokenManager
+Function name: unlockAll(address,address)
+PC address: 2401
+Estimated Gas Usage: 6173 - 76119
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:477
+
+et to msg.sender. Throws
+
+    ///  if sender is not tok
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40207001002000cbf, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unlockAll(address,address), txdata: 0x30fb67be0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: LockedTokenManager
+Function name: unlockAll(address,address)
+PC address: 2401
+Estimated Gas Usage: 6173 - 76119
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:477
+
+et to msg.sender. Throws
+
+    ///  if sender is not tok
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x128850b0000001f45, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: unlockAll(address,address), txdata: 0x30fb67be00000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000101010101010000000001010101800000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: LockedTokenManager
+Function name: transferAndLock(address,address,uint256,uint256)
+PC address: 3076
+Estimated Gas Usage: 10699 - 66934
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:307
+
+kens);
+
+
+
+        return true;
+
+    }
+
+    
+
+    //-----------
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x800040000072fc1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transferAndLock(address,address,uint256,uint256), txdata: 0x5115db3a0000000000000000000000004000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: LockedTokenManager
+Function name: transferAndLock(address,address,uint256,uint256)
+PC address: 3264
+Estimated Gas Usage: 10699 - 66934
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:319
+
+`_numberOfMo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x200000100050139, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transferAndLock(address,address,uint256,uint256), txdata: 0x5115db3a000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: LockedTokenManager
+Function name: transferAndLock(address,address,uint256,uint256)
+PC address: 3284
+Estimated Gas Usage: 10699 - 66934
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:319
+
+d `_tokens` tokens to `_to`, then lock for `_numberOfMonths`
+
+    ///  months.
+
+    /
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x200000100050139, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transferAndLock(address,address,uint256,uint256), txdata: 0x5115db3a000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: LockedTokenManager
+Function name: transferAndLock(address,address,uint256,uint256)
+PC address: 3291
+Estimated Gas Usage: 10699 - 66934
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:319
+
+d `_tokens` tokens to `_to`, then lock for `_numberOfMonths`
+
+    ///  months.
+
+    /
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x200000100050139, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transferAndLock(address,address,uint256,uint256), txdata: 0x5115db3a000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: LockedTokenManager
+Function name: unlockByMonth(address,address,uint256)
+PC address: 4567
+Estimated Gas Usage: 12595 - 103681
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:567
+
+ is greater than the currentMonth
+
+        uint seconds
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80000020bd, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unlockByMonth(address,address,uint256), txdata: 0x540c1f130000000000000000000000000000000000000000000000000000000100000001000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: LockedTokenManager
+Function name: unlockByMonth(address,address,uint256)
+PC address: 4567
+Estimated Gas Usage: 12595 - 103681
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:567
+
+ is greater than the currentMonth
+
+        uint seconds
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8001c050421, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unlockByMonth(address,address,uint256), txdata: 0x540c1f13000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: LockedTokenManager
+Function name: updateMonthsSinceRelease()
+PC address: 4742
+Estimated Gas Usage: 6924 - 27019
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:595
+
+s The token contract address.
+
+    /// 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xfbfb9, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: updateMonthsSinceRelease(), txdata: 0x547e07bc, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: LockedTokenManager
+Function name: updateMonthsSinceRelease()
+PC address: 4769
+Estimated Gas Usage: 1071 - 1166
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:597
+
+ locked token holdings of a token owner.
+
+    //-------------------------------------------------------------------------
+
+    function viewTotalLockedTokens(
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: updateMonthsSinceRelease(), txdata: 0x547e07bc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: LockedTokenManager
+Function name: transferFromAndLock(address,address,address,uint256,uint256)
+PC address: 5445
+Estimated Gas Usage: 10845 - 67080
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:393
+
+---------------------------------------
+
+    /// @notice 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2084a012080107d, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transferFromAndLock(address,address,address,uint256,uint256), txdata: 0xcda092d0000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: LockedTokenManager
+Function name: transferFromAndLock(address,address,address,uint256,uint256)
+PC address: 5633
+Estimated Gas Usage: 10845 - 67080
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:399
+
+dev If token
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x181041200448705c, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transferFromAndLock(address,address,address,uint256,uint256), txdata: 0xcda092d0000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: LockedTokenManager
+Function name: transferFromAndLock(address,address,address,uint256,uint256)
+PC address: 5653
+Estimated Gas Usage: 10845 - 67080
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:397
+
+kenOwner or an approved address.
+
+    /// @dev If tokenOwner is empty, tokenOwner is 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x181041200448705c, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transferFromAndLock(address,address,address,uint256,uint256), txdata: 0xcda092d0000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: LockedTokenManager
+Function name: transferFromAndLock(address,address,address,uint256,uint256)
+PC address: 5660
+Estimated Gas Usage: 10845 - 67080
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:397
+
+kenOwner or an approved address.
+
+    /// @dev If tokenOwner is empty, tokenOwner is 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x181041200448705c, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transferFromAndLock(address,address,address,uint256,uint256), txdata: 0xcda092d0000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: LockedTokenManager
+Function name: lockFrom(address,address,uint256,uint256)
+PC address: 6256
+Estimated Gas Usage: 10869 - 67104
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:231
+
+ += _tokens;
+
+        // emit lock event
+
+        emit Lock(_tok
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000000d2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: lockFrom(address,address,uint256,uint256), txdata: 0xdcef06bf0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: LockedTokenManager
+Function name: lockFrom(address,address,uint256,uint256)
+PC address: 6444
+Estimated Gas Usage: 10869 - 67104
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:245
+
+------------
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x82000015, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: lockFrom(address,address,uint256,uint256), txdata: 0xdcef06bf0000000000000000000000000000010000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: LockedTokenManager
+Function name: lockFrom(address,address,uint256,uint256)
+PC address: 6464
+Estimated Gas Usage: 10869 - 67104
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:245
+
+-----------------------------------------------------------------
+
+    /// @notice Send `_toke
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x82000015, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: lockFrom(address,address,uint256,uint256), txdata: 0xdcef06bf0000000000000000000000000000010000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: LockedTokenManager
+Function name: lockFrom(address,address,uint256,uint256)
+PC address: 6471
+Estimated Gas Usage: 10869 - 67104
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:245
+
+-----------------------------------------------------------------
+
+    /// @notice Send `_toke
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x82000015, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: lockFrom(address,address,uint256,uint256), txdata: 0xdcef06bf0000000000000000000000000000010000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: LockedTokenManager
+Function name: lock(address,uint256,uint256)
+PC address: 7067
+Estimated Gas Usage: 10853 - 67088
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:163
+
+Month[msg.sender][_tokenAddress][currentMonth + _numberOfMonth
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000000005, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: lock(address,uint256,uint256), txdata: 0xe2ab691d000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef80018080010880044001040200000000000000000000000020000001010100000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: LockedTokenManager
+Function name: lock(address,uint256,uint256)
+PC address: 7255
+Estimated Gas Usage: 10853 - 67088
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:175
+
+  
+
+    //--
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8000200163d, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: lock(address,uint256,uint256), txdata: 0xe2ab691d000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef04080400041040400220800800000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: LockedTokenManager
+Function name: lock(address,uint256,uint256)
+PC address: 7275
+Estimated Gas Usage: 10853 - 67088
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:167
+
+ress, _tokens);
+
+
+
+        return true;
+
+    }
+
+    
+
+    //--------------------------------
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8000200163d, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: lock(address,uint256,uint256), txdata: 0xe2ab691d000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef04080400041040400220800800000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: LockedTokenManager
+Function name: lock(address,uint256,uint256)
+PC address: 7282
+Estimated Gas Usage: 10853 - 67088
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/8fe5655ff2b81f50e97dbe3f045ce965.sol:167
+
+ress, _tokens);
+
+
+
+        return true;
+
+    }
+
+    
+
+    //--------------------------------
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8000200163d, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: lock(address,uint256,uint256), txdata: 0xe2ab691d000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef04080400041040400220800800000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000001, value: 0x0

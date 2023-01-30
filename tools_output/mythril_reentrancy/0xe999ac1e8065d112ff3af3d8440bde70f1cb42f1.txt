@@ -1,0 +1,240 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MerkleProof
+Function name: verifyProof(bytes,bytes32,bytes32)
+PC address: 85
+Estimated Gas Usage: 565 - 3621
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/d55ba8e98f0c57ff222a5bb5a1ca56b7.sol:72
+
+ pure returns (bool) {
+    // Check if proof length is a multiple of 32
+    if (_proof.length % 32 != 0) return false;
+
+    bytes32 proofElement;
+    bytes32 computedHash = _leaf;
+
+    for (uint256 i = 32; i <= _proof.length; i += 32) {
+      assembly {
+        // Load the current element of the proof
+        proofElement := mload(add(_proof, i))
+      }
+
+      if (computedHash < proofElement) {
+        // Hash(current computed hash + current element of the proof)
+        computedHash = keccak256(computedHash, proofElement);
+      } else {
+        // Hash(current element of the proof + current computed hash)
+        computedHash = keccak256(proofElement, computedHash);
+      }
+    }
+
+    // Check if the computed hash (root) is equal to the provided root
+    return computedHash == _root;
+  }
+}
+
+/**
+ * @title MerkleMine
+ * @dev Token distribution based on providing Merkle proofs of inc
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: verifyProof(bytes,bytes32,bytes32), txdata: 0x101f13e2fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MerkleProof
+Function name: verifyProof(bytes,bytes32,bytes32)
+PC address: 91
+Estimated Gas Usage: 1186 - 5459
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/d55ba8e98f0c57ff222a5bb5a1ca56b7.sol:72
+
+ pure returns (bool) {
+    // Check if proof length is a multiple of 32
+    if (_proof.length % 32 != 0) return false;
+
+    bytes32 proofElement;
+    bytes32 computedHash = _leaf;
+
+    for (uint256 i = 32; i <= _proof.length; i += 32) {
+      assembly {
+        // Load the current element of the proof
+        proofElement := mload(add(_proof, i))
+      }
+
+      if (computedHash < proofElement) {
+        // Hash(current computed hash + current element of the proof)
+        computedHash = keccak256(computedHash, proofElement);
+      } else {
+        // Hash(current element of the proof + current computed hash)
+        computedHash = keccak256(proofElement, computedHash);
+      }
+    }
+
+    // Check if the computed hash (root) is equal to the provided root
+    return computedHash == _root;
+  }
+}
+
+/**
+ * @title MerkleMine
+ * @dev Token distribution based on providing Merkle proofs of inc
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000080000048263, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: verifyProof(bytes,bytes32,bytes32), txdata: 0x101f13e2ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: MerkleMine
+Function name: constructor
+PC address: 192
+Estimated Gas Usage: 385 - 3716
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/d55ba8e98f0c57ff222a5bb5a1ca56b7.sol:185
+
+ // End block for caller allocation mu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: MerkleMine
+Function name: constructor
+PC address: 206
+Estimated Gas Usage: 413 - 3744
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/d55ba8e98f0c57ff222a5bb5a1ca56b7.sol:186
+
+ _callerAllocationStartBlock);
+
+        token = ERC
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MerkleMine
+Function name: start()
+PC address: 2881
+Estimated Gas Usage: 10265 - 66100
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/d55ba8e98f0c57ff222a5bb5a1ca56b7.sol:212
+
+StartBlock`
+     * a 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000000a082310000000000000000000000000901d12ebe1b195e5aa8748e62bd77352010000800800280400000040000202000200002020100080400100820101001000000000000000000000000000000000000000000000000000000000000000020044000004004010108010204010020808002024000100040010400080410018800200400000000000000000000000000000000000000000000000000000000a2, value: 0x0
+Caller: [ATTACKER], function: start(), txdata: 0xbe9a6555, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: MerkleMine
+Function name: start()
+PC address: 2927
+Estimated Gas Usage: 10265 - 66100
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d55ba8e98f0c57ff222a5bb5a1ca56b7.sol:213
+
+t) can invoke 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000000a082310000000000000000000000000901d12ebe1b195e5aa8748e62bd7735010101011004100101010101010101010101010101010101010101010108040100000000000000000000000000000000000000000000000000000000000000000000000000000000080000040810000000000280080000000000000001100800000000000001000100000001000000000880808080808080808080808080800101, value: 0x0
+Caller: [SOMEGUY], function: start(), txdata: 0xbe9a6555, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: MerkleMine
+Function name: start()
+PC address: 2941
+Estimated Gas Usage: 10265 - 66100
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d55ba8e98f0c57ff222a5bb5a1ca56b7.sol:213
+
+t) can invoke 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000000a082310000000000000000000000000901d12ebe1b195e5aa8748e62bd7735010101011004100101010101010101010101010101010101010101010108040100000000000000000000000000000000000000000000000000000000000000000000000000000000080000040810000000000280080000000000000001100800000000000001000100000001000000000880808080808080808080808080800101, value: 0x0
+Caller: [SOMEGUY], function: start(), txdata: 0xbe9a6555, value: 0x0

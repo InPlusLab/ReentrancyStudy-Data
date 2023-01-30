@@ -1,0 +1,163 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Airdropper
+Function name: fallback
+PC address: 128
+Estimated Gas Usage: 4992 - 82487
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0256e891aaaa0d643ebf9696ef69ff74.sol:33
+
+r,
+                    address[] dests,
+                    uint[] quantities ) public onlyOwner returns (uint) {
+
+    for (uint ii = 0; ii < dests.length; ii++) {
+      ERC20(tokAddr).transfer( dests[ii], quantities[ii] );
+    }
+
+    return ii;
+  }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: airdrop(address,address[],uint256[]), txdata: 0x025ff12f0101010101010101010101010101010101010101010101010101010101010102ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Airdropper
+Function name: fallback
+PC address: 188
+Estimated Gas Usage: 4992 - 82487
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0256e891aaaa0d643ebf9696ef69ff74.sol:33
+
+r,
+                    address[] dests,
+                    uint[] quantities ) public onlyOwner returns (uint) {
+
+    for (uint ii = 0; ii < dests.length; ii++) {
+      ERC20(tokAddr).transfer( dests[ii], quantities[ii] );
+    }
+
+    return ii;
+  }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: airdrop(address,address[],uint256[]), txdata: 0x025ff12f01010101010101010101010101010101010101010101010101010101010102008000000000000000000000000000000000000000000000000000000000000001ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Airdropper
+Function name: fallback
+PC address: 437
+Estimated Gas Usage: 1527 - 8158
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0256e891aaaa0d643ebf9696ef69ff74.sol:41
+
+i;
+  }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x22054, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: airdrop(address,address[],uint256[]), txdata: 0x025ff12f000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Airdropper
+Function name: fallback
+PC address: 542
+Estimated Gas Usage: 4992 - 82487
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0256e891aaaa0d643ebf9696ef69ff74.sol:38
+
+uantities[ii] );
+    }
+
+    return ii;
+  }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: airdrop(address,address[],uint256[]), txdata: 0x025ff12f010101010101010101010101deadbeefdeadbeefdeadbeefdeadbeefdeadbeef80, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Airdropper
+Function name: fallback
+PC address: 542
+Estimated Gas Usage: 4992 - 82487
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0256e891aaaa0d643ebf9696ef69ff74.sol:38
+
+uantities[ii] );
+    }
+
+    return ii;
+  }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: airdrop(address,address[],uint256[]), txdata: 0x025ff12f0000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+
+

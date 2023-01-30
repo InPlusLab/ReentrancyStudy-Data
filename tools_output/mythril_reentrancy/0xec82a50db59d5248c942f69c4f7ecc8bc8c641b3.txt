@@ -1,0 +1,53 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ADZbuzzCommunityToken
+Function name: name()
+PC address: 1997
+Estimated Gas Usage: 4181 - 6300
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/553d4dec6e5455d2a3dbb10e13257d32.sol:109
+
+ng(address => uint)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: name(), txdata: 0x06fdde03, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ADZbuzzCommunityToken
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 4782
+Estimated Gas Usage: 9535 - 69251
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/553d4dec6e5455d2a3dbb10e13257d32.sol:210
+
+-----
+        // Don't accept ETH
+        // ----------------------------------
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000100040401, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca51000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000003f70c0b02879c36162c2c902ecfe9ac0a8a8a18780, value: 0x0

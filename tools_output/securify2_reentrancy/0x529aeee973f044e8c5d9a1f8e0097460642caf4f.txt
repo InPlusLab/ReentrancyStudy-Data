@@ -1,0 +1,565 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+pragma directive defines a prior version to 0.5.10. Changing pragma version to 0.5.10....
+[0;31mSeverity:    INFO
+Pattern:     Assembly Usage
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    ECDSA
+Line:        295
+Source: 
+>         // solhint-disable-next-line no-inline-assembly
+>         assembly {
+>         ^^^^^^^^^^
+>             r := mload(add(signature, 0x20))
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Gas-dependent Reentrancy
+Description: Calls into external contracts that receive all remaining
+             gas and are followed by state changes may be reentrant.
+Type:        Violation
+Contract:    SmartLocker
+Line:        198
+Source: 
+>         // execute the transaction
+>         (bool success, bytes memory result) = to.call.value(value)(data);
+>                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Locked Ether
+Description: Contracts that may receive ether must also allow users to
+             extract the deposited ether from the contract.
+Type:        Violation
+Contract:    SmartLockerRegistrar
+Line:        7
+Source: 
+> 
+> contract SmartLockerRegistrar {
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Low Level Calls
+Description: Usage of <address>.call should be avoided
+Type:        Violation
+Contract:    SmartLockerRegistrar
+Line:        35
+Source: 
+>         // deploy a new smart locker and send all value
+>         SmartLocker smartLocker = (new SmartLocker).value(msg.value)(msg.sender, keyname);
+>                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Low Level Calls
+Description: Usage of <address>.call should be avoided
+Type:        Violation
+Contract:    SmartLocker
+Line:        198
+Source: 
+>         // execute the transaction
+>         (bool success, bytes memory result) = to.call.value(value)(data);
+>                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    SmartLocker
+Line:        190
+Source: 
+>     // execute transactions if signed by authorised keys (external)
+>     function executeSigned(address to, uint value, bytes calldata data, uint gasPrice, uint gasLimit, bytes calldata signature) external
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         onlyAuthorisedKeysOrSelf(_recoverSigner(address(this), to, value, data, nextNonce, gasPrice, gasLimit, signature))
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    SmartLockerRegistrar
+Line:        52
+Source: 
+>     // get the name of the smart locker with given address (external view)
+>     function getName(address smartLockerAddress) external view
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         returns (bytes32) {
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    SmartLockerRegistrar
+Line:        59
+Source: 
+>     // get the address of the smart locker with given name (external view)
+>     function getAddress(bytes32 name) external view
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         returns (address) {
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    SmartLocker
+Line:        121
+Source: 
+>     // add authorisation for given key and keyname (external)
+>     function addKey(address key, bytes32 keyname) external
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         onlyAuthorisedKeysOrSelf(msg.sender) {
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    SmartLocker
+Line:        175
+Source: 
+>     // update the given key (external)
+>     function updateKey(address key, bytes32 keyname) external
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         onlyAuthorisedKeysOrSelf(msg.sender) {
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    SmartLocker
+Line:        231
+Source: 
+>     // is the given key an authorised key (external view)
+>     function isAuthorisedKey(address key) external view
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         returns (bool) {
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    SmartLocker
+Line:        238
+Source: 
+>     // get the given key (external view)
+>     function getKey(address key) external view
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         returns (bytes32) {
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Violation
+Contract:    SmartLockerRegistrar
+Line:        35
+Source: 
+>         // deploy a new smart locker and send all value
+>         SmartLocker smartLocker = (new SmartLocker).value(msg.value)(msg.sender, keyname);
+>                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Warning
+Contract:    SmartLocker
+Line:        216
+Source: 
+>         // refund the gas used plus overhead of 40,000 and 68 for each input byte
+>         msg.sender.transfer((gasUsed + 40000 + (msg.data.length * 68)) * gasPrice);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        5
+Source: 
+> 
+> pragma solidity >=0.5.7 <0.6.0;
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     State Variable Shadowing
+Description: State variables in inherited contract should not be named
+             identically to inherited variables
+Type:        Warning
+Contract:    SmartLockerRegistrar
+Line:        10
+Source: 
+>     // forward registrar
+>     mapping(address=>bytes32) registrar;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     State Variable Shadowing
+Description: State variables in inherited contract should not be named
+             identically to inherited variables
+Type:        Warning
+Contract:    SmartLockerRegistrar
+Line:        13
+Source: 
+>     // reverse registrar
+>     mapping(bytes32=>address) reverseRegistrar;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     State Variable Shadowing
+Description: State variables in inherited contract should not be named
+             identically to inherited variables
+Type:        Warning
+Contract:    SmartLocker
+Line:        80
+Source: 
+>     // keys
+>     mapping(address=>Key) keys;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     State Variable Shadowing
+Description: State variables in inherited contract should not be named
+             identically to inherited variables
+Type:        Warning
+Contract:    SmartLocker
+Line:        83
+Source: 
+>     // authorised key count
+>     uint256 authorisedKeyCount;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     State Variable Shadowing
+Description: State variables in inherited contract should not be named
+             identically to inherited variables
+Type:        Warning
+Contract:    SmartLocker
+Line:        86
+Source: 
+>     // key list
+>     address[] keyList;
+>     ^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     State Variable Shadowing
+Description: State variables in inherited contract should not be named
+             identically to inherited variables
+Type:        Warning
+Contract:    SmartLocker
+Line:        89
+Source: 
+>     // next transaction nonce
+>     uint256 nextNonce;
+>     ^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    SmartLockerRegistrar
+Line:        10
+Source: 
+>     // forward registrar
+>     mapping(address=>bytes32) registrar;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    SmartLockerRegistrar
+Line:        13
+Source: 
+>     // reverse registrar
+>     mapping(bytes32=>address) reverseRegistrar;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    SmartLocker
+Line:        80
+Source: 
+>     // keys
+>     mapping(address=>Key) keys;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    SmartLocker
+Line:        83
+Source: 
+>     // authorised key count
+>     uint256 authorisedKeyCount;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    SmartLocker
+Line:        86
+Source: 
+>     // key list
+>     address[] keyList;
+>     ^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    SmartLocker
+Line:        89
+Source: 
+>     // next transaction nonce
+>     uint256 nextNonce;
+>     ^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    SmartLocker
+Line:        98
+Source: 
+>     // only authorised keys or self modifier
+>     modifier onlyAuthorisedKeysOrSelf(address sender) {
+>                                       ^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Warning
+Contract:    SmartLocker
+Line:        198
+Source: 
+>         // execute the transaction
+>         (bool success, bytes memory result) = to.call.value(value)(data);
+>                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Warning
+Contract:    SmartLocker
+Line:        216
+Source: 
+>         // refund the gas used plus overhead of 40,000 and 68 for each input byte
+>         msg.sender.transfer((gasUsed + 40000 + (msg.data.length * 68)) * gasPrice);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Warning
+Contract:    SmartLocker
+Line:        198
+Source: 
+>         // execute the transaction
+>         (bool success, bytes memory result) = to.call.value(value)(data);
+>                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Warning
+Contract:    SmartLocker
+Line:        216
+Source: 
+>         // refund the gas used plus overhead of 40,000 and 68 for each input byte
+>         msg.sender.transfer((gasUsed + 40000 + (msg.data.length * 68)) * gasPrice);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    SmartLocker
+Line:        198
+Source: 
+>         // execute the transaction
+>         (bool success, bytes memory result) = to.call.value(value)(data);
+>                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    SmartLocker
+Line:        216
+Source: 
+>         // refund the gas used plus overhead of 40,000 and 68 for each input byte
+>         msg.sender.transfer((gasUsed + 40000 + (msg.data.length * 68)) * gasPrice);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Uninitialized Local Variables
+Description: A variable is declared but never initialized.
+Type:        Violation
+Contract:    ECDSA
+Line:        302
+Source: 
+>         // Version of signature should be 27 or 28, but 0 and 1 are also possible versions
+>         if (v < 27) {
+>             ^
+>             v += 27;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted Ether Flow
+Description: The execution of ether flows should be restricted to an
+             authorized set of users.
+Type:        Violation
+Contract:    SmartLocker
+Line:        198
+Source: 
+>         // execute the transaction
+>         (bool success, bytes memory result) = to.call.value(value)(data);
+>                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted Ether Flow
+Description: The execution of ether flows should be restricted to an
+             authorized set of users.
+Type:        Violation
+Contract:    SmartLocker
+Line:        216
+Source: 
+>         // refund the gas used plus overhead of 40,000 and 68 for each input byte
+>         msg.sender.transfer((gasUsed + 40000 + (msg.data.length * 68)) * gasPrice);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    SmartLockerRegistrar
+Line:        39
+Source: 
+>         address smartLockerAddress = address(smartLocker);
+>         registrar[smartLockerAddress] = name;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    SmartLockerRegistrar
+Line:        42
+Source: 
+>         // add corresponding entry to the reverse registrar
+>         reverseRegistrar[name] = smartLockerAddress;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    SmartLocker
+Line:        213
+Source: 
+>         // update the nonce
+>         nextNonce++;
+>         ^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    SmartLockerRegistrar
+Line:        35
+Source: 
+>         // deploy a new smart locker and send all value
+>         SmartLocker smartLocker = (new SmartLocker).value(msg.value)(msg.sender, keyname);
+>                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m

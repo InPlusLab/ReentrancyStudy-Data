@@ -1,0 +1,188 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: PreSquirrelICO
+Function name: constructor
+PC address: 194
+Estimated Gas Usage: 17082 - 81640
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/fe13000b5b339782ceb3f959d67b55ee.sol:470
+
+
+  }
+
+  /**
+   * @dev Extend parent beha
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010110010101010101010101010101010101010101010101010140010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: PreSquirrelICO
+Function name: addManyToWhitelist(address[])
+PC address: 871
+Estimated Gas Usage: 1356 - 1781
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/fe13000b5b339782ceb3f959d67b55ee.sol:585
+
+p.removeMember(_beneficiary);
+  }
+
+  // helper function so that UI can check if ICO has started
+  function hasStarted()
+    external
+    view
+    returns (bool)
+  {
+    return block.timestamp >= openingTime;
+  }
+
+  // helper function so that UI can display amount ETH already contributed by user
+  function userAlreadyBoughtEth(address _user)
+    public
+    view
+    returns (uint)
+  {
+    return
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 1000102000090001000100080301040100000100000408080840000001000804400000000001010100010000020104010000000000000000000000000001010001010101020401010101010101010401010801400401010201010140012001040000000000000000000000002001100101010001080840800101010108010101000000000000000000000000010810010202201010010104010104020102020200000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: addManyToWhitelist(address[]), txdata: 0x8c10671cffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: PreSquirrelICO
+Function name: setGroupCap(address[],uint256)
+PC address: 979
+Estimated Gas Usage: 11888 - 53353
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/fe13000b5b339782ceb3f959d67b55ee.sol:341
+
+ndividual user
+   */
+  function getUserCap(address _beneficiary) public view returns (uint256) {
+    return caps[_beneficiary];
+  }
+
+  /**
+   * @dev Returns the amount contributed so far by a
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0108030201080101010101000000000000010101010180010804000000100110800002800100000000000000000000000000000000000000000000000001010001041020010101010140010101010401020201020110000101010180010101200000000000000000000000000180010101400101010101010104012001400101000000000000000000000000010101018001010101020401010220800201040100000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: setGroupCap(address[],uint256), txdata: 0xa31f61fcffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: PreSquirrelICO
+Function name: removeFromWhitelist(address)
+PC address: 1805
+Estimated Gas Usage: 9564 - 65215
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/fe13000b5b339782ceb3f959d67b55ee.sol:610
+
+ returns (uint)
+  {
+    return MAX_PU
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x5b0000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000008000000000000000000000000000000000001010100000000000480000000000000000000000000000000000000000000000000000000000000001000200000001008000001101000101001000110200000002000010000000120000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000101010101010101010101010101010101010101000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: removeFromWhitelist(address), txdata: 0x8ab1d681, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: PreSquirrelICO
+Function name: addToWhitelist(address)
+PC address: 1805
+Estimated Gas Usage: 15024 - 90865
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/fe13000b5b339782ceb3f959d67b55ee.sol:610
+
+ returns (uint)
+  {
+    return MAX_PU
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xa0000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 010000000000000000000000000000000000000000000000000001000000000201010020200080000000000000000000000000000000000000000000000000000000000101000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000010010000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000101010101010101010101010101010101010101000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: addToWhitelist(address), txdata: 0xe43252d7, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: PreSquirrelICO
+Function name: remainingTokens()
+PC address: 2537
+Estimated Gas Usage: 3935 - 39298
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/fe13000b5b339782ceb3f959d67b55ee.sol:303
+
+al {
+    token.transferFrom(tokenW
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 7c800000000000000000000000000000000000000000000000000000000000017cc000000000000000000000000000000000000000000000000000000000000001010101400101010101010101010101020101010101010108010101010101010000000000000000000000000101010101010101010101010101010101010101000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: remainingTokens(), txdata: 0xbf583903, value: 0x0

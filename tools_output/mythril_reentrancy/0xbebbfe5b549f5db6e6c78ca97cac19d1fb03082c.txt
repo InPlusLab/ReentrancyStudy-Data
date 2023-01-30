@@ -1,0 +1,191 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Proxy
+Function name: proxy(address,bytes) or proxy(address,bytes)
+PC address: 557
+Estimated Gas Usage: 1515 - 39370
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5ab0fc9d8a764cf75969bc6d56089d8b.sol:7
+
+.call.value(msg.value)(data);
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xa2d13, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x3, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: proxy(address,bytes), txdata: 0xbe6d055a000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef80, value: 0x0
+
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: Proxy
+Function name: proxy(address,bytes) or proxy(address,bytes)
+PC address: 557
+Estimated Gas Usage: 1515 - 39370
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: /tmp/5ab0fc9d8a764cf75969bc6d56089d8b.sol:7
+
+.call.value(msg.value)(data);
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xe2f02, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: proxy(address,bytes), txdata: 0xbe6d055a000000000000000000000000000000000000000000000000000000000000003d, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: VaultProxy
+Function name: Vault()
+PC address: 615
+Estimated Gas Usage: 125 - 220
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: /tmp/5ab0fc9d8a764cf75969bc6d56089d8b.sol:18
+
+ tx.origin) {
+            Owner = msg.sender;
+            deposit();
+        }
+    }
+    
+    func
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: Vault(), txdata: 0x2d2c44f2, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: VaultProxy
+Function name: withdraw(uint256)
+PC address: 776
+Estimated Gas Usage: 1064 - 1489
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: /tmp/5ab0fc9d8a764cf75969bc6d56089d8b.sol:4
+
+(msg.sender == Owner) _; }
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdraw(uint256), txdata: 0x2e1a7d4d, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: VaultProxy
+Function name: transferOwner(address) or transferOwner(address)
+PC address: 1045
+Estimated Gas Usage: 1114 - 1539
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: /tmp/5ab0fc9d8a764cf75969bc6d56089d8b.sol:4
+
+(msg.sender == Owner) _; }
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferOwner(address), txdata: 0x4fb2e45d, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: VaultProxy
+Function name: proxy(address,bytes) or proxy(address,bytes)
+PC address: 1283
+Estimated Gas Usage: 1603 - 39458
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5ab0fc9d8a764cf75969bc6d56089d8b.sol:7
+
+.call.value(msg.value)(data);
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: proxy(address,bytes), txdata: 0xbe6d055a000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef80, value: 0x0
+
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: VaultProxy
+Function name: proxy(address,bytes) or proxy(address,bytes)
+PC address: 1283
+Estimated Gas Usage: 1603 - 39458
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: /tmp/5ab0fc9d8a764cf75969bc6d56089d8b.sol:7
+
+.call.value(msg.value)(data);
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xe0092, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: proxy(address,bytes), txdata: 0xbe6d055a0000000000000000000000000000000000000000000000000000000000000024, value: 0x0

@@ -1,0 +1,666 @@
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    PivvrStable
+Line:        31
+Source: 
+>   address public minter;
+>   uint256 public floorPrice = 0.001 ether;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    PivvrStable
+Line:        106
+Source: 
+>  
+>   function allowance(address player, address spender) public view returns (uint256) {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     return allowed[player][spender];
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    PivvrStable
+Line:        121
+Source: 
+>  
+>   function multiTransfer(address[] memory receivers, uint256[] memory amounts) public {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     for (uint256 i = 0; i < receivers.length; i++) {
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    PivvrStable
+Line:        127
+Source: 
+>  
+>   function approve(address spender, uint256 value) public returns (bool) {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     require(spender != address(0));
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    PivvrStable
+Line:        134
+Source: 
+>  
+>   function transferFrom(address from, address to, uint256 value) public returns (bool) {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     require(value <= balances[from]);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    PivvrStable
+Line:        148
+Source: 
+>  
+>   function increaseAllowance(address spender, uint256 addedValue) public returns (bool) {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     require(spender != address(0));
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    PivvrStable
+Line:        155
+Source: 
+>  
+>   function decreaseAllowance(address spender, uint256 subtractedValue) public returns (bool) {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     require(spender != address(0));
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    PivvrStable
+Line:        47
+Source: 
+>     // Transfer PDS, accounting for the 0.2% burn so that every stablecoin is backed by 1 PDS token.
+>     require(PDS.transferFrom(msg.sender, address(this), amount * 100000 / 99799));
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    PivvrStable
+Line:        62
+Source: 
+>  
+>     msg.sender.transfer(amount * floorPrice / 10**18);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    PivvrStable
+Line:        73
+Source: 
+>  
+>     PDS.transfer(msg.sender, amount);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    PivvrStable
+Line:        90
+Source: 
+>     uint256 excessETH = address(this).balance.sub(totalSupply() * floorPrice / 10**18);
+>     uint256 excessPDS = PDS.balanceOf(address(this)).sub(totalSupply());
+>                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>      
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    PivvrStable
+Line:        93
+Source: 
+>     if (excessETH > 0)
+>       msg.sender.transfer(excessETH);
+>       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     if (excessPDS > 0)
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    PivvrStable
+Line:        95
+Source: 
+>     if (excessPDS > 0)
+>       PDS.transfer(msg.sender, excessPDS);
+>       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    PivvrStable
+Line:        121
+Source: 
+>  
+>   function multiTransfer(address[] memory receivers, uint256[] memory amounts) public {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     for (uint256 i = 0; i < receivers.length; i++) {
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    PivvrStable
+Line:        148
+Source: 
+>  
+>   function increaseAllowance(address spender, uint256 addedValue) public returns (bool) {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     require(spender != address(0));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    PivvrStable
+Line:        155
+Source: 
+>  
+>   function decreaseAllowance(address spender, uint256 subtractedValue) public returns (bool) {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     require(spender != address(0));
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    PivvrStable
+Line:        102
+Source: 
+>  
+>   function balanceOf(address player) public view returns (uint256) {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     return balances[player];
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    PivvrStable
+Line:        106
+Source: 
+>  
+>   function allowance(address player, address spender) public view returns (uint256) {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     return allowed[player][spender];
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    PivvrStable
+Line:        127
+Source: 
+>  
+>   function approve(address spender, uint256 value) public returns (bool) {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     require(spender != address(0));
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    PivvrStable
+Line:        89
+Source: 
+>  
+>     uint256 excessETH = address(this).balance.sub(totalSupply() * floorPrice / 10**18);
+>                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 excessPDS = PDS.balanceOf(address(this)).sub(totalSupply());
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    PivvrStable
+Line:        47
+Source: 
+>     // Transfer PDS, accounting for the 0.2% burn so that every stablecoin is backed by 1 PDS token.
+>     require(PDS.transferFrom(msg.sender, address(this), amount * 100000 / 99799));
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    PivvrStable
+Line:        73
+Source: 
+>  
+>     PDS.transfer(msg.sender, amount);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Warning
+Contract:    PivvrStable
+Line:        62
+Source: 
+>  
+>     msg.sender.transfer(amount * floorPrice / 10**18);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    PivvrStable
+Line:        24
+Source: 
+>   mapping (address => mapping (address => uint256)) private allowed;
+>   string public constant name  = "PivvrStable";
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   string public constant symbol = "PS";
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    PivvrStable
+Line:        25
+Source: 
+>   string public constant name  = "PivvrStable";
+>   string public constant symbol = "PS";
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   uint8 public constant decimals = 18;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    PivvrStable
+Line:        26
+Source: 
+>   string public constant symbol = "PS";
+>   uint8 public constant decimals = 18;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    PivvrStable
+Line:        28
+Source: 
+>  
+>   ERC20 public PDS;
+>   ^^^^^^^^^^^^^^^^
+>  
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        5
+Source: 
+> 
+> pragma solidity ^0.5.0;
+> ^^^^^^^^^^^^^^^^^^^^^^^
+>  
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    PivvrStable
+Line:        33
+Source: 
+>  
+>   uint256 _totalSupply = 0;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^
+>  
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    PivvrStable
+Line:        47
+Source: 
+>     // Transfer PDS, accounting for the 0.2% burn so that every stablecoin is backed by 1 PDS token.
+>     require(PDS.transferFrom(msg.sender, address(this), amount * 100000 / 99799));
+>                                                                  ^^^^^^
+>  
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Warning
+Contract:    PivvrStable
+Line:        93
+Source: 
+>     if (excessETH > 0)
+>       msg.sender.transfer(excessETH);
+>       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     if (excessPDS > 0)
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    PivvrStable
+Line:        62
+Source: 
+>  
+>     msg.sender.transfer(amount * floorPrice / 10**18);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    PivvrStable
+Line:        93
+Source: 
+>     if (excessETH > 0)
+>       msg.sender.transfer(excessETH);
+>       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     if (excessPDS > 0)
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    PivvrStable
+Line:        62
+Source: 
+>  
+>     msg.sender.transfer(amount * floorPrice / 10**18);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    PivvrStable
+Line:        93
+Source: 
+>     if (excessETH > 0)
+>       msg.sender.transfer(excessETH);
+>       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     if (excessPDS > 0)
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    PivvrStable
+Line:        47
+Source: 
+>     // Transfer PDS, accounting for the 0.2% burn so that every stablecoin is backed by 1 PDS token.
+>     require(PDS.transferFrom(msg.sender, address(this), amount * 100000 / 99799));
+>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    PivvrStable
+Line:        90
+Source: 
+>     uint256 excessETH = address(this).balance.sub(totalSupply() * floorPrice / 10**18);
+>     uint256 excessPDS = PDS.balanceOf(address(this)).sub(totalSupply());
+>                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>      
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    PivvrStable
+Line:        73
+Source: 
+>  
+>     PDS.transfer(msg.sender, amount);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    PivvrStable
+Line:        95
+Source: 
+>     if (excessPDS > 0)
+>       PDS.transfer(msg.sender, excessPDS);
+>       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    PivvrStable
+Line:        129
+Source: 
+>     require(spender != address(0));
+>     allowed[msg.sender][spender] = value;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     emit Approval(msg.sender, spender, value);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    PivvrStable
+Line:        150
+Source: 
+>     require(spender != address(0));
+>     allowed[msg.sender][spender] = allowed[msg.sender][spender].add(addedValue);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     emit Approval(msg.sender, spender, allowed[msg.sender][spender]);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    PivvrStable
+Line:        157
+Source: 
+>     require(spender != address(0));
+>     allowed[msg.sender][spender] = allowed[msg.sender][spender].sub(subtractedValue);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     emit Approval(msg.sender, spender, allowed[msg.sender][spender]);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    PivvrStable
+Line:        73
+Source: 
+>  
+>     PDS.transfer(msg.sender, amount);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    PivvrStable
+Line:        95
+Source: 
+>     if (excessPDS > 0)
+>       PDS.transfer(msg.sender, excessPDS);
+>       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    SafeMath
+Line:        192
+Source: 
+>     uint256 d = sub(c,1);
+>     return mul(div(d,m),m);
+>                ^^^^^^^^
+>   }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    PivvrStable
+Line:        24
+Source: 
+>   mapping (address => mapping (address => uint256)) private allowed;
+>   string public constant name  = "PivvrStable";
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   string public constant symbol = "PS";
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    PivvrStable
+Line:        25
+Source: 
+>   string public constant name  = "PivvrStable";
+>   string public constant symbol = "PS";
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   uint8 public constant decimals = 18;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    PivvrStable
+Line:        26
+Source: 
+>   string public constant symbol = "PS";
+>   uint8 public constant decimals = 18;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  
+
+[0m

@@ -1,0 +1,171 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TokenHolder
+Function name: fallback
+PC address: 498
+Estimated Gas Usage: 2860 - 40066
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2781eaf26ebb6bfbfcb3086eb97cc67c.sol:186
+
+bled
+    }
+
+    address public agent;
+    State 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x50000020000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawTokens(address,address,uint256), txdata: 0x5e35359e000000000000000000000000200201010100010101010401010102010810010100000000000000000000000080, value: 0x0
+Caller: [CREATOR], function: withdrawTokens(address,address,uint256), txdata: 0x5e35359e808080808080808080808080deadbeefdeadbeefdeadbeefdeadbeefdeadbeef80808080808080808080808001, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: AirDropper
+Function name: storeBatch(address[],uint256[])
+PC address: 565
+Estimated Gas Usage: 8080 - 29165
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2781eaf26ebb6bfbfcb3086eb97cc67c.sol:212
+
+        require(length == _amounts.length);
+        for (uint256 i = 0; i < length; i++) {
+            address target = _targets[i];
+            uint256 amount = _amounts[i];
+            require(storedBalances[target] == 0);
+            storedBalances[target] = amount;
+            crc ^= keccak256(abi.encodePacked(_targets[i], _amounts[i]));
+        }
+        storedBalancesCRC ^= crc;
+    }
+
+    function transferEth(IERC20Token _token, address[] _targets, uint256[] _amounts) external {
+        require(msg.sender == agent && state == State.transferEnabled);
+        uint256 length = _targets.length;
+        
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x80000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setAgent(address), txdata: 0xbcf685ed000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: storeBatch(address[],uint256[]), txdata: 0xa0747bc7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc40, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: AirDropper
+Function name: storeBatch(address[],uint256[])
+PC address: 576
+Estimated Gas Usage: 8080 - 29165
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2781eaf26ebb6bfbfcb3086eb97cc67c.sol:212
+
+        require(length == _amounts.length);
+        for (uint256 i = 0; i < length; i++) {
+            address target = _targets[i];
+            uint256 amount = _amounts[i];
+            require(storedBalances[target] == 0);
+            storedBalances[target] = amount;
+            crc ^= keccak256(abi.encodePacked(_targets[i], _amounts[i]));
+        }
+        storedBalancesCRC ^= crc;
+    }
+
+    function transferEth(IERC20Token _token, address[] _targets, uint256[] _amounts) external {
+        require(msg.sender == agent && state == State.transferEnabled);
+        uint256 length = _targets.length;
+        
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setAgent(address), txdata: 0xbcf685ed000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: storeBatch(address[],uint256[]), txdata: 0xa0747bc74000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: AirDropper
+Function name: setState(uint8)
+PC address: 1148
+Estimated Gas Usage: 1883 - 2968
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2781eaf26ebb6bfbfcb3086eb97cc67c.sol:211
+
+256 length = _
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setState(uint8), txdata: 0x56de96db0000000000000000000000000000000000000000000000000000000000000006, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: AirDropper
+Function name: withdrawTokens(address,address,uint256)
+PC address: 1349
+Estimated Gas Usage: 2930 - 40796
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/2781eaf26ebb6bfbfcb3086eb97cc67c.sol:186
+
+bled
+    }
+
+    address public agent;
+    State 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawTokens(address,address,uint256), txdata: 0x5e35359e000000000000000000000000010101010101010101010101010101010101010100000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: withdrawTokens(address,address,uint256), txdata: 0x5e35359e020202020202020202020202deadbeefdeadbeefdeadbeefdeadbeefdeadbeef02020202020202020202020201, value: 0x0
+
+

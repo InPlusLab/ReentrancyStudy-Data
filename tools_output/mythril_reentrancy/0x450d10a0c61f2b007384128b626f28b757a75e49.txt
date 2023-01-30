@@ -1,0 +1,69 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: TokenTransferDelegate
+Function name: getLatestAuthorizedAddresses(uint256)
+PC address: 332
+Estimated Gas Usage: 1714 - 4116
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/9a85cab4107f7519f9e29247651397c3.sol:269
+
+
+        while (addr != 0x0 && count < max) {
+            addrInfo = addressInfos[addr];
+            if (addrInfo.index == 0) {
+                break;
+            }
+            addresses[count++] = addr;
+            addr = addrInfo.previous;
+        }
+    }
+    /// @dev Invoke ERC20 transferFrom method.
+    /// @param token Address of token to transfer.
+    /// @param from Address to transfer token from.
+    /// @param to Address to transfer token to.
+    /// @param value Amount of token to transfer.
+    function transferToken(
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x800c0000008061, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getLatestAuthorizedAddresses(uint256), txdata: 0x2097dd040800000000000000000000000000000000000000000000000000000000000002, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TokenTransferDelegate
+Function name: transferToken(address,address,address,uint256)
+PC address: 1978
+Estimated Gas Usage: 3020 - 38575
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/9a85cab4107f7519f9e29247651397c3.sol:306
+
+ % 6 == 0);
+        ERC20 lrc = ERC20(lrcT
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: authorizeAddress(address), txdata: 0x4a5db3b5000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: transferToken(address,address,address,uint256), txdata: 0x2c54de4f0d0d0d0d0d0d0d0d0d0d0d0ddeadbeefdeadbeefdeadbeefdeadbeefdeadbeef0d0d0d0d0d0d0d0d0d0d0d0d02020202020202020202020202024002020202020d0d0d0d0d0d0d0d0d0d0d0d010101010101010101010101010101010101010101, value: 0x0

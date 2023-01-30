@@ -1,0 +1,148 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Feeless
+Function name: performFeelessTransaction(address,address,bytes,uint256,bytes)
+PC address: 246
+Estimated Gas Usage: 21855 - 126155
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/9755144039d213f615bea1866eb2f67a.sol:80
+
+uint256 nonce, bytes sig) public payable {
+        require(this == target);
+        
+        bytes memory prefix = "\x19Ethereum Signed Message:\n32";
+        bytes32 hash = keccak256(prefix, keccak256(target, data, nonce));
+        msgSender = ECRecovery.recover(hash, sig);
+        require(msgSender == sender);
+        require(nonces[msgSender]++ == nonce);
+        
+        require(target.call.value(msg.value)(data));
+        msgSender = address(0);
+    }
+    
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: performFeelessTransaction(address,address,bytes,uint256,bytes), txdata: 0x51b7949501010101010101010101010100000000000000000000000000000000000000000000000000000000000000000901d12ebe1b195e5aa8748e62bd7734ae19b51f880000001fffffffffffffffffffffffffffffffffffffffffffffffffffffe00000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Feeless
+Function name: performFeelessTransaction(address,address,bytes,uint256,bytes)
+PC address: 1258
+Estimated Gas Usage: 21855 - 126155
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/9755144039d213f615bea1866eb2f67a.sol:93
+Initial State:
+
+Account: [CREATOR], balance: 0x3802, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: performFeelessTransaction(address,address,bytes,uint256,bytes), txdata: 0x51b7949501010101010101010101010100000000000000000000000000000000000000000000000000000000000000000901d12ebe1b195e5aa8748e62bd7734ae19b51fdf, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Feeless
+Function name: performFeelessTransaction(address,address,bytes,uint256,bytes)
+PC address: 1311
+Estimated Gas Usage: 21855 - 126155
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/9755144039d213f615bea1866eb2f67a.sol:93
+Initial State:
+
+Account: [CREATOR], balance: 0x3802, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: performFeelessTransaction(address,address,bytes,uint256,bytes), txdata: 0x51b7949501010101010101010101010100000000000000000000000000000000000000000000000000000000000000000901d12ebe1b195e5aa8748e62bd7734ae19b51fdf, value: 0x0
+
+==== Jump to an arbitrary instruction ====
+SWC ID: 127
+Severity: High
+Contract: Feeless
+Function name: performFeelessTransaction(address,address,bytes,uint256,bytes)
+PC address: 1592
+Estimated Gas Usage: 2506 - 45625
+The caller can redirect execution to arbitrary bytecode locations.
+It is possible to redirect the control flow to arbitrary locations in the code. This may allow an attacker to bypass security controls or manipulate the business logic of the smart contract. Avoid using low-level-operations and assembly to prevent this issue.
+--------------------
+In file: /tmp/9755144039d213f615bea1866eb2f67a.sol:10
+
+recover(bytes32 hash, bytes sig)
+    internal
+    pure
+    returns (address)
+  {
+    bytes32 r;
+    bytes32 s;
+    uint8 v;
+
+    // Check the signature length
+    if (sig.length != 65) {
+      return (address(0));
+    }
+
+    // Divide the signature in r, s and v variables
+    // ecrecover takes the signature parameters, and the only way to get them
+    // currently is to use assembly.
+    // solium-disable-next-line security/no-inline-assembly
+    assembly {
+      r := mload(add(sig, 32))
+      s := mload(add(sig, 64))
+      v := byte(0, mload(add(sig, 96)))
+    }
+
+    // Version of signature should be 27 or 28, but 0 and 1 are also possible versions
+    if (v < 27) {
+      v += 27;
+    }
+
+    // If the version is correct return the signer address
+    if (v != 27 && v != 28) {
+      return (address(0));
+    } else {
+      // solium-disable-next-line arg-overflow
+      return ecrecover(hash, v, r, s);
+    }
+  }
+
+  /**
+   * toEthSignedMessageHash
+   * @dev
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4040800000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: performFeelessTransaction(address,address,bytes,uint256,bytes), txdata: 0x51b7949500000000000000000000000000000000000000000000000000000000000000410000000000000000000000000901d12ebe1b195e5aa8748e62bd7734ae19b51f89, value: 0x0

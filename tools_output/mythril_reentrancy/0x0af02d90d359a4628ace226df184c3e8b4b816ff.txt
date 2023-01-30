@@ -1,0 +1,95 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: EOSBetBankroll
+Function name: payOraclize(uint256) or payOraclize(uint256)
+PC address: 5471
+Estimated Gas Usage: 2935 - 37831
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/92011938865054a60dcaa11b61c6836b.sol:403
+
+///////////////////////////
+
+
+
+
+
+	// this function ADDS to the bankroll of EOS
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10000000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x10, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b3b3b3b3b3b3b3b3b3b3b3b3deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x1
+Caller: [ATTACKER], function: payOraclize(uint256), txdata: 0x66479c08, value: 0x0
+
+==== Unprotected Ether Withdrawal ====
+SWC ID: 105
+Severity: High
+Contract: EOSBetBankroll
+Function name: payOraclize(uint256) or payOraclize(uint256)
+PC address: 5471
+Estimated Gas Usage: 2935 - 37831
+Any sender can withdraw Ether from the contract account.
+Arbitrary senders other than the contract creator can profitably extract Ether from the contract account. Verify the business logic carefully and make sure that appropriate security controls are in place to prevent unexpected loss of funds.
+--------------------
+In file: /tmp/92011938865054a60dcaa11b61c6836b.sol:403
+
+///////////////////////////
+
+
+
+
+
+	// this function ADDS to the bankroll of EOS
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x5400200013c195c9c, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x3b104330c0000004e, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b3b3b3b3b3b3b3b3b3b3b3b3deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x1
+Caller: [ATTACKER], function: payOraclize(uint256), txdata: 0x66479c080000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: EOSBetBankroll
+Function name: cashoutEOSBetStakeTokens_ALL()
+PC address: 7340
+Estimated Gas Usage: 4020 - 4685
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/92011938865054a60dcaa11b61c6836b.sol:577
+
+int256 currentTotalBankroll = getBankroll();
+
+		uint256 currentSupplyOfTokens = totalSupply;
+
+
+
+		// calculate the token withdraw ratio based on c
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000001000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x1
+Caller: [SOMEGUY], function: cashoutEOSBetStakeTokens_ALL(), txdata: 0x7a09588b, value: 0x0

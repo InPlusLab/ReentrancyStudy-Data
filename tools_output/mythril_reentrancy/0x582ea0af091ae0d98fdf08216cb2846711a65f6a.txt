@@ -1,0 +1,735 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: KyberReserve
+Function name: setRate(address[],address[],uint256[],uint256[],bool)
+PC address: 1292
+Estimated Gas Usage: 3379 - 15251
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:230
+
+ErrorReport( tx.origin, 0x820000000, uint(msg.sender) );
+            return false;
+        }
+
+        if( validate ) {
+            if( ( sources.length != dests.length ) ||
+                ( sources.length != conversionRates.length ) ||
+                ( sources.length != expiryBlocks.length ) ) {
+                // arrays length are not identical
+                ErrorReport( tx.origin, 0x820000001, 0 );
+                return false;
+            }
+        }
+
+        for( uint i = 0 ; i < sources.length ; i++ ) {
+            SetRate( sources[i], dests[i], conversionRates[i], expiryBlocks[i] );
+            pairConversionRate[sha3(sources[i],dests[i])] = ConversionRate( conversionRates[i], expiryBlocks[i] );
+        }
+
+        ErrorReport( tx.origin, 0, 0 );
+        return true;
+    }
+
+    event EnableTrade( bool enable );
+
+    /// @notice can be called only by owner
+    /// @dev enable of disable trade
+    /// @param enable if true trade is enabled, otherwise disabled
+    /// @return true iff trade is succesful
+    function enab
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1eaffeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+Caller: [CREATOR], function: setRate(address[],address[],uint256[],uint256[],bool), txdata: 0xda6dfea7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc00000008000000000000000000000000000000000000000001f810000000001100000000000000000000000000000000000000000000000001ffffffffffffeb000000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: KyberReserve
+Function name: setRate(address[],address[],uint256[],uint256[],bool)
+PC address: 1356
+Estimated Gas Usage: 3399 - 15457
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:230
+
+ErrorReport( tx.origin, 0x820000000, uint(msg.sender) );
+            return false;
+        }
+
+        if( validate ) {
+            if( ( sources.length != dests.length ) ||
+                ( sources.length != conversionRates.length ) ||
+                ( sources.length != expiryBlocks.length ) ) {
+                // arrays length are not identical
+                ErrorReport( tx.origin, 0x820000001, 0 );
+                return false;
+            }
+        }
+
+        for( uint i = 0 ; i < sources.length ; i++ ) {
+            SetRate( sources[i], dests[i], conversionRates[i], expiryBlocks[i] );
+            pairConversionRate[sha3(sources[i],dests[i])] = ConversionRate( conversionRates[i], expiryBlocks[i] );
+        }
+
+        ErrorReport( tx.origin, 0, 0 );
+        return true;
+    }
+
+    event EnableTrade( bool enable );
+
+    /// @notice can be called only by owner
+    /// @dev enable of disable trade
+    /// @param enable if true trade is enabled, otherwise disabled
+    /// @return true iff trade is succesful
+    function enab
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1edeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: setRate(address[],address[],uint256[],uint256[],bool), txdata: 0xda6dfea77ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd2fb796b7cf1c24fa97d7ad83faa2fe1a1d0dc756535d96db72025f91d8617c00000000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: KyberReserve
+Function name: trade(address,uint256,address,address,bool)
+PC address: 2031
+Estimated Gas Usage: 1981 - 2736
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:198
+
+     if( ! msg.sender.send(msg.value) ) throw;
+            }
+
+            return false;
+        }
+
+        if( ! doTrade( sourceToken, sourceAmount, destToken, destAddress, validate ) ) {
+            // do trade failed
+            ErrorReport( tx.origin, 0x810000002, 0 );
+            if( msg.value
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xb05080823083f39, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: trade(address,uint256,address,address,bool), txdata: 0x0363b1e1, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: KyberReserve
+Function name: depositToken(address,uint256)
+PC address: 2770
+Estimated Gas Usage: 4503 - 75296
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:301
+
+     // transfer from failed
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: depositToken(address,uint256), txdata: 0x338b5dea000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: KyberReserve
+Function name: depositToken(address,uint256)
+PC address: 2797
+Estimated Gas Usage: 1887 - 36827
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:301
+
+         // transfer from failed
+            ErrorReport( tx.origin, 0x850000002, uint(token) );
+            return false;
+        }
+
+        DepositToken( token, amount );
+        return true;
+    }
+
+
+    event Withdraw( ERC20 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: depositToken(address,uint256), txdata: 0x338b5dea, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: KyberReserve
+Function name: depositToken(address,uint256)
+PC address: 3080
+Estimated Gas Usage: 4503 - 75296
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:306
+
+en( token, amount );
+        return
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: depositToken(address,uint256), txdata: 0x338b5dea000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: KyberReserve
+Function name: depositToken(address,uint256)
+PC address: 3080
+Estimated Gas Usage: 4838 - 75536
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:306
+
+en( token, amount );
+        return
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20802c24490044811, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: depositToken(address,uint256), txdata: 0x338b5dea0000000000000000000000000000000000000000000000000000000000000000e2, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: KyberReserve
+Function name: depositToken(address,uint256)
+PC address: 3367
+Estimated Gas Usage: 4503 - 75296
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:311
+
+, address destination );
+
+    /// @notice can
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: depositToken(address,uint256), txdata: 0x338b5dea000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: KyberReserve
+Function name: depositToken(address,uint256)
+PC address: 3367
+Estimated Gas Usage: 4503 - 75296
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:311
+
+, address destination );
+
+    /// @notice can
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21888520300001282, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: depositToken(address,uint256), txdata: 0x338b5dea, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: KyberReserve
+Function name: depositToken(address,uint256)
+PC address: 3394
+Estimated Gas Usage: 3566 - 73446
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:311
+
+amount, address destination );
+
+    /// @notice can only be called by owner.
+    /// @dev withdaw tokens or ether from contract
+    /// @param token Token address
+    /// @param amount Amount of 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: depositToken(address,uint256), txdata: 0x338b5dea, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: KyberReserve
+Function name: getPairInfo(address,address)
+PC address: 4130
+Estimated Gas Usage: 4088 - 40912
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:368
+
+ this.balance;
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: getPairInfo(address,address), txdata: 0x400f7a1e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: KyberReserve
+Function name: withdraw(address,uint256,address)
+PC address: 4264
+Estimated Gas Usage: 1169 - 1594
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:329
+
+sfer(destination,amount) ) {
+            // transfer to reserve owner failed
+            ErrorReport( tx.origin, 0x860000001, uint(token) );
+            return false;
+        }
+
+        E
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: withdraw(address,uint256,address), txdata: 0x69328dec, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: KyberReserve
+Function name: withdraw(address,uint256,address)
+PC address: 4704
+Estimated Gas Usage: 5034 - 41944
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:339
+
+{
+      if( msg.sender != reserveO
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+Caller: [CREATOR], function: withdraw(address,uint256,address), txdata: 0x69328dec000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: KyberReserve
+Function name: changeOwner(address)
+PC address: 5417
+Estimated Gas Usage: 1156 - 1581
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:348
+
+se token address ETH_TOKEN_ADDRESS for
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: changeOwner(address), txdata: 0xa6f9dae1, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: KyberReserve
+Function name: enableTrade(bool)
+PC address: 5615
+Estimated Gas Usage: 1203 - 1628
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:268
+
+     EnableTrade( enable );
+
+        return true;
+    }
+
+    event DepositToken( ERC20 token, uint amount );
+    function() payable {
+        DepositToken( ETH_TOKEN_ADDRESS, msg.value );
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: enableTrade(bool), txdata: 0xc00f04d1, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: KyberReserve
+Function name: getDecimals(address)
+PC address: 6116
+Estimated Gas Usage: 2042 - 37073
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:76
+
+oken Source toke
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100015140, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getDecimals(address), txdata: 0xcf54aaa0000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: KyberReserve
+Function name: setRate(address[],address[],uint256[],uint256[],bool)
+PC address: 6253
+Estimated Gas Usage: 1965 - 12738
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:235
+
+ sources.length != dests.length ) ||
+                ( sources.length != conversionRates.length ) ||
+                ( sources.length != expiryBlocks.length ) ) {
+                // array
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: setRate(address[],address[],uint256[],uint256[],bool), txdata: 0xda6dfea7, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: KyberReserve
+Function name: setRate(address[],address[],uint256[],uint256[],bool)
+PC address: 6604
+Estimated Gas Usage: 2137 - 13282
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:230
+
+ErrorReport( tx.origin, 0x820000000, uint(msg.sender) );
+            return false;
+        }
+
+        if( validate ) {
+            if( ( sources.length != dests.length ) ||
+                ( sources.length != conversionRates.length ) ||
+                ( sources.length != expiryBlocks.length ) ) {
+                // arrays length are not identical
+                ErrorReport( tx.origin, 0x820000001, 0 );
+                return false;
+            }
+        }
+
+        for( uint i = 0 ; i < sources.length ; i++ ) {
+            SetRate( sources[i], dests[i], conversionRates[i], expiryBlocks[i] );
+            pairConversionRate[sha3(sources[i],dests[i])] = ConversionRate( conversionRates[i], expiryBlocks[i] );
+        }
+
+        ErrorReport( tx.origin, 0, 0 );
+        return true;
+    }
+
+    event EnableTrade( bool enable );
+
+    /// @notice can be called only by owner
+    /// @dev enable of disable trade
+    /// @param enable if true trade is enabled, otherwise disabled
+    /// @return true iff trade is succesful
+    function enab
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42328040003a00021, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x42208040002a00021, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1edeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: setRate(address[],address[],uint256[],uint256[],bool), txdata: 0xda6dfea7ffffffffffffffffffff7fffffffffffeffffffffffff7ffffffffff7f000016ff, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: KyberReserve
+Function name: setRate(address[],address[],uint256[],uint256[],bool)
+PC address: 6628
+Estimated Gas Usage: 2201 - 13532
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:230
+
+ErrorReport( tx.origin, 0x820000000, uint(msg.sender) );
+            return false;
+        }
+
+        if( validate ) {
+            if( ( sources.length != dests.length ) ||
+                ( sources.length != conversionRates.length ) ||
+                ( sources.length != expiryBlocks.length ) ) {
+                // arrays length are not identical
+                ErrorReport( tx.origin, 0x820000001, 0 );
+                return false;
+            }
+        }
+
+        for( uint i = 0 ; i < sources.length ; i++ ) {
+            SetRate( sources[i], dests[i], conversionRates[i], expiryBlocks[i] );
+            pairConversionRate[sha3(sources[i],dests[i])] = ConversionRate( conversionRates[i], expiryBlocks[i] );
+        }
+
+        ErrorReport( tx.origin, 0, 0 );
+        return true;
+    }
+
+    event EnableTrade( bool enable );
+
+    /// @notice can be called only by owner
+    /// @dev enable of disable trade
+    /// @param enable if true trade is enabled, otherwise disabled
+    /// @return true iff trade is succesful
+    function enab
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40378803884894843, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1edeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: setRate(address[],address[],uint256[],uint256[],bool), txdata: 0xda6dfea780000000000000080000000000802004000842c01001608010500508fe3ffffcffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd8ff, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: KyberReserve
+Function name: setRate(address[],address[],uint256[],uint256[],bool)
+PC address: 6652
+Estimated Gas Usage: 2265 - 13782
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:230
+
+ErrorReport( tx.origin, 0x820000000, uint(msg.sender) );
+            return false;
+        }
+
+        if( validate ) {
+            if( ( sources.length != dests.length ) ||
+                ( sources.length != conversionRates.length ) ||
+                ( sources.length != expiryBlocks.length ) ) {
+                // arrays length are not identical
+                ErrorReport( tx.origin, 0x820000001, 0 );
+                return false;
+            }
+        }
+
+        for( uint i = 0 ; i < sources.length ; i++ ) {
+            SetRate( sources[i], dests[i], conversionRates[i], expiryBlocks[i] );
+            pairConversionRate[sha3(sources[i],dests[i])] = ConversionRate( conversionRates[i], expiryBlocks[i] );
+        }
+
+        ErrorReport( tx.origin, 0, 0 );
+        return true;
+    }
+
+    event EnableTrade( bool enable );
+
+    /// @notice can be called only by owner
+    /// @dev enable of disable trade
+    /// @param enable if true trade is enabled, otherwise disabled
+    /// @return true iff trade is succesful
+    function enab
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+Caller: [CREATOR], function: setRate(address[],address[],uint256[],uint256[],bool), txdata: 0xda6dfea780082a0204b8299023828008000000000000000080000000000000000000000080000000000000000000000000000000000000000000000000000000000000408000000000000000000000000000000000000000000000000000000000000008c0, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: KyberReserve
+Function name: getBalance(address)
+PC address: 7529
+Estimated Gas Usage: 2169 - 37295
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/f9d20bd560675009d29f086c0c4191ed.sol:371
+Initial State:
+
+Account: [CREATOR], balance: 0x40140000000000002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getBalance(address), txdata: 0xf8b2cb4f000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

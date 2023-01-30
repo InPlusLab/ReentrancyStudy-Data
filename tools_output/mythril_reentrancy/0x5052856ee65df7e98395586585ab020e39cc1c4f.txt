@@ -1,0 +1,63 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: KYC
+Function name: registerByList(address[],bool)
+PC address: 201
+Estimated Gas Usage: 20187 - 68804
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/e8dbc92ac009bdc6d1177db1d5f8c745.sol:108
+
+r(uint256 i = 0; i < _addrs.length; i++) {
+        register(_addrs[i], _isPresale);
+        }
+    }
+
+    function unregister(address _addr, bool _isPresale)
+        public
+        onlyAdmin
+        onlyRegiste
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000492002002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: registerByList(address[],bool), txdata: 0x2ce68269ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc010101010101010110, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BTCPayment
+Function name: addPayment(address,uint256) or addPayment(address,uint256)
+PC address: 1340
+Estimated Gas Usage: 5259 - 41447
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/e8dbc92ac009bdc6d1177db1d5f8c745.sol:182
+
+;
+    }
+
+    function setPresale(address _pres
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20000000001142c5, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setPresale(address), txdata: 0xd5fcc7b6000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: addPayment(address,uint256), txdata: 0x85bac237, value: 0x0

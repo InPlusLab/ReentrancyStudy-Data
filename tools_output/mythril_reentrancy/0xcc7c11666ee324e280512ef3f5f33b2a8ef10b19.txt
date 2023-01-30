@@ -1,0 +1,73 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: SwapContractPDATAtoAligatoCoin
+Function name: getBalance()
+PC address: 1145
+Estimated Gas Usage: 2691 - 37959
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/77e1d17a2d532bd9ec39c933aeca671b.sol:181
+
+wner;
+
+    emit OwnerChanged(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 060606060606060606060606deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: getBalance(), txdata: 0x12065fe0, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: SwapContractPDATAtoAligatoCoin
+Function name: sendCurrentPayment()
+PC address: 1550
+Estimated Gas Usage: 3466 - 3561
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/77e1d17a2d532bd9ec39c933aeca671b.sol:205
+
+rentBalance -= unsealedAmount;
+
+        emit Transfer(PartnerAccount, unsealedAmount);
+
+      } else {
+
+        company_token.transfer(PartnerAccount, currentBalance);
+
+        alreadyTransfered += currentBalance;
+
+        currentBalance -= currentBalance;
+
+        emit Transfer(PartnerAccount, currentBalance);
+
+      }
+
+    }
+
+  }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: sendCurrentPayment(), txdata: 0x2c0bec2f, value: 0x0

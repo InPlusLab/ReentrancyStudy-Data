@@ -1,0 +1,258 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Generic223Receiver
+Function name: tokenFallback(address,uint256,bytes)
+PC address: 555
+Estimated Gas Usage: 42154 - 222971
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/c603bc24690cd20f5ed52e5a34c7cbe3.sol:363
+
+tokenPayable {
+
+        saveTokenValues();
+
+        calledFoo = true;
+
+    }
+
+
+
+    function getSig(bytes _data) private pure returns (bytes4 sig) {
+
+        uint lngth = _data.length < 4 ? _data.length : 4;
+
+        for (uint i = 0; i < lngth; i++) {
+
+            sig = bytes4(uint(sig) + uint(_data[i]) * (2 ** (8 * (lngth - 1
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40080000000003002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x53bc1ddfeff1ecdff, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tokenFallback(address,uint256,bytes), txdata: 0xc0ee0b8a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Generic223Receiver
+Function name: tokenData()
+PC address: 644
+Estimated Gas Usage: 1356 - 2626
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/c603bc24690cd20f5ed52e5a34c7cbe3.sol:337
+
+__isTokenFallback);
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: tokenData(), txdata: 0x024fd650, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: FISH
+Function name: fallback
+PC address: 1181
+Estimated Gas Usage: 2350 - 4091
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/c603bc24690cd20f5ed52e5a34c7cbe3.sol:489
+
+afeTransferF
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: name(), txdata: 0x06fdde03, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Generic223Receiver
+Function name: tokenFallback(address,uint256,bytes)
+PC address: 1189
+Estimated Gas Usage: 42154 - 222971
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/c603bc24690cd20f5ed52e5a34c7cbe3.sol:379
+
+= bytes4(uint(sig) + uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tokenFallback(address,uint256,bytes), txdata: 0xc0ee0b8a, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Generic223Receiver
+Function name: tokenFallback(address,uint256,bytes)
+PC address: 1195
+Estimated Gas Usage: 42154 - 222971
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/c603bc24690cd20f5ed52e5a34c7cbe3.sol:379
+
+= bytes4(uint(sig) + uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tokenFallback(address,uint256,bytes), txdata: 0xc0ee0b8a, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Generic223Receiver
+Function name: foo()
+PC address: 1219
+Estimated Gas Usage: 1116 - 1541
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/c603bc24690cd20f5ed52e5a34c7cbe3.sol:355
+
+e;
+
+        return true;
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: foo(), txdata: 0xc2985578, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Generic223Receiver
+Function name: tokenFallback(address,uint256,bytes)
+PC address: 1375
+Estimated Gas Usage: 42562 - 226251
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/c603bc24690cd20f5ed52e5a34c7cbe3.sol:413
+
+ = "FISH";
+
+    string private symbol_ = "FIS
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20202000034, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tokenFallback(address,uint256,bytes), txdata: 0xc0ee0b8a000000000000000000000000000000000000000000000000000000000000000195, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Generic223Receiver
+Function name: tokenFallback(address,uint256,bytes)
+PC address: 1390
+Estimated Gas Usage: 42562 - 226251
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/c603bc24690cd20f5ed52e5a34c7cbe3.sol:413
+
+tring private name_ = "FISH";
+
+    string private symbol_ = "FISH
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3c01e0a0630790, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x26daaeb675e8dfeef, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tokenFallback(address,uint256,bytes), txdata: 0xc0ee0b8a000000000000000000000000000000000000000000000000000000000000000101, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: FISH
+Function name: symbol()
+PC address: 2861
+Estimated Gas Usage: 2586 - 4327
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/c603bc24690cd20f5ed52e5a34c7cbe3.sol:491
+
+rFrom(_from, _
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: symbol(), txdata: 0x95d89b41, value: 0x0

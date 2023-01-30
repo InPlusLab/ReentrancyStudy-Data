@@ -1,0 +1,108 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: HtcToken
+Function name: rescueTokens(address,address,uint256) or rescueTokens(address,address,uint256)
+PC address: 4360
+Estimated Gas Usage: 4667 - 74311
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/6cb51327a00412c57915c8720f37e6a2.sol:94
+
+using SafeMath for uint256;
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: rescueTokens(address,address,uint256), txdata: 0xcea9d26f000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef0000000000000000000000000180024040400440000108808040200010088000042083000802040180400802808080020910122ec01c815e62b004a068c18780, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: HtcToken
+Function name: rescueTokens(address,address,uint256) or rescueTokens(address,address,uint256)
+PC address: 4360
+Estimated Gas Usage: 4667 - 74311
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/6cb51327a00412c57915c8720f37e6a2.sol:94
+
+using SafeMath for uint256;
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: rescueTokens(address,address,uint256), txdata: 0xcea9d26f0000000000000000000000008dfeaffeaffeaffeaff6affeaffeaffeaffeaffe000000000000000000000000000000000000000000000000000000000000000100a082410000000000000000000000000901d12ebe1b195e5aa8748e62bd7736, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: HtcToken
+Function name: transfer(address,uint256) or transfer(address,uint256)
+PC address: 5725
+Estimated Gas Usage: 1290 - 1575
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/6cb51327a00412c57915c8720f37e6a2.sol:182
+
+der, uint256 value) intern
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000040103, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transfer(address,uint256), txdata: 0xa9059cbb00000000000000000000000000000000000000000000000000000000000000010002002000000400000002100000000000000000000000000000000800102001, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: HtcToken
+Function name: decreaseAllowance(address,uint256)
+PC address: 5725
+Estimated Gas Usage: 1371 - 1846
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/6cb51327a00412c57915c8720f37e6a2.sol:167
+
+ (bool) {
+        require(_allowed[from][msg.sende
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8000102a8000040b, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: decreaseAllowance(address,uint256), txdata: 0xa457c2d700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001, value: 0x0

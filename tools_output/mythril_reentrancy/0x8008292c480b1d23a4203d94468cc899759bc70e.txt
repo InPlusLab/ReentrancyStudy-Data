@@ -1,0 +1,192 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: RockScissorPaper
+Function name: playGame(uint256,uint256)
+PC address: 3916
+Estimated Gas Usage: 1193 - 1288
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/7577bb74da709975d46527788e8a4d8f.sol:388
+
+nBalances[msg.sender] >= nTokens);
+
+                // escrew tokens;
+                _transfer (this, nTokens);
+
+                game.player         = msg.sender;
+                game.playerPose     = pose;
+
+                GamePlayed (msg.sender, gameId, pose);
+        }
+
+        // Convenience functions
+        function buyAndCreateGame (uint256 amount, uint256 pose, address referral) public payable {
+                buyTokens (referral);
+                createGame (amount, pose);
+        }
+
+        function buyAndPlayGame (uint256 gameId, uint256 pose, address referral) public payable {
+                buyTokens (referral);
+                playGame (gameId,
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4fc0008eae55d, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: playGame(uint256,uint256), txdata: 0x34825a23, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: RockScissorPaper
+Function name: gameInfo(uint256)
+PC address: 6028
+Estimated Gas Usage: 1495 - 1590
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/7577bb74da709975d46527788e8a4d8f.sol:328
+
+              game.player,
+                    game.playerPose,
+                    game.sek,
+                    game.posebits
+                );
+        }
+
+
+        uint8 public        ownerCut            = 5;                // 5 percent
+        uint8 public        referralCut         = 5;                // 5 percent
+        function changeFeeCut (uint8 ownCut, uint8 refCut) onlyOwner public {
+                ownerCut        = ownCut;
+                referralCut     = refCut;
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40010000000229403, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: gameInfo(uint256), txdata: 0xa6f81668, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: RockScissorPaper
+Function name: sellTokens(uint256)
+PC address: 8247
+Estimated Gas Usage: 1400 - 1685
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/7577bb74da709975d46527788e8a4d8f.sol:252
+
+s (0), amount);
+        }
+
+        // O
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x202201010800001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: sellTokens(uint256), txdata: 0x6c11bcd301, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: RockScissorPaper
+Function name: setRSPScienceAddress(address)
+PC address: 9051
+Estimated Gas Usage: 8833 - 64243
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/7577bb74da709975d46527788e8a4d8f.sol:209
+
+        }
+
+        // Con
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setRSPScienceAddress(address), txdata: 0x6f32b2ac010101010101010101010101deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: RockScissorPaper
+Function name: setRSPScienceAddress(address)
+PC address: 9094
+Estimated Gas Usage: 8833 - 64243
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/7577bb74da709975d46527788e8a4d8f.sol:211
+
+ed multiple times, fortunat
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setRSPScienceAddress(address), txdata: 0x6f32b2ac020202020202020202020202deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: RockScissorPaper
+Function name: setRSPScienceAddress(address)
+PC address: 9147
+Estimated Gas Usage: 8833 - 64243
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/7577bb74da709975d46527788e8a4d8f.sol:211
+
+ed multiple times, fortunat
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setRSPScienceAddress(address), txdata: 0x6f32b2ac020202020202020202020202deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

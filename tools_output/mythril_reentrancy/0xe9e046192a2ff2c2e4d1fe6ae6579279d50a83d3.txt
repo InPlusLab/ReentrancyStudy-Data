@@ -1,0 +1,703 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ERC20Sale
+Function name: offerInfos(uint256)
+PC address: 1441
+Estimated Gas Usage: 1068 - 1163
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/10bed18893b347a7034c556e3e4ad65b.sol:185
+
+(uint256) {
+
+		return offerIn
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: offerInfos(uint256), txdata: 0x604f70c1, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ERC20Sale
+Function name: offer(address,uint256,uint256)
+PC address: 1603
+Estimated Gas Usage: 32271 - 204807
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/10bed18893b347a7034c556e3e4ad65b.sol:463
+
+ 정보를 삭제합니다.
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: offer(address,uint256,uint256), txdata: 0x74a46050000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ERC20Sale
+Function name: offer(address,uint256,uint256)
+PC address: 1764
+Estimated Gas Usage: 32271 - 204807
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/10bed18893b347a7034c556e3e4ad65b.sol:471
+
+Infos[i] = offerInfos[i + 1];
+
+		
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: offer(address,uint256,uint256), txdata: 0x74a46050000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: ERC20Sale
+Function name: offer(address,uint256,uint256)
+PC address: 1764
+Estimated Gas Usage: 32271 - 204807
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/10bed18893b347a7034c556e3e4ad65b.sol:471
+
+Infos[i] = offerInfos[i + 1];
+
+		
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xfbbb8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: offer(address,uint256,uint256), txdata: 0x74a46050, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Sale
+Function name: offer(address,uint256,uint256)
+PC address: 1864
+Estimated Gas Usage: 32271 - 204807
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: offer(address,uint256,uint256), txdata: 0x74a46050000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Sale
+Function name: offer(address,uint256,uint256)
+PC address: 1870
+Estimated Gas Usage: 32271 - 204807
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: offer(address,uint256,uint256), txdata: 0x74a46050000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Sale
+Function name: offer(address,uint256,uint256)
+PC address: 1919
+Estimated Gas Usage: 32271 - 204807
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/10bed18893b347a7034c556e3e4ad65b.sol:481
+
+Infos.length - 1];
+
+		offerInfos.length -= 1;
+
+		
+
+		emit RemoveOffer(offerId);
+
+	}
+
+	
+
+	// 토큰 판매를 취소합니다.
+
+	
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: offer(address,uint256,uint256), txdata: 0x74a46050000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Sale
+Function name: offer(address,uint256,uint256)
+PC address: 1937
+Estimated Gas Usage: 32271 - 204807
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/10bed18893b347a7034c556e3e4ad65b.sol:481
+
+Infos.length - 1];
+
+		offerInfos.length -= 1;
+
+		
+
+		emit RemoveOffer(offerId);
+
+	}
+
+	
+
+	// 토큰 판매를 취소합니다.
+
+	
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: offer(address,uint256,uint256), txdata: 0x74a46050000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Sale
+Function name: offer(address,uint256,uint256)
+PC address: 1976
+Estimated Gas Usage: 32271 - 204807
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/10bed18893b347a7034c556e3e4ad65b.sol:481
+
+Infos.length - 1];
+
+		offerInfos.length -= 1;
+
+		
+
+		emit RemoveOffer(offerId);
+
+	}
+
+	
+
+	// 토큰 판매를 취소합니다.
+
+	
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: offer(address,uint256,uint256), txdata: 0x74a46050000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Sale
+Function name: offer(address,uint256,uint256)
+PC address: 1986
+Estimated Gas Usage: 32271 - 204807
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/10bed18893b347a7034c556e3e4ad65b.sol:481
+
+Infos.length - 1];
+
+		offerInfos.length -= 1;
+
+		
+
+		emit RemoveOffer(offerId);
+
+	}
+
+	
+
+	// 토큰 판매를 취소합니다.
+
+	
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: offer(address,uint256,uint256), txdata: 0x74a46050000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Sale
+Function name: offer(address,uint256,uint256)
+PC address: 2024
+Estimated Gas Usage: 32271 - 204807
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/10bed18893b347a7034c556e3e4ad65b.sol:481
+
+Infos.length - 1];
+
+		offerInfos.length -= 1;
+
+		
+
+		emit RemoveOffer(offerId);
+
+	}
+
+	
+
+	// 토큰 판매를 취소합니다.
+
+	
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: offer(address,uint256,uint256), txdata: 0x74a46050000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Sale
+Function name: offer(address,uint256,uint256)
+PC address: 2065
+Estimated Gas Usage: 32271 - 204807
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/10bed18893b347a7034c556e3e4ad65b.sol:481
+
+Infos.length - 1];
+
+		offerInfos.length -= 1;
+
+		
+
+		emit RemoveOffer(offerId);
+
+	}
+
+	
+
+	// 토큰 판매를 취소합니다.
+
+	
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: offer(address,uint256,uint256), txdata: 0x74a46050000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Low
+Contract: ERC20Sale
+Function name: cancelBid(uint256)
+PC address: 2163
+Estimated Gas Usage: 1247 - 1910
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values). This issue is reported for internal compiler generated code.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: cancelBid(uint256), txdata: 0x9703ef35, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ERC20Sale
+Function name: buy(uint256,uint256)
+PC address: 2399
+Estimated Gas Usage: 1147 - 1242
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/10bed18893b347a7034c556e3e4ad65b.sol:541
+
+할 양보다 많아야 합니다.
+
+		require(offerInfo.amount >= amount);
+
+		
+
+		// 토큰 가격이 제시한 가격과 동일해야합니다.
+
+		require(offerInfo.price.mul(amount) == msg.value.mul(offerInfo.amount));
+
+		
+
+		// 토큰 구매자에게 토큰을 지급합니다.
+
+		erc20.transferFrom(offerInfo.offeror, msg.sender, amount);
+
+		
+
+		// 가격을 내립니다.
+
+		offerInfo.price = offerInfo.price.sub(msg.value);
+
+		
+
+		// 판매 토큰의 양을 줄입니다.
+
+		offerInfo.amount = offerInfo.amount.sub(amount);
+
+		
+
+		// 토큰이 모두 팔렸으면 판매 정보 삭제
+
+		if (offerInfo.amount == 0) {
+
+			removeOffer(offerId);
+
+		}
+
+		
+
+		// 판매자에게 이더를 지급합니다.
+
+		offerInfo.offeror.transfer(msg.value);
+
+		
+
+		emit Buy(offerId, amount);
+
+	}
+
+	
+
+	// 주어진 토큰에 해당하는 판매 정보 개수를 반환합니다.
+
+	function getOfferCountByToken(address token) view public returns (uint256) {
+
+		
+
+		uint256 offerCount = 0;
+
+		
+
+		for (uint256 i = 0; i < offerInfos.length; i += 1) {
+
+			if (offerInfos[i].token == token) {
+
+				offerCount += 1;
+
+			}
+
+		}
+
+		
+
+		return offerCount;
+
+	}
+
+	
+
+	// 주어진 토큰에 해당하는 판매 정보 ID 목록을 반환합니다.
+
+	function getOfferIdsByToken(address token) view public returns (uint256[]) {
+
+		
+
+		uint256[] memory offerIds = new uint256[](getOfferCountByToke
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xfbfba, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: buy(uint256,uint256), txdata: 0xd6febde8, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ERC20Sale
+Function name: sell(uint256,uint256)
+PC address: 3182
+Estimated Gas Usage: 1196 - 1291
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/10bed18893b347a7034c556e3e4ad65b.sol:302
+
+
+		// 거래소에 인출을 허락한 토큰의 양이 판매할 양보다 많아야 합니다.
+
+		require(erc20.allowance(msg.sender, this) >= amount);
+
+		
+
+		// 구매하는 토큰의 양이 판매할 양보다 많아야 합니다.
+
+		require(bidInfo.amount >= amount);
+
+		
+
+		uint256 realPrice = amount.mul(bidInfo.price).div(bidInfo.amount);
+
+		
+
+		// 가격 계산에 문제가 없어야 합니다.
+
+		require(realPrice.mul(bidInfo.amount) == amount.mul(bidInfo.price));
+
+		
+
+		// 토큰 구매자에게 토큰을 지급합니다.
+
+		erc20.transferFrom(msg.sender, bidInfo.bidder, amount);
+
+		
+
+		// 가격을 내립니다.
+
+		bidInfo.price = bidInfo.price.sub(realPrice);
+
+		
+
+		// 구매할 토큰의 양을 줄입니다.
+
+		bidInfo.amount = bidInfo.amount.sub(amount);
+
+		
+
+		// 토큰을 모두 구매하였으면 구매 정보 삭제
+
+		if (bidInfo.amount == 0) {
+
+			removeBid(bidId);
+
+		}
+
+		
+
+		// 판매자에게 이더를 지급합니다.
+
+		msg.sender.transfer(realPrice);
+
+		
+
+		emit Sell(bidId, amount);
+
+	}
+
+	
+
+	// 주어진 토큰에 해당하는 구매 정보 개수를 반환합니다.
+
+	function getBidCountByToken(address token) view public returns (uint256) {
+
+		
+
+		uint256 bidCount = 0;
+
+		
+
+		for (uint256 i = 0; i < bidInfos.length; i += 1) {
+
+			if (bidInfos[i].token == token) {
+
+				bidCount += 1;
+
+			}
+
+		}
+
+		
+
+		return bidCount;
+
+	}
+
+	
+
+	// 주어
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: sell(uint256,uint256), txdata: 0xd79875eb, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ERC20Sale
+Function name: cancelOffer(uint256)
+PC address: 3993
+Estimated Gas Usage: 1208 - 1303
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/10bed18893b347a7034c556e3e4ad65b.sol:529
+
+ 양이 판매할 양보다 많아야 합니다.
+
+		require(erc20.balanceOf(offerInfo.offeror) >= amount);
+
+		
+
+		// 거래소에 인출을 허락한 토큰의 양이 판매할 양보다 많아야 합니다.
+
+		require(erc20.allowance(offerInfo.offeror, th
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: cancelOffer(uint256), txdata: 0xef706adf, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ERC20Sale
+Function name: bidInfos(uint256)
+PC address: 4098
+Estimated Gas Usage: 1222 - 1317
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/10bed18893b347a7034c556e3e4ad65b.sol:185
+
+ferCount() view public re
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: bidInfos(uint256), txdata: 0xf288f46f, value: 0x0
+
+

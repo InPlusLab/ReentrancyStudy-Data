@@ -1,0 +1,250 @@
+pragma directive defines a prior version to 0.5.17. Changing pragma version to 0.5.17....
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    ChainDotPrivateSale
+Line:        11
+Source: 
+>   uint public endTime;
+>   bool open = true;
+>   ^^^^^^^^^^^^^^^^
+>   address public topDonor;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    ChainDotPrivateSale
+Line:        26
+Source: 
+> 
+>   function add() public payable {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     donations[msg.sender] += msg.value;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    ChainDotPrivateSale
+Line:        34
+Source: 
+> 
+>   function withdrawOwner() public {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     require(msg.sender == owner, "You must be the owner");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    ChainDotPrivateSale
+Line:        40
+Source: 
+> 
+>   function withdraw() public {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     require(address(this).balance < goal, "Fundraising campaign was successful");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    ChainDotPrivateSale
+Line:        48
+Source: 
+>   
+>   function percentageComplete() public view returns (uint) {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     require(goal != 0, "goal is 0, cannot divide by 0");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    ChainDotPrivateSale
+Line:        50
+Source: 
+>     require(goal != 0, "goal is 0, cannot divide by 0");
+>     return 100 * (address(this).balance / goal);
+>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Violation
+Contract:    ChainDotPrivateSale
+Line:        43
+Source: 
+>     require(now > endTime, "Fundraising campaign is still ongoing");
+>     msg.sender.transfer(donations[msg.sender]);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     emit UserWithdraw(msg.sender, donations[msg.sender], now);
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    ChainDotPrivateSale
+Line:        8
+Source: 
+> contract ChainDotPrivateSale {
+>   address payable owner;
+>   ^^^^^^^^^^^^^^^^^^^^^
+>   uint public goal;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    ChainDotPrivateSale
+Line:        11
+Source: 
+>   uint public endTime;
+>   bool open = true;
+>   ^^^^^^^^^^^^^^^^
+>   address public topDonor;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    ChainDotPrivateSale
+Line:        14
+Source: 
+> 
+>   mapping(address=>uint) donations;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    ChainDotPrivateSale
+Line:        37
+Source: 
+>     emit OwnerWithdraw(address(this).balance, now);
+>     owner.transfer(address(this).balance);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    ChainDotPrivateSale
+Line:        43
+Source: 
+>     require(now > endTime, "Fundraising campaign is still ongoing");
+>     msg.sender.transfer(donations[msg.sender]);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     emit UserWithdraw(msg.sender, donations[msg.sender], now);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    ChainDotPrivateSale
+Line:        37
+Source: 
+>     emit OwnerWithdraw(address(this).balance, now);
+>     owner.transfer(address(this).balance);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    ChainDotPrivateSale
+Line:        37
+Source: 
+>     emit OwnerWithdraw(address(this).balance, now);
+>     owner.transfer(address(this).balance);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    ChainDotPrivateSale
+Line:        43
+Source: 
+>     require(now > endTime, "Fundraising campaign is still ongoing");
+>     msg.sender.transfer(donations[msg.sender]);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     emit UserWithdraw(msg.sender, donations[msg.sender], now);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    ChainDotPrivateSale
+Line:        12
+Source: 
+>   bool open = true;
+>   address public topDonor;
+>   ^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted Ether Flow
+Description: The execution of ether flows should be restricted to an
+             authorized set of users.
+Type:        Warning
+Contract:    ChainDotPrivateSale
+Line:        43
+Source: 
+>     require(now > endTime, "Fundraising campaign is still ongoing");
+>     msg.sender.transfer(donations[msg.sender]);
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     emit UserWithdraw(msg.sender, donations[msg.sender], now);
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    ChainDotPrivateSale
+Line:        11
+Source: 
+>   uint public endTime;
+>   bool open = true;
+>   ^^^^^^^^^^^^^^^^
+>   address public topDonor;
+
+[0m

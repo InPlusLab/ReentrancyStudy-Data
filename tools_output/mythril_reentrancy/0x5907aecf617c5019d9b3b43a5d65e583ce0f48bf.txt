@@ -1,0 +1,124 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: BatchTransferWallet
+Function name: transferMulti(address[],uint256[])
+PC address: 265
+Estimated Gas Usage: 733 - 6188
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/a98efaae60677f5652ac2d159581d91a.sol:297
+
+der, receivers[j], amounts[j]);
+
+        }
+
+    }
+
+    /**
+
+        * @dev Withdraw the amount of token that is remaining in this contract.
+
+        * @param _address The address of EOA that can receive token from this contract.
+
+        */
+
+        function withdraw(address _address) public onlyOwner {
+
+            require(_address != address(0))
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x401100000000062a4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transferMulti(address[],uint256[]), txdata: 0x35bce6e4fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc1f, value: 0x1
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BatchTransferWallet
+Function name: balanceOfContract(address,address)
+PC address: 986
+Estimated Gas Usage: 1971 - 36909
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/a98efaae60677f5652ac2d159581d91a.sol:277
+
+ _amounts[i];
+
+        }
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2100000000000002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transferMulti(address[],uint256[]), txdata: 0x35bce6e4, value: 0x1
+Caller: [ATTACKER], function: balanceOfContract(address,address), txdata: 0x073b53b0bcbcbcbcbcbcbcbcbcbcbcbcdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Unprotected Ether Withdrawal ====
+SWC ID: 105
+Severity: High
+Contract: BatchTransferWallet
+Function name: balanceOfContract(address,address)
+PC address: 986
+Estimated Gas Usage: 1971 - 36909
+Any sender can withdraw Ether from the contract account.
+Arbitrary senders other than the contract creator can profitably extract Ether from the contract account. Verify the business logic carefully and make sure that appropriate security controls are in place to prevent unexpected loss of funds.
+--------------------
+In file: /tmp/a98efaae60677f5652ac2d159581d91a.sol:277
+
+ _amounts[i];
+
+        }
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1108000204020000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x1
+Caller: [CREATOR], function: withdraw(address), txdata: 0x51cff8d9000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: balanceOfContract(address,address), txdata: 0x073b53b0, value: 0x0
+
+==== Unprotected Ether Withdrawal ====
+SWC ID: 105
+Severity: High
+Contract: BatchTransferWallet
+Function name: withdraw(address)
+PC address: 2161
+Estimated Gas Usage: 2692 - 37303
+Any sender can withdraw Ether from the contract account.
+Arbitrary senders other than the contract creator can profitably extract Ether from the contract account. Verify the business logic carefully and make sure that appropriate security controls are in place to prevent unexpected loss of funds.
+--------------------
+In file: /tmp/a98efaae60677f5652ac2d159581d91a.sol:319
+Initial State:
+
+Account: [CREATOR], balance: 0x10000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x1
+Caller: [CREATOR], function: transferOwnership(address), txdata: 0xf2fde38b000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: withdraw(address), txdata: 0x51cff8d9f8f8f8f8f8f8f8f8f8f8f8f8deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

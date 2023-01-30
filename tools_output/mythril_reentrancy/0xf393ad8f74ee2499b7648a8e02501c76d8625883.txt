@@ -1,0 +1,67 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: CFT
+Function name: sendBatchCS(address[],uint256[])
+PC address: 1201
+Estimated Gas Usage: 14549 - 56032
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/cf33a775b48c20ef540d54b2e9e0cd86.sol:663
+
+ue);
+
+        }
+
+        _balances[msg.sender] = senderBalance;
+
+        return true;            
+
+    }
+
+
+
+    function emergencyERC20drain(ERC20 token, uint value) public {
+
+        require(msg.sender == owner, "Unauthorised");
+
+        require(token.transfer(owner,value),"Transfer fail");
+
+    }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10000000000000023, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: sendBatchCS(address[],uint256[]), txdata: 0x9c1d9790ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc80, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: CFT
+Function name: emergencyERC20drain(address,uint256)
+PC address: 3603
+Estimated Gas Usage: 3798 - 39210
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/cf33a775b48c20ef540d54b2e9e0cd86.sol:683
+Initial State:
+
+Account: [CREATOR], balance: 0x20000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: emergencyERC20drain(address,uint256), txdata: 0x543d4c16000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

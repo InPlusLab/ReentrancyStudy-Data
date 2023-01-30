@@ -1,0 +1,196 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: FreeDropper
+Function name: drop(address,address[],uint256[],uint256)
+PC address: 184
+Estimated Gas Usage: 7890 - 112683
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/76dd0169eab90f2411a6472fe20078c3.sol:281
+
+ _totalAmount, "not enough allowance");
+
+        uint distributedTokens;
+
+        
+
+        for(uint i = 0;i < _beneficiary.length;i++){
+
+            
+
+            require(_beneficiary[i] != address(0), "beneficiary address is 0x0");
+
+            require(_token.transferFrom(msg.sender,_beneficiary[i],_amount[i]), "Transfer from failed");
+
+            distributedTokens += _amount[i];
+
+        }
+
+
+
+        emit DistributionCompleted(msg.sender, address(_token), _totalAmount);
+
+            
+
+    }
+
+
+
+    function withdrawTokens(ERC20 _erc20, address _receiver, uint _amount) public onlyOwner {
+
+        require(_receiver != address(0x0), "receiver address is 0x0");
+
+        _erc20.transfer(_receiver, _amount);
+
+    }
+
+
+
+    function withdrawETH(address _receiver, uint _amount) public onlyOwner {
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42000040000082001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: drop(address,address[],uint256[],uint256), txdata: 0x0bcf25600000000000000000022080080408040210200420048020040210024000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdcff, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: FreeDropper
+Function name: drop(address,address[],uint256[],uint256)
+PC address: 977
+Estimated Gas Usage: 7890 - 112683
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/76dd0169eab90f2411a6472fe20078c3.sol:292
+
+
+            require(_token.transferFrom(ms
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80000021603, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: drop(address,address[],uint256[],uint256), txdata: 0x0bcf2560000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef800000000000000000000000001000000000000000000000800000000000000180, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: FreeDropper
+Function name: drop(address,address[],uint256[],uint256)
+PC address: 1211
+Estimated Gas Usage: 7890 - 112683
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/76dd0169eab90f2411a6472fe20078c3.sol:301
+
+, _totalAmount)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: drop(address,address[],uint256[],uint256), txdata: 0x0bcf25600000000000000000000000000000000000000000000000000000000000000002ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc8, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: FreeDropper
+Function name: drop(address,address[],uint256[],uint256)
+PC address: 1654
+Estimated Gas Usage: 7890 - 112683
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/76dd0169eab90f2411a6472fe20078c3.sol:309
+
+dress _receiver, uint _amount) public onlyOwner {
+
+       
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80000021603, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: drop(address,address[],uint256[],uint256), txdata: 0x0bcf2560000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef800000000000000000000000001000000000000000000000800000000000000180, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: FreeDropper
+Function name: drop(address,address[],uint256[],uint256)
+PC address: 1654
+Estimated Gas Usage: 7890 - 112683
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/76dd0169eab90f2411a6472fe20078c3.sol:309
+
+dress _receiver, uint _amount) public onlyOwner {
+
+       
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100002004331a, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: drop(address,address[],uint256[],uint256), txdata: 0x0bcf2560000000000000000000000000000000000000000000000000000000000000000280, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: FreeDropper
+Function name: withdrawTokens(address,address,uint256)
+PC address: 2563
+Estimated Gas Usage: 2913 - 37995
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/76dd0169eab90f2411a6472fe20078c3.sol:327
+Initial State:
+
+Account: [CREATOR], balance: 0x95, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawTokens(address,address,uint256), txdata: 0x5e35359e000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000040, value: 0x0

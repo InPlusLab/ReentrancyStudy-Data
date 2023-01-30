@@ -1,0 +1,640 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+[0;31mSeverity:    INFO
+Pattern:     Assembly Usage
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    Initializable
+Line:        61
+Source: 
+>     uint256 cs;
+>     assembly { cs := extcodesize(self) }
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     return cs == 0;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    Initializable
+Line:        66
+Source: 
+>   // Reserved storage space to allow for layout changes in the future.
+>   uint256[50] private ______gap;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    InstaTimelock
+Line:        257
+Source: 
+>      */
+>     function initialize(address admin_, uint delay_, uint minDelay_, uint maxDelay_, uint gracePeriod_) public initializer {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(maxDelay_ > minDelay_, "Timelock::constructor Max delay must exceed minimum delay.");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    InstaTimelock
+Line:        274
+Source: 
+> 
+>     function setDelay(uint delay_) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == address(this), "Timelock::setDelay: Call must come from Timelock.");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    InstaTimelock
+Line:        283
+Source: 
+> 
+>     function acceptAdmin() public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == pendingAdmin, "Timelock::acceptAdmin: Call must come from pendingAdmin.");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    InstaTimelock
+Line:        291
+Source: 
+> 
+>     function setPendingAdmin(address pendingAdmin_) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == address(this), "Timelock::setPendingAdmin: Call must come from Timelock.");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    InstaTimelock
+Line:        298
+Source: 
+> 
+>     function queueTransaction(address target, uint value, string memory signature, bytes memory data, uint eta) public returns (bytes32) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == admin, "Timelock::queueTransaction: Call must come from admin.");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    InstaTimelock
+Line:        309
+Source: 
+> 
+>     function cancelTransaction(address target, uint value, string memory signature, bytes memory data, uint eta) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == admin, "Timelock::cancelTransaction: Call must come from admin.");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    InstaTimelock
+Line:        318
+Source: 
+> 
+>     function executeTransaction(address target, uint value, string memory signature, bytes memory data, uint eta) public payable returns (bytes memory) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == admin, "Timelock::executeTransaction: Call must come from admin.");
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Gas-dependent Reentrancy
+Description: Calls into external contracts that receive all remaining
+             gas and are followed by state changes may be reentrant.
+Type:        Warning
+Contract:    InstaTimelock
+Line:        337
+Source: 
+>         // solium-disable-next-line security/no-call-value
+>         (bool success, bytes memory returnData) = target.call.value(value)(callData);
+>                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(success, "Timelock::executeTransaction: Transaction execution reverted.");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Low Level Calls
+Description: Usage of <address>.call should be avoided
+Type:        Violation
+Contract:    InstaTimelock
+Line:        337
+Source: 
+>         // solium-disable-next-line security/no-call-value
+>         (bool success, bytes memory returnData) = target.call.value(value)(callData);
+>                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(success, "Timelock::executeTransaction: Transaction execution reverted.");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    InstaTimelock
+Line:        257
+Source: 
+>      */
+>     function initialize(address admin_, uint delay_, uint minDelay_, uint maxDelay_, uint gracePeriod_) public initializer {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(maxDelay_ > minDelay_, "Timelock::constructor Max delay must exceed minimum delay.");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    InstaTimelock
+Line:        291
+Source: 
+> 
+>     function setPendingAdmin(address pendingAdmin_) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == address(this), "Timelock::setPendingAdmin: Call must come from Timelock.");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    InstaTimelock
+Line:        298
+Source: 
+> 
+>     function queueTransaction(address target, uint value, string memory signature, bytes memory data, uint eta) public returns (bytes32) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == admin, "Timelock::queueTransaction: Call must come from admin.");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    InstaTimelock
+Line:        309
+Source: 
+> 
+>     function cancelTransaction(address target, uint value, string memory signature, bytes memory data, uint eta) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == admin, "Timelock::cancelTransaction: Call must come from admin.");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    Initializable
+Line:        66
+Source: 
+>   // Reserved storage space to allow for layout changes in the future.
+>   uint256[50] private ______gap;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    InstaTimelock
+Line:        238
+Source: 
+> 
+>     uint public GRACE_PERIOD;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public MINIMUM_DELAY;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    InstaTimelock
+Line:        239
+Source: 
+>     uint public GRACE_PERIOD;
+>     uint public MINIMUM_DELAY;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public MAXIMUM_DELAY;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    InstaTimelock
+Line:        240
+Source: 
+>     uint public MINIMUM_DELAY;
+>     uint public MAXIMUM_DELAY;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        6
+Source: 
+> // SPDX-License-Identifier: MIT
+> pragma solidity ^0.6.8;
+> ^^^^^^^^^^^^^^^^^^^^^^^
+> pragma experimental ABIEncoderV2;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    Initializable
+Line:        39
+Source: 
+> 
+>     bool isTopLevelCall = !initializing;
+>     ^^^^^^^^^^^^^^^^^^^
+>     if (isTopLevelCall) {
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Warning
+Contract:    InstaTimelock
+Line:        337
+Source: 
+>         // solium-disable-next-line security/no-call-value
+>         (bool success, bytes memory returnData) = target.call.value(value)(callData);
+>                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(success, "Timelock::executeTransaction: Transaction execution reverted.");
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    InstaTimelock
+Line:        337
+Source: 
+>         // solium-disable-next-line security/no-call-value
+>         (bool success, bytes memory returnData) = target.call.value(value)(callData);
+>                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(success, "Timelock::executeTransaction: Transaction execution reverted.");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Uninitialized Local Variables
+Description: A variable is declared but never initialized.
+Type:        Violation
+Contract:    Initializable
+Line:        62
+Source: 
+>     assembly { cs := extcodesize(self) }
+>     return cs == 0;
+>            ^^
+>   }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    Initializable
+Line:        26
+Source: 
+>    */
+>   bool private initialized;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    Initializable
+Line:        31
+Source: 
+>    */
+>   bool private initializing;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    InstaTimelock
+Line:        238
+Source: 
+> 
+>     uint public GRACE_PERIOD;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public MINIMUM_DELAY;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    InstaTimelock
+Line:        239
+Source: 
+>     uint public GRACE_PERIOD;
+>     uint public MINIMUM_DELAY;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public MAXIMUM_DELAY;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    InstaTimelock
+Line:        240
+Source: 
+>     uint public MINIMUM_DELAY;
+>     uint public MAXIMUM_DELAY;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    InstaTimelock
+Line:        242
+Source: 
+> 
+>     address public admin;
+>     ^^^^^^^^^^^^^^^^^^^^
+>     address public pendingAdmin;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    InstaTimelock
+Line:        243
+Source: 
+>     address public admin;
+>     address public pendingAdmin;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public delay;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    InstaTimelock
+Line:        244
+Source: 
+>     address public pendingAdmin;
+>     uint public delay;
+>     ^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Initializable
+Line:        26
+Source: 
+>    */
+>   bool private initialized;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Initializable
+Line:        31
+Source: 
+>    */
+>   bool private initializing;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    Initializable
+Line:        66
+Source: 
+>   // Reserved storage space to allow for layout changes in the future.
+>   uint256[50] private ______gap;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Initializable
+Line:        41
+Source: 
+>     if (isTopLevelCall) {
+>       initializing = true;
+>       ^^^^^^^^^^^^^^^^^^^
+>       initialized = true;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Initializable
+Line:        42
+Source: 
+>       initializing = true;
+>       initialized = true;
+>       ^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    InstaTimelock
+Line:        264
+Source: 
+> 
+>         admin = admin_;
+>         ^^^^^^^^^^^^^^
+>         delay = delay_;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    InstaTimelock
+Line:        265
+Source: 
+>         admin = admin_;
+>         delay = delay_;
+>         ^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    InstaTimelock
+Line:        267
+Source: 
+> 
+>         MINIMUM_DELAY = minDelay_;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^
+>         MAXIMUM_DELAY = maxDelay_;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    InstaTimelock
+Line:        268
+Source: 
+>         MINIMUM_DELAY = minDelay_;
+>         MAXIMUM_DELAY = maxDelay_;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^
+>         GRACE_PERIOD = gracePeriod_;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    InstaTimelock
+Line:        269
+Source: 
+>         MAXIMUM_DELAY = maxDelay_;
+>         GRACE_PERIOD = gracePeriod_;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    Initializable
+Line:        48
+Source: 
+>     if (isTopLevelCall) {
+>       initializing = false;
+>       ^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    Initializable
+Line:        26
+Source: 
+>    */
+>   bool private initialized;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    Initializable
+Line:        31
+Source: 
+>    */
+>   bool private initializing;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    Initializable
+Line:        66
+Source: 
+>   // Reserved storage space to allow for layout changes in the future.
+>   uint256[50] private ______gap;
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    InstaTimelock
+Line:        347
+Source: 
+>         // solium-disable-next-line security/no-block-members
+>         return block.timestamp;
+>                ^^^^^^^^^^^^^^^
+>     }
+
+[0m

@@ -1,0 +1,207 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    HeadsOrTails
+Line:        47
+Source: 
+>     bool won = false;
+>     if (guess == result) {
+>         ^^^^^^^^^^^^^^^
+>       //Won!
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    HeadsOrTails
+Line:        39
+Source: 
+>   //Play the game!
+>   function lottery(uint8 guess) public payable returns(bool){
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     require(guess == 0 || guess == 1, "Variable 'guess' should be either 0 ('heads') or 1 ('tails')");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    HeadsOrTails
+Line:        59
+Source: 
+>   //Get amount of games played so far
+>   function getGameCount() public view returns(uint) {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     return lastPlayedGames.length;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    HeadsOrTails
+Line:        64
+Source: 
+>   //Get stats about a certain played game, e.g. address of player, amount bet, won or lost, and ETH in the jackpot at this point in time
+>   function getGameEntry(uint index) public view returns(address addr, uint amountBet, uint8 guess, bool winner, uint ethInJackpot) {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     return (
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    HeadsOrTails
+Line:        64
+Source: 
+>   //Get stats about a certain played game, e.g. address of player, amount bet, won or lost, and ETH in the jackpot at this point in time
+>   function getGameEntry(uint index) public view returns(address addr, uint amountBet, uint8 guess, bool winner, uint ethInJackpot) {
+>   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     return (
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Warning
+Contract:    HeadsOrTails
+Line:        49
+Source: 
+>       //Won!
+>       msg.sender.transfer(msg.value * 2);
+>       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>       won = true;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        6
+Source: 
+> // Version of Solidity compiler this program was written for
+> pragma solidity ^0.5.11;
+> ^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    HeadsOrTails
+Line:        10
+Source: 
+> contract HeadsOrTails {
+>   address payable owner;
+>   ^^^^^^^^^^^^^^^^^^^^^
+>   string public name;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    HeadsOrTails
+Line:        21
+Source: 
+> 
+>   Game[] lastPlayedGames;
+>   ^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Warning
+Contract:    HeadsOrTails
+Line:        84
+Source: 
+>     require(amount < address(this).balance, "You cannot withdraw more than what is available in the contract");
+>     owner.transfer(amount);
+>     ^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    HeadsOrTails
+Line:        84
+Source: 
+>     require(amount < address(this).balance, "You cannot withdraw more than what is available in the contract");
+>     owner.transfer(amount);
+>     ^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    HeadsOrTails
+Line:        84
+Source: 
+>     require(amount < address(this).balance, "You cannot withdraw more than what is available in the contract");
+>     owner.transfer(amount);
+>     ^^^^^^^^^^^^^^^^^^^^^^
+>   }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    HeadsOrTails
+Line:        54
+Source: 
+>     emit GameResult(result);
+>     lastPlayedGames.push(Game(msg.sender, msg.value, guess, won, address(this).balance));
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     return won; //Return value can only be used by other functions, but not within web3.js (as of 2019)
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    HeadsOrTails
+Line:        11
+Source: 
+>   address payable owner;
+>   string public name;
+>   ^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;35mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Conflict
+Contract:    HeadsOrTails
+Line:        45
+Source: 
+>     //Create a random number. Use the mining difficulty & the player's address, hash it, convert this hex to int, divide by modulo 2 which results in either 0 or 1 and return as uint8
+>     uint8 result = uint8(uint256(keccak256(abi.encodePacked(block.difficulty, msg.sender, block.timestamp)))%2);
+>                                                                                           ^^^^^^^^^^^^^^^
+>     bool won = false;
+
+[0m

@@ -1,0 +1,183 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: PaymentQueue
+Function name: getPayment(uint256)
+PC address: 809
+Estimated Gas Usage: 1086 - 1559
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/92769996bc3a00e72acd8cd8bf2ac58c.sol:355
+
+assert(last > 0)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: getPayment(uint256), txdata: 0x3280a836, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: PaymentQueue
+Function name: clean(uint256)
+PC address: 1158
+Estimated Gas Usage: 6102 - 76641
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/92769996bc3a00e72acd8cd8bf2ac58c.sol:431
+
+getSGRAuthorizationManager().isAuthorizedForPublicOperation(msg.sender)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: clean(uint256), txdata: 0x674ef0fa, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PaymentQueue
+Function name: clean(uint256)
+PC address: 1288
+Estimated Gas Usage: 6102 - 76641
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/92769996bc3a00e72acd8cd8bf2ac58c.sol:432
+
+payments.length
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000002, value: 0x0
+Caller: [ATTACKER], function: clean(uint256), txdata: 0x674ef0fa, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PaymentQueue
+Function name: clean(uint256)
+PC address: 1291
+Estimated Gas Usage: 6102 - 76641
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/92769996bc3a00e72acd8cd8bf2ac58c.sol:433
+
+last
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000002, value: 0x0
+Caller: [ATTACKER], function: clean(uint256), txdata: 0x674ef0fa, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: PaymentQueue
+Function name: payments(uint256)
+PC address: 1916
+Estimated Gas Usage: 1156 - 1251
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/92769996bc3a00e72acd8cd8bf2ac58c.sol:332
+
+Payment[] public payments
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: payments(uint256), txdata: 0x87d81789, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: PaymentQueue
+Function name: getSGRAuthorizationManager()
+PC address: 2787
+Estimated Gas Usage: 2718 - 38316
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/92769996bc3a00e72acd8cd8bf2ac58c.sol:190
+
+contractAddressLocator.getContractAddress(_identifier)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10002500400000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: clean(uint256), txdata: 0x674ef0fa, value: 0x0
+Caller: [SOMEGUY], function: getSGRAuthorizationManager(), txdata: 0x28e34d94, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: PaymentQueue
+Function name: clean(uint256)
+PC address: 2787
+Estimated Gas Usage: 6102 - 76641
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/92769996bc3a00e72acd8cd8bf2ac58c.sol:190
+
+contractAddressLocator.getContractAddress(_identifier)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: clean(uint256), txdata: 0x674ef0fa, value: 0x0
+Caller: [ATTACKER], function: clean(uint256), txdata: 0x674ef0fa, value: 0x0

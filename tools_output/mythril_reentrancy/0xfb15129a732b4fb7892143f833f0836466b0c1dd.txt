@@ -1,0 +1,87 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: CallContract
+Function name: fallback
+PC address: 356
+Estimated Gas Usage: 1517 - 40313
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24c4740751c2e9699da39fddfbeeb835.sol:13
+
+.call(methodId, _addrs[i], _isFrozen);
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4200000000004a003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: callByFun(address,address[],bool), txdata: 0x79bc32550000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+Caller: [CREATOR], function: callByFun(address,address[],bool), txdata: 0x79bc3255020202020202020202020202deadbeefdeadbeefdeadbeefdeadbeefdeadbeef80, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: CallContract
+Function name: fallback
+PC address: 356
+Estimated Gas Usage: 2529 - 76735
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24c4740751c2e9699da39fddfbeeb835.sol:13
+
+.call(methodId, _addrs[i], _isFrozen);
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2001000002037fba, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: callByFun(address,address[],bool), txdata: 0x79bc32550000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: CallContract
+Function name: fallback
+PC address: 356
+Estimated Gas Usage: 1517 - 40313
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/24c4740751c2e9699da39fddfbeeb835.sol:13
+
+.call(methodId, _addrs[i], _isFrozen);
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000f46be, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: callByFun(address,address[],bool), txdata: 0x79bc32550000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+Caller: [SOMEGUY], function: callByFun(address,address[],bool), txdata: 0x79bc32550000000000000000000000000000000000000000000000000000000000000001, value: 0x0
+
+

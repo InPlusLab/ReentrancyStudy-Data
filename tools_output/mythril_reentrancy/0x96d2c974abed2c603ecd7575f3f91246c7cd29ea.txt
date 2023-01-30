@@ -1,0 +1,61 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: SaTT
+Function name: transfer(address,uint256,bytes)
+PC address: 3014
+Estimated Gas Usage: 760 - 3630
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/4361da1a6d67fe2309759846f71ee2a0.sol:163
+
+er, to, value);
+
+         }
+
+        return true;
+
+    }
+
+    
+
+     function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
+
+        
+
+        require(_value <= allowance[_from][msg
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8a0d, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: transfer(address,uint256,bytes), txdata: 0xbe45fd62000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000010, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: SaTT
+Function name: transferToken(address,address,uint256)
+PC address: 3518
+Estimated Gas Usage: 2955 - 38037
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/4361da1a6d67fe2309759846f71ee2a0.sol:265
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferToken(address,address,uint256), txdata: 0xf5537ede000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0

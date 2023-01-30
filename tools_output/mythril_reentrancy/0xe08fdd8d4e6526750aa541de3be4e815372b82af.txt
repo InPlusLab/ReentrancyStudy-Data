@@ -1,0 +1,89 @@
+with mythril_dir
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: DropToken
+Function name: dropTKN(address[],address,uint256,bytes32)
+PC address: 194
+Estimated Gas Usage: 400 - 495
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3866a5f970c0e514ec28041a947917d8.sol:10
+
+dropTKN(address[] calldata recipients, address tokenAddress, uint256 amount, bytes32 message) external {
+        IToken token = IToken(tokenAddress);
+        uint256 amounts = amount / recipients.length;
+        for (uint256 i = 0; i < recipients.length; i++) {
+	    token.transferFrom(msg.sender, recipients[i], amounts);}
+	    emit DropTKN(message);
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xfbfba, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: dropTKN(address[],address,uint256,bytes32), txdata: 0xa01df3450000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DropToken
+Function name: dropTKN(address[],address,uint256,bytes32)
+PC address: 361
+Estimated Gas Usage: 3461 - 38564
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3866a5f970c0e514ec28041a947917d8.sol:14
+
+rFrom(msg.sender, recipients[i], amounts);}
+	    emit 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3b908, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: dropTKN(address[],address,uint256,bytes32), txdata: 0xa01df3450000000000000000000000000000000000000000000000000000000000000040000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: DropToken
+Function name: dropTKN(address[],address,uint256,bytes32)
+PC address: 361
+Estimated Gas Usage: 5292 - 75054
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3866a5f970c0e514ec28041a947917d8.sol:14
+
+rFrom(msg.sender, recipients[i], amounts);}
+	    emit 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: dropTKN(address[],address,uint256,bytes32), txdata: 0xa01df3450000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+

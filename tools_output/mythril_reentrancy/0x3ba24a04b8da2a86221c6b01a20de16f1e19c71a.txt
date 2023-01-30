@@ -1,0 +1,159 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: BST
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 1375
+Estimated Gas Usage: 9031 - 72140
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/a716b2e6766ac9dc8a5bf41e19140546.sol:349
+
+sender, _spender, _value);
+
+
+
+        //call the receiveApproval function on the contract you want to be notified. This crafts the function signature manually so one doesn't have to include a contract in here just for this.
+
+        //receiveApproval(address _from, uint256 _value, address _tokenContract, bytes _extraData)
+
+        //it is assumed that when does this that the call *should* succeed, otherwise one would use vanilla approve instead.
+
+        if(!_spender.call(bytes4(bytes32(sha3("receiveApproval(address,uint256,address,bytes)"))), msg.sender, _value, this, _extraData)) { throw; }
+
+        return true;
+
+    }
+
+
+
+    function isWithinIEO() returns (bool success) {
+
+        if(now > IEOEndDate) {
+
+            return false;
+
+        }else {
+
+            return true;
+
+        }
+
+    }
+
+
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca5100000000000000000000000000000000000001010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: BST
+Function name: fallback
+PC address: 1523
+Estimated Gas Usage: 875 - 970
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/a716b2e6766ac9dc8a5bf41e19140546.sol:385
+
+tokenMoveableDate) {
+
+            return true;
+
+        }else {
+
+            return false;
+
+        }
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x41080040003f3a, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: BST
+Function name: canMovetoken()
+PC address: 2609
+Estimated Gas Usage: 1210 - 1635
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/a716b2e6766ac9dc8a5bf41e19140546.sol:399
+
+s) {
+
+        //Default assumes totalSupply can't be over max (2^256 - 1).
+
+        //If your token leaves out tot
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: canMovetoken(), txdata: 0x822ee26c, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BST
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 3336
+Estimated Gas Usage: 9031 - 72140
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/a716b2e6766ac9dc8a5bf41e19140546.sol:367
+
+on isWithinIEO() returns (bool success) {
+
+        if(now > IEOEndDate) {
+
+            return false;
+
+        }else {
+
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc0000000000081, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca51000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000080, value: 0x0

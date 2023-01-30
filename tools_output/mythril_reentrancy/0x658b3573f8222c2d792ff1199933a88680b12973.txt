@@ -1,0 +1,228 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: RaceToken
+Function name: getFashionsAttrs(uint256[])
+PC address: 703
+Estimated Gas Usage: 625 - 1565
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/31cb8acbe3fe3778691e7708f328c133.sol:1401
+
+contract address
+
+    RaceToken public tokenContract;
+
+
+
+    IRaceCoin public raceCoinContract;
+
+
+
+    mapping (address => uint256[]) public slotlist;
+
+
+
+    mapping (uint256 => uint256) public carSlot;
+
+
+
+    mapping (uint256 => uint256) public slotEngine;
+
+    mapping (uint256 => uint256) public slotTurbine;
+
+    mapping (uint256 => uint256) public slotBodySystem;
+
+    mapping (uint256 => uint256) public slotPipe;
+
+    mapping (uint256 => uint256) public slotSuspension;
+
+    mapping (uint256 => uint256) public slotNO2;
+
+    mapping (uint256 => uint256) public slotTyre;
+
+    mapping (uint256 => uint256) public slotTransmission;
+
+ 
+
+
+
+    function DataEquip(address _nftTokenAddr) public {
+
+        addrAdmin = msg.sender;
+
+        addrService = msg.sender;
+
+        addrFinance = msg.sender;
+
+
+
+        tokenContract = RaceToken(_nftTokenAddr);
+
+    }
+
+
+
+    //Set up tournament bonus address
+
+    function setRaceCoin(address _addr) external onlyAdmin {
+
+        require(_addr != address(0));
+
+        raceCoinContract = IRaceCoin(_addr);
+
+    }
+
+
+
+
+
+    
+
+    function _equipUpOne(address _owner, uint256 _carTokenId, uint256 _partsTokenId) private {
+
+        require(tokenContract.ownerOf(_carTokenId) == _owner);
+
+        req
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000036081, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: getFashionsAttrs(uint256[]), txdata: 0x0d047d49ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: DataEquip
+Function name: slotlist(address,uint256)
+PC address: 3011
+Estimated Gas Usage: 1605 - 2220
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/31cb8acbe3fe3778691e7708f328c133.sol:1485
+
+wner];
+
+        uint256 i = 0;
+
+
+
+        uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: slotlist(address,uint256), txdata: 0xe1fe93a1, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DataEquip
+Function name: isEquiped(address,uint256)
+PC address: 3405
+Estimated Gas Usage: 4659 - 44400
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/31cb8acbe3fe3778691e7708f328c133.sol:2297
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: isEquiped(address,uint256), txdata: 0xf761720a000000000000000000000000000000000000000000000000000000000000000401, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DataEquip
+Function name: isEquiped(address,uint256)
+PC address: 3437
+Estimated Gas Usage: 4659 - 44400
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: isEquiped(address,uint256), txdata: 0xf761720a000000000000000000000000010080010008000001020204004000000000001001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DataEquip
+Function name: isEquiped(address,uint256)
+PC address: 3549
+Estimated Gas Usage: 4659 - 44400
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/31cb8acbe3fe3778691e7708f328c133.sol:2297
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: isEquiped(address,uint256), txdata: 0xf761720a000000000000000000000000000000000000000000000000000000000000000401, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: RaceToken
+Function name: fashionArray(uint256)
+PC address: 7205
+Estimated Gas Usage: 1552 - 1647
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/31cb8acbe3fe3778691e7708f328c133.sol:453
+
+IdToOwnerIndex;
+
+
+
+    /// @d
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: fashionArray(uint256), txdata: 0xfebb986b80, value: 0x0
+
+

@@ -1,0 +1,67 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: WFee
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 685
+Estimated Gas Usage: 7983 - 69472
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0e47e9ea55f16ec0290d67a517f2a3fe.sol:456
+
+ue);
+        // Check if the sender has enough
+        balanceOf[msg.sender] -= _value;
+        // Subtract from the sender
+        totalSupply -= _value;
+        // Updates totalSupply
+        Burn(msg.sender, _value);
+        return true;
+    }
+
+    function burnFrom(address _from, uint256 _value) public returns (bool success) {
+      
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1025013a800098221, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca5100000000000000000000000010022080400104400408004010040280002002400000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: WFee
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 1894
+Estimated Gas Usage: 7983 - 69472
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0e47e9ea55f16ec0290d67a517f2a3fe.sol:463
+
+n true;
+    }
+
+    function burnFrom(address _from, uint256 _
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000000000002a1a0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca51000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+

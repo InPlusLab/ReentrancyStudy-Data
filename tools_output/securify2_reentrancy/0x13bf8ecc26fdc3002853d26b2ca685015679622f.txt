@@ -1,0 +1,850 @@
+pragma directive defines a prior version to 0.6.4. Changing pragma version to 0.6.4....
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    AxiaVault
+Line:        29
+Source: 
+>     
+>     address owner = msg.sender;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public lastTradingFeeDistributionAxia;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    AxiaVault
+Line:        41
+Source: 
+> 
+>     function distributeAXIA(address recipient, uint256 amount) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint256 TokenBalance = ERC20Interface(AXIA).balanceOf(address(this));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    AxiaVault
+Line:        50
+Source: 
+>     
+>     function distributeSWAP(address recipient, uint256 amount) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint256 TokenBalance = ERC20Interface(SwapLiquidity).balanceOf(address(this));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    AxiaVault
+Line:        59
+Source: 
+>     
+>     function distributeORACLE(address recipient, uint256 amount) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint256 TokenBalance = ERC20Interface(OracleLiquidty).balanceOf(address(this));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    AxiaVault
+Line:        68
+Source: 
+>     
+>     function distributeDEFI(address recipient, uint256 amount) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint256 TokenBalance = ERC20Interface(DefiLiquidity).balanceOf(address(this));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    AxiaVault
+Line:        81
+Source: 
+> 
+>     function startLiquidityMigration(address recipient) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == owner, "No Authorization");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    AxiaVault
+Line:        111
+Source: 
+>     
+>     function startToken(address _AXIAaddress, address _SwapLiquidity, address _OracleLiquidity, address _DefiLiquidity) external {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == owner);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    AxiaVault
+Line:        42
+Source: 
+>     function distributeAXIA(address recipient, uint256 amount) external {
+>         uint256 TokenBalance = ERC20Interface(AXIA).balanceOf(address(this));
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(amount <= (TokenBalance / 10), "Amount is higher than 1% of AXIA vault balance"); // Max 1%
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    AxiaVault
+Line:        46
+Source: 
+>         require(msg.sender == owner, "No Authorization");
+>                ERC20Interface(AXIA).transfer(recipient, amount);
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastTradingFeeDistributionAxia = now;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    AxiaVault
+Line:        51
+Source: 
+>     function distributeSWAP(address recipient, uint256 amount) external {
+>         uint256 TokenBalance = ERC20Interface(SwapLiquidity).balanceOf(address(this));
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(amount <= (TokenBalance / 10), "Amount is higher than 10% of SwapLiquidity vault balance"); // Max 10%
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    AxiaVault
+Line:        55
+Source: 
+>         require(msg.sender == owner, "No Authorization");
+>                ERC20Interface(SwapLiquidity).transfer(recipient, amount);
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastTradingFeeDistributionSwap = now;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    AxiaVault
+Line:        60
+Source: 
+>     function distributeORACLE(address recipient, uint256 amount) external {
+>         uint256 TokenBalance = ERC20Interface(OracleLiquidty).balanceOf(address(this));
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(amount <= (TokenBalance / 10), "Amount is higher than 10% of OracleLiquidty vault balance"); // Max 10%
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    AxiaVault
+Line:        64
+Source: 
+>         require(msg.sender == owner, "No Authorization");
+>                ERC20Interface(OracleLiquidty).transfer(recipient, amount);
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastTradingFeeDistributionOracle = now;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    AxiaVault
+Line:        69
+Source: 
+>     function distributeDEFI(address recipient, uint256 amount) external {
+>         uint256 TokenBalance = ERC20Interface(DefiLiquidity).balanceOf(address(this));
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(amount <= (TokenBalance / 10), "Amount is higher than 10% of DefiLiquidity vault balance"); // Max 10%
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    AxiaVault
+Line:        73
+Source: 
+>         require(msg.sender == owner, "No Authorization");
+>                ERC20Interface(DefiLiquidity).transfer(recipient, amount);
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastTradingFeeDistributionDefi = now;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    AxiaVault
+Line:        24
+Source: 
+>     
+>     address public AXIA;
+>     ^^^^^^^^^^^^^^^^^^^
+>     address public SwapLiquidity;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    AxiaVault
+Line:        25
+Source: 
+>     address public AXIA;
+>     address public SwapLiquidity;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address public OracleLiquidty;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    AxiaVault
+Line:        26
+Source: 
+>     address public SwapLiquidity;
+>     address public OracleLiquidty;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address public DefiLiquidity;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    AxiaVault
+Line:        27
+Source: 
+>     address public OracleLiquidty;
+>     address public DefiLiquidity;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    AxiaVault
+Line:        42
+Source: 
+>     function distributeAXIA(address recipient, uint256 amount) external {
+>         uint256 TokenBalance = ERC20Interface(AXIA).balanceOf(address(this));
+>         ^^^^^^^^^^^^^^^^^^^^
+>         require(amount <= (TokenBalance / 10), "Amount is higher than 1% of AXIA vault balance"); // Max 1%
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    AxiaVault
+Line:        51
+Source: 
+>     function distributeSWAP(address recipient, uint256 amount) external {
+>         uint256 TokenBalance = ERC20Interface(SwapLiquidity).balanceOf(address(this));
+>         ^^^^^^^^^^^^^^^^^^^^
+>         require(amount <= (TokenBalance / 10), "Amount is higher than 10% of SwapLiquidity vault balance"); // Max 10%
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    AxiaVault
+Line:        60
+Source: 
+>     function distributeORACLE(address recipient, uint256 amount) external {
+>         uint256 TokenBalance = ERC20Interface(OracleLiquidty).balanceOf(address(this));
+>         ^^^^^^^^^^^^^^^^^^^^
+>         require(amount <= (TokenBalance / 10), "Amount is higher than 10% of OracleLiquidty vault balance"); // Max 10%
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    AxiaVault
+Line:        69
+Source: 
+>     function distributeDEFI(address recipient, uint256 amount) external {
+>         uint256 TokenBalance = ERC20Interface(DefiLiquidity).balanceOf(address(this));
+>         ^^^^^^^^^^^^^^^^^^^^
+>         require(amount <= (TokenBalance / 10), "Amount is higher than 10% of DefiLiquidity vault balance"); // Max 10%
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    AxiaVault
+Line:        96
+Source: 
+>         
+>         uint256 TokenBalance = ERC20Interface(AXIA).balanceOf(address(this));
+>         ^^^^^^^^^^^^^^^^^^^^
+>         uint256 TokenBalanceSwap = ERC20Interface(SwapLiquidity).balanceOf(address(this));
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    AxiaVault
+Line:        97
+Source: 
+>         uint256 TokenBalance = ERC20Interface(AXIA).balanceOf(address(this));
+>         uint256 TokenBalanceSwap = ERC20Interface(SwapLiquidity).balanceOf(address(this));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint256 TokenBalanceOracle = ERC20Interface(OracleLiquidty).balanceOf(address(this));
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    AxiaVault
+Line:        98
+Source: 
+>         uint256 TokenBalanceSwap = ERC20Interface(SwapLiquidity).balanceOf(address(this));
+>         uint256 TokenBalanceOracle = ERC20Interface(OracleLiquidty).balanceOf(address(this));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint256 TokenBalanceDefi = ERC20Interface(DefiLiquidity).balanceOf(address(this));
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    AxiaVault
+Line:        99
+Source: 
+>         uint256 TokenBalanceOracle = ERC20Interface(OracleLiquidty).balanceOf(address(this));
+>         uint256 TokenBalanceDefi = ERC20Interface(DefiLiquidity).balanceOf(address(this));
+>         ^^^^^^^^^^^^^^^^^^^^^^^^
+>         
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    AxiaVault
+Line:        29
+Source: 
+>     
+>     address owner = msg.sender;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public lastTradingFeeDistributionAxia;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    AxiaVault
+Line:        42
+Source: 
+>     function distributeAXIA(address recipient, uint256 amount) external {
+>         uint256 TokenBalance = ERC20Interface(AXIA).balanceOf(address(this));
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(amount <= (TokenBalance / 10), "Amount is higher than 1% of AXIA vault balance"); // Max 1%
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    AxiaVault
+Line:        51
+Source: 
+>     function distributeSWAP(address recipient, uint256 amount) external {
+>         uint256 TokenBalance = ERC20Interface(SwapLiquidity).balanceOf(address(this));
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(amount <= (TokenBalance / 10), "Amount is higher than 10% of SwapLiquidity vault balance"); // Max 10%
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    AxiaVault
+Line:        60
+Source: 
+>     function distributeORACLE(address recipient, uint256 amount) external {
+>         uint256 TokenBalance = ERC20Interface(OracleLiquidty).balanceOf(address(this));
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(amount <= (TokenBalance / 10), "Amount is higher than 10% of OracleLiquidty vault balance"); // Max 10%
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    AxiaVault
+Line:        69
+Source: 
+>     function distributeDEFI(address recipient, uint256 amount) external {
+>         uint256 TokenBalance = ERC20Interface(DefiLiquidity).balanceOf(address(this));
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(amount <= (TokenBalance / 10), "Amount is higher than 10% of DefiLiquidity vault balance"); // Max 10%
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    AxiaVault
+Line:        96
+Source: 
+>         
+>         uint256 TokenBalance = ERC20Interface(AXIA).balanceOf(address(this));
+>                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint256 TokenBalanceSwap = ERC20Interface(SwapLiquidity).balanceOf(address(this));
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    AxiaVault
+Line:        97
+Source: 
+>         uint256 TokenBalance = ERC20Interface(AXIA).balanceOf(address(this));
+>         uint256 TokenBalanceSwap = ERC20Interface(SwapLiquidity).balanceOf(address(this));
+>                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint256 TokenBalanceOracle = ERC20Interface(OracleLiquidty).balanceOf(address(this));
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    AxiaVault
+Line:        98
+Source: 
+>         uint256 TokenBalanceSwap = ERC20Interface(SwapLiquidity).balanceOf(address(this));
+>         uint256 TokenBalanceOracle = ERC20Interface(OracleLiquidty).balanceOf(address(this));
+>                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint256 TokenBalanceDefi = ERC20Interface(DefiLiquidity).balanceOf(address(this));
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    AxiaVault
+Line:        99
+Source: 
+>         uint256 TokenBalanceOracle = ERC20Interface(OracleLiquidty).balanceOf(address(this));
+>         uint256 TokenBalanceDefi = ERC20Interface(DefiLiquidity).balanceOf(address(this));
+>                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    AxiaVault
+Line:        46
+Source: 
+>         require(msg.sender == owner, "No Authorization");
+>                ERC20Interface(AXIA).transfer(recipient, amount);
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastTradingFeeDistributionAxia = now;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    AxiaVault
+Line:        55
+Source: 
+>         require(msg.sender == owner, "No Authorization");
+>                ERC20Interface(SwapLiquidity).transfer(recipient, amount);
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastTradingFeeDistributionSwap = now;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    AxiaVault
+Line:        64
+Source: 
+>         require(msg.sender == owner, "No Authorization");
+>                ERC20Interface(OracleLiquidty).transfer(recipient, amount);
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastTradingFeeDistributionOracle = now;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    AxiaVault
+Line:        73
+Source: 
+>         require(msg.sender == owner, "No Authorization");
+>                ERC20Interface(DefiLiquidity).transfer(recipient, amount);
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastTradingFeeDistributionDefi = now;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    AxiaVault
+Line:        101
+Source: 
+>         
+>         ERC20Interface(AXIA).transfer(migrationRecipient, TokenBalance);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         ERC20Interface(SwapLiquidity).transfer(migrationRecipient, TokenBalanceSwap);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    AxiaVault
+Line:        102
+Source: 
+>         ERC20Interface(AXIA).transfer(migrationRecipient, TokenBalance);
+>         ERC20Interface(SwapLiquidity).transfer(migrationRecipient, TokenBalanceSwap);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         ERC20Interface(OracleLiquidty).transfer(migrationRecipient, TokenBalanceOracle);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    AxiaVault
+Line:        103
+Source: 
+>         ERC20Interface(SwapLiquidity).transfer(migrationRecipient, TokenBalanceSwap);
+>         ERC20Interface(OracleLiquidty).transfer(migrationRecipient, TokenBalanceOracle);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         ERC20Interface(DefiLiquidity).transfer(migrationRecipient, TokenBalanceDefi);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    AxiaVault
+Line:        104
+Source: 
+>         ERC20Interface(OracleLiquidty).transfer(migrationRecipient, TokenBalanceOracle);
+>         ERC20Interface(DefiLiquidity).transfer(migrationRecipient, TokenBalanceDefi);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    AxiaVault
+Line:        24
+Source: 
+>     
+>     address public AXIA;
+>     ^^^^^^^^^^^^^^^^^^^
+>     address public SwapLiquidity;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    AxiaVault
+Line:        25
+Source: 
+>     address public AXIA;
+>     address public SwapLiquidity;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address public OracleLiquidty;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    AxiaVault
+Line:        26
+Source: 
+>     address public SwapLiquidity;
+>     address public OracleLiquidty;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address public DefiLiquidity;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    AxiaVault
+Line:        27
+Source: 
+>     address public OracleLiquidty;
+>     address public DefiLiquidity;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    AxiaVault
+Line:        30
+Source: 
+>     address owner = msg.sender;
+>     uint256 public lastTradingFeeDistributionAxia;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public lastTradingFeeDistributionSwap;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    AxiaVault
+Line:        31
+Source: 
+>     uint256 public lastTradingFeeDistributionAxia;
+>     uint256 public lastTradingFeeDistributionSwap;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public lastTradingFeeDistributionOracle;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    AxiaVault
+Line:        32
+Source: 
+>     uint256 public lastTradingFeeDistributionSwap;
+>     uint256 public lastTradingFeeDistributionOracle;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public lastTradingFeeDistributionDefi;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    AxiaVault
+Line:        33
+Source: 
+>     uint256 public lastTradingFeeDistributionOracle;
+>     uint256 public lastTradingFeeDistributionDefi;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    AxiaVault
+Line:        35
+Source: 
+>     
+>     uint256 public migrationLock;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address public migrationRecipient;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    AxiaVault
+Line:        36
+Source: 
+>     uint256 public migrationLock;
+>     address public migrationRecipient;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    AxiaVault
+Line:        46
+Source: 
+>         require(msg.sender == owner, "No Authorization");
+>                ERC20Interface(AXIA).transfer(recipient, amount);
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastTradingFeeDistributionAxia = now;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    AxiaVault
+Line:        55
+Source: 
+>         require(msg.sender == owner, "No Authorization");
+>                ERC20Interface(SwapLiquidity).transfer(recipient, amount);
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastTradingFeeDistributionSwap = now;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    AxiaVault
+Line:        64
+Source: 
+>         require(msg.sender == owner, "No Authorization");
+>                ERC20Interface(OracleLiquidty).transfer(recipient, amount);
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastTradingFeeDistributionOracle = now;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    AxiaVault
+Line:        73
+Source: 
+>         require(msg.sender == owner, "No Authorization");
+>                ERC20Interface(DefiLiquidity).transfer(recipient, amount);
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lastTradingFeeDistributionDefi = now;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    AxiaVault
+Line:        101
+Source: 
+>         
+>         ERC20Interface(AXIA).transfer(migrationRecipient, TokenBalance);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         ERC20Interface(SwapLiquidity).transfer(migrationRecipient, TokenBalanceSwap);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    AxiaVault
+Line:        102
+Source: 
+>         ERC20Interface(AXIA).transfer(migrationRecipient, TokenBalance);
+>         ERC20Interface(SwapLiquidity).transfer(migrationRecipient, TokenBalanceSwap);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         ERC20Interface(OracleLiquidty).transfer(migrationRecipient, TokenBalanceOracle);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    AxiaVault
+Line:        103
+Source: 
+>         ERC20Interface(SwapLiquidity).transfer(migrationRecipient, TokenBalanceSwap);
+>         ERC20Interface(OracleLiquidty).transfer(migrationRecipient, TokenBalanceOracle);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         ERC20Interface(DefiLiquidity).transfer(migrationRecipient, TokenBalanceDefi);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    AxiaVault
+Line:        104
+Source: 
+>         ERC20Interface(OracleLiquidty).transfer(migrationRecipient, TokenBalanceOracle);
+>         ERC20Interface(DefiLiquidity).transfer(migrationRecipient, TokenBalanceDefi);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         
+
+[0m

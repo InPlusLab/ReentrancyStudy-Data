@@ -1,0 +1,243 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Bounty0xStaking
+Function name: stakeToMany(uint256[],uint256[])
+PC address: 503
+Estimated Gas Usage: 8793 - 36417
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/15ce749aa8fb0f3c17ba2761a6f26bac.sol:229
+
+ts[j]);
+        }
+        require(balances[msg.sender] >= totalAmount);
+        balances[msg.sender] = SafeMath.sub(balances[msg.sender], totalAmount);
+
+        for (uint i = 0; i < _submissionIds.length; i++) {
+            stakes[_submissionIds[i]][msg.sender] = SafeMath.add(stakes[_submissionIds[i]][msg.sender], _amounts[i]);
+
+            emit Stake(_submissionIds[i], msg.sender, _amounts[i]);
+        }
+    }
+
+
+    function releaseStake(uint _submissionId, address _from, address _to, uint _amount) public onlyOwner {
+        require(stakes[_submissionId][_from] >= _amount);
+
+        stakes[_submissionId][_from] = SafeMath.sub(stakes[_submissio
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8801, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: stakeToMany(uint256[],uint256[]), txdata: 0x97e8e520ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc80, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Bounty0xStaking
+Function name: releaseManyStakes(uint256[],address[],address[],uint256[])
+PC address: 726
+Estimated Gas Usage: 2075 - 13499
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/15ce749aa8fb0f3c17ba2761a6f26bac.sol:254
+
+missionIds.length == _amounts.length);
+
+        for (uint i = 0; i < _submissionIds.length; i++) {
+            require(stakes[_submissionIds[i]][_from[i]] >= _amounts[i]);
+            stakes[_submissionIds[i]][_from[i]] = SafeMath.sub(stakes[_submissionIds[i]][_from[i]], _amounts[i]);
+            balances[_to[i]] = SafeMath.add(balances[_to[i]], _amounts[i]);
+
+            emit StakeReleased(_submissionIds[i], _from[i], _to[i], _amounts[i]);
+        }
+    }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: releaseManyStakes(uint256[],address[],address[],uint256[]), txdata: 0xdc5fe349ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc0000000000000000000000000000000000000000000000000000000000000217400000000000000000000000000000000000000000000000000000000000002b40, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Bounty0xStaking
+Function name: withdraw(uint256)
+PC address: 1252
+Estimated Gas Usage: 12206 - 70095
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/15ce749aa8fb0f3c17ba2761a6f26bac.sol:219
+
+ require(balances[msg.sender] >= _amount);
+       
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1010c00000e1fb8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: withdraw(uint256), txdata: 0x2e1a7d4d, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Bounty0xStaking
+Function name: withdraw(uint256)
+PC address: 1333
+Estimated Gas Usage: 12206 - 70095
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/15ce749aa8fb0f3c17ba2761a6f26bac.sol:220
+
+.sender], _amount);
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1400000020e3f88, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 020202020202020202020202deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: withdraw(uint256), txdata: 0x2e1a7d4d, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Bounty0xStaking
+Function name: stakeToMany(uint256[],uint256[])
+PC address: 2234
+Estimated Gas Usage: 9686 - 38350
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/15ce749aa8fb0f3c17ba2761a6f26bac.sol:243
+
+bmissionId]
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000042022022, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: stakeToMany(uint256[],uint256[]), txdata: 0x97e8e520800000000000000000000000000000000000000000000000000000000000000040, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Bounty0xStaking
+Function name: deposit(uint256)
+PC address: 2613
+Estimated Gas Usage: 10613 - 67887
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/15ce749aa8fb0f3c17ba2761a6f26bac.sol:206
+
+);
+    }
+
+    function withdraw(uint _amount) public whenNot
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: c2c2c2c2c2c2c2c2c2c2c2c2deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: deposit(uint256), txdata: 0xb6b55f25, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Bounty0xStaking
+Function name: deposit(uint256)
+PC address: 2690
+Estimated Gas Usage: 10613 - 67887
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/15ce749aa8fb0f3c17ba2761a6f26bac.sol:210
+
+ _amount);
+        b
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 121212121212121212121212deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: deposit(uint256), txdata: 0xb6b55f25, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Bounty0xStaking
+Function name: deposit(uint256)
+PC address: 2731
+Estimated Gas Usage: 10613 - 67887
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/15ce749aa8fb0f3c17ba2761a6f26bac.sol:210
+
+     require(balances[msg.sender] >= _amount);
+        balances[ms
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 121212121212121212121212deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: deposit(uint256), txdata: 0xb6b55f25, value: 0x0
+
+

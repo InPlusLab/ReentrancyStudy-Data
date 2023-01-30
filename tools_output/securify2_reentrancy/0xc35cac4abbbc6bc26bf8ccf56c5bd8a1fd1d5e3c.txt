@@ -1,0 +1,419 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    MyEthDice
+Line:        61
+Source: 
+>     
+>     function setLeverage(uint _leverage) public onlyOwner {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         leverage = _leverage;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    MyEthDice
+Line:        73
+Source: 
+> 
+>     function kill() public onlyOwner {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require (lockedFunds == 0, "Still bets locked up.");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    MyEthDice
+Line:        53
+Source: 
+> 
+>     function setSettler(address newSettler) external onlyOwner {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         settler = newSettler;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    MyEthDice
+Line:        61
+Source: 
+>     
+>     function setLeverage(uint _leverage) public onlyOwner {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         leverage = _leverage;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    MyEthDice
+Line:        66
+Source: 
+> 
+>     function withdrawFunds(address payable receiver, uint withdrawAmount) external onlyOwner {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require (withdrawAmount <= address(this).balance, "amount larger than balance.");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    MyEthDice
+Line:        78
+Source: 
+>     
+>     function placeBet(bytes32 playerSeed, bytes32 seedHash, uint target) external payable {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(target > 0 && target <= 100, "target out of range"); 
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    MyEthDice
+Line:        58
+Source: 
+>     function updateMaxProfit() private {
+>       maxProfit = ((address(this).balance - lockedFunds) / 100) * leverage;
+>                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    MyEthDice
+Line:        84
+Source: 
+> 
+>         uint payout = (betAmount - (betAmount / 100)) * 100 / target;  //TODO this is different from dice2win
+>                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require (payout <= betAmount + maxProfit, "Payout is more than max allowed profit.");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    MyEthDice
+Line:        115
+Source: 
+>          uint target = bet.target;
+>          uint payout = (amount - (amount / 100)) * 100 / target;
+>                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>          
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Warning
+Contract:    MyEthDice
+Line:        121
+Source: 
+>          if(bet.roll < bet.target) {
+>           if (!bet.player.send(payout)) {
+>                ^^^^^^^^^^^^^^^^^^^^^^^
+>             emit FailedPayment(bet.player, payout, bet.seedHash);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        5
+Source: 
+> 
+> pragma solidity >=0.4.22 <0.7.0;
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    MyEthDice
+Line:        24
+Source: 
+>     
+>     mapping (uint => Bet) bets;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Warning
+Contract:    MyEthDice
+Line:        69
+Source: 
+>         require (lockedFunds + withdrawAmount <= address(this).balance, "Too much locked up");
+>         receiver.send(withdrawAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         updateMaxProfit();
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    MyEthDice
+Line:        121
+Source: 
+>          if(bet.roll < bet.target) {
+>           if (!bet.player.send(payout)) {
+>                ^^^^^^^^^^^^^^^^^^^^^^^
+>             emit FailedPayment(bet.player, payout, bet.seedHash);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Warning
+Contract:    MyEthDice
+Line:        69
+Source: 
+>         require (lockedFunds + withdrawAmount <= address(this).balance, "Too much locked up");
+>         receiver.send(withdrawAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         updateMaxProfit();
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    MyEthDice
+Line:        121
+Source: 
+>          if(bet.roll < bet.target) {
+>           if (!bet.player.send(payout)) {
+>                ^^^^^^^^^^^^^^^^^^^^^^^
+>             emit FailedPayment(bet.player, payout, bet.seedHash);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    MyEthDice
+Line:        69
+Source: 
+>         require (lockedFunds + withdrawAmount <= address(this).balance, "Too much locked up");
+>         receiver.send(withdrawAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         updateMaxProfit();
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    MyEthDice
+Line:        121
+Source: 
+>          if(bet.roll < bet.target) {
+>           if (!bet.player.send(payout)) {
+>                ^^^^^^^^^^^^^^^^^^^^^^^
+>             emit FailedPayment(bet.player, payout, bet.seedHash);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    MyEthDice
+Line:        69
+Source: 
+>         require (lockedFunds + withdrawAmount <= address(this).balance, "Too much locked up");
+>         receiver.send(withdrawAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         updateMaxProfit();
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    MyEthDice
+Line:        26
+Source: 
+>     
+>     uint public maxProfit;
+>     ^^^^^^^^^^^^^^^^^^^^^
+>     uint128 private lockedFunds;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    MyEthDice
+Line:        27
+Source: 
+>     uint public maxProfit;
+>     uint128 private lockedFunds;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint private leverage = 3;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    MyEthDice
+Line:        58
+Source: 
+>     function updateMaxProfit() private {
+>       maxProfit = ((address(this).balance - lockedFunds) / 100) * leverage;
+>       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    MyEthDice
+Line:        87
+Source: 
+> 
+>         lockedFunds += uint128(payout);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require (lockedFunds <= address(this).balance, "Cannot take bet.");
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    MyEthDice
+Line:        95
+Source: 
+>     
+>         bet.seedHash = seedHash;
+>         ^^^^^^^^^^^^^^^^^^^^^^^
+>         bet.amount = betAmount;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    MyEthDice
+Line:        96
+Source: 
+>         bet.seedHash = seedHash;
+>         bet.amount = betAmount;
+>         ^^^^^^^^^^^^^^^^^^^^^^
+>         bet.player = msg.sender;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    MyEthDice
+Line:        97
+Source: 
+>         bet.amount = betAmount;
+>         bet.player = msg.sender;
+>         ^^^^^^^^^^^^^^^^^^^^^^^
+>         bet.playerSeed = playerSeed;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    MyEthDice
+Line:        98
+Source: 
+>         bet.player = msg.sender;
+>         bet.playerSeed = playerSeed;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         bet.target = target;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    MyEthDice
+Line:        99
+Source: 
+>         bet.playerSeed = playerSeed;
+>         bet.target = target;
+>         ^^^^^^^^^^^^^^^^^^^
+>         bet.settled = false;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    MyEthDice
+Line:        100
+Source: 
+>         bet.target = target;
+>         bet.settled = false;
+>         ^^^^^^^^^^^^^^^^^^^
+>         
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    MyEthDice
+Line:        69
+Source: 
+>         require (lockedFunds + withdrawAmount <= address(this).balance, "Too much locked up");
+>         receiver.send(withdrawAmount);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         updateMaxProfit();
+
+[0m

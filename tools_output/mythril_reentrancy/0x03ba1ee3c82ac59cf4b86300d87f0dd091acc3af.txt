@@ -1,0 +1,58 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MultiWhitelist
+Function name: multisetUserCategory(address[],uint256,address)
+PC address: 677
+Estimated Gas Usage: 3055 - 40910
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/9e6c2b4e622847eb6689c86d50f90d6f.sol:24
+
+egory(users[i],category);
+        }
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20c10400000a0080, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0f0f0f0f0f0f0f0f0f0f0f0faaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+Caller: [SOMEGUY], function: multisetUserCategory(address[],uint256,address), txdata: 0x48bfe40f8004010814082400110082c000100800e00000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000004, value: 0x0
+Caller: [SOMEGUY], function: multisetUserCategory(address[],uint256,address), txdata: 0x48bfe40f7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdd0000000000000000000000000000000000000000000000000000000000000004101010101010101010101010deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: MultiWhitelist
+Function name: multisetUserCategory(address[],uint256,address)
+PC address: 677
+Estimated Gas Usage: 4766 - 77371
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/9e6c2b4e622847eb6689c86d50f90d6f.sol:24
+
+egory(users[i],category);
+        }
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 484848484848484848484848aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x0
+Caller: [SOMEGUY], function: multisetUserCategory(address[],uint256,address), txdata: 0x48bfe40ffffffffffffffffffffffffffffffffffffffffffffca000000000004000001a0000000000000000000000000000000000000000000000000000000000000004, value: 0x0

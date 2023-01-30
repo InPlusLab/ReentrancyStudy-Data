@@ -1,0 +1,329 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    ERC20AtomicSwapper
+Line:        83
+Source: 
+>     /// @param _bep2Amount BEP2 asset to swap in.
+>     function htlt(
+>     ^^^^^^^^^^^^^^
+>         bytes32 _randomNumberHash,
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    ERC20AtomicSwapper
+Line:        179
+Source: 
+>     /// @param _swapID The hash of randomNumberHash, swap creator and swap recipient
+>     function queryOpenSwap(bytes32 _swapID) external view returns(bytes32 _randomNumberHash, uint64 _timestamp, uint256 _expireHeight, uint256 _outAmount, address _sender, address _recipient) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         Swap memory swap = swaps[_swapID];
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    ERC20AtomicSwapper
+Line:        194
+Source: 
+>     /// @param _swapID The hash of randomNumberHash, swap creator and swap recipient
+>     function isSwapExist(bytes32 _swapID) external view returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return (swapStates[_swapID] != States.INVALID);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    ERC20AtomicSwapper
+Line:        201
+Source: 
+>     /// @param _swapID The hash of randomNumberHash, swap creator and swap recipient
+>     function refundable(bytes32 _swapID) external view returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return (block.number >= swaps[_swapID].expireHeight && swapStates[_swapID] == States.OPEN);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    ERC20AtomicSwapper
+Line:        208
+Source: 
+>     /// @param _swapID The hash of randomNumberHash, swap creator and swap recipient
+>     function claimable(bytes32 _swapID) external view returns (bool) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return (block.number < swaps[_swapID].expireHeight && swapStates[_swapID] == States.OPEN);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    ERC20AtomicSwapper
+Line:        217
+Source: 
+>     /// @param _bep2SenderAddr The sender of swap on Binance Chain.
+>     function calSwapID(bytes32 _randomNumberHash, address _swapSender, bytes20 _bep2SenderAddr) public pure returns (bytes32) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         if (_bep2SenderAddr == bytes20(0)) {
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    ERC20AtomicSwapper
+Line:        115
+Source: 
+>         // Transfer ERC20 token to the swap contract
+>         require(ERC20(ERC20ContractAddr).transferFrom(msg.sender, address(this), _outAmount), "failed to transfer client asset to swap contract address");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    ERC20AtomicSwapper
+Line:        146
+Source: 
+>         // Pay erc20 token to recipient
+>         require(ERC20(ERC20ContractAddr).transfer(recipientAddr, outAmount), "Failed to transfer locked asset to recipient");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    ERC20AtomicSwapper
+Line:        168
+Source: 
+>         // refund erc20 token to swap creator
+>         require(ERC20(ERC20ContractAddr).transfer(swapSender, outAmount), "Failed to transfer locked asset back to swap creator");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    ERC20AtomicSwapper
+Line:        43
+Source: 
+> 
+>     address public ERC20ContractAddr;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    ERC20AtomicSwapper
+Line:        46
+Source: 
+>     /// @notice Throws if the swap is not open.
+>     modifier onlyOpenSwaps(bytes32 _swapID) {
+>                            ^^^^^^^^^^^^^^^
+>         require(swapStates[_swapID] == States.OPEN, "swap is not opened");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    ERC20AtomicSwapper
+Line:        52
+Source: 
+>     /// @notice Throws if the swap is already expired.
+>     modifier onlyAfterExpireHeight(bytes32 _swapID) {
+>                                    ^^^^^^^^^^^^^^^
+>         require(block.number >= swaps[_swapID].expireHeight, "swap is not expired");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    ERC20AtomicSwapper
+Line:        58
+Source: 
+>     /// @notice Throws if the expireHeight is reached
+>     modifier onlyBeforeExpireHeight(bytes32 _swapID) {
+>                                     ^^^^^^^^^^^^^^^
+>         require(block.number < swaps[_swapID].expireHeight, "swap is already expired");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    ERC20AtomicSwapper
+Line:        64
+Source: 
+>     /// @notice Throws if the random number is not valid.
+>     modifier onlyWithRandomNumber(bytes32 _swapID, bytes32 _randomNumber) {
+>                                   ^^^^^^^^^^^^^^^
+>         require(swaps[_swapID].randomNumberHash == sha256(abi.encodePacked(_randomNumber, swaps[_swapID].timestamp)), "invalid randomNumber");
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    ERC20AtomicSwapper
+Line:        64
+Source: 
+>     /// @notice Throws if the random number is not valid.
+>     modifier onlyWithRandomNumber(bytes32 _swapID, bytes32 _randomNumber) {
+>                                                    ^^^^^^^^^^^^^^^^^^^^^
+>         require(swaps[_swapID].randomNumberHash == sha256(abi.encodePacked(_randomNumber, swaps[_swapID].timestamp)), "invalid randomNumber");
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    ERC20AtomicSwapper
+Line:        115
+Source: 
+>         // Transfer ERC20 token to the swap contract
+>         require(ERC20(ERC20ContractAddr).transferFrom(msg.sender, address(this), _outAmount), "failed to transfer client asset to swap contract address");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    ERC20AtomicSwapper
+Line:        146
+Source: 
+>         // Pay erc20 token to recipient
+>         require(ERC20(ERC20ContractAddr).transfer(recipientAddr, outAmount), "Failed to transfer locked asset to recipient");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    ERC20AtomicSwapper
+Line:        168
+Source: 
+>         // refund erc20 token to swap creator
+>         require(ERC20(ERC20ContractAddr).transfer(swapSender, outAmount), "Failed to transfer locked asset back to swap creator");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ERC20AtomicSwapper
+Line:        111
+Source: 
+> 
+>         swaps[swapID] = swap;
+>         ^^^^^^^^^^^^^^^^^^^^
+>         swapStates[swapID] = States.OPEN;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    ERC20AtomicSwapper
+Line:        112
+Source: 
+>         swaps[swapID] = swap;
+>         swapStates[swapID] = States.OPEN;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    ERC20AtomicSwapper
+Line:        137
+Source: 
+>         // Complete the swap.
+>         swapStates[_swapID] = States.COMPLETED;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    ERC20AtomicSwapper
+Line:        143
+Source: 
+>         // delete closed swap
+>         delete swaps[_swapID];
+>         ^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    ERC20AtomicSwapper
+Line:        159
+Source: 
+>         // Expire the swap.
+>         swapStates[_swapID] = States.EXPIRED;
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    ERC20AtomicSwapper
+Line:        165
+Source: 
+>         // delete closed swap
+>         delete swaps[_swapID];
+>         ^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m

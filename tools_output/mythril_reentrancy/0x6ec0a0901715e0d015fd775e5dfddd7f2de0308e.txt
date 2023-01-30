@@ -1,0 +1,47 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: BLOCKMALL
+Function name: transferFrom(address,address,uint256) or transferFrom(address,address,uint256) or transferFrom(address,address,uint256)
+PC address: 2253
+Estimated Gas Usage: 26231 - 89234
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/cab324e37f3a096657d6c62212ba3512.sol:83
+
+    assert(balances[_from] + balance
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x120040b8040042b02, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transferFrom(address,address,uint256), txdata: 0x23b872dd000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe000000000000000000000000804000010020800810400804040020010400000000000000000000000000000000000000000000000008, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BLOCKMALL
+Function name: approveAndCall(address,uint256,bytes)
+PC address: 3806
+Estimated Gas Usage: 9569 - 69285
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/cab324e37f3a096657d6c62212ba3512.sol:137
+Initial State:
+
+Account: [CREATOR], balance: 0x80000010101, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: approveAndCall(address,uint256,bytes), txdata: 0xcae9ca51000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000080080000080, value: 0x0

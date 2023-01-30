@@ -1,0 +1,2133 @@
+/**
+ *Submitted for verification at Etherscan.io on 2019-10-07
+*/
+
+pragma solidity 0.4.26;
+
+// File: contracts/ContractIds.sol
+
+/**
+  * @dev Id definitions for bancor contracts
+  * 
+  * Can be used in conjunction with the contract registry to get contract addresses
+*/
+contract ContractIds {
+    // generic
+    bytes32 public constant CONTRACT_FEATURES = "ContractFeatures";
+    bytes32 public constant CONTRACT_REGISTRY = "ContractRegistry";
+    bytes32 public constant NON_STANDARD_TOKEN_REGISTRY = "NonStandardTokenRegistry";
+
+    // bancor logic
+    bytes32 public constant BANCOR_NETWORK = "BancorNetwork";
+    bytes32 public constant BANCOR_FORMULA = "BancorFormula";
+    bytes32 public constant BANCOR_GAS_PRICE_LIMIT = "BancorGasPriceLimit";
+    bytes32 public constant BANCOR_CONVERTER_UPGRADER = "BancorConverterUpgrader";
+    bytes32 public constant BANCOR_CONVERTER_FACTORY = "BancorConverterFactory";
+
+    // BNT core
+    bytes32 public constant BNT_TOKEN = "BNTToken";
+    bytes32 public constant BNT_CONVERTER = "BNTConverter";
+
+    // BancorX
+    bytes32 public constant BANCOR_X = "BancorX";
+    bytes32 public constant BANCOR_X_UPGRADER = "BancorXUpgrader";
+}
+
+// File: contracts/utility/Utils.sol
+
+/**
+  * @dev Utilities & Common Modifiers
+*/
+contract Utils {
+    /**
+      * constructor
+    */
+    constructor() public {
+    }
+
+    // verifies that an amount is greater than zero
+    modifier greaterThanZero(uint256 _amount) {
+        require(_amount > 0);
+        _;
+    }
+
+    // validates an address - currently only checks that it isn't null
+    modifier validAddress(address _address) {
+        require(_address != address(0));
+        _;
+    }
+
+    // verifies that the address is different than this contract address
+    modifier notThis(address _address) {
+        require(_address != address(this));
+        _;
+    }
+
+}
+
+// File: contracts/utility/interfaces/IOwned.sol
+
+/*
+    Owned contract interface
+*/
+contract IOwned {
+    // this function isn't abstract since the compiler emits automatically generated getter functions as external
+    function owner() public view returns (address) {}
+
+    function transferOwnership(address _newOwner) public;
+    function acceptOwnership() public;
+}
+
+// File: contracts/utility/Owned.sol
+
+/**
+  * @dev Provides support and utilities for contract ownership
+*/
+contract Owned is IOwned {
+    address public owner;
+    address public newOwner;
+
+    /**
+      * @dev triggered when the owner is updated
+      * 
+      * @param _prevOwner previous owner
+      * @param _newOwner  new owner
+    */
+    event OwnerUpdate(address indexed _prevOwner, address indexed _newOwner);
+
+    /**
+      * @dev initializes a new Owned instance
+    */
+    constructor() public {
+        owner = msg.sender;
+    }
+
+    // allows execution by the owner only
+    modifier ownerOnly {
+        require(msg.sender == owner);
+        _;
+    }
+
+    /**
+      * @dev allows transferring the contract ownership
+      * the new owner still needs to accept the transfer
+      * can only be called by the contract owner
+      * 
+      * @param _newOwner    new contract owner
+    */
+    function transferOwnership(address _newOwner) public ownerOnly {
+        require(_newOwner != owner);
+        newOwner = _newOwner;
+    }
+
+    /**
+      * @dev used by a new owner to accept an ownership transfer
+    */
+    function acceptOwnership() public {
+        require(msg.sender == newOwner);
+        emit OwnerUpdate(owner, newOwner);
+        owner = newOwner;
+        newOwner = address(0);
+    }
+}
+
+// File: contracts/BancorConverterRegistry.sol
+
+/**
+  * @dev Bancor Converter Registry
+  * 
+  * The Bancor Converter Registry keeps converter addresses by token addresses and vice versa. The owner can update converter addresses so that the token address always points to the updated list of converters for each token. 
+  * 
+  * The contract is also able to iterate through all the tokens in the network. 
+  * 
+  * Note that converter addresses for each token are returned in ascending order (from oldest to newest).
+  * 
+*/
+contract BancorConverterRegistry is Owned, Utils {
+    mapping (address => address[]) private tokensToConverters;  // token address -> converter addresses
+    mapping (address => address) private convertersToTokens;    // converter address -> token address
+    address[] public tokens;                                    // list of all token addresses
+
+    struct TokenInfo {
+        bool valid;
+        uint256 index;
+    }
+
+    mapping(address => TokenInfo) public tokenTable;
+
+    /**
+      * @dev triggered when a converter is added to the registry
+      * 
+      * @param _token   token
+      * @param _address converter
+    */
+    event ConverterAddition(address indexed _token, address _address);
+
+    /**
+      * @dev triggered when a converter is removed from the registry
+      * 
+      * @param _token   token
+      * @param _address converter
+    */
+    event ConverterRemoval(address indexed _token, address _address);
+
+    /**
+      * @dev initializes a new BancorConverterRegistry instance
+    */
+    constructor() public {
+    }
+
+    /**
+      * @dev returns the number of tokens in the registry
+      * 
+      * @return number of tokens
+    */
+    function tokenCount() public view returns (uint256) {
+        return tokens.length;
+    }
+
+    /**
+      * @dev returns the number of converters associated with the given token
+      * or 0 if the token isn't registered
+      * 
+      * @param _token   token address
+      * 
+      * @return number of converters
+    */
+    function converterCount(address _token) public view returns (uint256) {
+        return tokensToConverters[_token].length;
+    }
+
+    /**
+      * @dev returns the converter address associated with the given token
+      * or zero address if no such converter exists
+      * 
+      * @param _token   token address
+      * @param _index   converter index
+      * 
+      * @return converter address
+    */
+    function converterAddress(address _token, uint32 _index) public view returns (address) {
+        if (tokensToConverters[_token].length > _index)
+            return tokensToConverters[_token][_index];
+
+        return address(0);
+    }
+
+    /**
+      * @dev returns the latest converter address associated with the given token
+      * or zero address if no such converter exists
+      * 
+      * @param _token   token address
+      * 
+      * @return latest converter address
+    */
+    function latestConverterAddress(address _token) public view returns (address) {
+        if (tokensToConverters[_token].length > 0)
+            return tokensToConverters[_token][tokensToConverters[_token].length - 1];
+
+        return address(0);
+    }
+
+    /**
+      * @dev returns the token address associated with the given converter
+      * or zero address if no such converter exists
+      * 
+      * @param _converter   converter address
+      * 
+      * @return token address
+    */
+    function tokenAddress(address _converter) public view returns (address) {
+        return convertersToTokens[_converter];
+    }
+
+    /**
+      * @dev adds a new converter address for a given token to the registry
+      * throws if the converter is already registered
+      * 
+      * @param _token       token address
+      * @param _converter   converter address
+    */
+    function registerConverter(address _token, address _converter)
+        public
+        ownerOnly
+        validAddress(_token)
+        validAddress(_converter)
+    {
+        require(convertersToTokens[_converter] == address(0));
+
+        // add the token to the list of tokens if needed
+        TokenInfo storage tokenInfo = tokenTable[_token];
+        if (tokenInfo.valid == false) {
+            tokenInfo.valid = true;
+            tokenInfo.index = tokens.push(_token) - 1;
+        }
+
+        tokensToConverters[_token].push(_converter);
+        convertersToTokens[_converter] = _token;
+
+        // dispatch the converter addition event
+        emit ConverterAddition(_token, _converter);
+    }
+
+    /**
+      * @dev removes an existing converter from the registry
+      * note that the function doesn't scale and might be needed to be called
+      * multiple times when removing an older converter from a large converter list
+      * 
+      * @param _token   token address
+      * @param _index   converter index
+    */
+    function unregisterConverter(address _token, uint32 _index)
+        public
+        ownerOnly
+        validAddress(_token)
+    {
+        require(_index < tokensToConverters[_token].length);
+
+        address converter = tokensToConverters[_token][_index];
+
+        // move all newer converters 1 position lower
+        for (uint32 i = _index + 1; i < tokensToConverters[_token].length; i++) {
+            tokensToConverters[_token][i - 1] = tokensToConverters[_token][i];
+        }
+
+        // decrease the number of converters defined for the token by 1
+        tokensToConverters[_token].length--;
+
+        // remove the token from the list of tokens if needed
+        if (tokensToConverters[_token].length == 0) {
+            TokenInfo storage tokenInfo = tokenTable[_token];
+            assert(tokens.length > tokenInfo.index);
+            assert(_token == tokens[tokenInfo.index]);
+            address lastToken = tokens[tokens.length - 1];
+            tokenTable[lastToken].index = tokenInfo.index;
+            tokens[tokenInfo.index] = lastToken;
+            tokens.length--;
+            delete tokenTable[_token];
+        }
+
+        // removes the converter from the converters -> tokens list
+        delete convertersToTokens[converter];
+
+        // dispatch the converter removal event
+        emit ConverterRemoval(_token, converter);
+    }
+}
+
+// File: contracts/token/interfaces/IERC20Token.sol
+
+/*
+    ERC20 Standard Token interface
+*/
+contract IERC20Token {
+    // these functions aren't abstract since the compiler emits automatically generated getter functions as external
+    function name() public view returns (string) {}
+    function symbol() public view returns (string) {}
+    function decimals() public view returns (uint8) {}
+    function totalSupply() public view returns (uint256) {}
+    function balanceOf(address _owner) public view returns (uint256) { _owner; }
+    function allowance(address _owner, address _spender) public view returns (uint256) { _owner; _spender; }
+
+    function transfer(address _to, uint256 _value) public returns (bool success);
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success);
+    function approve(address _spender, uint256 _value) public returns (bool success);
+}
+
+// File: contracts/utility/interfaces/IWhitelist.sol
+
+/*
+    Whitelist interface
+*/
+contract IWhitelist {
+    function isWhitelisted(address _address) public view returns (bool);
+}
+
+// File: contracts/converter/interfaces/IBancorConverter.sol
+
+/*
+    Bancor Converter interface
+*/
+contract IBancorConverter {
+    function getReturn(IERC20Token _fromToken, IERC20Token _toToken, uint256 _amount) public view returns (uint256, uint256);
+    function convert2(IERC20Token _fromToken, IERC20Token _toToken, uint256 _amount, uint256 _minReturn, address _affiliateAccount, uint256 _affiliateFee) public returns (uint256);
+    function quickConvert2(IERC20Token[] _path, uint256 _amount, uint256 _minReturn, address _affiliateAccount, uint256 _affiliateFee) public payable returns (uint256);
+    function conversionWhitelist() public view returns (IWhitelist) {}
+    function conversionFee() public view returns (uint32) {}
+    function reserves(address _address) public view returns (uint256, uint32, bool, bool, bool) { _address; }
+    function getReserveBalance(IERC20Token _reserveToken) public view returns (uint256);
+    // deprecated, backward compatibility
+    function change(IERC20Token _fromToken, IERC20Token _toToken, uint256 _amount, uint256 _minReturn) public returns (uint256);
+    function convert(IERC20Token _fromToken, IERC20Token _toToken, uint256 _amount, uint256 _minReturn) public returns (uint256);
+    function quickConvert(IERC20Token[] _path, uint256 _amount, uint256 _minReturn) public payable returns (uint256);
+    function connectors(address _address) public view returns (uint256, uint32, bool, bool, bool);
+    function getConnectorBalance(IERC20Token _connectorToken) public view returns (uint256);
+}
+
+// File: contracts/converter/interfaces/IBancorConverterUpgrader.sol
+
+/*
+    Bancor Converter Upgrader interface
+*/
+contract IBancorConverterUpgrader {
+    function upgrade(bytes32 _version) public;
+    function upgrade(uint16 _version) public;
+}
+
+// File: contracts/converter/interfaces/IBancorFormula.sol
+
+/*
+    Bancor Formula interface
+*/
+contract IBancorFormula {
+    function calculatePurchaseReturn(uint256 _supply, uint256 _reserveBalance, uint32 _reserveRatio, uint256 _depositAmount) public view returns (uint256);
+    function calculateSaleReturn(uint256 _supply, uint256 _reserveBalance, uint32 _reserveRatio, uint256 _sellAmount) public view returns (uint256);
+    function calculateCrossReserveReturn(uint256 _fromReserveBalance, uint32 _fromReserveRatio, uint256 _toReserveBalance, uint32 _toReserveRatio, uint256 _amount) public view returns (uint256);
+    // deprecated, backward compatibility
+    function calculateCrossConnectorReturn(uint256 _fromConnectorBalance, uint32 _fromConnectorWeight, uint256 _toConnectorBalance, uint32 _toConnectorWeight, uint256 _amount) public view returns (uint256);
+}
+
+// File: contracts/IBancorNetwork.sol
+
+/*
+    Bancor Network interface
+*/
+contract IBancorNetwork {
+    function convert2(
+        IERC20Token[] _path,
+        uint256 _amount,
+        uint256 _minReturn,
+        address _affiliateAccount,
+        uint256 _affiliateFee
+    ) public payable returns (uint256);
+
+    function claimAndConvert2(
+        IERC20Token[] _path,
+        uint256 _amount,
+        uint256 _minReturn,
+        address _affiliateAccount,
+        uint256 _affiliateFee
+    ) public returns (uint256);
+
+    function convertFor2(
+        IERC20Token[] _path,
+        uint256 _amount,
+        uint256 _minReturn,
+        address _for,
+        address _affiliateAccount,
+        uint256 _affiliateFee
+    ) public payable returns (uint256);
+
+    function claimAndConvertFor2(
+        IERC20Token[] _path,
+        uint256 _amount,
+        uint256 _minReturn,
+        address _for,
+        address _affiliateAccount,
+        uint256 _affiliateFee
+    ) public returns (uint256);
+
+    function convertForPrioritized4(
+        IERC20Token[] _path,
+        uint256 _amount,
+        uint256 _minReturn,
+        address _for,
+        uint256[] memory _signature,
+        address _affiliateAccount,
+        uint256 _affiliateFee
+    ) public payable returns (uint256);
+
+    // deprecated, backward compatibility
+    function convert(
+        IERC20Token[] _path,
+        uint256 _amount,
+        uint256 _minReturn
+    ) public payable returns (uint256);
+
+    // deprecated, backward compatibility
+    function claimAndConvert(
+        IERC20Token[] _path,
+        uint256 _amount,
+        uint256 _minReturn
+    ) public returns (uint256);
+
+    // deprecated, backward compatibility
+    function convertFor(
+        IERC20Token[] _path,
+        uint256 _amount,
+        uint256 _minReturn,
+        address _for
+    ) public payable returns (uint256);
+
+    // deprecated, backward compatibility
+    function claimAndConvertFor(
+        IERC20Token[] _path,
+        uint256 _amount,
+        uint256 _minReturn,
+        address _for
+    ) public returns (uint256);
+
+    // deprecated, backward compatibility
+    function convertForPrioritized3(
+        IERC20Token[] _path,
+        uint256 _amount,
+        uint256 _minReturn,
+        address _for,
+        uint256 _customVal,
+        uint256 _block,
+        uint8 _v,
+        bytes32 _r,
+        bytes32 _s
+    ) public payable returns (uint256);
+
+    // deprecated, backward compatibility
+    function convertForPrioritized2(
+        IERC20Token[] _path,
+        uint256 _amount,
+        uint256 _minReturn,
+        address _for,
+        uint256 _block,
+        uint8 _v,
+        bytes32 _r,
+        bytes32 _s
+    ) public payable returns (uint256);
+
+    // deprecated, backward compatibility
+    function convertForPrioritized(
+        IERC20Token[] _path,
+        uint256 _amount,
+        uint256 _minReturn,
+        address _for,
+        uint256 _block,
+        uint256 _nonce,
+        uint8 _v,
+        bytes32 _r,
+        bytes32 _s
+    ) public payable returns (uint256);
+}
+
+// File: contracts/FeatureIds.sol
+
+/**
+  * @dev Id definitions for bancor contract features
+  * 
+  * Can be used to query the ContractFeatures contract to check whether a certain feature is supported by a contract
+*/
+contract FeatureIds {
+    // converter features
+    uint256 public constant CONVERTER_CONVERSION_WHITELIST = 1 << 0;
+}
+
+// File: contracts/utility/Managed.sol
+
+/**
+  * @dev Provides support and utilities for contract management
+  * Note that a managed contract must also have an owner
+*/
+contract Managed is Owned {
+    address public manager;
+    address public newManager;
+
+    /**
+      * @dev triggered when the manager is updated
+      * 
+      * @param _prevManager previous manager
+      * @param _newManager  new manager
+    */
+    event ManagerUpdate(address indexed _prevManager, address indexed _newManager);
+
+    /**
+      * @dev initializes a new Managed instance
+    */
+    constructor() public {
+        manager = msg.sender;
+    }
+
+    // allows execution by the manager only
+    modifier managerOnly {
+        assert(msg.sender == manager);
+        _;
+    }
+
+    // allows execution by either the owner or the manager only
+    modifier ownerOrManagerOnly {
+        require(msg.sender == owner || msg.sender == manager);
+        _;
+    }
+
+    /**
+      * @dev allows transferring the contract management
+      * the new manager still needs to accept the transfer
+      * can only be called by the contract manager
+      * 
+      * @param _newManager    new contract manager
+    */
+    function transferManagement(address _newManager) public ownerOrManagerOnly {
+        require(_newManager != manager);
+        newManager = _newManager;
+    }
+
+    /**
+      * @dev used by a new manager to accept a management transfer
+    */
+    function acceptManagement() public {
+        require(msg.sender == newManager);
+        emit ManagerUpdate(manager, newManager);
+        manager = newManager;
+        newManager = address(0);
+    }
+}
+
+// File: contracts/utility/SafeMath.sol
+
+/**
+  * @dev Library for basic math operations with overflow/underflow protection
+*/
+library SafeMath {
+    /**
+      * @dev returns the sum of _x and _y, reverts if the calculation overflows
+      * 
+      * @param _x   value 1
+      * @param _y   value 2
+      * 
+      * @return sum
+    */
+    function add(uint256 _x, uint256 _y) internal pure returns (uint256) {
+        uint256 z = _x + _y;
+        require(z >= _x);
+        return z;
+    }
+
+    /**
+      * @dev returns the difference of _x minus _y, reverts if the calculation underflows
+      * 
+      * @param _x   minuend
+      * @param _y   subtrahend
+      * 
+      * @return difference
+    */
+    function sub(uint256 _x, uint256 _y) internal pure returns (uint256) {
+        require(_x >= _y);
+        return _x - _y;
+    }
+
+    /**
+      * @dev returns the product of multiplying _x by _y, reverts if the calculation overflows
+      * 
+      * @param _x   factor 1
+      * @param _y   factor 2
+      * 
+      * @return product
+    */
+    function mul(uint256 _x, uint256 _y) internal pure returns (uint256) {
+        // gas optimization
+        if (_x == 0)
+            return 0;
+
+        uint256 z = _x * _y;
+        require(z / _x == _y);
+        return z;
+    }
+
+      /**
+        * ev Integer division of two numbers truncating the quotient, reverts on division by zero.
+        * 
+        * aram _x   dividend
+        * aram _y   divisor
+        * 
+        * eturn quotient
+    */
+    function div(uint256 _x, uint256 _y) internal pure returns (uint256) {
+        require(_y > 0);
+        uint256 c = _x / _y;
+
+        return c;
+    }
+}
+
+// File: contracts/utility/interfaces/IContractRegistry.sol
+
+/*
+    Contract Registry interface
+*/
+contract IContractRegistry {
+    function addressOf(bytes32 _contractName) public view returns (address);
+
+    // deprecated, backward compatibility
+    function getAddress(bytes32 _contractName) public view returns (address);
+}
+
+// File: contracts/utility/interfaces/IContractFeatures.sol
+
+/*
+    Contract Features interface
+*/
+contract IContractFeatures {
+    function isSupported(address _contract, uint256 _features) public view returns (bool);
+    function enableFeatures(uint256 _features, bool _enable) public;
+}
+
+// File: contracts/utility/interfaces/IAddressList.sol
+
+/*
+    Address list interface
+*/
+contract IAddressList {
+    mapping (address => bool) public listedAddresses;
+}
+
+// File: contracts/token/interfaces/ISmartTokenController.sol
+
+/*
+    Smart Token Controller interface
+*/
+contract ISmartTokenController {
+    function claimTokens(address _from, uint256 _amount) public;
+}
+
+// File: contracts/token/interfaces/ISmartToken.sol
+
+/*
+    Smart Token interface
+*/
+contract ISmartToken is IOwned, IERC20Token {
+    function disableTransfers(bool _disable) public;
+    function issue(address _to, uint256 _amount) public;
+    function destroy(address _from, uint256 _amount) public;
+}
+
+// File: contracts/utility/interfaces/ITokenHolder.sol
+
+/*
+    Token Holder interface
+*/
+contract ITokenHolder is IOwned {
+    function withdrawTokens(IERC20Token _token, address _to, uint256 _amount) public;
+}
+
+// File: contracts/token/interfaces/INonStandardERC20.sol
+
+/*
+    ERC20 Standard Token interface which doesn't return true/false for transfer, transferFrom and approve
+*/
+contract INonStandardERC20 {
+    // these functions aren't abstract since the compiler emits automatically generated getter functions as external
+    function name() public view returns (string) {}
+    function symbol() public view returns (string) {}
+    function decimals() public view returns (uint8) {}
+    function totalSupply() public view returns (uint256) {}
+    function balanceOf(address _owner) public view returns (uint256) { _owner; }
+    function allowance(address _owner, address _spender) public view returns (uint256) { _owner; _spender; }
+
+    function transfer(address _to, uint256 _value) public;
+    function transferFrom(address _from, address _to, uint256 _value) public;
+    function approve(address _spender, uint256 _value) public;
+}
+
+// File: contracts/utility/TokenHolder.sol
+
+/**
+  * @dev We consider every contract to be a 'token holder' since it's currently not possible
+  * for a contract to deny receiving tokens.
+  * 
+  * The TokenHolder's contract sole purpose is to provide a safety mechanism that allows
+  * the owner to send tokens that were sent to the contract by mistake back to their sender.
+  * 
+  * Note that we use the non standard ERC-20 interface which has no return value for transfer
+  * in order to support both non standard as well as standard token contracts.
+  * see https://github.com/ethereum/solidity/issues/4116
+*/
+contract TokenHolder is ITokenHolder, Owned, Utils {
+    /**
+      * @dev initializes a new TokenHolder instance
+    */
+    constructor() public {
+    }
+
+    /**
+      * @dev withdraws tokens held by the contract and sends them to an account
+      * can only be called by the owner
+      * 
+      * @param _token   ERC20 token contract address
+      * @param _to      account to receive the new amount
+      * @param _amount  amount to withdraw
+    */
+    function withdrawTokens(IERC20Token _token, address _to, uint256 _amount)
+        public
+        ownerOnly
+        validAddress(_token)
+        validAddress(_to)
+        notThis(_to)
+    {
+        INonStandardERC20(_token).transfer(_to, _amount);
+    }
+}
+
+// File: contracts/token/SmartTokenController.sol
+
+/**
+  * @dev The smart token controller is an upgradable part of the smart token that allows
+  * more functionality as well as fixes for bugs/exploits.
+  * Once it accepts ownership of the token, it becomes the token's sole controller
+  * that can execute any of its functions.
+  * 
+  * To upgrade the controller, ownership must be transferred to a new controller, along with
+  * any relevant data.
+  * 
+  * The smart token must be set on construction and cannot be changed afterwards.
+  * Wrappers are provided (as opposed to a single 'execute' function) for each of the token's functions, for easier access.
+  * 
+  * Note that the controller can transfer token ownership to a new controller that
+  * doesn't allow executing any function on the token, for a trustless solution.
+  * Doing that will also remove the owner's ability to upgrade the controller.
+*/
+contract SmartTokenController is ISmartTokenController, TokenHolder {
+    ISmartToken public token;   // Smart Token contract
+    address public bancorX;     // BancorX contract
+
+    /**
+      * @dev initializes a new SmartTokenController instance
+      * 
+      * @param  _token      smart token governed by the controller
+    */
+    constructor(ISmartToken _token)
+        public
+        validAddress(_token)
+    {
+        token = _token;
+    }
+
+    // ensures that the controller is the token's owner
+    modifier active() {
+        require(token.owner() == address(this));
+        _;
+    }
+
+    // ensures that the controller is not the token's owner
+    modifier inactive() {
+        require(token.owner() != address(this));
+        _;
+    }
+
+    /**
+      * @dev allows transferring the token ownership
+      * the new owner needs to accept the transfer
+      * can only be called by the contract owner
+      * 
+      * @param _newOwner    new token owner
+    */
+    function transferTokenOwnership(address _newOwner) public ownerOnly {
+        token.transferOwnership(_newOwner);
+    }
+
+    /**
+      * @dev used by a new owner to accept a token ownership transfer
+      * can only be called by the contract owner
+    */
+    function acceptTokenOwnership() public ownerOnly {
+        token.acceptOwnership();
+    }
+
+    /**
+      * @dev disables/enables token transfers
+      * can only be called by the contract owner
+      * 
+      * @param _disable    true to disable transfers, false to enable them
+    */
+    function disableTokenTransfers(bool _disable) public ownerOnly {
+        token.disableTransfers(_disable);
+    }
+
+    /**
+      * @dev withdraws tokens held by the controller and sends them to an account
+      * can only be called by the owner
+      * 
+      * @param _token   ERC20 token contract address
+      * @param _to      account to receive the new amount
+      * @param _amount  amount to withdraw
+    */
+    function withdrawFromToken(IERC20Token _token, address _to, uint256 _amount) public ownerOnly {
+        ITokenHolder(token).withdrawTokens(_token, _to, _amount);
+    }
+
+    /**
+      * @dev allows the associated BancorX contract to claim tokens from any address (so that users
+      * dont have to first give allowance when calling BancorX)
+      * 
+      * @param _from      address to claim the tokens from
+      * @param _amount    the amount of tokens to claim
+     */
+    function claimTokens(address _from, uint256 _amount) public {
+        // only the associated BancorX contract may call this method
+        require(msg.sender == bancorX);
+
+        // destroy the tokens belonging to _from, and issue the same amount to bancorX
+        token.destroy(_from, _amount);
+        token.issue(msg.sender, _amount);
+    }
+
+    /**
+      * @dev allows the owner to set the associated BancorX contract
+      * @param _bancorX    BancorX contract
+     */
+    function setBancorX(address _bancorX) public ownerOnly {
+        bancorX = _bancorX;
+    }
+}
+
+// File: contracts/token/interfaces/IEtherToken.sol
+
+/*
+    Ether Token interface
+*/
+contract IEtherToken is ITokenHolder, IERC20Token {
+    function deposit() public payable;
+    function withdraw(uint256 _amount) public;
+    function withdrawTo(address _to, uint256 _amount) public;
+}
+
+// File: contracts/bancorx/interfaces/IBancorX.sol
+
+contract IBancorX {
+    function xTransfer(bytes32 _toBlockchain, bytes32 _to, uint256 _amount, uint256 _id) public;
+    function getXTransferAmount(uint256 _xTransferId, address _for) public view returns (uint256);
+}
+
+// File: contracts/converter/BancorConverter.sol
+
+/**
+  * @dev Bancor Converter
+  * 
+  * The Bancor converter allows for conversions between a Smart Token and other ERC20 tokens and between different ERC20 tokens and themselves. 
+  * 
+  * The ERC20 reserve balance can be virtual, meaning that the calculations are based on the virtual balance instead of relying on the actual reserve balance.
+  * 
+  * This is a security mechanism that prevents the need to keep a very large (and valuable) balance in a single contract. 
+  * 
+  * The converter is upgradable (just like any SmartTokenController) and all upgrades are opt-in. 
+  * 
+  * WARNING: It is NOT RECOMMENDED to use the converter with Smart Tokens that have less than 8 decimal digits or with very small numbers because of precision loss 
+  * 
+  * Open issues:
+  * - Front-running attacks are currently mitigated by the following mechanisms:
+  *     - minimum return argument for each conversion provides a way to define a minimum/maximum price for the transaction
+  *     - gas price limit prevents users from having control over the order of execution
+  *     - gas price limit check can be skipped if the transaction comes from a trusted, whitelisted signer
+  * 
+  * Other potential solutions might include a commit/reveal based schemes
+  * - Possibly add getters for the reserve fields so that the client won't need to rely on the order in the struct
+*/
+contract BancorConverter is IBancorConverter, SmartTokenController, Managed, ContractIds, FeatureIds {
+    using SafeMath for uint256;
+
+    
+    uint32 private constant RATIO_RESOLUTION = 1000000;
+    uint64 private constant CONVERSION_FEE_RESOLUTION = 1000000;
+
+    struct Reserve {
+        uint256 virtualBalance;         // reserve virtual balance
+        uint32 ratio;                   // reserve ratio, represented in ppm, 1-1000000
+        bool isVirtualBalanceEnabled;   // true if virtual balance is enabled, false if not
+        bool isSaleEnabled;             // is sale of the reserve token enabled, can be set by the owner
+        bool isSet;                     // used to tell if the mapping element is defined
+    }
+
+    /**
+      * @dev version number
+    */
+    uint16 public version = 17;
+    string public converterType = 'bancor';
+
+    bool public allowRegistryUpdate = true;             // allows the owner to prevent/allow the registry to be updated
+    IContractRegistry public prevRegistry;              // address of previous registry as security mechanism
+    IContractRegistry public registry;                  // contract registry contract
+    IWhitelist public conversionWhitelist;              // whitelist contract with list of addresses that are allowed to use the converter
+    IERC20Token[] public reserveTokens;                 // ERC20 standard token addresses (prior version 17, use 'connectorTokens' instead)
+    mapping (address => Reserve) public reserves;       // reserve token addresses -> reserve data (prior version 17, use 'connectors' instead)
+    uint32 private totalReserveRatio = 0;               // used to efficiently prevent increasing the total reserve ratio above 100%
+    uint32 public maxConversionFee = 0;                 // maximum conversion fee for the lifetime of the contract,
+                                                        // represented in ppm, 0...1000000 (0 = no fee, 100 = 0.01%, 1000000 = 100%)
+    uint32 public conversionFee = 0;                    // current conversion fee, represented in ppm, 0...maxConversionFee
+    bool public conversionsEnabled = true;              // true if token conversions is enabled, false if not
+
+    /**
+      * @dev triggered when a conversion between two tokens occurs
+      * 
+      * @param _fromToken       ERC20 token converted from
+      * @param _toToken         ERC20 token converted to
+      * @param _trader          wallet that initiated the trade
+      * @param _amount          amount converted, in fromToken
+      * @param _return          amount returned, minus conversion fee
+      * @param _conversionFee   conversion fee
+    */
+    event Conversion(
+        address indexed _fromToken,
+        address indexed _toToken,
+        address indexed _trader,
+        uint256 _amount,
+        uint256 _return,
+        int256 _conversionFee
+    );
+
+    /**
+      * @dev triggered after a conversion with new price data
+      * 
+      * @param  _connectorToken     reserve token
+      * @param  _tokenSupply        smart token supply
+      * @param  _connectorBalance   reserve balance
+      * @param  _connectorWeight    reserve ratio
+    */
+    event PriceDataUpdate(
+        address indexed _connectorToken,
+        uint256 _tokenSupply,
+        uint256 _connectorBalance,
+        uint32 _connectorWeight
+    );
+
+    /**
+      * @dev triggered when the conversion fee is updated
+      * 
+      * @param  _prevFee    previous fee percentage, represented in ppm
+      * @param  _newFee     new fee percentage, represented in ppm
+    */
+    event ConversionFeeUpdate(uint32 _prevFee, uint32 _newFee);
+
+    /**
+      * @dev triggered when conversions are enabled/disabled
+      * 
+      * @param  _conversionsEnabled true if conversions are enabled, false if not
+    */
+    event ConversionsEnable(bool _conversionsEnabled);
+
+    /**
+      * @dev initializes a new BancorConverter instance
+      * 
+      * @param  _token              smart token governed by the converter
+      * @param  _registry           address of a contract registry contract
+      * @param  _maxConversionFee   maximum conversion fee, represented in ppm
+      * @param  _reserveToken       optional, initial reserve, allows defining the first reserve at deployment time
+      * @param  _reserveRatio       optional, ratio for the initial reserve
+    */
+    constructor(
+        ISmartToken _token,
+        IContractRegistry _registry,
+        uint32 _maxConversionFee,
+        IERC20Token _reserveToken,
+        uint32 _reserveRatio
+    )
+        public
+        SmartTokenController(_token)
+        validAddress(_registry)
+        validConversionFee(_maxConversionFee)
+    {
+        registry = _registry;
+        prevRegistry = _registry;
+        IContractFeatures features = IContractFeatures(registry.addressOf(ContractIds.CONTRACT_FEATURES));
+
+        // initialize supported features
+        if (features != address(0))
+            features.enableFeatures(FeatureIds.CONVERTER_CONVERSION_WHITELIST, true);
+
+        maxConversionFee = _maxConversionFee;
+
+        if (_reserveToken != address(0))
+            addReserve(_reserveToken, _reserveRatio, false);
+    }
+
+    // validates a reserve token address - verifies that the address belongs to one of the reserve tokens
+    modifier validReserve(IERC20Token _address) {
+        require(reserves[_address].isSet);
+        _;
+    }
+
+    // validates conversion fee
+    modifier validConversionFee(uint32 _conversionFee) {
+        require(_conversionFee >= 0 && _conversionFee <= CONVERSION_FEE_RESOLUTION);
+        _;
+    }
+
+    // validates reserve ratio
+    modifier validReserveRatio(uint32 _ratio) {
+        require(_ratio > 0 && _ratio <= RATIO_RESOLUTION);
+        _;
+    }
+
+    // allows execution only when the total ratio is 100%
+    modifier fullTotalRatioOnly() {
+        require(totalReserveRatio == RATIO_RESOLUTION);
+        _;
+    }
+
+    // allows execution only when conversions aren't disabled
+    modifier conversionsAllowed {
+        assert(conversionsEnabled);
+        _;
+    }
+
+    // allows execution by the BancorNetwork contract only
+    modifier bancorNetworkOnly {
+        IBancorNetwork bancorNetwork = IBancorNetwork(registry.addressOf(ContractIds.BANCOR_NETWORK));
+        require(msg.sender == address(bancorNetwork));
+        _;
+    }
+
+    // allows execution by the converter upgrader contract only
+    modifier converterUpgraderOnly {
+        address converterUpgrader = registry.addressOf(ContractIds.BANCOR_CONVERTER_UPGRADER);
+        require(owner == converterUpgrader);
+        _;
+    }
+
+    /**
+      * @dev sets the contract registry to whichever address the current registry is pointing to
+     */
+    function updateRegistry() public {
+        // require that upgrading is allowed or that the caller is the owner
+        require(allowRegistryUpdate || msg.sender == owner);
+
+        // get the address of whichever registry the current registry is pointing to
+        address newRegistry = registry.addressOf(ContractIds.CONTRACT_REGISTRY);
+
+        // if the new registry hasn't changed or is the zero address, revert
+        require(newRegistry != address(registry) && newRegistry != address(0));
+
+        // set the previous registry as current registry and current registry as newRegistry
+        prevRegistry = registry;
+        registry = IContractRegistry(newRegistry);
+    }
+
+    /**
+      * @dev security mechanism allowing the converter owner to revert to the previous registry,
+      * to be used in emergency scenario
+    */
+    function restoreRegistry() public ownerOrManagerOnly {
+        // set the registry as previous registry
+        registry = prevRegistry;
+
+        // after a previous registry is restored, only the owner can allow future updates
+        allowRegistryUpdate = false;
+    }
+
+    /**
+      * @dev disables the registry update functionality
+      * this is a safety mechanism in case of a emergency
+      * can only be called by the manager or owner
+      * 
+      * @param _disable    true to disable registry updates, false to re-enable them
+    */
+    function disableRegistryUpdate(bool _disable) public ownerOrManagerOnly {
+        allowRegistryUpdate = !_disable;
+    }
+
+    /**
+      * @dev returns the number of reserve tokens defined
+      * note that prior to version 17, you should use 'connectorTokenCount' instead
+      * 
+      * @return number of reserve tokens
+    */
+    function reserveTokenCount() public view returns (uint16) {
+        return uint16(reserveTokens.length);
+    }
+
+    /**
+      * @dev allows the owner to update & enable the conversion whitelist contract address
+      * when set, only addresses that are whitelisted are actually allowed to use the converter
+      * note that the whitelist check is actually done by the BancorNetwork contract
+      * 
+      * @param _whitelist    address of a whitelist contract
+    */
+    function setConversionWhitelist(IWhitelist _whitelist)
+        public
+        ownerOnly
+        notThis(_whitelist)
+    {
+        conversionWhitelist = _whitelist;
+    }
+
+    /**
+      * @dev disables the entire conversion functionality
+      * this is a safety mechanism in case of a emergency
+      * can only be called by the manager
+      * 
+      * @param _disable true to disable conversions, false to re-enable them
+    */
+    function disableConversions(bool _disable) public ownerOrManagerOnly {
+        if (conversionsEnabled == _disable) {
+            conversionsEnabled = !_disable;
+            emit ConversionsEnable(conversionsEnabled);
+        }
+    }
+
+    /**
+      * @dev allows transferring the token ownership
+      * the new owner needs to accept the transfer
+      * can only be called by the contract owner
+      * note that token ownership can only be transferred while the owner is the converter upgrader contract
+      * 
+      * @param _newOwner    new token owner
+    */
+    function transferTokenOwnership(address _newOwner)
+        public
+        ownerOnly
+        converterUpgraderOnly
+    {
+        super.transferTokenOwnership(_newOwner);
+    }
+
+    /**
+      * @dev updates the current conversion fee
+      * can only be called by the manager
+      * 
+      * @param _conversionFee new conversion fee, represented in ppm
+    */
+    function setConversionFee(uint32 _conversionFee)
+        public
+        ownerOrManagerOnly
+    {
+        require(_conversionFee >= 0 && _conversionFee <= maxConversionFee);
+        emit ConversionFeeUpdate(conversionFee, _conversionFee);
+        conversionFee = _conversionFee;
+    }
+
+    /**
+      * @dev given a return amount, returns the amount minus the conversion fee
+      * 
+      * @param _amount      return amount
+      * @param _magnitude   1 for standard conversion, 2 for cross reserve conversion
+      * 
+      * @return return amount minus conversion fee
+    */
+    function getFinalAmount(uint256 _amount, uint8 _magnitude) public view returns (uint256) {
+        return _amount.mul((CONVERSION_FEE_RESOLUTION - conversionFee) ** _magnitude).div(CONVERSION_FEE_RESOLUTION ** _magnitude);
+    }
+
+    /**
+      * @dev withdraws tokens held by the converter and sends them to an account
+      * can only be called by the owner
+      * note that reserve tokens can only be withdrawn by the owner while the converter is inactive
+      * unless the owner is the converter upgrader contract
+      * 
+      * @param _token   ERC20 token contract address
+      * @param _to      account to receive the new amount
+      * @param _amount  amount to withdraw
+    */
+    function withdrawTokens(IERC20Token _token, address _to, uint256 _amount) public {
+        address converterUpgrader = registry.addressOf(ContractIds.BANCOR_CONVERTER_UPGRADER);
+
+        // if the token is not a reserve token, allow withdrawal
+        // otherwise verify that the converter is inactive or that the owner is the upgrader contract
+        require(!reserves[_token].isSet || token.owner() != address(this) || owner == converterUpgrader);
+        super.withdrawTokens(_token, _to, _amount);
+    }
+
+    /**
+      * @dev upgrades the converter to the latest version
+      * can only be called by the owner
+      * note that the owner needs to call acceptOwnership/acceptManagement on the new converter after the upgrade
+    */
+    function upgrade() public ownerOnly {
+        IBancorConverterUpgrader converterUpgrader = IBancorConverterUpgrader(registry.addressOf(ContractIds.BANCOR_CONVERTER_UPGRADER));
+
+        transferOwnership(converterUpgrader);
+        converterUpgrader.upgrade(version);
+        acceptOwnership();
+    }
+
+    /**
+      * @dev defines a new reserve for the token
+      * can only be called by the owner while the converter is inactive
+      * note that prior to version 17, you should use 'addConnector' instead
+      * 
+      * @param _token                  address of the reserve token
+      * @param _ratio                  constant reserve ratio, represented in ppm, 1-1000000
+      * @param _enableVirtualBalance   true to enable virtual balance for the reserve, false to disable it
+    */
+    function addReserve(IERC20Token _token, uint32 _ratio, bool _enableVirtualBalance)
+        public
+        ownerOnly
+        inactive
+        validAddress(_token)
+        notThis(_token)
+        validReserveRatio(_ratio)
+    {
+        require(_token != token && !reserves[_token].isSet && totalReserveRatio + _ratio <= RATIO_RESOLUTION); // validate input
+
+        reserves[_token].virtualBalance = 0;
+        reserves[_token].ratio = _ratio;
+        reserves[_token].isVirtualBalanceEnabled = _enableVirtualBalance;
+        reserves[_token].isSaleEnabled = true;
+        reserves[_token].isSet = true;
+        reserveTokens.push(_token);
+        totalReserveRatio += _ratio;
+    }
+
+    /**
+      * @dev updates one of the token reserves
+      * can only be called by the owner
+      * note that prior to version 17, you should use 'updateConnector' instead
+      * 
+      * @param _reserveToken           address of the reserve token
+      * @param _ratio                  constant reserve ratio, represented in ppm, 1-1000000
+      * @param _enableVirtualBalance   true to enable virtual balance for the reserve, false to disable it
+      * @param _virtualBalance         new reserve's virtual balance
+    */
+    function updateReserve(IERC20Token _reserveToken, uint32 _ratio, bool _enableVirtualBalance, uint256 _virtualBalance)
+        public
+        ownerOnly
+        validReserve(_reserveToken)
+        validReserveRatio(_ratio)
+    {
+        Reserve storage reserve = reserves[_reserveToken];
+        require(totalReserveRatio - reserve.ratio + _ratio <= RATIO_RESOLUTION); // validate input
+
+        totalReserveRatio = totalReserveRatio - reserve.ratio + _ratio;
+        reserve.ratio = _ratio;
+        reserve.isVirtualBalanceEnabled = _enableVirtualBalance;
+        reserve.virtualBalance = _virtualBalance;
+    }
+
+    /**
+      * @dev disables converting from the given reserve token in case the reserve token got compromised
+      * can only be called by the owner
+      * note that converting to the token is still enabled regardless of this flag and it cannot be disabled by the owner
+      * note that prior to version 17, you should use 'disableConnectorSale' instead
+      * 
+      * @param _reserveToken    reserve token contract address
+      * @param _disable         true to disable the token, false to re-enable it
+    */
+    function disableReserveSale(IERC20Token _reserveToken, bool _disable)
+        public
+        ownerOnly
+        validReserve(_reserveToken)
+    {
+        reserves[_reserveToken].isSaleEnabled = !_disable;
+    }
+
+    /**
+      * @dev returns the reserve's virtual balance if one is defined, otherwise returns the actual balance
+      * note that prior to version 17, you should use 'getConnectorBalance' instead
+      * 
+      * @param _reserveToken    reserve token contract address
+      * 
+      * @return reserve balance
+    */
+    function getReserveBalance(IERC20Token _reserveToken)
+        public
+        view
+        validReserve(_reserveToken)
+        returns (uint256)
+    {
+        Reserve storage reserve = reserves[_reserveToken];
+        return reserve.isVirtualBalanceEnabled ? reserve.virtualBalance : _reserveToken.balanceOf(this);
+    }
+
+    /**
+      * @dev calculates the expected return of converting a given amount of tokens
+      * 
+      * @param _fromToken  contract address of the token to convert from
+      * @param _toToken    contract address of the token to convert to
+      * @param _amount     amount of tokens received from the user
+      * 
+      * @return amount of tokens that the user will receive
+      * @return amount of tokens that the user will pay as fee
+    */
+    function getReturn(IERC20Token _fromToken, IERC20Token _toToken, uint256 _amount) public view returns (uint256, uint256) {
+        require(_fromToken != _toToken); // validate input
+
+        // conversion between the token and one of its reserves
+        if (_toToken == token)
+            return getPurchaseReturn(_fromToken, _amount);
+        else if (_fromToken == token)
+            return getSaleReturn(_toToken, _amount);
+
+        // conversion between 2 reserves
+        return getCrossReserveReturn(_fromToken, _toToken, _amount);
+    }
+
+    /**
+      * @dev calculates the expected return of buying with a given amount of tokens
+      * 
+      * @param _reserveToken    contract address of the reserve token
+      * @param _depositAmount   amount of reserve-tokens received from the user
+      * 
+      * @return amount of supply-tokens that the user will receive
+      * @return amount of supply-tokens that the user will pay as fee
+    */
+    function getPurchaseReturn(IERC20Token _reserveToken, uint256 _depositAmount)
+        public
+        view
+        active
+        validReserve(_reserveToken)
+        returns (uint256, uint256)
+    {
+        Reserve storage reserve = reserves[_reserveToken];
+        require(reserve.isSaleEnabled); // validate input
+
+        uint256 tokenSupply = token.totalSupply();
+        uint256 reserveBalance = getReserveBalance(_reserveToken);
+        IBancorFormula formula = IBancorFormula(registry.addressOf(ContractIds.BANCOR_FORMULA));
+        uint256 amount = formula.calculatePurchaseReturn(tokenSupply, reserveBalance, reserve.ratio, _depositAmount);
+        uint256 finalAmount = getFinalAmount(amount, 1);
+
+        // return the amount minus the conversion fee and the conversion fee
+        return (finalAmount, amount - finalAmount);
+    }
+
+    /**
+      * @dev calculates the expected return of selling a given amount of tokens
+      * 
+      * @param _reserveToken    contract address of the reserve token
+      * @param _sellAmount      amount of supply-tokens received from the user
+      * 
+      * @return amount of reserve-tokens that the user will receive
+      * @return amount of reserve-tokens that the user will pay as fee
+    */
+    function getSaleReturn(IERC20Token _reserveToken, uint256 _sellAmount)
+        public
+        view
+        active
+        validReserve(_reserveToken)
+        returns (uint256, uint256)
+    {
+        Reserve storage reserve = reserves[_reserveToken];
+        uint256 tokenSupply = token.totalSupply();
+        uint256 reserveBalance = getReserveBalance(_reserveToken);
+        IBancorFormula formula = IBancorFormula(registry.addressOf(ContractIds.BANCOR_FORMULA));
+        uint256 amount = formula.calculateSaleReturn(tokenSupply, reserveBalance, reserve.ratio, _sellAmount);
+        uint256 finalAmount = getFinalAmount(amount, 1);
+
+        // return the amount minus the conversion fee and the conversion fee
+        return (finalAmount, amount - finalAmount);
+    }
+
+    /**
+      * @dev calculates the expected return of converting a given amount from one reserve to another
+      * note that prior to version 17, you should use 'getCrossConnectorReturn' instead
+      * 
+      * @param _fromReserveToken    contract address of the reserve token to convert from
+      * @param _toReserveToken      contract address of the reserve token to convert to
+      * @param _amount              amount of tokens received from the user
+      * 
+      * @return amount of tokens that the user will receive
+      * @return amount of tokens that the user will pay as fee
+    */
+    function getCrossReserveReturn(IERC20Token _fromReserveToken, IERC20Token _toReserveToken, uint256 _amount)
+        public
+        view
+        active
+        validReserve(_fromReserveToken)
+        validReserve(_toReserveToken)
+        returns (uint256, uint256)
+    {
+        Reserve storage fromReserve = reserves[_fromReserveToken];
+        Reserve storage toReserve = reserves[_toReserveToken];
+        require(fromReserve.isSaleEnabled); // validate input
+
+        IBancorFormula formula = IBancorFormula(registry.addressOf(ContractIds.BANCOR_FORMULA));
+        uint256 amount = formula.calculateCrossReserveReturn(
+            getReserveBalance(_fromReserveToken), 
+            fromReserve.ratio, 
+            getReserveBalance(_toReserveToken), 
+            toReserve.ratio, 
+            _amount);
+        uint256 finalAmount = getFinalAmount(amount, 2);
+
+        // return the amount minus the conversion fee and the conversion fee
+        // the fee is higher (magnitude = 2) since cross reserve conversion equals 2 conversions (from / to the smart token)
+        return (finalAmount, amount - finalAmount);
+    }
+
+    /**
+      * @dev converts a specific amount of _fromToken to _toToken
+      * can only be called by the bancor network contract
+      * 
+      * @param _fromToken  ERC20 token to convert from
+      * @param _toToken    ERC20 token to convert to
+      * @param _amount     amount to convert, in fromToken
+      * @param _minReturn  if the conversion results in an amount smaller than the minimum return - it is cancelled, must be nonzero
+      * 
+      * @return conversion return amount
+    */
+    function convertInternal(IERC20Token _fromToken, IERC20Token _toToken, uint256 _amount, uint256 _minReturn)
+        public
+        bancorNetworkOnly
+        conversionsAllowed
+        greaterThanZero(_minReturn)
+        returns (uint256)
+    {
+        require(_fromToken != _toToken); // validate input
+
+        // conversion between the token and one of its reserves
+        if (_toToken == token)
+            return buy(_fromToken, _amount, _minReturn);
+        else if (_fromToken == token)
+            return sell(_toToken, _amount, _minReturn);
+
+        uint256 amount;
+        uint256 feeAmount;
+
+        // conversion between 2 reserves
+        (amount, feeAmount) = getCrossReserveReturn(_fromToken, _toToken, _amount);
+        // ensure the trade gives something in return and meets the minimum requested amount
+        require(amount != 0 && amount >= _minReturn);
+
+        // update the source token virtual balance if relevant
+        Reserve storage fromReserve = reserves[_fromToken];
+        if (fromReserve.isVirtualBalanceEnabled)
+            fromReserve.virtualBalance = fromReserve.virtualBalance.add(_amount);
+
+        // update the target token virtual balance if relevant
+        Reserve storage toReserve = reserves[_toToken];
+        if (toReserve.isVirtualBalanceEnabled)
+            toReserve.virtualBalance = toReserve.virtualBalance.sub(amount);
+
+        // ensure that the trade won't deplete the reserve balance
+        uint256 toReserveBalance = getReserveBalance(_toToken);
+        assert(amount < toReserveBalance);
+
+        // transfer funds from the caller in the from reserve token
+        ensureTransferFrom(_fromToken, msg.sender, this, _amount);
+        // transfer funds to the caller in the to reserve token
+        // the transfer might fail if the actual reserve balance is smaller than the virtual balance
+        ensureTransfer(_toToken, msg.sender, amount);
+
+        // dispatch the conversion event
+        // the fee is higher (magnitude = 2) since cross reserve conversion equals 2 conversions (from / to the smart token)
+        dispatchConversionEvent(_fromToken, _toToken, _amount, amount, feeAmount);
+
+        // dispatch price data updates for the smart token / both reserves
+        emit PriceDataUpdate(_fromToken, token.totalSupply(), getReserveBalance(_fromToken), fromReserve.ratio);
+        emit PriceDataUpdate(_toToken, token.totalSupply(), getReserveBalance(_toToken), toReserve.ratio);
+        return amount;
+    }
+
+    /**
+      * @dev buys the token by depositing one of its reserve tokens
+      * 
+      * @param _reserveToken    reserve token contract address
+      * @param _depositAmount   amount to deposit (in the reserve token)
+      * @param _minReturn       if the conversion results in an amount smaller than the minimum return - it is cancelled, must be nonzero
+      * 
+      * @return buy return amount
+    */
+    function buy(IERC20Token _reserveToken, uint256 _depositAmount, uint256 _minReturn) internal returns (uint256) {
+        uint256 amount;
+        uint256 feeAmount;
+        (amount, feeAmount) = getPurchaseReturn(_reserveToken, _depositAmount);
+        // ensure the trade gives something in return and meets the minimum requested amount
+        require(amount != 0 && amount >= _minReturn);
+
+        // update virtual balance if relevant
+        Reserve storage reserve = reserves[_reserveToken];
+        if (reserve.isVirtualBalanceEnabled)
+            reserve.virtualBalance = reserve.virtualBalance.add(_depositAmount);
+
+        // transfer funds from the caller in the reserve token
+        ensureTransferFrom(_reserveToken, msg.sender, this, _depositAmount);
+        // issue new funds to the caller in the smart token
+        token.issue(msg.sender, amount);
+
+        // dispatch the conversion event
+        dispatchConversionEvent(_reserveToken, token, _depositAmount, amount, feeAmount);
+
+        // dispatch price data update for the smart token/reserve
+        emit PriceDataUpdate(_reserveToken, token.totalSupply(), getReserveBalance(_reserveToken), reserve.ratio);
+        return amount;
+    }
+
+    /**
+      * @dev sells the token by withdrawing from one of its reserve tokens
+      * 
+      * @param _reserveToken    reserve token contract address
+      * @param _sellAmount      amount to sell (in the smart token)
+      * @param _minReturn       if the conversion results in an amount smaller the minimum return - it is cancelled, must be nonzero
+      * 
+      * @return sell return amount
+    */
+    function sell(IERC20Token _reserveToken, uint256 _sellAmount, uint256 _minReturn) internal returns (uint256) {
+        require(_sellAmount <= token.balanceOf(msg.sender)); // validate input
+        uint256 amount;
+        uint256 feeAmount;
+        (amount, feeAmount) = getSaleReturn(_reserveToken, _sellAmount);
+        // ensure the trade gives something in return and meets the minimum requested amount
+        require(amount != 0 && amount >= _minReturn);
+
+        // ensure that the trade will only deplete the reserve balance if the total supply is depleted as well
+        uint256 tokenSupply = token.totalSupply();
+        uint256 reserveBalance = getReserveBalance(_reserveToken);
+        assert(amount < reserveBalance || (amount == reserveBalance && _sellAmount == tokenSupply));
+
+        // update virtual balance if relevant
+        Reserve storage reserve = reserves[_reserveToken];
+        if (reserve.isVirtualBalanceEnabled)
+            reserve.virtualBalance = reserve.virtualBalance.sub(amount);
+
+        // destroy _sellAmount from the caller's balance in the smart token
+        token.destroy(msg.sender, _sellAmount);
+        // transfer funds to the caller in the reserve token
+        // the transfer might fail if the actual reserve balance is smaller than the virtual balance
+        ensureTransfer(_reserveToken, msg.sender, amount);
+
+        // dispatch the conversion event
+        dispatchConversionEvent(token, _reserveToken, _sellAmount, amount, feeAmount);
+
+        // dispatch price data update for the smart token/reserve
+        emit PriceDataUpdate(_reserveToken, token.totalSupply(), getReserveBalance(_reserveToken), reserve.ratio);
+        return amount;
+    }
+
+    /**
+      * @dev converts a specific amount of _fromToken to _toToken
+      * note that prior to version 16, you should use 'convert' instead
+      * 
+      * @param _fromToken           ERC20 token to convert from
+      * @param _toToken             ERC20 token to convert to
+      * @param _amount              amount to convert, in fromToken
+      * @param _minReturn           if the conversion results in an amount smaller than the minimum return - it is cancelled, must be nonzero
+      * @param _affiliateAccount    affiliate account
+      * @param _affiliateFee        affiliate fee in PPM
+      * 
+      * @return conversion return amount
+    */
+    function convert2(IERC20Token _fromToken, IERC20Token _toToken, uint256 _amount, uint256 _minReturn, address _affiliateAccount, uint256 _affiliateFee) public returns (uint256) {
+        IERC20Token[] memory path = new IERC20Token[](3);
+        (path[0], path[1], path[2]) = (_fromToken, token, _toToken);
+        return quickConvert2(path, _amount, _minReturn, _affiliateAccount, _affiliateFee);
+    }
+
+    /**
+      * @dev converts the token to any other token in the bancor network by following a predefined conversion path
+      * note that when converting from an ERC20 token (as opposed to a smart token), allowance must be set beforehand
+      * note that prior to version 16, you should use 'quickConvert' instead
+      * 
+      * @param _path                conversion path, see conversion path format in the BancorNetwork contract
+      * @param _amount              amount to convert from (in the initial source token)
+      * @param _minReturn           if the conversion results in an amount smaller than the minimum return - it is cancelled, must be nonzero
+      * @param _affiliateAccount    affiliate account
+      * @param _affiliateFee        affiliate fee in PPM
+      * 
+      * @return tokens issued in return
+    */
+    function quickConvert2(IERC20Token[] _path, uint256 _amount, uint256 _minReturn, address _affiliateAccount, uint256 _affiliateFee)
+        public
+        payable
+        returns (uint256)
+    {
+        return quickConvertPrioritized2(_path, _amount, _minReturn, getSignature(0x0, 0x0, 0x0, 0x0, 0x0), _affiliateAccount, _affiliateFee);
+    }
+
+    /**
+      * @dev converts the token to any other token in the bancor network by following a predefined conversion path
+      * note that when converting from an ERC20 token (as opposed to a smart token), allowance must be set beforehand
+      * note that prior to version 16, you should use 'quickConvertPrioritized' instead
+      * 
+      * @param _path                conversion path, see conversion path format in the BancorNetwork contract
+      * @param _amount              amount to convert from (in the initial source token)
+      * @param _minReturn           if the conversion results in an amount smaller than the minimum return - it is cancelled, must be nonzero
+      * @param _signature           an array of the following elements:
+      *     [0] uint256             custom value that was signed for prioritized conversion; must be equal to _amount
+      *     [1] uint256             if the current block exceeded the given parameter - it is cancelled
+      *     [2] uint8               (signature[128:130]) associated with the signer address and helps to validate if the signature is legit
+      *     [3] bytes32             (signature[0:64]) associated with the signer address and helps to validate if the signature is legit
+      *     [4] bytes32             (signature[64:128]) associated with the signer address and helps to validate if the signature is legit
+      * if the array is empty (length == 0), then the gas-price limit is verified instead of the signature
+      * @param _affiliateAccount    affiliate account
+      * @param _affiliateFee        affiliate fee in PPM
+      * 
+      * @return tokens issued in return
+    */
+    function quickConvertPrioritized2(IERC20Token[] _path, uint256 _amount, uint256 _minReturn, uint256[] memory _signature, address _affiliateAccount, uint256 _affiliateFee)
+        public
+        payable
+        returns (uint256)
+    {
+        require(_signature.length == 0 || _signature[0] == _amount);
+
+        IBancorNetwork bancorNetwork = IBancorNetwork(registry.addressOf(ContractIds.BANCOR_NETWORK));
+
+        // we need to transfer the source tokens from the caller to the BancorNetwork contract,
+        // so it can execute the conversion on behalf of the caller
+        if (msg.value == 0) {
+            // not ETH, send the source tokens to the BancorNetwork contract
+            // if the token is the smart token, no allowance is required - destroy the tokens
+            // from the caller and issue them to the BancorNetwork contract
+            if (_path[0] == token) {
+                token.destroy(msg.sender, _amount); // destroy _amount tokens from the caller's balance in the smart token
+                token.issue(bancorNetwork, _amount); // issue _amount new tokens to the BancorNetwork contract
+            } else {
+                // otherwise, we assume we already have allowance, transfer the tokens directly to the BancorNetwork contract
+                ensureTransferFrom(_path[0], msg.sender, bancorNetwork, _amount);
+            }
+        }
+
+        // execute the conversion and pass on the ETH with the call
+        return bancorNetwork.convertForPrioritized4.value(msg.value)(_path, _amount, _minReturn, msg.sender, _signature, _affiliateAccount, _affiliateFee);
+    }
+
+    /**
+      * @dev allows a user to convert BNT that was sent from another blockchain into any other
+      * token on the BancorNetwork without specifying the amount of BNT to be converted, but
+      * rather by providing the xTransferId which allows us to get the amount from BancorX.
+      * note that prior to version 16, you should use 'completeXConversion' instead
+      * 
+      * @param _path            conversion path, see conversion path format in the BancorNetwork contract
+      * @param _minReturn       if the conversion results in an amount smaller than the minimum return - it is cancelled, must be nonzero
+      * @param _conversionId    pre-determined unique (if non zero) id which refers to this transaction 
+      * @param _signature       an array of the following elements:
+      *     [0] uint256         custom value that was signed for prioritized conversion; must be equal to _conversionId
+      *     [1] uint256         if the current block exceeded the given parameter - it is cancelled
+      *     [2] uint8           (signature[128:130]) associated with the signer address and helps to validate if the signature is legit
+      *     [3] bytes32         (signature[0:64]) associated with the signer address and helps to validate if the signature is legit
+      *     [4] bytes32         (signature[64:128]) associated with the signer address and helps to validate if the signature is legit
+      * if the array is empty (length == 0), then the gas-price limit is verified instead of the signature
+      * 
+      * @return tokens issued in return
+    */
+    function completeXConversion2(
+        IERC20Token[] _path,
+        uint256 _minReturn,
+        uint256 _conversionId,
+        uint256[] memory _signature
+    )
+        public
+        returns (uint256)
+    {
+        // verify that the custom value (if valid) is equal to _conversionId
+        require(_signature.length == 0 || _signature[0] == _conversionId);
+
+        IBancorX bancorX = IBancorX(registry.addressOf(ContractIds.BANCOR_X));
+        IBancorNetwork bancorNetwork = IBancorNetwork(registry.addressOf(ContractIds.BANCOR_NETWORK));
+
+        // verify that the first token in the path is BNT
+        require(_path[0] == registry.addressOf(ContractIds.BNT_TOKEN));
+
+        // get conversion amount from BancorX contract
+        uint256 amount = bancorX.getXTransferAmount(_conversionId, msg.sender);
+
+        // send BNT from msg.sender to the BancorNetwork contract
+        token.destroy(msg.sender, amount);
+        token.issue(bancorNetwork, amount);
+
+        return bancorNetwork.convertForPrioritized4(_path, amount, _minReturn, msg.sender, _signature, address(0), 0);
+    }
+
+    /**
+      * @dev ensures transfer of tokens, taking into account that some ERC-20 implementations don't return
+      * true on success but revert on failure instead
+      * 
+      * @param _token     the token to transfer
+      * @param _to        the address to transfer the tokens to
+      * @param _amount    the amount to transfer
+    */
+    function ensureTransfer(IERC20Token _token, address _to, uint256 _amount) private {
+        IAddressList addressList = IAddressList(registry.addressOf(ContractIds.NON_STANDARD_TOKEN_REGISTRY));
+
+        if (addressList.listedAddresses(_token)) {
+            uint256 prevBalance = _token.balanceOf(_to);
+            // we have to cast the token contract in an interface which has no return value
+            INonStandardERC20(_token).transfer(_to, _amount);
+            uint256 postBalance = _token.balanceOf(_to);
+            assert(postBalance > prevBalance);
+        } else {
+            // if the token isn't whitelisted, we assert on transfer
+            assert(_token.transfer(_to, _amount));
+        }
+    }
+
+    /**
+      * @dev ensures transfer of tokens, taking into account that some ERC-20 implementations don't return
+      * true on success but revert on failure instead
+      * 
+      * @param _token     the token to transfer
+      * @param _from      the address to transfer the tokens from
+      * @param _to        the address to transfer the tokens to
+      * @param _amount    the amount to transfer
+    */
+    function ensureTransferFrom(IERC20Token _token, address _from, address _to, uint256 _amount) private {
+        IAddressList addressList = IAddressList(registry.addressOf(ContractIds.NON_STANDARD_TOKEN_REGISTRY));
+
+        if (addressList.listedAddresses(_token)) {
+            uint256 prevBalance = _token.balanceOf(_to);
+            // we have to cast the token contract in an interface which has no return value
+            INonStandardERC20(_token).transferFrom(_from, _to, _amount);
+            uint256 postBalance = _token.balanceOf(_to);
+            assert(postBalance > prevBalance);
+        } else {
+            // if the token is standard, we assert on transfer
+            assert(_token.transferFrom(_from, _to, _amount));
+        }
+    }
+
+    /**
+      * @dev buys the token with all reserve tokens using the same percentage
+      * for example, if the caller increases the supply by 10%,
+      * then it will cost an amount equal to 10% of each reserve token balance
+      * note that the function can be called only if the total ratio is 100% and conversions are enabled
+      * 
+      * @param _amount  amount to increase the supply by (in the smart token)
+    */
+    function fund(uint256 _amount)
+        public
+        fullTotalRatioOnly
+        conversionsAllowed
+    {
+        uint256 supply = token.totalSupply();
+
+        // iterate through the reserve tokens and transfer a percentage equal to the ratio between _amount
+        // and the total supply in each reserve from the caller to the converter
+        IERC20Token reserveToken;
+        uint256 reserveBalance;
+        uint256 reserveAmount;
+        for (uint16 i = 0; i < reserveTokens.length; i++) {
+            reserveToken = reserveTokens[i];
+            reserveBalance = getReserveBalance(reserveToken);
+            reserveAmount = _amount.mul(reserveBalance).sub(1).div(supply).add(1);
+
+            // update virtual balance if relevant
+            Reserve storage reserve = reserves[reserveToken];
+            if (reserve.isVirtualBalanceEnabled)
+                reserve.virtualBalance = reserve.virtualBalance.add(reserveAmount);
+
+            // transfer funds from the caller in the reserve token
+            ensureTransferFrom(reserveToken, msg.sender, this, reserveAmount);
+
+            // dispatch price data update for the smart token/reserve
+            emit PriceDataUpdate(reserveToken, supply + _amount, reserveBalance + reserveAmount, reserve.ratio);
+        }
+
+        // issue new funds to the caller in the smart token
+        token.issue(msg.sender, _amount);
+    }
+
+    /**
+      * @dev sells the token for all reserve tokens using the same percentage
+      * for example, if the holder sells 10% of the supply,
+      * then they will receive 10% of each reserve token balance in return
+      * note that the function can be called only if the total ratio is 100%
+      * 
+      * @param _amount  amount to liquidate (in the smart token)
+    */
+    function liquidate(uint256 _amount) public fullTotalRatioOnly {
+        uint256 supply = token.totalSupply();
+
+        // destroy _amount from the caller's balance in the smart token
+        token.destroy(msg.sender, _amount);
+
+        // iterate through the reserve tokens and send a percentage equal to the ratio between _amount
+        // and the total supply from each reserve balance to the caller
+        IERC20Token reserveToken;
+        uint256 reserveBalance;
+        uint256 reserveAmount;
+        for (uint16 i = 0; i < reserveTokens.length; i++) {
+            reserveToken = reserveTokens[i];
+            reserveBalance = getReserveBalance(reserveToken);
+            reserveAmount = _amount.mul(reserveBalance).div(supply);
+
+            // update virtual balance if relevant
+            Reserve storage reserve = reserves[reserveToken];
+            if (reserve.isVirtualBalanceEnabled)
+                reserve.virtualBalance = reserve.virtualBalance.sub(reserveAmount);
+
+            // transfer funds to the caller in the reserve token
+            // the transfer might fail if the actual reserve balance is smaller than the virtual balance
+            ensureTransfer(reserveToken, msg.sender, reserveAmount);
+
+            // dispatch price data update for the smart token/reserve
+            emit PriceDataUpdate(reserveToken, supply - _amount, reserveBalance - reserveAmount, reserve.ratio);
+        }
+    }
+
+    /**
+      * @dev helper, dispatches the Conversion event
+      * 
+      * @param _fromToken       ERC20 token to convert from
+      * @param _toToken         ERC20 token to convert to
+      * @param _amount          amount purchased/sold (in the source token)
+      * @param _returnAmount    amount returned (in the target token)
+    */
+    function dispatchConversionEvent(IERC20Token _fromToken, IERC20Token _toToken, uint256 _amount, uint256 _returnAmount, uint256 _feeAmount) private {
+        // fee amount is converted to 255 bits -
+        // negative amount means the fee is taken from the source token, positive amount means its taken from the target token
+        // currently the fee is always taken from the target token
+        // since we convert it to a signed number, we first ensure that it's capped at 255 bits to prevent overflow
+        assert(_feeAmount < 2 ** 255);
+        emit Conversion(_fromToken, _toToken, msg.sender, _amount, _returnAmount, int256(_feeAmount));
+    }
+
+    function getSignature(
+        uint256 _customVal,
+        uint256 _block,
+        uint8 _v,
+        bytes32 _r,
+        bytes32 _s
+    ) private pure returns (uint256[] memory) {
+        if (_v == 0x0 && _r == 0x0 && _s == 0x0)
+            return new uint256[](0);
+        uint256[] memory signature = new uint256[](5);
+        signature[0] = _customVal;
+        signature[1] = _block;
+        signature[2] = uint256(_v);
+        signature[3] = uint256(_r);
+        signature[4] = uint256(_s);
+        return signature;
+    }
+
+    /**
+      * @dev deprecated, backward compatibility
+    */
+    function change(IERC20Token _fromToken, IERC20Token _toToken, uint256 _amount, uint256 _minReturn) public returns (uint256) {
+        return convertInternal(_fromToken, _toToken, _amount, _minReturn);
+    }
+
+    /**
+      * @dev deprecated, backward compatibility
+    */
+    function convert(IERC20Token _fromToken, IERC20Token _toToken, uint256 _amount, uint256 _minReturn) public returns (uint256) {
+        return convert2(_fromToken, _toToken, _amount, _minReturn, address(0), 0);
+    }
+
+    /**
+      * @dev deprecated, backward compatibility
+    */
+    function quickConvert(IERC20Token[] _path, uint256 _amount, uint256 _minReturn) public payable returns (uint256) {
+        return quickConvert2(_path, _amount, _minReturn, address(0), 0);
+    }
+
+    /**
+      * @dev deprecated, backward compatibility
+    */
+    function quickConvertPrioritized(IERC20Token[] _path, uint256 _amount, uint256 _minReturn, uint256 _block, uint8 _v, bytes32 _r, bytes32 _s) public payable returns (uint256) {
+        return quickConvertPrioritized2(_path, _amount, _minReturn, getSignature(_amount, _block, _v, _r, _s), address(0), 0);
+    }
+
+    /**
+      * @dev deprecated, backward compatibility
+    */
+    function completeXConversion(IERC20Token[] _path, uint256 _minReturn, uint256 _conversionId, uint256 _block, uint8 _v, bytes32 _r, bytes32 _s) public returns (uint256) {
+        return completeXConversion2(_path, _minReturn, _conversionId, getSignature(_conversionId, _block, _v, _r, _s));
+    }
+
+    /**
+      * @dev deprecated, backward compatibility
+    */
+    function connectors(address _address) public view returns (uint256, uint32, bool, bool, bool) {
+        Reserve storage reserve = reserves[_address];
+        return(reserve.virtualBalance, reserve.ratio, reserve.isVirtualBalanceEnabled, reserve.isSaleEnabled, reserve.isSet);
+    }
+
+    /**
+      * @dev deprecated, backward compatibility
+    */
+    function connectorTokens(uint256 _index) public view returns (IERC20Token) {
+        return BancorConverter.reserveTokens[_index];
+    }
+
+    /**
+      * @dev deprecated, backward compatibility
+    */
+    function connectorTokenCount() public view returns (uint16) {
+        return reserveTokenCount();
+    }
+
+    /**
+      * @dev deprecated, backward compatibility
+    */
+    function addConnector(IERC20Token _token, uint32 _weight, bool _enableVirtualBalance) public {
+        addReserve(_token, _weight, _enableVirtualBalance);
+    }
+
+    /**
+      * @dev deprecated, backward compatibility
+    */
+    function updateConnector(IERC20Token _connectorToken, uint32 _weight, bool _enableVirtualBalance, uint256 _virtualBalance) public {
+        updateReserve(_connectorToken, _weight, _enableVirtualBalance, _virtualBalance);
+    }
+
+    /**
+      * @dev deprecated, backward compatibility
+    */
+    function disableConnectorSale(IERC20Token _connectorToken, bool _disable) public {
+        disableReserveSale(_connectorToken, _disable);
+    }
+
+    /**
+      * @dev deprecated, backward compatibility
+    */
+    function getConnectorBalance(IERC20Token _connectorToken) public view returns (uint256) {
+        return getReserveBalance(_connectorToken);
+    }
+
+    /**
+      * @dev deprecated, backward compatibility
+    */
+    function getCrossConnectorReturn(IERC20Token _fromConnectorToken, IERC20Token _toConnectorToken, uint256 _amount) public view returns (uint256, uint256) {
+        return getCrossReserveReturn(_fromConnectorToken, _toConnectorToken, _amount);
+    }
+}
+
+// File: contracts\BancorNetworkPathFinder.sol
+
+/**
+  * @dev The BancorNetworkPathFinder contract allows for retrieving the conversion path between any pair of tokens in the Bancor Network.
+  * This conversion path can then be used in various functions on the BancorNetwork contract (see this contract for more details on conversion paths).
+*/
+contract BancorNetworkPathFinder is ContractIds, Utils {
+    IContractRegistry public contractRegistry;
+    address public anchorToken;
+
+    bytes4 private constant CONNECTOR_TOKEN_COUNT = bytes4(uint256(keccak256("connectorTokenCount()") >> (256 - 4 * 8)));
+    bytes4 private constant RESERVE_TOKEN_COUNT   = bytes4(uint256(keccak256("reserveTokenCount()"  ) >> (256 - 4 * 8)));
+
+    /**
+      * @dev initializes a new BancorNetworkPathFinder instance
+      * 
+      * @param _contractRegistry    address of a contract registry contract
+    */
+    constructor(IContractRegistry _contractRegistry) public validAddress(_contractRegistry) {
+        contractRegistry = _contractRegistry;
+        anchorToken = contractRegistry.addressOf(BNT_TOKEN);
+    }
+
+    /**
+      * @dev updates the anchor token to point to the most recent BNT token deployed
+      * 
+      * Note that this function needs to be called only when the BNT token has been redeployed
+    */
+    function updateAnchorToken() external {
+        address bntToken = contractRegistry.addressOf(BNT_TOKEN);
+        require(anchorToken != bntToken);
+        anchorToken = bntToken;
+    }
+
+    /**
+      * @dev retrieves the conversion path between a given pair of tokens in the Bancor Network
+      * 
+      * @param _sourceToken         address of the source token
+      * @param _targetToken         address of the target token
+      * @param _converterRegistries array of converter registries depicting some part of the network
+      * 
+      * @return path from the source token to the target token
+    */
+    function get(address _sourceToken, address _targetToken, BancorConverterRegistry[] memory _converterRegistries) public view returns (address[] memory) {
+        assert(anchorToken == contractRegistry.addressOf(BNT_TOKEN));
+        address[] memory sourcePath = getPath(_sourceToken, _converterRegistries);
+        address[] memory targetPath = getPath(_targetToken, _converterRegistries);
+        return getShortestPath(sourcePath, targetPath);
+    }
+
+    /**
+      * @dev retrieves the conversion path between a given token and the anchor token
+      * 
+      * @param _token               address of the token
+      * @param _converterRegistries array of converter registries depicting some part of the network
+      * 
+      * @return path from the input token to the anchor token
+    */
+    function getPath(address _token, BancorConverterRegistry[] memory _converterRegistries) private view returns (address[] memory) {
+        if (_token == anchorToken) {
+            address[] memory initialPath = new address[](1);
+            initialPath[0] = _token;
+            return initialPath;
+        }
+
+        uint256 tokenCount;
+        uint256 i;
+        address token;
+        address[] memory path;
+
+        for (uint256 n = 0; n < _converterRegistries.length; n++) {
+            BancorConverter converter = BancorConverter(_converterRegistries[n].latestConverterAddress(_token));
+            tokenCount = getTokenCount(converter, CONNECTOR_TOKEN_COUNT);
+            for (i = 0; i < tokenCount; i++) {
+                token = converter.connectorTokens(i);
+                if (token != _token) {
+                    path = getPath(token, _converterRegistries);
+                    if (path.length > 0)
+                        return getNewPath(path, _token, converter);
+                }
+            }
+            tokenCount = getTokenCount(converter, RESERVE_TOKEN_COUNT);
+            for (i = 0; i < tokenCount; i++) {
+                token = converter.reserveTokens(i);
+                if (token != _token) {
+                    path = getPath(token, _converterRegistries);
+                    if (path.length > 0)
+                        return getNewPath(path, _token, converter);
+                }
+            }
+        }
+
+        return new address[](0);
+    }
+
+    /**
+      * @dev invokes a function which takes no input arguments and returns a 'uint256' value
+      * 
+      * @param _dest            address of the contract which implements the function
+      * @param _funcSelector    first 4 bytes in the hash of the function signature
+      * 
+      * @return value returned from calling the input function on the input contract
+    */
+    function getTokenCount(address _dest, bytes4 _funcSelector) private view returns (uint256) {
+        uint256[1] memory ret;
+        bytes memory data = abi.encodeWithSelector(_funcSelector);
+
+        assembly {
+            pop(staticcall(
+                gas,           // gas remaining
+                _dest,         // destination address
+                add(data, 32), // input buffer (starts after the first 32 bytes in the `data` array)
+                mload(data),   // input length (loaded from the first 32 bytes in the `data` array)
+                ret,           // output buffer
+                32             // output length
+            ))
+        }
+
+        return ret[0];
+    }
+
+    /**
+      * @dev prepends two tokens to the beginning of a given path
+      * 
+      * @param _token       address of the first token
+      * @param _converter   converter of the second token
+      * 
+      * @return extended path
+    */
+    function getNewPath(address[] memory _path, address _token, BancorConverter _converter) private view returns (address[] memory) {
+        address[] memory newPath = new address[](2 + _path.length);
+        newPath[0] = _token;
+        newPath[1] = _converter.token();
+        for (uint256 k = 0; k < _path.length; k++)
+            newPath[2 + k] = _path[k];
+        return newPath;
+    }
+
+    /**
+      * @dev merges two paths with a common suffix into one
+      * 
+      * @param _sourcePath  address of the source path
+      * @param _targetPath  address of the target path
+      * 
+      * @return merged path
+    */
+    function getShortestPath(address[] memory _sourcePath, address[] memory _targetPath) private pure returns (address[] memory) {
+        if (_sourcePath.length > 0 && _targetPath.length > 0) {
+            uint256 i = _sourcePath.length;
+            uint256 j = _targetPath.length;
+            while (i > 0 && j > 0 && _sourcePath[i - 1] == _targetPath[j - 1]) {
+                i--;
+                j--;
+            }
+
+            address[] memory path = new address[](i + j + 1);
+            for (uint256 m = 0; m <= i; m++)
+                path[m] = _sourcePath[m];
+            for (uint256 n = j; n > 0; n--)
+                path[path.length - n] = _targetPath[n - 1];
+            return path;
+        }
+
+        return new address[](0);
+    }
+}

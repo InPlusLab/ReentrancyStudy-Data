@@ -1,0 +1,155 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Crowdsale
+Function name: setStateWithBonus(uint8,uint256)
+PC address: 3014
+Estimated Gas Usage: 2177 - 2932
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/6335a497d3fbed232dedd526acf7d51c.sol:172
+
+e.PRESALE
+            || currentState == State.PRESALE && _newState == State.PREICO
+            || currentState == State.PREICO && _newState == State.PREICO_FINISHED
+            || currentState == State.PREICO_FINISHED && _newState == State.ICO_FIRST
+            || currentState == State.ICO_FIRST && _newState == State.STOPPED
+            || currentState == State.STOPPED && _newState == State.ICO_SECOND
+            || currentState == State.ICO_SECOND && _newState == State.STOPPED
+            || currentState == State.STOPPED && _newState == State.ICO_THIRD
+            || currentState == State.ICO_THIRD && _newState == State.CLOSED
+            || _newState == State.EMERGENCY_STOP
+        );
+        currentState = _newState;
+        bonus = _bonus;
+        if(_newState == State.CLOSED){
+            _finish();
+        }
+    }
+    function mintPresale(address _to, uint _amount)
+    public
+    only(owner)
+    inState(State.PRESALE)
+    {
+        require(totalSaleSupply.add(_amount) <= MAX_SALE_SUPPLY);
+        
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setStateWithBonus(uint8,uint256), txdata: 0x395d517b000000000000000000000000000000000000000000000000000000000000001a, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Crowdsale
+Function name: setState(uint8)
+PC address: 3968
+Estimated Gas Usage: 2172 - 2927
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/6335a497d3fbed232dedd526acf7d51c.sol:145
+
+ State.PRESALE
+            || currentState == State.PRESALE && _newState == State.PREICO
+            || currentState == State.PREICO && _newState == State.PREICO_FINISHED
+            || currentState == State.PREICO_FINISHED && _newState == State.ICO_FIRST
+            || currentState == State.ICO_FIRST && _newState == State.STOPPED
+            || currentState == State.STOPPED && _newState == State.ICO_SECOND
+            || currentState == State.ICO_SECOND && _newState == State.STOPPED
+            || currentState == State.STOPPED && _newState == State.ICO_THIRD
+            || currentState == State.ICO_THIRD && _newState == State.CLOSED
+            || _newState == State.EMERGENCY_STOP
+        );
+        currentState = _newState;
+        if(_newState == State.PREICO
+        || _newState == State.ICO_FIRST
+        || _newState == State.ICO_SECOND
+        || _newState == State.ICO_THIRD){
+            currentRoundSupply = 0;
+        }
+        if(_newState == State.CLOSED){
+            _finish();
+        }
+    }
+    function setStateWithBonus(State _newState, uint _bonus)
+    public
+    only(owner)
+    {
+        require(
+            currentState == State.INIT && _newState =
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setState(uint8), txdata: 0x56de96db000000000000000000000000000000000000000000000000000000000000001a, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Crowdsale
+Function name: initialize(address)
+PC address: 7344
+Estimated Gas Usage: 29170 - 145386
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/6335a497d3fbed232dedd526acf7d51c.sol:237
+
+       } else if (curren
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000000000000006d, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: initialize(address), txdata: 0xc4d66de8000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Crowdsale
+Function name: initialize(address)
+PC address: 7371
+Estimated Gas Usage: 29170 - 145386
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6335a497d3fbed232dedd526acf7d51c.sol:23
+
+  }
+}
+contract IT
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000000000000006d, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: initialize(address), txdata: 0xc4d66de8000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

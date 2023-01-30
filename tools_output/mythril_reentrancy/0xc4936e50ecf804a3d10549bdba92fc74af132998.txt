@@ -1,0 +1,226 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Flashloan
+Function name: flashloan()
+PC address: 805
+Estimated Gas Usage: 4444 - 74231
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/8346b4f8d97df52ede4d3f77427baffa.sol:892
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: flashloan(), txdata: 0x1b89b61a, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Flashloan
+Function name: flashloan()
+PC address: 805
+Estimated Gas Usage: 4444 - 74231
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/8346b4f8d97df52ede4d3f77427baffa.sol:892
+Initial State:
+
+Account: [CREATOR], balance: 0x1882000301, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: flashloan(), txdata: 0x1b89b61a, value: 0x0
+
+==== Unprotected Ether Withdrawal ====
+SWC ID: 105
+Severity: High
+Contract: Flashloan
+Function name: withdraw(address)
+PC address: 876
+Estimated Gas Usage: 3343 - 38068
+Any sender can withdraw Ether from the contract account.
+Arbitrary senders other than the contract creator can profitably extract Ether from the contract account. Verify the business logic carefully and make sure that appropriate security controls are in place to prevent unexpected loss of funds.
+--------------------
+In file: /tmp/8346b4f8d97df52ede4d3f77427baffa.sol:785
+
+l address provider
+    ILendingPo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x17ff9b7, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x419d00206fa4e6de, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x1
+Caller: [ATTACKER], function: withdraw(address), txdata: 0x51cff8d90000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Flashloan
+Function name: executeOperation(address,uint256,uint256,bytes)
+PC address: 1706
+Estimated Gas Usage: 5807 - 109495
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/8346b4f8d97df52ede4d3f77427baffa.sol:814
+
+col/blob/master/contracts/lendingpool/
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: executeOperation(address,uint256,uint256,bytes), txdata: 0xee872558000000000000000000000000000000000000000000000000000000000000000140000000420d99b14c039883ffe280624a0012624660857481a29208114093013fffffffbdf2664eb3fc677e000000b042001da1b99f7a8d9e9e26f7f73f6cff0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Flashloan
+Function name: executeOperation(address,uint256,uint256,bytes)
+PC address: 2288
+Estimated Gas Usage: 4103 - 73041
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/8346b4f8d97df52ede4d3f77427baffa.sol:821
+
+, address _user, uint256 _amount ) e
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1b31a04c06a08046f, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: executeOperation(address,uint256,uint256,bytes), txdata: 0xee872558000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Flashloan
+Function name: executeOperation(address,uint256,uint256,bytes)
+PC address: 2288
+Estimated Gas Usage: 4103 - 73041
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/8346b4f8d97df52ede4d3f77427baffa.sol:821
+
+, address _user, uint256 _amount ) e
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x17000400028000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: executeOperation(address,uint256,uint256,bytes), txdata: 0xee872558000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020, value: 0x0
+
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: Flashloan
+Function name: executeOperation(address,uint256,uint256,bytes)
+PC address: 2288
+Estimated Gas Usage: 4103 - 73041
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: /tmp/8346b4f8d97df52ede4d3f77427baffa.sol:821
+
+, address _user, uint256 _amount ) e
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x280000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x3c000002000008001, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: executeOperation(address,uint256,uint256,bytes), txdata: 0xee872558000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020, value: 0x0
+
+==== Unprotected Ether Withdrawal ====
+SWC ID: 105
+Severity: High
+Contract: Flashloan
+Function name: executeOperation(address,uint256,uint256,bytes)
+PC address: 2288
+Estimated Gas Usage: 4103 - 73041
+Any sender can withdraw Ether from the contract account.
+Arbitrary senders other than the contract creator can profitably extract Ether from the contract account. Verify the business logic carefully and make sure that appropriate security controls are in place to prevent unexpected loss of funds.
+--------------------
+In file: /tmp/8346b4f8d97df52ede4d3f77427baffa.sol:821
+
+, address _user, uint256 _amount ) e
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20210283001000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x804000a0041c800c, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x1
+Caller: [ATTACKER], function: executeOperation(address,uint256,uint256,bytes), txdata: 0xee872558000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Flashloan
+Function name: executeOperation(address,uint256,uint256,bytes)
+PC address: 2448
+Estimated Gas Usage: 5807 - 109495
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/8346b4f8d97df52ede4d3f77427baffa.sol:822
+
+ve, uint256 _amount, uint256 _interestRateMode, 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: executeOperation(address,uint256,uint256,bytes), txdata: 0xee872558000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00010e020198aa88e4931a5310c644da3293fda13fa549bd2ebe5eac4fade40c80000480010882988c0082116540209262930a0100ad6923128242a800000000000000000000000000000000000000000000000000000000000000000000005c, value: 0x0

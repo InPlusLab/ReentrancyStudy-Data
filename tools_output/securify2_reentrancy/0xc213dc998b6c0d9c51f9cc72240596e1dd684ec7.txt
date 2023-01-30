@@ -1,0 +1,98 @@
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    EtherStore
+Line:        10
+Source: 
+> 
+>     uint256 public withdrawalLimit = 1 ether;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     mapping(address => uint256) public lastWithdrawTime;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    EtherStore
+Line:        14
+Source: 
+> 
+>     function depositFunds() public payable {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         balances[msg.sender] += msg.value;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    EtherStore
+Line:        18
+Source: 
+> 
+>     function withdrawFunds (uint256 _weiToWithdraw) public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(balances[msg.sender] >= _weiToWithdraw);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Gas-dependent Reentrancy
+Description: Calls into external contracts that receive all remaining
+             gas and are followed by state changes may be reentrant.
+Type:        Violation
+Contract:    EtherStore
+Line:        24
+Source: 
+>         require(now >= lastWithdrawTime[msg.sender] + 1 weeks);
+>         (bool success, bytes memory data) = msg.sender.call.value(_weiToWithdraw)("");
+>                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(success);
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Low Level Calls
+Description: Usage of <address>.call should be avoided
+Type:        Violation
+Contract:    EtherStore
+Line:        24
+Source: 
+>         require(now >= lastWithdrawTime[msg.sender] + 1 weeks);
+>         (bool success, bytes memory data) = msg.sender.call.value(_weiToWithdraw)("");
+>                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(success);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Amount
+Description: The amount of ether transferred must not be influenced by
+             other transactions.
+Type:        Warning
+Contract:    EtherStore
+Line:        24
+Source: 
+>         require(now >= lastWithdrawTime[msg.sender] + 1 weeks);
+>         (bool success, bytes memory data) = msg.sender.call.value(_weiToWithdraw)("");
+>                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(success);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    EtherStore
+Line:        24
+Source: 
+>         require(now >= lastWithdrawTime[msg.sender] + 1 weeks);
+>         (bool success, bytes memory data) = msg.sender.call.value(_weiToWithdraw)("");
+>                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(success);
+
+[0m

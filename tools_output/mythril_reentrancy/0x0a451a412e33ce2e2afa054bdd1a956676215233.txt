@@ -1,0 +1,85 @@
+with mythril_dir
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: FireVault
+Function name: TheBigBurn()
+PC address: 745
+Estimated Gas Usage: 193 - 288
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3c03e6612a12f2fe1a5b275e673b0b9b.sol:92
+
+IRE != IERC20(address(0)),"FIRE not set");
+        FIRE.burnMyTokensFOR
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x800000f88c8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: TheBigBurn(), txdata: 0xd4a17b15, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: FireVault
+Function name: TheBigBurn()
+PC address: 1090
+Estimated Gas Usage: 5078 - 74111
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3c03e6612a12f2fe1a5b275e673b0b9b.sol:96
+
+ess(IERC20 _addr) external onlyOwner {
+        require(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xf3808, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setFIREAddress(address), txdata: 0x529f9d7d000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: TheBigBurn(), txdata: 0xd4a17b15, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: FireVault
+Function name: TheBigBurn()
+PC address: 1090
+Estimated Gas Usage: 5078 - 74111
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/3c03e6612a12f2fe1a5b275e673b0b9b.sol:96
+
+ess(IERC20 _addr) external onlyOwner {
+        require(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3ff6, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setFIREAddress(address), txdata: 0x529f9d7d0000000000000000000000000101010101010101010101010101010101010101, value: 0x0
+Caller: [SOMEGUY], function: TheBigBurn(), txdata: 0xd4a17b15, value: 0x0
+
+

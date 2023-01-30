@@ -1,0 +1,573 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: GemstoneMine
+Function name: _getSecondTokenLPDifficulty()
+PC address: 1269
+Estimated Gas Usage: 2638 - 2733
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:361
+
+ddress(address _address) public onlyOwner{
+        secondTokenAd
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1020, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: _getSecondTokenLPDifficulty(), txdata: 0x0fa27102, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: GemstoneMine
+Function name: stakeSecondTokenLP(uint256)
+PC address: 1402
+Estimated Gas Usage: 1127 - 1412
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:291
+
+kedTokens[account].points.add(_stakedTokens[account].personalGemLPStakedTokens.mul(rewardBlocks)/_getGemLPDifficulty());
+            }
+            if (_stakedTokens[account].personalSecondaryLPStakedTokens > 0) {//secondTokenLP
+                _stakedTokens[account].points = _stakedTokens[account].points.add(_stakedTokens[account].personalSecondaryLPStakedTokens.mul(rewardBlocks)/_getSecondTokenLPDifficulty());
+            } 
+            _stakedTokens[account].lastBlockChecked = block.number;   
+        }
+        _;
+    }
+
+    function getStakedGemLPBalanceFrom(address _address) view public returns(uint256){
+        return _stakedTokens[_address].personalGemLPStakedTokens;
+    }
+    
+    function getStakedSecondaryLPBalanceFrom(address _address) view public returns(uint256){
+        return _stak
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: stakeSecondTokenLP(uint256), txdata: 0x308b6a390000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: GemstoneMine
+Function name: stakeSecondTokenLP(uint256)
+PC address: 1959
+Estimated Gas Usage: 25158 - 122062
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:400
+
+LPStakedTokens >= amount, "c
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: stakeSecondTokenLP(uint256), txdata: 0x308b6a39140030c84144001106894002111101000065010e29143002010949028028a4b0, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: GemstoneMine
+Function name: stakeSecondTokenLP(uint256)
+PC address: 1978
+Estimated Gas Usage: 25158 - 122062
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:400
+
+dTokens[msg.sender].personalGemLPStakedTokens >= amount, "cant unstake"
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000881, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeSecondTokenLP(uint256), txdata: 0x308b6a3900068840000480014041200c01c112802d208423200000000020088010100400, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: GemstoneMine
+Function name: stakeSecondTokenLP(uint256)
+PC address: 1997
+Estimated Gas Usage: 25158 - 122062
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:401
+
+
+        _stakedTokens[msg.sender].personalGemLPStakedTok
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000881, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeSecondTokenLP(uint256), txdata: 0x308b6a3900068840000480014041200c01c112802d208423200000000020088010100400, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: GemstoneMine
+Function name: stakeSecondTokenLP(uint256)
+PC address: 2039
+Estimated Gas Usage: 25158 - 122062
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:401
+
+totalAmountGemLPStaked = totalAmountGemLPStaked.sub(amount);
+        _stakedTokens[msg.sender].personalGemLPStakedTokens = _stake
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000881, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeSecondTokenLP(uint256), txdata: 0x308b6a3900068840000480014041200c01c112802d208423200000000020088010100400, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: GemstoneMine
+Function name: stakeSecondTokenLP(uint256)
+PC address: 2042
+Estimated Gas Usage: 25158 - 122062
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:402
+
+ns.sub(amount);
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000881, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeSecondTokenLP(uint256), txdata: 0x308b6a3900068840000480014041200c01c112802d208423200000000020088010100400, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: GemstoneMine
+Function name: _updatePoints(address)
+PC address: 2239
+Estimated Gas Usage: 1148 - 1433
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:291
+
+kedTokens[account].points.add(_stakedTokens[account].personalGemLPStakedTokens.mul(rewardBlocks)/_getGemLPDifficulty());
+            }
+            if (_stakedTokens[account].personalSecondaryLPStakedTokens > 0) {//secondTokenLP
+                _stakedTokens[account].points = _stakedTokens[account].points.add(_stakedTokens[account].personalSecondaryLPStakedTokens.mul(rewardBlocks)/_getSecondTokenLPDifficulty());
+            } 
+            _stakedTokens[account].lastBlockChecked = block.number;   
+        }
+        _;
+    }
+
+    function getStakedGemLPBalanceFrom(address _address) view public returns(uint256){
+        return _stakedTokens[_address].personalGemLPStakedTokens;
+    }
+    
+    function getStakedSecondaryLPBalanceFrom(address _address) view public returns(uint256){
+        return _stak
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: _updatePoints(address), txdata: 0x4ce73ef00000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: GemstoneMine
+Function name: stakeGemLP(uint256)
+PC address: 2647
+Estimated Gas Usage: 1148 - 1433
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:291
+
+kedTokens[account].points.add(_stakedTokens[account].personalGemLPStakedTokens.mul(rewardBlocks)/_getGemLPDifficulty());
+            }
+            if (_stakedTokens[account].personalSecondaryLPStakedTokens > 0) {//secondTokenLP
+                _stakedTokens[account].points = _stakedTokens[account].points.add(_stakedTokens[account].personalSecondaryLPStakedTokens.mul(rewardBlocks)/_getSecondTokenLPDifficulty());
+            } 
+            _stakedTokens[account].lastBlockChecked = block.number;   
+        }
+        _;
+    }
+
+    function getStakedGemLPBalanceFrom(address _address) view public returns(uint256){
+        return _stakedTokens[_address].personalGemLPStakedTokens;
+    }
+    
+    function getStakedSecondaryLPBalanceFrom(address _address) view public returns(uint256){
+        return _stak
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeGemLP(uint256), txdata: 0x696d153e0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: GemstoneMine
+Function name: stakeGemLP(uint256)
+PC address: 3067
+Estimated Gas Usage: 25185 - 122089
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:393
+
+s), amount), "can't st
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x140008080480281, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeGemLP(uint256), txdata: 0x696d153e0000000201008010100000008800000000000200000000000002008680000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: GemstoneMine
+Function name: stakeGemLP(uint256)
+PC address: 3086
+Estimated Gas Usage: 25185 - 122089
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:393
+
+m(msg.sender, address(this), amount), "can't stake");
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20801080000a8003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeGemLP(uint256), txdata: 0x696d153e4502800808402080021020010000000001800890031ed8c88094103002020220, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: GemstoneMine
+Function name: stakeGemLP(uint256)
+PC address: 3105
+Estimated Gas Usage: 25185 - 122089
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:394
+
+d(amount);
+        _stakedTokens[msg.sender].person
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20801080000a8003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeGemLP(uint256), txdata: 0x696d153e4502800808402080021020010000000001800890031ed8c88094103002020220, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: GemstoneMine
+Function name: stakeGemLP(uint256)
+PC address: 3149
+Estimated Gas Usage: 25185 - 122089
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:394
+
+untSecondaryLPStaked = totalAmountSecondaryLPStaked.add(amount);
+        _stakedTokens[msg.sender].personalSecondaryL
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20801080000a8003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeGemLP(uint256), txdata: 0x696d153e4502800808402080021020010000000001800890031ed8c88094103002020220, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: GemstoneMine
+Function name: stakeGemLP(uint256)
+PC address: 3151
+Estimated Gas Usage: 25185 - 122089
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:395
+
+ersonalSecon
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20801080000a8003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: stakeGemLP(uint256), txdata: 0x696d153e4502800808402080021020010000000001800890031ed8c88094103002020220, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: GemstoneMine
+Function name: unStakeSecondTokenLP(uint256)
+PC address: 3659
+Estimated Gas Usage: 1126 - 1411
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:291
+
+kedTokens[account].points.add(_stakedTokens[account].personalGemLPStakedTokens.mul(rewardBlocks)/_getGemLPDifficulty());
+            }
+            if (_stakedTokens[account].personalSecondaryLPStakedTokens > 0) {//secondTokenLP
+                _stakedTokens[account].points = _stakedTokens[account].points.add(_stakedTokens[account].personalSecondaryLPStakedTokens.mul(rewardBlocks)/_getSecondTokenLPDifficulty());
+            } 
+            _stakedTokens[account].lastBlockChecked = block.number;   
+        }
+        _;
+    }
+
+    function getStakedGemLPBalanceFrom(address _address) view public returns(uint256){
+        return _stakedTokens[_address].personalGemLPStakedTokens;
+    }
+    
+    function getStakedSecondaryLPBalanceFrom(address _address) view public returns(uint256){
+        return _stak
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unStakeSecondTokenLP(uint256), txdata: 0x9f85b3340000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: GemstoneMine
+Function name: unStakeSecondTokenLP(uint256)
+PC address: 4173
+Estimated Gas Usage: 25985 - 122891
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:414
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: unStakeSecondTokenLP(uint256), txdata: 0x9f85b3340000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: GemstoneMine
+Function name: unStakeGemLP(uint256)
+PC address: 4746
+Estimated Gas Usage: 1147 - 1432
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:291
+
+kedTokens[account].points.add(_stakedTokens[account].personalGemLPStakedTokens.mul(rewardBlocks)/_getGemLPDifficulty());
+            }
+            if (_stakedTokens[account].personalSecondaryLPStakedTokens > 0) {//secondTokenLP
+                _stakedTokens[account].points = _stakedTokens[account].points.add(_stakedTokens[account].personalSecondaryLPStakedTokens.mul(rewardBlocks)/_getSecondTokenLPDifficulty());
+            } 
+            _stakedTokens[account].lastBlockChecked = block.number;   
+        }
+        _;
+    }
+
+    function getStakedGemLPBalanceFrom(address _address) view public returns(uint256){
+        return _stakedTokens[_address].personalGemLPStakedTokens;
+    }
+    
+    function getStakedSecondaryLPBalanceFrom(address _address) view public returns(uint256){
+        return _stak
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unStakeGemLP(uint256), txdata: 0xec3391fa0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: GemstoneMine
+Function name: unStakeGemLP(uint256)
+PC address: 5260
+Estimated Gas Usage: 26006 - 122912
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:410
+
+lSecondaryLP
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40021000012, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: unStakeGemLP(uint256), txdata: 0xec3391fa0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: GemstoneMine
+Function name: unStakeSecondTokenLP(uint256)
+PC address: 5542
+Estimated Gas Usage: 2073 - 2548
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/92f66dc0ff339a0f69e9b46338b842db.sol:146
+
+egers, reverts on overflow.
+     */
+    fu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: unStakeSecondTokenLP(uint256), txdata: 0x9f85b3340000000000000000000000000000000000000000000000000000000000000000, value: 0x0

@@ -1,0 +1,162 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DeltaBalances
+Function name: multiDeltaBalances(address[],address,address[])
+PC address: 429
+Estimated Gas Usage: 1065 - 8024
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/dd4928fdfe26c55b15f08e8992d315c2.sol:77
+
+kens) public view returns (uint[]) {
+	    uint[] memory balances = new uint[](tokens.length * exchanges.length);
+	    
+	    for(uint i = 0; i < exchanges.length; i++){
+			Exchange ex = Exchange(exchanges[i]);
+			
+    		for(uint j = 0; j< tokens.length; j++){
+    		    
+    			balances[(j * exchanges.length) + i] = ex.balanceOf(tokens[j], user);
+    		}
+	    }
+		return balances;
+	}
+  
+  /* Check the token balance of a wallet in a token contract
+     Avoids possible er
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: multiDeltaBalances(address[],address,address[]), txdata: 0x64422f3c00000000000000000000000000000000000000000000000000000018000000400000000000000000000000000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DeltaBalances
+Function name: multiDeltaBalances(address[],address,address[])
+PC address: 441
+Estimated Gas Usage: 1065 - 8024
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/dd4928fdfe26c55b15f08e8992d315c2.sol:77
+
+kens) public view returns (uint[]) {
+	    uint[] memory balances = new uint[](tokens.length * exchanges.length);
+	    
+	    for(uint i = 0; i < exchanges.length; i++){
+			Exchange ex = Exchange(exchanges[i]);
+			
+    		for(uint j = 0; j< tokens.length; j++){
+    		    
+    			balances[(j * exchanges.length) + i] = ex.balanceOf(tokens[j], user);
+    		}
+	    }
+		return balances;
+	}
+  
+  /* Check the token balance of a wallet in a token contract
+     Avoids possible er
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: multiDeltaBalances(address[],address,address[]), txdata: 0x64422f3c81, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DeltaBalances
+Function name: tokenBalance(address,address)
+PC address: 1658
+Estimated Gas Usage: 3583 - 73366
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/dd4928fdfe26c55b15f08e8992d315c2.sol:107
+
+           } else {
+                  return 0; // not 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tokenBalance(address,address), txdata: 0x1049334f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DeltaBalances
+Function name: tokenBalance(address,address)
+PC address: 1836
+Estimated Gas Usage: 3583 - 73366
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/dd4928fdfe26c55b15f08e8992d315c2.sol:108
+
+instead of error
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tokenBalance(address,address), txdata: 0x1049334f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: DeltaBalances
+Function name: tokenBalance(address,address)
+PC address: 1836
+Estimated Gas Usage: 3583 - 73366
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/dd4928fdfe26c55b15f08e8992d315c2.sol:108
+
+instead of error
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000000002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tokenBalance(address,address), txdata: 0x1049334f, value: 0x0

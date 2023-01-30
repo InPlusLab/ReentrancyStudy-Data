@@ -1,0 +1,455 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: EmojisanAuctionHouse
+Function name: wantNewTokens(uint256[])
+PC address: 586
+Estimated Gas Usage: 36130 - 193997
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1941f1df20f9871e40b9ba40fb42f093.sol:315
+
+s[i]);
+
+        }
+
+    }
+
+
+
+    function wantNewMinter(address minter) external {
+
+        // only owner 👩 of token 128512 😀
+
+        require(msg.sender == emojisan.ownerOf(ownerTokenId));
+
+        emojisan.setMinter(minter);
+
+    }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x807fe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: wantNewTokens(uint256[]), txdata: 0x6c4e838affffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: EmojisanAuctionHouse
+Function name: wantNewMinter(address)
+PC address: 1307
+Estimated Gas Usage: 3422 - 73445
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1941f1df20f9871e40b9ba40fb42f093.sol:333
+Initial State:
+
+Account: [CREATOR], balance: 0xfbfbe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: wantNewMinter(address), txdata: 0x2233dbf4, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: EmojisanAuctionHouse
+Function name: wantItMoreThanYou(uint256)
+PC address: 1380
+Estimated Gas Usage: 1092 - 1707
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1941f1df20f9871e40b9ba40fb42f093.sol:155
+
+ auction[tokenId].owner;
+
+        require(block.number < user[pr
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: wantItMoreThanYou(uint256), txdata: 0x27180e42, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: EmojisanAuctionHouse
+Function name: wantItMoreThanYou(uint256)
+PC address: 1453
+Estimated Gas Usage: 2936 - 4591
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1941f1df20f9871e40b9ba40fb42f093.sol:161
+
+04 ➡️ 0.008 ➡️ 0.016 ➡️ 0.032 ➡️ 0.064 ➡️ 0.12
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x39ebe, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: wantItMoreThanYou(uint256), txdata: 0x27180e42, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: EmojisanAuctionHouse
+Function name: tokenByIndex(uint256)
+PC address: 2188
+Estimated Gas Usage: 1068 - 1163
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1941f1df20f9871e40b9ba40fb42f093.sol:87
+
+pping (address => User) pu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: tokenByIndex(uint256), txdata: 0x4f6ccce7, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: EmojisanAuctionHouse
+Function name: wantToBeWhale()
+PC address: 2723
+Estimated Gas Usage: 10192 - 99741
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1941f1df20f9871e40b9ba40fb42f093.sol:271
+
+    function whaleWantMyEther(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: wantToBeWhale(), txdata: 0x55247a52, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: EmojisanAuctionHouse
+Function name: wantToBeWhale()
+PC address: 2778
+Estimated Gas Usage: 10192 - 99741
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1941f1df20f9871e40b9ba40fb42f093.sol:273
+
+Address);
+
+        // che
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: wantToBeWhale(), txdata: 0x55247a52, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: EmojisanAuctionHouse
+Function name: wantToBeWhale()
+PC address: 2865
+Estimated Gas Usage: 10192 - 99741
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1941f1df20f9871e40b9ba40fb42f093.sol:277
+
+tTime + whaleWithdrawDelay);
+
+       
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: wantToBeWhale(), txdata: 0x55247a52, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: EmojisanAuctionHouse
+Function name: wantNewTokens(uint256[])
+PC address: 3115
+Estimated Gas Usage: 36130 - 193997
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1941f1df20f9871e40b9ba40fb42f093.sol:332
+
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xfbb1c, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: wantNewTokens(uint256[]), txdata: 0x6c4e838a80, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: EmojisanAuctionHouse
+Function name: wantNewTokens(uint256[])
+PC address: 3142
+Estimated Gas Usage: 36130 - 193997
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1941f1df20f9871e40b9ba40fb42f093.sol:332
+
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xfbb1c, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: wantNewTokens(uint256[]), txdata: 0x6c4e838a80, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: EmojisanAuctionHouse
+Function name: wantNewTokens(uint256[])
+PC address: 3161
+Estimated Gas Usage: 36130 - 193997
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xfbb1c, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: wantNewTokens(uint256[]), txdata: 0x6c4e838a80, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: EmojisanAuctionHouse
+Function name: wantNewTokens(uint256[])
+PC address: 3168
+Estimated Gas Usage: 36130 - 193997
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xfbb1c, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: wantNewTokens(uint256[]), txdata: 0x6c4e838a80, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: EmojisanAuctionHouse
+Function name: wantNewTokens(uint256[])
+PC address: 3187
+Estimated Gas Usage: 36130 - 193997
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1941f1df20f9871e40b9ba40fb42f093.sol:333
+Initial State:
+
+Account: [CREATOR], balance: 0x400000001000c8b9e, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: wantNewTokens(uint256[]), txdata: 0x6c4e838affffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: EmojisanAuctionHouse
+Function name: wantNewTokens(uint256[])
+PC address: 3194
+Estimated Gas Usage: 36130 - 193997
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1941f1df20f9871e40b9ba40fb42f093.sol:333
+Initial State:
+
+Account: [CREATOR], balance: 0xfbb1c, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: wantNewTokens(uint256[]), txdata: 0x6c4e838a80, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: EmojisanAuctionHouse
+Function name: wantItForFree(uint256)
+PC address: 3385
+Estimated Gas Usage: 1318 - 1933
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1941f1df20f9871e40b9ba40fb42f093.sol:133
+
+quire(auction[tokenId].owner == address(this));
+
+        auction
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: wantItForFree(uint256), txdata: 0xb32b664f, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: EmojisanAuctionHouse
+Function name: wantMyToken(uint256)
+PC address: 3917
+Estimated Gas Usage: 3259 - 5480
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1941f1df20f9871e40b9ba40fb42f093.sol:247
+
+sender].balance = 0;
+
+        msg.sender.transfer(amount);
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: wantMyToken(uint256), txdata: 0xd744f2a3, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: EmojisanAuctionHouse
+Function name: ownerWantMyEther()
+PC address: 4313
+Estimated Gas Usage: 8816 - 98556
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/1941f1df20f9871e40b9ba40fb42f093.sol:313
+
+ion[tokenIds[i]].owner = this;
+
+            tok
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: ownerWantMyEther(), txdata: 0xdd486c35, value: 0x0
+
+

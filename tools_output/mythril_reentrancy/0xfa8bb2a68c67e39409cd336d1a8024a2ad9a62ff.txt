@@ -1,0 +1,149 @@
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: testSend
+Function name: withdrawal()
+PC address: 499
+Estimated Gas Usage: 4191 - 73364
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: /tmp/6928b099c5520b46a7459b9ba6fa72ff.sol:30
+
+"logSendEvent()")));
+            msg.sender.send
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x85e0b6b3a7640000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: withdrawal(), txdata: 0xd4e93292, value: 0xde0b6b3a7640000
+Caller: [SOMEGUY], function: withdrawal(), txdata: 0xd4e93292, value: 0xde0b6b3a7640000
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: testSend
+Function name: withdrawal()
+PC address: 575
+Estimated Gas Usage: 4191 - 73364
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/6928b099c5520b46a7459b9ba6fa72ff.sol:31
+
+
+        }
+    }
+
+    functio
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x44000000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: withdrawal(), txdata: 0xd4e93292, value: 0xde0b6b3a7640000
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: testSend
+Function name: withdrawal()
+PC address: 575
+Estimated Gas Usage: 4191 - 73364
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/6928b099c5520b46a7459b9ba6fa72ff.sol:31
+
+
+        }
+    }
+
+    functio
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: withdrawal(), txdata: 0xd4e93292, value: 0xde0b6b3a7640000
+
+==== Unchecked return value from external call. ====
+SWC ID: 104
+Severity: Medium
+Contract: testSend
+Function name: withdrawal()
+PC address: 575
+Estimated Gas Usage: 4191 - 73364
+The return value of a message call is not checked.
+External calls return a boolean value. If the callee halts with an exception, 'false' is returned and execution continues in the caller. The caller should check whether an exception happened and react accordingly to avoid unexpected behavior. For example it is often desirable to wrap external calls in require() so the transaction is reverted if the call fails.
+--------------------
+In file: /tmp/6928b099c5520b46a7459b9ba6fa72ff.sol:31
+
+
+        }
+    }
+
+    functio
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21c10c0002003f22, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: withdrawal(), txdata: 0xd4e93292, value: 0xde0b6b3a7640000
+Caller: [SOMEGUY], function: withdrawal(), txdata: 0xd4e93292, value: 0xde0b6b3a7640000
+
+==== Unprotected Ether Withdrawal ====
+SWC ID: 105
+Severity: High
+Contract: testSend
+Function name: withdrawal()
+PC address: 575
+Estimated Gas Usage: 4191 - 73364
+Any sender can withdraw Ether from the contract account.
+Arbitrary senders other than the contract creator can profitably extract Ether from the contract account. Verify the business logic carefully and make sure that appropriate security controls are in place to prevent unexpected loss of funds.
+--------------------
+In file: /tmp/6928b099c5520b46a7459b9ba6fa72ff.sol:31
+
+
+        }
+    }
+
+    functio
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x10050031020012010, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: withdrawal(), txdata: 0xd4e93292, value: 0x1
+Caller: [ATTACKER], function: withdrawal(), txdata: 0xd4e93292, value: 0xde0b6b3a7640000

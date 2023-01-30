@@ -1,0 +1,205 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: CertificateLibrary
+Function name: validate(CertificateLibrary.Document storage,bytes,bytes32,bytes32)
+PC address: 236
+Estimated Gas Usage: 3509 - 7924
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/842519d91107df3fb120f4f97d4a46c8.sol:97
+
+function validate(Document storage self, bytes _ipfsHash, bytes32 _contentHash, bytes32 _transcriptHash) public view returns(bool) {
+        bytes storage ipfsHash = self.ipfsHash;
+        bytes32 contentHash = self.contentHash;
+        bytes32 transcriptHash = self.transcriptHash;
+        return contentHash == _contentHash && keccak256(ipfsHash) == keccak256(_ipfsHash) && transcriptHash == _transcriptHash;
+    }
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x53381880000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: validate(CertificateLibrary.Document storage,bytes,bytes32,bytes32), txdata: 0x79f145380101010101010101010120010101010101010101010101010101010101010101ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: CertificateLibrary
+Function name: validateIpfsDoc(CertificateLibrary.Document storage,bytes)
+PC address: 426
+Estimated Gas Usage: 1857 - 6272
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/842519d91107df3fb120f4f97d4a46c8.sol:109
+
+function validateIpfsDoc(Document storage self, bytes _ipfsHash) public view returns(bool) {
+        bytes storage ipfsHash = self.ipfsHash;
+        return keccak256(ipfsHash) == keccak256(_ipfsHash);
+    }
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x225f6f45fffffffd, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: validateIpfsDoc(CertificateLibrary.Document storage,bytes), txdata: 0xc65019f00000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: CertificateLibrary
+Function name: validate(CertificateLibrary.Document storage,bytes,bytes32,bytes32)
+PC address: 537
+Estimated Gas Usage: 3509 - 7924
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: validate(CertificateLibrary.Document storage,bytes,bytes32,bytes32), txdata: 0x79f145380000000000000000000000000000000000000000000000000000000000000040, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: CertificateLibrary
+Function name: validateIpfsDoc(CertificateLibrary.Document storage,bytes)
+PC address: 811
+Estimated Gas Usage: 1857 - 6272
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: validateIpfsDoc(CertificateLibrary.Document storage,bytes), txdata: 0xc65019f00000000000000000000000000000000000000000000000000000000000000040, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Certificate
+Function name: getCertificationDocument(address,uint256)
+PC address: 1144
+Estimated Gas Usage: 4111 - 6611
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/842519d91107df3fb120f4f97d4a46c8.sol:227
+
+return ((studentCertifications[_student].documents[_docIndx]).ipfsHash, (studentCertifications[_student].documents[_docIndx]).contentHash, (studentCertifications[_student].documents[_docIndx]).transcriptHash)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: getCertificationDocument(address,uint256), txdata: 0x48f1e9c2, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Certificate
+Function name: addCertification(address,bytes32,bytes,bytes32)
+PC address: 2768
+Estimated Gas Usage: 11147 - 71999
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/842519d91107df3fb120f4f97d4a46c8.sol:158
+
+studentCertifications[_student].indx++
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addCertification(address,bytes32,bytes,bytes32), txdata: 0xe2ad0699000000000000000000000000000000000000000000000000000000000000001f, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Certificate
+Function name: addCertification(address,bytes32,bytes,bytes32)
+PC address: 2791
+Estimated Gas Usage: 11147 - 71999
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/842519d91107df3fb120f4f97d4a46c8.sol:158
+
+studentCertifications[_student].indx++
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: addCertification(address,bytes32,bytes,bytes32), txdata: 0xe2ad0699000000000000000000000000000000000000000000000000000000000000001f, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Certificate
+Function name: transferDoc(uint256,address,address)
+PC address: 2992
+Estimated Gas Usage: 37112 - 159762
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/842519d91107df3fb120f4f97d4a46c8.sol:247
+
+studentCertifications[_studentAddrNew].documents[docIndx] = studentCertifications[_studentAddrOld].documents[docIndx]
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4a111200050000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferDoc(uint256,address,address), txdata: 0xf6310813, value: 0x0

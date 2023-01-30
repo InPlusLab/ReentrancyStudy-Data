@@ -1,0 +1,131 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Airdropper
+Function name: multisend(address,address[],uint256[])
+PC address: 266
+Estimated Gas Usage: 5241 - 83582
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0aa1f4481ab6f66b1c69f6d0135ebd99.sol:49
+
+ dests, uint256[] values)
+    onlyOwner
+    returns (uint256) {
+        uint256 i = 0;
+        while (i < dests.length) {
+           ERC20(_tokenAddr).transfer(dests[i], values[i]);
+           i += 1;
+        }
+        return(i);
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address,address[],uint256[]), txdata: 0xad8733ca01010101010101010101010101010101010101010101010101010101010102008000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Airdropper
+Function name: multisend(address,address[],uint256[])
+PC address: 595
+Estimated Gas Usage: 1591 - 8222
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0aa1f4481ab6f66b1c69f6d0135ebd99.sol:49
+
+ dests, uint256[] values)
+    onlyOwner
+    returns (uint256) {
+        uint256 i = 0;
+        while (i < dests.length) {
+           ERC20(_tokenAddr).transfer(dests[i], values[i]);
+           i += 1;
+        }
+        return(i);
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x30803000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address,address[],uint256[]), txdata: 0xad8733ca000000000000000000000000000000000000000000000000000000000000000080, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Airdropper
+Function name: multisend(address,address[],uint256[])
+PC address: 716
+Estimated Gas Usage: 5241 - 83582
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0aa1f4481ab6f66b1c69f6d0135ebd99.sol:55
+
+       i += 1;
+        }
+        return(i);
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address,address[],uint256[]), txdata: 0xad8733ca010101010101010101010101deadbeefdeadbeefdeadbeefdeadbeefdeadbeef80, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Airdropper
+Function name: multisend(address,address[],uint256[])
+PC address: 716
+Estimated Gas Usage: 5241 - 83582
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/0aa1f4481ab6f66b1c69f6d0135ebd99.sol:55
+
+       i += 1;
+        }
+        return(i);
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x43000000000000002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: multisend(address,address[],uint256[]), txdata: 0xad8733ca0000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+
+

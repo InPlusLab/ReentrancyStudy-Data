@@ -1,0 +1,149 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Swap
+Function name: tradeOut(address[],uint256)
+PC address: 798
+Estimated Gas Usage: 1350 - 1965
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/91041dbdc48be0d62db906947a6c3f0b.sol:106
+
+    uint256 amount=getTokenBalance(path[0]);//token balance
+        
+        if(amount>0){
+            uint256[] memory amounts = getAmountOut(amount, path);
+            if(amounts[amounts.length - 1]>=amountMinOut){
+                IERC20(path[0]).approve(address(uniswapRouter), amount);
+                uniswapRouter.swapExactTokensForTokens(
+                amount,
+                amountMinOut,
+                path,
+                address(this),
+                block.timestamp + 60*30
+                );
+            }
+            emit Swap(msg.sender, path, amount, amounts[amounts.length - 1]);
+        }
+        
+    }
+    
+    
+    // UTILS    
+    function getAmountOut(uint amountIn, address[] memory path) private returns(uint256[] memo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: tradeOut(address[],uint256), txdata: 0x1ee4e20000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Swap
+Function name: withdrawToken(address,address)
+PC address: 2186
+Estimated Gas Usage: 6117 - 110323
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/91041dbdc48be0d62db906947a6c3f0b.sol:76
+
+function getTokenBalance(address token
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawToken(address,address), txdata: 0x3aeac4e1000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Swap
+Function name: withdrawToken(address,address)
+PC address: 2328
+Estimated Gas Usage: 6117 - 110323
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/91041dbdc48be0d62db906947a6c3f0b.sol:73
+
+ }
+
+    // GET BALANCE
+    function getTokenBalance(address token)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawToken(address,address), txdata: 0x3aeac4e1000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Swap
+Function name: tradeIn(uint256,uint256,address[])
+PC address: 2749
+Estimated Gas Usage: 1443 - 2058
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/91041dbdc48be0d62db906947a6c3f0b.sol:83
+
+ldata path
+    ) external onWhiteList {
+        uint256 amount=getTokenBalance(path[0]);//token balance
+        if(amount>=amountIn){
+            uint256[] memory amounts = getAmountOut(amountIn, path);
+            if(amounts[amounts.length - 1]>=amountMinOut){
+                IERC20(path[0]).approve(address(uniswapRouter), amountIn);
+                uniswapRouter.swapExactTokensForTokens(
+                amountIn,
+                amountMinOut,
+                path,
+                address(this),
+                block.timestamp + 60*30
+                );
+            }
+            emit Swap(msg.sender, path, amountIn, amounts[amounts.length - 1]);
+        }
+        
+
+    }
+    function tradeOut(
+        address[] calldata path,uint amountMinOut
+    ) external onWhiteList 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x200, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: tradeIn(uint256,uint256,address[]), txdata: 0x40e0ef9c000000000000000000000000affeaffeaffeaffeaffeaffeaffeaffeaffeaffe00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020, value: 0x0

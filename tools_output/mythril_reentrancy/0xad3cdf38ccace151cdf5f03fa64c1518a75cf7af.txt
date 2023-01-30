@@ -1,0 +1,796 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Upgradable
+Function name: setInternalDependencies(address[])
+PC address: 266
+Estimated Gas Usage: 13437 - 57762
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:189
+
+dencies[i]);
+
+        }
+
+        internalDependencies = _newDependencies;
+
+    }
+
+
+
+    function setExternalDependencies(address[] _newDependencies) public onlyOwner {
+
+        externalDependencies = _newDependencies;
+
+        _setControllers(_newDependencies);
+
+    }
+
+}
+
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setInternalDependencies(address[]), txdata: 0x69c0ad93ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MainBase
+Function name: fallback
+PC address: 1081
+Estimated Gas Usage: 140 - 235
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:231
+
+
+
+    function emitDragonUpgraded(uint256) exte
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: upgradeDragonGenes(uint256,uint16[10]), txdata: 0x35c0cbaf, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: MainBase
+Function name: fallback
+PC address: 1375
+Estimated Gas Usage: 5905 - 78141
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:415
+
+ name)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x41001000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: upgradeDragonGenes(uint256,uint16[10]), txdata: 0x35c0cbaf, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: MainBase
+Function name: fallback
+PC address: 1479
+Estimated Gas Usage: 5905 - 78141
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:415
+
+ name) {
+
+        name = coreC
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000400, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: upgradeDragonGenes(uint256,uint16[10]), txdata: 0x35c0cbaf, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: MainBase
+Function name: useDragonSpecialPeacefulSkill(uint256,uint256)
+PC address: 1479
+Estimated Gas Usage: 5948 - 76070
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:415
+
+ name) {
+
+        name = coreC
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42000000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: useDragonSpecialPeacefulSkill(uint256,uint256), txdata: 0x4814bee8, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: MainBase
+Function name: fallback
+PC address: 1479
+Estimated Gas Usage: 5905 - 78141
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:415
+
+ name) {
+
+        name = coreC
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x41001000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: upgradeDragonGenes(uint256,uint16[10]), txdata: 0x35c0cbaf, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: MainBase
+Function name: useDragonSpecialPeacefulSkill(uint256,uint256)
+PC address: 1479
+Estimated Gas Usage: 5948 - 76070
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:415
+
+ name) {
+
+        name = coreC
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20112000000008810, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: useDragonSpecialPeacefulSkill(uint256,uint256), txdata: 0x4814bee8, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MainBase
+Function name: unpause()
+PC address: 1522
+Estimated Gas Usage: 979 - 1404
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:43
+
+ct owner");
+
+        _;
+
+    }
+
+
+
+    function trans
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000002000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unpause(), txdata: 0x3f4ba83a, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MainBase
+Function name: setDragonTactics(uint256,uint8,uint8)
+PC address: 1761
+Estimated Gas Usage: 208 - 303
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:231
+
+
+
+    function emitDragonUpgraded(uint256) exte
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: setDragonTactics(uint256,uint8,uint8), txdata: 0x466d3d38, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: MainBase
+Function name: setDragonTactics(uint256,uint8,uint8)
+PC address: 2054
+Estimated Gas Usage: 6000 - 76312
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:427
+
+     c
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x9000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setDragonTactics(uint256,uint8,uint8), txdata: 0x466d3d38, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: MainBase
+Function name: setDragonTactics(uint256,uint8,uint8)
+PC address: 2175
+Estimated Gas Usage: 6000 - 76312
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:427
+
+     coreController.setDragonSpecialPeacefulSkill
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setDragonTactics(uint256,uint8,uint8), txdata: 0x466d3d38, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: MainBase
+Function name: setDragonTactics(uint256,uint8,uint8)
+PC address: 2175
+Estimated Gas Usage: 6000 - 76312
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:427
+
+     coreController.setDragonSpecialPeacefulSkill
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x9000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setDragonTactics(uint256,uint8,uint8), txdata: 0x466d3d38, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MainBase
+Function name: useDragonSpecialPeacefulSkill(uint256,uint256)
+PC address: 2208
+Estimated Gas Usage: 209 - 304
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:231
+
+
+
+    function emitDragonUpgraded(uint256) exte
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: useDragonSpecialPeacefulSkill(uint256,uint256), txdata: 0x4814bee8, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: MainBase
+Function name: useDragonSpecialPeacefulSkill(uint256,uint256)
+PC address: 2491
+Estimated Gas Usage: 5948 - 76070
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:469
+
+nlyHum
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x20112000000008810, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: useDragonSpecialPeacefulSkill(uint256,uint256), txdata: 0x4814bee8, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MainBase
+Function name: distributeLeaderboardRewards()
+PC address: 2638
+Estimated Gas Usage: 491 - 5570
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:231
+
+
+
+    function emitDragonUpgraded(uint256) exte
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: distributeLeaderboardRewards(), txdata: 0x5f9ac1a5, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MainBase
+Function name: setExternalDependencies(address[])
+PC address: 3302
+Estimated Gas Usage: 1318 - 4330
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:43
+
+ct owner");
+
+        _;
+
+    }
+
+
+
+    function trans
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x7000c6e00000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setExternalDependencies(address[]), txdata: 0x65fc1253, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MainBase
+Function name: setInternalDependencies(address[])
+PC address: 3414
+Estimated Gas Usage: 1340 - 4352
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:43
+
+ct owner");
+
+        _;
+
+    }
+
+
+
+    function trans
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setInternalDependencies(address[]), txdata: 0x69c0ad93, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MainBase
+Function name: setInternalDependencies(address[])
+PC address: 3499
+Estimated Gas Usage: 8344 - 32060
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:505
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setInternalDependencies(address[]), txdata: 0x69c0ad93, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MainBase
+Function name: claimEgg(uint8)
+PC address: 3710
+Estimated Gas Usage: 353 - 448
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:231
+
+
+
+    function emitDragonUpgraded(uint256) exte
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: claimEgg(uint8), txdata: 0x7fbb1b56, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MainBase
+Function name: pause()
+PC address: 4330
+Estimated Gas Usage: 1177 - 1602
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:43
+
+ct owner");
+
+        _;
+
+    }
+
+
+
+    function trans
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: pause(), txdata: 0x8456cb59, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MainBase
+Function name: setDragonName(uint256,string)
+PC address: 4573
+Estimated Gas Usage: 437 - 532
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:231
+
+
+
+    function emitDragonUpgraded(uint256) exte
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3ffffffffffffff02, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x3ffffffffffffff01, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setDragonName(uint256,string), txdata: 0x99d76e49, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MainBase
+Function name: setName(string)
+PC address: 5155
+Estimated Gas Usage: 469 - 564
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:231
+
+
+
+    function emitDragonUpgraded(uint256) exte
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3ffffffffffffff02, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x3ffffffffffffff01, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setName(string), txdata: 0xc47f0027, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MainBase
+Function name: setDragonSpecialPeacefulSkill(uint256,uint8)
+PC address: 5624
+Estimated Gas Usage: 479 - 574
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:231
+
+
+
+    function emitDragonUpgraded(uint256) exte
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x228aa, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setDragonSpecialPeacefulSkill(uint256,uint8), txdata: 0xc718640a, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MainBase
+Function name: sendToNest(uint256)
+PC address: 6022
+Estimated Gas Usage: 501 - 596
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:231
+
+
+
+    function emitDragonUpgraded(uint256) exte
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3ffffffffffffff02, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x3ffffffffffffff01, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: sendToNest(uint256), txdata: 0xd2d21e85, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MainBase
+Function name: breed(uint256,uint256)
+PC address: 6614
+Estimated Gas Usage: 520 - 615
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:231
+
+
+
+    function emitDragonUpgraded(uint256) exte
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3ffffffffffffff02, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x3ffffffffffffff01, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: breed(uint256,uint256), txdata: 0xd9ecad7b, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MainBase
+Function name: transferOwnership(address)
+PC address: 7142
+Estimated Gas Usage: 1406 - 2161
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:43
+
+ct owner");
+
+        _;
+
+    }
+
+
+
+    function trans
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000400040042, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transferOwnership(address), txdata: 0xf2fde38b, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MainBase
+Function name: setInternalDependencies(address[])
+PC address: 7461
+Estimated Gas Usage: 2208 - 5550
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/11e9a0b0b641c1958e0815a414ff08c9.sol:43
+
+ct owner");
+
+        _;
+
+    }
+
+
+
+    function trans
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: setInternalDependencies(address[]), txdata: 0x69c0ad93, value: 0x0
+
+

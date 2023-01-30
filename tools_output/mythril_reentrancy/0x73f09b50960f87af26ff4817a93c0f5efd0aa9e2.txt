@@ -1,0 +1,86 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 120
+Severity: Low
+Contract: DualSig
+Function name: accept(uint256)
+PC address: 770
+Estimated Gas Usage: 5253 - 6338
+A control flow decision is made based on The block.number environment variable.
+The block.number environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/060f2528023094eda6783126e2238db4.sol:74
+
+
+        address localContract = proposalContract;
+        address loc
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: proposal(address,uint256,address), txdata: 0x6e3f3f1a0000000000000000000000000000000000000000000000000000000000000000010101010101010101010101010101010101010101010101010101010101010100000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: accept(uint256), txdata: 0x19b05f490000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DualSig
+Function name: accept(uint256)
+PC address: 1012
+Estimated Gas Usage: 44436 - 201849
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/060f2528023094eda6783126e2238db4.sol:88
+
+acceptNonce);
+    }
+
+    function transferDirectorA(a
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000200000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: proposal(address,uint256,address), txdata: 0x6e3f3f1a000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef010101010101010101010101010101010101010101010101010101010101010100000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: accept(uint256), txdata: 0x19b05f490000000000000000000000000000000000000000000000000000000000000002, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: DualSig
+Function name: proposal(address,uint256,address)
+PC address: 1270
+Estimated Gas Usage: 36312 - 158409
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/060f2528023094eda6783126e2238db4.sol:54
+
+proposalNonce, proposalAutho
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: proposal(address,uint256,address), txdata: 0x6e3f3f1a, value: 0x0
+
+

@@ -1,0 +1,594 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: PropTokenRENT
+Function name: claimBulkRentForTokens(address[],address)
+PC address: 358
+Estimated Gas Usage: 10469 - 154322
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:407
+
+int256 i = 0; i < _token.length; i++) {
+
+            rent = rent.add(rentAmountPerToken[_token[i]][msg.sender]);
+
+            rentAmountPerToken[_token[i]][msg.sender] = 0;
+
+
+
+            rent = rent.add(rentAmountPerToken[_token[i]][_holdingWallet]);
+
+            rentAmountPerToken[_token[i]][_holdingWallet] = 0;
+
+        }
+
+
+
+        BST.transfer(msg.sender, rent);
+
+    }
+
+
+
+    function pendingBSTForToken(address _token, address _user) public constant returns(uint256) {
+
+        return rentAmountPerToken[_token][_user];
+
+    }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80102050800, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: claimBulkRentForTokens(address[],address), txdata: 0xc945d941ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimRentForToken(address,address)
+PC address: 887
+Estimated Gas Usage: 22390 - 205270
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:379
+
+  rent = 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x72, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: claimRentForToken(address,address), txdata: 0x9f031afa, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimRentForToken(address,address)
+PC address: 969
+Estimated Gas Usage: 22390 - 205270
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:379
+
+  rent = rent.add(rentAmountPerToken[_t
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xa, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: claimRentForToken(address,address), txdata: 0x9f031afa, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimRentForToken(address,address)
+PC address: 969
+Estimated Gas Usage: 22390 - 205270
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:379
+
+  rent = rent.add(rentAmountPerToken[_t
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x72, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: claimRentForToken(address,address), txdata: 0x9f031afa, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimRentForToken(address,address)
+PC address: 1061
+Estimated Gas Usage: 22390 - 205270
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:381
+
+        rentAmountPerToken[_token][_ho
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x72, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: claimRentForToken(address,address), txdata: 0x9f031afa, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimRentForToken(address,address)
+PC address: 1064
+Estimated Gas Usage: 22390 - 205270
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:381
+
+= 0;
+
+        }
+
+
+
+        BST.transfer(ms
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x72, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: claimRentForToken(address,address), txdata: 0x9f031afa, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimRentForToken(address,address)
+PC address: 1076
+Estimated Gas Usage: 22390 - 205270
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:395
+
+list
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x72, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: claimRentForToken(address,address), txdata: 0x9f031afa, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimRentForToken(address,address)
+PC address: 1186
+Estimated Gas Usage: 22390 - 205270
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:395
+
+listed(msg.sender) && whitelist.isWhitelisted(_holdin
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x72, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: claimRentForToken(address,address), txdata: 0x9f031afa, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimRentForToken(address,address)
+PC address: 1276
+Estimated Gas Usage: 22390 - 205270
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:397
+
+.length < 11);
+
+        if(msg.sender != _
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000000021012, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: claimRentForToken(address,address), txdata: 0x9f031afa, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimRentForToken(address,address)
+PC address: 1333
+Estimated Gas Usage: 22390 - 205270
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:401
+
+            require(data.canMakeNoFeeTransfer(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000000021012, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: claimRentForToken(address,address), txdata: 0x9f031afa, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimRentForToken(address,address)
+PC address: 1339
+Estimated Gas Usage: 22390 - 205270
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:402
+
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x72, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: claimRentForToken(address,address), txdata: 0x9f031afa, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimRentForToken(address,address)
+PC address: 1448
+Estimated Gas Usage: 22390 - 205270
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:402
+
+
+        }
+
+        uint256 re
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x72, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: claimRentForToken(address,address), txdata: 0x9f031afa, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimBulkRentForTokens(address[],address)
+PC address: 1632
+Estimated Gas Usage: 10469 - 154322
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:411
+
+ken[_toke
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: claimBulkRentForTokens(address[],address), txdata: 0xc945d941, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimBulkRentForTokens(address[],address)
+PC address: 1714
+Estimated Gas Usage: 10469 - 154322
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:411
+
+ken[_token[i]][msg.sender] = 0;
+
+
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: claimBulkRentForTokens(address[],address), txdata: 0xc945d941, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimBulkRentForTokens(address[],address)
+PC address: 1714
+Estimated Gas Usage: 10469 - 154322
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:411
+
+ken[_token[i]][msg.sender] = 0;
+
+
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: claimBulkRentForTokens(address[],address), txdata: 0xc945d941, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimBulkRentForTokens(address[],address)
+PC address: 1800
+Estimated Gas Usage: 10469 - 154322
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:417
+
+]][_
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: claimBulkRentForTokens(address[],address), txdata: 0xc945d941, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimBulkRentForTokens(address[],address)
+PC address: 1910
+Estimated Gas Usage: 10469 - 154322
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:417
+
+]][_holdingWallet] = 0;
+
+        }
+
+
+
+        BST.tra
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: claimBulkRentForTokens(address[],address), txdata: 0xc945d941, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimBulkRentForTokens(address[],address)
+PC address: 2047
+Estimated Gas Usage: 10469 - 154322
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:429
+
+
+
+        return rentAmountPerToken[_toke
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: claimBulkRentForTokens(address[],address), txdata: 0xc945d941, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimBulkRentForTokens(address[],address)
+PC address: 2133
+Estimated Gas Usage: 10469 - 154322
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:434
+
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: claimBulkRentForTokens(address[],address), txdata: 0xc945d941, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimBulkRentForTokens(address[],address)
+PC address: 2304
+Estimated Gas Usage: 10469 - 154322
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:435
+Initial State:
+
+Account: [CREATOR], balance: 0x80000001832, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: claimBulkRentForTokens(address[],address), txdata: 0xc945d941, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: PropTokenRENT
+Function name: claimBulkRentForTokens(address[],address)
+PC address: 2413
+Estimated Gas Usage: 10469 - 154322
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/d002faaf6a15e8d8017b7925e09aa43f.sol:435
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: claimBulkRentForTokens(address[],address), txdata: 0xc945d941, value: 0x0

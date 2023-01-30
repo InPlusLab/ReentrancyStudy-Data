@@ -1,0 +1,385 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: LikaCrowdsale
+Function name: fallback
+PC address: 1997
+Estimated Gas Usage: 866 - 961
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/01ef4884fd388838720cde6ec6e92352.sol:189
+
+ollected >= Hardcap) {
+
+                ICOstate = ICOStateEnum.Successful;
+
+            }
+
+        } if (now >= ICOend) {
+
+            if (ICOstate == ICOStateEnum.Started) {
+
+                if (ICOcollected >= Softcap) {
+
+                    ICOstate = ICOStateEnum.Successful;
+
+             
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: unknown, txdata: 0x, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: LikaCrowdsale
+Function name: fallback
+PC address: 2086
+Estimated Gas Usage: 1688 - 1783
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/01ef4884fd388838720cde6ec6e92352.sol:203
+
+  } else {
+
+                    ICOstate = ICOStateEnum.Refunded;
+
+                }
+
+             }
+
+         }
+
+     }
+
+
+
+    modifier stateTransition() {
+
+        transitionState();
+
+        _;
+
+        transitionState();
+
+    }
+
+
+
+    modifier notHalted() {
+
+        require(!halted);
+
+        _;
+
+    }
+
+
+
+    // Owne
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8104040204a0ac, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000020, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: LikaCrowdsale
+Function name: fallback
+PC address: 2916
+Estimated Gas Usage: 16717 - 94224
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/01ef4884fd388838720cde6ec6e92352.sol:617
+Initial State:
+
+Account: [CREATOR], balance: 0x300010a350428920, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 010101010101010101010101deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: manualSendTokens(address,uint256), txdata: 0x04719030, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: LikaCrowdsale
+Function name: fallback
+PC address: 2982
+Estimated Gas Usage: 16717 - 94224
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/01ef4884fd388838720cde6ec6e92352.sol:617
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: ccccccccccccccccccccccccdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: manualSendTokens(address,uint256), txdata: 0x04719030, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: LikaCrowdsale
+Function name: fallback
+PC address: 3030
+Estimated Gas Usage: 16717 - 94224
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/01ef4884fd388838720cde6ec6e92352.sol:617
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: ccccccccccccccccccccccccdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: manualSendTokens(address,uint256), txdata: 0x04719030, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: LikaCrowdsale
+Function name: fallback
+PC address: 3083
+Estimated Gas Usage: 16717 - 94224
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/01ef4884fd388838720cde6ec6e92352.sol:617
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: ccccccccccccccccccccccccdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: manualSendTokens(address,uint256), txdata: 0x04719030, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: LikaCrowdsale
+Function name: fallback
+PC address: 3102
+Estimated Gas Usage: 16717 - 94224
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/01ef4884fd388838720cde6ec6e92352.sol:617
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: ccccccccccccccccccccccccdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: manualSendTokens(address,uint256), txdata: 0x04719030, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: LikaCrowdsale
+Function name: name()
+PC address: 3134
+Estimated Gas Usage: 2346 - 4087
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/01ef4884fd388838720cde6ec6e92352.sol:99
+
+false;
+
+
+
+    uint256 publi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8104040000a08c, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000010, value: 0x0
+Caller: [SOMEGUY], function: name(), txdata: 0x06fdde03, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: LikaCrowdsale
+Function name: totalSupply()
+PC address: 3348
+Estimated Gas Usage: 2646 - 37819
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/01ef4884fd388838720cde6ec6e92352.sol:297
+
+ onlyOwner public returns (bool 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40141080000002000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: totalSupply(), txdata: 0x18160ddd, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: LikaCrowdsale
+Function name: ICOweekBonus(uint256)
+PC address: 3715
+Estimated Gas Usage: 441 - 536
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/01ef4884fd388838720cde6ec6e92352.sol:155
+
+g(address => uint256) public weiToRecoverICO;
+
+
+
+    mappi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: ICOweekBonus(uint256), txdata: 0x4315391a80, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: LikaCrowdsale
+Function name: balanceOf(address)
+PC address: 4056
+Estimated Gas Usage: 3044 - 38642
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/01ef4884fd388838720cde6ec6e92352.sol:289
+
+ress(0));
+
+        managedTokenLedge
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc0f80000000008, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: balanceOf(address), txdata: 0x70a08231, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: LikaCrowdsale
+Function name: ICOamountBonusLimits(uint256)
+PC address: 4243
+Estimated Gas Usage: 639 - 734
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/01ef4884fd388838720cde6ec6e92352.sol:145
+
+103, 105, 107, 110]; // count bonus
+
+    uint256[5] public ICOweekBonus = [152, 1
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x42000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [SOMEGUY], function: ICOamountBonusLimits(uint256), txdata: 0x98606d1180, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: LikaCrowdsale
+Function name: ICOamountBonusMultipierInPercent(uint256)
+PC address: 4727
+Estimated Gas Usage: 793 - 888
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/01ef4884fd388838720cde6ec6e92352.sol:147
+
+105, 102]; // time bonus
+
+
+
+    mapping(address => uint256) public weiFor
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [SOMEGUY], function: ICOamountBonusMultipierInPercent(uint256), txdata: 0xc7d7284b80, value: 0x0
+
+

@@ -1,0 +1,466 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TokenHolder
+Function name: fallback
+PC address: 498
+Estimated Gas Usage: 2919 - 40311
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/c7e15b4e9a3dbcff17a70b111e396814.sol:633
+
+ minus _y, reverts if the cal
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10000000000008, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: withdrawTokens(address,address,uint256), txdata: 0x5e35359e000000000000000000000000010101010101010101010201010101010101010100000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: withdrawTokens(address,address,uint256), txdata: 0x5e35359e020202020202020202020202deadbeefdeadbeefdeadbeefdeadbeefdeadbeef02020202020202020202020201, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: BancorNetwork
+Function name: getReturnByPath(address[],uint256)
+PC address: 546
+Estimated Gas Usage: 3219 - 42768
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/c7e15b4e9a3dbcff17a70b111e396814.sol:1855
+
+tToken) { // sell the smart token
+
+                // check if the current smart token supply was changed in the previous iteration
+
+                supply = smartToken == prevSmartToken ? supply : smartToken.totalSupply();
+
+
+
+                // calculate the amount & the conversion fee
+
+                balance = converter.getConnectorBalance(toToken);
+
+                weight = getConnectorWeight(converter, toToken);
+
+                amount = formula.calculateSaleReturn(supply, balance, weight, amount);
+
+                fee = amount.mul(converter.conversionFee()).div(MAX_CONVERSION_FEE);
+
+                amount -= fee;
+
+
+
+                // update the smart token supply for the next iteration
+
+                supply = smartToken.totalSupply() - amount;
+
+            }
+
+            else { // cross connector conversion
+
+                (amount, fee) = converter.getReturn(fromToken, toToken, amount);
+
+            }
+
+
+
+            prevSmartToken = smartToken;
+
+            fromToken = toToken;
+
+        }
+
+
+
+        return (amount, fee);
+
+    }
+
+
+
+    /**
+
+        @dev checks whether the given converter supports a whitelist and if so, ensures that
+
+        the account that should receive the conversion result is actually whitelisted
+
+
+
+        @param _converter   converter to check for whitelist
+
+        @param _for         account that will receive the conversion result
+
+        @param _features    contract features contract address
+
+    */
+
+    function checkWhitelist(IBancorConverter _converter, address _for, IContractFeatures _features) private view {
+
+        IWhitelist whitelist;
+
+
+
+        // check if the converter supports the conversion whitelist feature
+
+        if (!_features.isSupported(_converter, FeatureIds.CONVERTER_CONVERSION_WHITELIST))
+
+            return;
+
+
+
+        // get the whitelist contract from the converter
+
+        whitelist = _converter.conversionWhitelist();
+
+        if (whitelist == address(0))
+
+            return;
+
+
+
+        // check if the account that should receive the conversion result is actually whitelisted
+
+        require(whitelist.isWhitelisted(_for));
+
+    }
+
+
+
+    /**
+
+        @dev claims the caller's tokens, converts them to any other token in the bancor network
+
+        by following a predefined conversion path and transfers the result tokens to a target account
+
+        note that allowance must be set beforehand
+
+
+
+        @param _path        conversion path, see conversion path format above
+
+        @param _amount      amount to convert from (in the initial source token)
+
+        @param _minReturn   if the conversion results in an amount smaller than the minimum return - it is cancelled, must be nonzero
+
+        @param _for         account that will receive the conversion result
+
+
+
+        @return tokens issued in return
+
+    */
+
+    function claimAndConvertFor(IERC20Token[] _path, uint256 _amount, uint256 _minReturn, address _for) public returns (uint256) {
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000080, value: 0x0
+Caller: [ATTACKER], function: getReturnByPath(address[],uint256), txdata: 0x0c8496ccffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BancorNetwork
+Function name: getReturnByPath(address[],uint256)
+PC address: 2876
+Estimated Gas Usage: 3219 - 42768
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/c7e15b4e9a3dbcff17a70b111e396814.sol:1869
+
+eReturn(supply, balance, weight, amount);
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 010101010101010101010101deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: getReturnByPath(address[],uint256), txdata: 0x0c8496cc80, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BancorNetwork
+Function name: getReturnByPath(address[],uint256)
+PC address: 2951
+Estimated Gas Usage: 3031 - 42018
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/c7e15b4e9a3dbcff17a70b111e396814.sol:1871
+
+(MAX_CON
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: getReturnByPath(address[],uint256), txdata: 0x0c8496cc, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BancorNetwork
+Function name: getReturnByPath(address[],uint256)
+PC address: 3020
+Estimated Gas Usage: 3212 - 42664
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/c7e15b4e9a3dbcff17a70b111e396814.sol:1881
+
+       }
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: getReturnByPath(address[],uint256), txdata: 0x0c8496cc80, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: BancorNetwork
+Function name: withdrawTokens(address,address,uint256)
+PC address: 5247
+Estimated Gas Usage: 3143 - 41195
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/c7e15b4e9a3dbcff17a70b111e396814.sol:633
+
+ minus _y, reverts if the cal
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: withdrawTokens(address,address,uint256), txdata: 0x5e35359e000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000001, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BancorNetwork
+Function name: claimAndConvertFor(address[],uint256,uint256,address)
+PC address: 6236
+Estimated Gas Usage: 971 - 4406
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/c7e15b4e9a3dbcff17a70b111e396814.sol:2065
+
+ram _val
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: claimAndConvertFor(address[],uint256,uint256,address), txdata: 0xb1e9932b, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BancorNetwork
+Function name: claimAndConvert(address[],uint256,uint256)
+PC address: 6236
+Estimated Gas Usage: 1076 - 4181
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/c7e15b4e9a3dbcff17a70b111e396814.sol:2065
+
+ram _val
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: claimAndConvert(address[],uint256,uint256), txdata: 0xc7ba24bc, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BancorNetwork
+Function name: convertForPrioritized(address[],uint256,uint256,address,uint256,uint256,uint8,bytes32,bytes32)
+PC address: 6447
+Estimated Gas Usage: 627 - 4062
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/c7e15b4e9a3dbcff17a70b111e396814.sol:1305
+
+ed uniqu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: convertForPrioritized(address[],uint256,uint256,address,uint256,uint256,uint8,bytes32,bytes32), txdata: 0x1134269a, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BancorNetwork
+Function name: convertForPrioritized2(address[],uint256,uint256,address,uint256,uint8,bytes32,bytes32)
+PC address: 6447
+Estimated Gas Usage: 788 - 4223
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/c7e15b4e9a3dbcff17a70b111e396814.sol:1305
+
+ed uniqu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: convertForPrioritized2(address[],uint256,uint256,address,uint256,uint8,bytes32,bytes32), txdata: 0x6b08f2ef, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BancorNetwork
+Function name: convertForPrioritized3(address[],uint256,uint256,address,uint256,uint256,uint8,bytes32,bytes32)
+PC address: 6447
+Estimated Gas Usage: 1044 - 4479
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/c7e15b4e9a3dbcff17a70b111e396814.sol:1305
+
+ed uniqu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: convertForPrioritized3(address[],uint256,uint256,address,uint256,uint256,uint8,bytes32,bytes32), txdata: 0xb406d386, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BancorNetwork
+Function name: convertFor(address[],uint256,uint256,address)
+PC address: 6447
+Estimated Gas Usage: 1124 - 4559
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/c7e15b4e9a3dbcff17a70b111e396814.sol:1305
+
+ed uniqu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: convertFor(address[],uint256,uint256,address), txdata: 0xc98fefed, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: BancorNetwork
+Function name: convert(address[],uint256,uint256)
+PC address: 6447
+Estimated Gas Usage: 1207 - 4312
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/c7e15b4e9a3dbcff17a70b111e396814.sol:1305
+
+ed uniqu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 00000000000000000000000001, value: 0x0
+Caller: [ATTACKER], function: convert(address[],uint256,uint256), txdata: 0xf3898a97, value: 0x0

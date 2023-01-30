@@ -1,0 +1,143 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Bounty0xEscrow
+Function name: distributeTokenToAddressesAndAmountsWithoutHost(address,address[],uint256[])
+PC address: 681
+Estimated Gas Usage: 2253 - 3668
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/a289eb49cf5aefa0304b3dc293f20baf.sol:491
+
+i = 0; i < _hunters.length; i++) {
+
+                require(_hunters[i].send(_amounts[i]));
+
+                emit Distribution(_token, this, _hunters[i], _amounts[i]);
+
+            }
+
+        } else {
+
+            require(ERC20(_token).balanceOf(this) >= totalAmount);
+
+            for (uint k = 0; k < _hunters.length; k++) {
+
+                ERC20(_token).transfer(_hunters[k], _amounts[k]);
+
+                emit Distribution(_token, this, _hunters[k], _amounts[k]);
+
+            }
+
+        }
+
+    }
+
+    function distributeWithTransferFrom(address _token, address _ownerOfTokens, address[] _hunters, uint256[] _amounts) external onlyOwner {
+
+        require(_token != address(0));
+
+        require(_hunters.length == _amounts.length);
+
+        uint256 totalAmount = 0;
+
+        for (uint j = 0; j < _amounts.length; j++) {
+
+            totalAmount = SafeMath.add(totalAmount, _amounts[j]);
+
+        }
+
+        require(ERC20(_token).allowance(_ownerOfTokens, this) >= totalAmount);
+
+        for (uint i = 0; i <
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: distributeTokenToAddressesAndAmountsWithoutHost(address,address[],uint256[]), txdata: 0xb425bd4300000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Bounty0xEscrow
+Function name: approveToPullOutTokens(address,address,uint256)
+PC address: 4625
+Estimated Gas Usage: 3027 - 39996
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/a289eb49cf5aefa0304b3dc293f20baf.sol:549
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: approveToPullOutTokens(address,address,uint256), txdata: 0xbd837b2b000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Bounty0xEscrow
+Function name: distributeTokenToAddressesAndAmounts(address,address,address[],uint256[])
+PC address: 4917
+Estimated Gas Usage: 1626 - 3041
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/a289eb49cf5aefa0304b3dc293f20baf.sol:267
+
+sed = false;
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1ff, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: distributeTokenToAddressesAndAmounts(address,address,address[],uint256[]), txdata: 0x5f4402c50280010002012001028008020102041004020201011001011001040101021002b420b1678c103d50184e20510f01f6003298670761b394ffc2605574e873a95c80, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Bounty0xEscrow
+Function name: distributeTokenToAddressesAndAmountsWithoutHost(address,address[],uint256[])
+PC address: 4917
+Estimated Gas Usage: 1689 - 2774
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/a289eb49cf5aefa0304b3dc293f20baf.sol:267
+
+sed = false;
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x105002204, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: distributeTokenToAddressesAndAmountsWithoutHost(address,address[],uint256[]), txdata: 0xb425bd430000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000008080, value: 0x0

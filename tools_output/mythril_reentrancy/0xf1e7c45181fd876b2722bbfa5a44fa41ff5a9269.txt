@@ -1,0 +1,723 @@
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MultiSeller
+Function name: fallback
+PC address: 311
+Estimated Gas Usage: 53 - 148
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:1033
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: unknown, txdata: 0x, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: CanReclaimToken
+Function name: fallback
+PC address: 364
+Estimated Gas Usage: 5251 - 76875
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:573
+
+6 _amount,
+
+        u
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x209e44e, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320, value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CanReclaimToken
+Function name: fallback
+PC address: 408
+Estimated Gas Usage: 5251 - 76875
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:579
+
+     
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000000020, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: CanReclaimToken
+Function name: fallback
+PC address: 729
+Estimated Gas Usage: 5251 - 76875
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:497
+
+ts that should be able to
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x209e44e, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320, value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: CanReclaimToken
+Function name: fallback
+PC address: 729
+Estimated Gas Usage: 5251 - 76875
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:497
+
+ts that should be able to
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: CanReclaimToken
+Function name: fallback
+PC address: 729
+Estimated Gas Usage: 5251 - 76875
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:497
+
+ts that should be able to
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000000020, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MultiSeller
+Function name: fallback
+PC address: 1750
+Estimated Gas Usage: 1004 - 2089
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:399
+
+ The address to transfer own
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x38910, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: reclaimToken(address), txdata: 0x17ffc320, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiChanger
+Function name: bancorApproveTokenProportion(address,address[],uint256,uint256)
+PC address: 2460
+Estimated Gas Usage: 344 - 1099
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:853
+
+20(_path[0]).transfer(_bancor, amount);
+
+        _bancor.convert(_path, amount, 1);
+
+    }
+
+
+
+    function bancorAlreadyTransferedTokenAmount(IBancorNetwork _bancor, address[] _path, uint256 _amount) external {
+
+        _bancor.convert(_path, _amount, 1);
+
+    }
+
+
+
+    function bancorAlreadyTransferedTokenProportion(IBancorNetwork _bancor, address[] _path, uint256 _mul, uint256 _div) external {
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: bancorApproveTokenProportion(address,address[],uint256,uint256), txdata: 0x38085649, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiChanger
+Function name: bancorTransferTokenAmount(address,address[],uint256)
+PC address: 3122
+Estimated Gas Usage: 345 - 1100
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:871
+
+56 amount = ERC20(_path[0]).balanceOf(_bancor).mul(_mul).div(_div);
+
+        _bancor.convert(_path, amount, 1);
+
+    }
+
+
+
+    // Kyber Network
+
+
+
+    function kyberSendEthProportion(IKyberNetworkProxy _kyber, ERC20
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: bancorTransferTokenAmount(address,address[],uint256), txdata: 0x40f0b0f1, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiSeller
+Function name: bancorApproveTokenProportion(address,address[],uint256,uint256)
+PC address: 3170
+Estimated Gas Usage: 366 - 1121
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:853
+
+20(_path[0]).transfer(_bancor, amount);
+
+        _bancor.convert(_path, amount, 1);
+
+    }
+
+
+
+    function bancorAlreadyTransferedTokenAmount(IBancorNetwork _bancor, address[] _path, uint256 _amount) external {
+
+        _bancor.convert(_path, _amount, 1);
+
+    }
+
+
+
+    function bancorAlreadyTransferedTokenProportion(IBancorNetwork _bancor, address[] _path, uint256 _mul, uint256 _div) external {
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: bancorApproveTokenProportion(address,address[],uint256,uint256), txdata: 0x38085649, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiChanger
+Function name: bancorTransferTokenProportion(address,address[],uint256,uint256)
+PC address: 3645
+Estimated Gas Usage: 410 - 1165
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:883
+
+ address _toToken, uint256 _mul, uint256 _div) external {
+
+        uint256 value = address(this).balance.mul(_mul).div(_div);
+
+        _kyber.trade.value(value)(
+
+            _fromToken,
+
+            value,
+
+            _toToken,
+
+            this,
+
+            1 << 255,
+
+            0,
+
+            0
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: bancorTransferTokenProportion(address,address[],uint256,uint256), txdata: 0x618e8ad3, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiSeller
+Function name: bancorTransferTokenAmount(address,address[],uint256)
+PC address: 3832
+Estimated Gas Usage: 367 - 1122
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:871
+
+56 amount = ERC20(_path[0]).balanceOf(_bancor).mul(_mul).div(_div);
+
+        _bancor.convert(_path, amount, 1);
+
+    }
+
+
+
+    // Kyber Network
+
+
+
+    function kyberSendEthProportion(IKyberNetworkProxy _kyber, ERC20
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: bancorTransferTokenAmount(address,address[],uint256), txdata: 0x40f0b0f1, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiSeller
+Function name: bancorTransferTokenProportion(address,address[],uint256,uint256)
+PC address: 4355
+Estimated Gas Usage: 432 - 1187
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:883
+
+ address _toToken, uint256 _mul, uint256 _div) external {
+
+        uint256 value = address(this).balance.mul(_mul).div(_div);
+
+        _kyber.trade.value(value)(
+
+            _fromToken,
+
+            value,
+
+            _toToken,
+
+            this,
+
+            1 << 255,
+
+            0,
+
+            0
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: bancorTransferTokenProportion(address,address[],uint256,uint256), txdata: 0x618e8ad3, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiChanger
+Function name: bancorAlreadyTransferedTokenProportion(address,address[],uint256,uint256)
+PC address: 4656
+Estimated Gas Usage: 564 - 1319
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:911
+
+ == 0) {
+
+            _fromToken.approve(_kyber, uint256(-1));
+
+        }
+
+        _kyber.trade(
+
+            _fromToken,
+
+            _amount,
+
+            _toToken,
+
+            this,
+
+            1 << 255,
+
+            0,
+
+            0
+
+        );
+
+    }
+
+
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: bancorAlreadyTransferedTokenProportion(address,address[],uint256,uint256), txdata: 0x9d99ce04, value: 0x0
+
+==== Dependence on tx.origin ====
+SWC ID: 115
+Severity: Low
+Contract: MultiSeller
+Function name: renounceOwnership()
+PC address: 4694
+Estimated Gas Usage: 1168 - 1923
+Use of tx.origin as a part of authorization control.
+The tx.origin environment variable has been found to influence a control flow decision. Note that using tx.origin as a security control might cause a situation where a user inadvertently authorizes a smart contract to perform an action on their behalf. It is recommended to use msg.sender instead.
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:399
+
+ The address to transfer own
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2081000000001000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: renounceOwnership(), txdata: 0x715018a6, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiSeller
+Function name: bancorAlreadyTransferedTokenProportion(address,address[],uint256,uint256)
+PC address: 5385
+Estimated Gas Usage: 608 - 1363
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:911
+
+ == 0) {
+
+            _fromToken.approve(_kyber, uint256(-1));
+
+        }
+
+        _kyber.trade(
+
+            _fromToken,
+
+            _amount,
+
+            _toToken,
+
+            this,
+
+            1 << 255,
+
+            0,
+
+            0
+
+        );
+
+    }
+
+
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: bancorAlreadyTransferedTokenProportion(address,address[],uint256,uint256), txdata: 0x9d99ce04, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiChanger
+Function name: bancorSendEthProportion(address,address[],uint256,uint256)
+PC address: 7263
+Estimated Gas Usage: 1102 - 1857
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:835
+
+   }
+
+
+
+    function bancorTransferTokenA
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: bancorSendEthProportion(address,address[],uint256,uint256), txdata: 0x2545f8eb, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiChanger
+Function name: sendEthProportion(address,bytes,uint256,uint256)
+PC address: 7263
+Estimated Gas Usage: 1256 - 2011
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:835
+
+   }
+
+
+
+    function bancorTransferTokenA
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: sendEthProportion(address,bytes,uint256,uint256), txdata: 0x846f1185, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiChanger
+Function name: kyberSendEthProportion(address,address,address,uint256,uint256)
+PC address: 7263
+Estimated Gas Usage: 1297 - 2052
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:835
+
+   }
+
+
+
+    function bancorTransferTokenA
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: kyberSendEthProportion(address,address,address,uint256,uint256), txdata: 0x8721fbe9, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiSeller
+Function name: bancorSendEthProportion(address,address[],uint256,uint256)
+PC address: 7986
+Estimated Gas Usage: 1102 - 1857
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:835
+
+   }
+
+
+
+    function bancorTransferTokenA
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80080, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: bancorSendEthProportion(address,address[],uint256,uint256), txdata: 0x2545f8eb, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MultiSeller
+Function name: sendEthProportion(address,bytes,uint256,uint256)
+PC address: 7986
+Estimated Gas Usage: 1300 - 2055
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: data/kongqp/os_smart_contract_deduplicated/21dd0b44509d5ce19816e310de6624c6.sol:835
+
+   }
+
+
+
+    function bancorTransferTokenA
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: sendEthProportion(address,bytes,uint256,uint256), txdata: 0x846f1185, value: 0x0
+
+

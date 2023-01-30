@@ -1,0 +1,353 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DBETToVETDeposit
+Function name: depositTokens(bool,uint256,address)
+PC address: 2030
+Estimated Gas Usage: 21382 - 168115
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/475079e5255bcf8dc80b35f2ce6cd1e4.sol:315
+
+));
+
+
+
+        emit LogTokenDeposit(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: a3a3a3a3a3a3a3a3a3a3a3a38000000004020200000000100004102000008000a3a3a3a3a3a3a3a3a3a3a3a3deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositTokens(bool,uint256,address), txdata: 0x9d6d85980101020102010101010101010101080101010120400101010101010101010101220208820584802022000d8569702f02454c2b58ba1ad6f7483687d9eaee046800000000000000000000000001, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DBETToVETDeposit
+Function name: depositTokens(bool,uint256,address)
+PC address: 2318
+Estimated Gas Usage: 21382 - 168115
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/475079e5255bcf8dc80b35f2ce6cd1e4.sol:323
+
+ msg.sender,
+
+            VETAddress,
+
+            
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: a3a3a3a3a3a3a3a3a3a3a3a38000000004020200000000100004102000008000a3a3a3a3a3a3a3a3a3a3a3a3deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositTokens(bool,uint256,address), txdata: 0x9d6d85980101020102010101010101010101080101010120400101010101010101010101220208820584802022000d8569702f02454c2b58ba1ad6f7483687d9eaee046800000000000000000000000001, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: DBETToVETDeposit
+Function name: depositTokens(bool,uint256,address)
+PC address: 2318
+Estimated Gas Usage: 21382 - 168115
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/475079e5255bcf8dc80b35f2ce6cd1e4.sol:323
+
+ msg.sender,
+
+            VETAddress,
+
+            
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000020, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: depositTokens(bool,uint256,address), txdata: 0x9d6d859804204040400204018010201001408004022004208040200140042010020880026523dc5f7512c8223423a3a010e0a5392802200a862002000006030900300d0500000000000000000000000020, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DBETToVETDeposit
+Function name: depositTokens(bool,uint256,address)
+PC address: 2318
+Estimated Gas Usage: 21382 - 168115
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/475079e5255bcf8dc80b35f2ce6cd1e4.sol:323
+
+ msg.sender,
+
+            VETAddress,
+
+            
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40040100040805, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 1212121212121212121212120401004000000001040402080802081010800020121212121212121212121212deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositTokens(bool,uint256,address), txdata: 0x9d6d8598010201010101010101010101020101010101010102020101010102010101010121b012ca8920c00010514808e5b200000fb540000000000000000000000efd7800000000000000000000000004, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DBETToVETDeposit
+Function name: depositTokens(bool,uint256,address)
+PC address: 2476
+Estimated Gas Usage: 21382 - 168115
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/475079e5255bcf8dc80b35f2ce6cd1e4.sol:337
+
+nction enableEmergencyWithdrawals
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40040100040805, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 1212121212121212121212120401004000000001040402080802081010800020121212121212121212121212deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositTokens(bool,uint256,address), txdata: 0x9d6d8598010201010101010101010101020101010101010102020101010102010101010121b012ca8920c00010514808e5b200000fb540000000000000000000000efd7800000000000000000000000004, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DBETToVETDeposit
+Function name: depositTokens(bool,uint256,address)
+PC address: 2577
+Estimated Gas Usage: 21382 - 168115
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/475079e5255bcf8dc80b35f2ce6cd1e4.sol:329
+
+Index++
+
+        );
+
+    }
+
+
+
+    function enableEmergencyWithdrawals () public
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40040100040805, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 1212121212121212121212120401004000000001040402080802081010800020121212121212121212121212deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositTokens(bool,uint256,address), txdata: 0x9d6d8598010201010101010101010101020101010101010102020101010102010101010121b012ca8920c00010514808e5b200000fb540000000000000000000000efd7800000000000000000000000004, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: DBETToVETDeposit
+Function name: depositTokens(bool,uint256,address)
+PC address: 2804
+Estimated Gas Usage: 21382 - 168115
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/475079e5255bcf8dc80b35f2ce6cd1e4.sol:341
+
+ emergencyWithdrawalsEnabled = true;
+
+    }
+
+
+
+    function fi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: a3a3a3a3a3a3a3a3a3a3a3a30000001cb5f7087b3fbede00f4e55e4f0070dfc7a3a3a3a3a3a3a3a3a3a3a3a3deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: depositTokens(bool,uint256,address), txdata: 0x9d6d8598080220010101010104010101010140010200800102010201040801028020080238711104f49d6201029548a89f02400000000c4bfcdcf7ebeee4fe3aaa5ced3c00000000000000000000000001, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DBETToVETDeposit
+Function name: depositTokens(bool,uint256,address)
+PC address: 2804
+Estimated Gas Usage: 21382 - 168115
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/475079e5255bcf8dc80b35f2ce6cd1e4.sol:341
+
+ emergencyWithdrawalsEnabled = true;
+
+    }
+
+
+
+    function fi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40040100040805, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 1212121212121212121212120401004000000001040402080802081010800020121212121212121212121212deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositTokens(bool,uint256,address), txdata: 0x9d6d8598010201010101010101010101020101010101010102020101010102010101010121b012ca8920c00010514808e5b200000fb540000000000000000000000efd7800000000000000000000000004, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DBETToVETDeposit
+Function name: depositTokens(bool,uint256,address)
+PC address: 2914
+Estimated Gas Usage: 21382 - 168115
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/475079e5255bcf8dc80b35f2ce6cd1e4.sol:357
+
+en enabled
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000088000001d0b, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x200000000000008, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 1212121212121212121212120408000000000000000000000000000000000000121212121212121212121212deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: depositTokens(bool,uint256,address), txdata: 0x9d6d859802084080804001800180401040080404010408020801010101400101040102011210121c8a832a0c800b1608c39fd1840800000000000000000000021000000000000000000000000000000080, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DBETToVETDeposit
+Function name: depositTokens(bool,uint256,address)
+PC address: 2925
+Estimated Gas Usage: 21382 - 168115
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/475079e5255bcf8dc80b35f2ce6cd1e4.sol:357
+
+en enabled
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000088000001d0b, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x200000000000008, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 1212121212121212121212120408000000000000000000000000000000000000121212121212121212121212deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: depositTokens(bool,uint256,address), txdata: 0x9d6d859802084080804001800180401040080404010408020801010101400101040102011210121c8a832a0c800b1608c39fd1840800000000000000000000021000000000000000000000000000000080, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DBETToVETDeposit
+Function name: depositTokens(bool,uint256,address)
+PC address: 3262
+Estimated Gas Usage: 21382 - 168115
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/475079e5255bcf8dc80b35f2ce6cd1e4.sol:303
+
+VETAdd
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40040100040805, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 1212121212121212121212120401004000000001040402080802081010800020121212121212121212121212deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositTokens(bool,uint256,address), txdata: 0x9d6d8598010201010101010101010101020101010101010102020101010102010101010121b012ca8920c00010514808e5b200000fb540000000000000000000000efd7800000000000000000000000004, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: DBETToVETDeposit
+Function name: depositTokens(bool,uint256,address)
+PC address: 3304
+Estimated Gas Usage: 21352 - 168085
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/475079e5255bcf8dc80b35f2ce6cd1e4.sol:305
+
+V2).ba
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1808b, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x80, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 606060606060606060606060deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: depositTokens(bool,uint256,address), txdata: 0x9d6d859800000000000000000000000000000000000000000000000000000000000000000280f1c8100221060080420f9c4f6d771faf0121e41483039241ee8c011e807400000000000000000000000001, value: 0x0

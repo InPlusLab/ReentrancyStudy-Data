@@ -1,0 +1,361 @@
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Bussiness
+Function name: setPriceFeeHBWALLET(uint256,uint256,bool)
+PC address: 2901
+Estimated Gas Usage: 53608 - 265851
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/e179e471bc87eaa3748042d2714da29b.sol:395
+
+ethfee = _ethPrice * ETHFee / Percen;
+
+            fee = ethfee * HBWALLETE
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x800000e177c, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setPriceFeeHBWALLET(uint256,uint256,bool), txdata: 0x5d8b5437000000000000000101020202010101020004800802802080080280048040000401010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Bussiness
+Function name: setPriceFeeHBWALLET(uint256,uint256,bool)
+PC address: 3129
+Estimated Gas Usage: 53608 - 265851
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/e179e471bc87eaa3748042d2714da29b.sol:413
+
+der);
+
+        if (pri
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x801020e9e7e, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setPriceFeeHBWALLET(uint256,uint256,bool), txdata: 0x5d8b5437000000000000000004000000000000000102020101010202000000000000000001010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Bussiness
+Function name: arrayTokenIdSale(uint256)
+PC address: 3336
+Estimated Gas Usage: 1073 - 1168
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/e179e471bc87eaa3748042d2714da29b.sol:231
+
+uire(msg.sender == ceoAddress)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x200, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: arrayTokenIdSale(uint256), txdata: 0x98208a830000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Bussiness
+Function name: setPriceFeeHBWALLET(uint256,uint256,bool)
+PC address: 6540
+Estimated Gas Usage: 53608 - 265851
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/e179e471bc87eaa3748042d2714da29b.sol:307
+
+r && prices[_tokenId].price != _ethPrice);
+
+        uint256 ethfee;
+
+        ui
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x801020e9e7e, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setPriceFeeHBWALLET(uint256,uint256,bool), txdata: 0x5d8b5437000000000000000004000000000000000102020101010202000000000000000001010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Bussiness
+Function name: setPriceFeeHBWALLET(uint256,uint256,bool)
+PC address: 6564
+Estimated Gas Usage: 53608 - 265851
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/e179e471bc87eaa3748042d2714da29b.sol:307
+
+r && prices[_tokenId].price != _ethPrice);
+
+        uint256 ethfee;
+
+        ui
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x801020e9e7e, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setPriceFeeHBWALLET(uint256,uint256,bool), txdata: 0x5d8b5437000000000000000004000000000000000102020101010202000000000000000001010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Bussiness
+Function name: setPriceFeeHBWALLET(uint256,uint256,bool)
+PC address: 6575
+Estimated Gas Usage: 53608 - 265851
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/e179e471bc87eaa3748042d2714da29b.sol:307
+
+r && prices[_tokenId].price != _ethPrice);
+
+        uint256 ethfee;
+
+        ui
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x801020e9e7e, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setPriceFeeHBWALLET(uint256,uint256,bool), txdata: 0x5d8b5437000000000000000004000000000000000102020101010202000000000000000001010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Bussiness
+Function name: setPriceFeeHBWALLET(uint256,uint256,bool)
+PC address: 6582
+Estimated Gas Usage: 53608 - 265851
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/e179e471bc87eaa3748042d2714da29b.sol:307
+
+r && prices[_tokenId].price != _ethPrice);
+
+        uint256 ethfee;
+
+        ui
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x801020e9e7e, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setPriceFeeHBWALLET(uint256,uint256,bool), txdata: 0x5d8b5437000000000000000004000000000000000102020101010202000000000000000001010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Bussiness
+Function name: setPriceFeeHBWALLET(uint256,uint256,bool)
+PC address: 6589
+Estimated Gas Usage: 53608 - 265851
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/e179e471bc87eaa3748042d2714da29b.sol:307
+
+r && prices[_tokenId].price != _ethPrice);
+
+        uint256 ethfee;
+
+        ui
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x801020e9e7e, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setPriceFeeHBWALLET(uint256,uint256,bool), txdata: 0x5d8b5437000000000000000004000000000000000102020101010202000000000000000001010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Bussiness
+Function name: setPriceFeeHBWALLET(uint256,uint256,bool)
+PC address: 6598
+Estimated Gas Usage: 53608 - 265851
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/e179e471bc87eaa3748042d2714da29b.sol:307
+
+r && prices[_tokenId].price != _ethPrice);
+
+        uint256 ethfee;
+
+        ui
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x801020e9e7e, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setPriceFeeHBWALLET(uint256,uint256,bool), txdata: 0x5d8b5437000000000000000004000000000000000102020101010202000000000000000001010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Bussiness
+Function name: setPriceFeeHBWALLET(uint256,uint256,bool)
+PC address: 6612
+Estimated Gas Usage: 53608 - 265851
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/e179e471bc87eaa3748042d2714da29b.sol:307
+
+r && prices[_tokenId].price != _ethPrice);
+
+        uint256 ethfee;
+
+        ui
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x801020e9e7e, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setPriceFeeHBWALLET(uint256,uint256,bool), txdata: 0x5d8b5437000000000000000004000000000000000102020101010202000000000000000001010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Bussiness
+Function name: setPriceFeeHBWALLET(uint256,uint256,bool)
+PC address: 6616
+Estimated Gas Usage: 53608 - 265851
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x801020e9e7e, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setPriceFeeHBWALLET(uint256,uint256,bool), txdata: 0x5d8b5437000000000000000004000000000000000102020101010202000000000000000001010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Bussiness
+Function name: setPriceFeeHBWALLET(uint256,uint256,bool)
+PC address: 6621
+Estimated Gas Usage: 53608 - 265851
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x801020e9e7e, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setPriceFeeHBWALLET(uint256,uint256,bool), txdata: 0x5d8b5437000000000000000004000000000000000102020101010202000000000000000001010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Bussiness
+Function name: setPriceFeeHBWALLET(uint256,uint256,bool)
+PC address: 6659
+Estimated Gas Usage: 53608 - 265851
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/e179e471bc87eaa3748042d2714da29b.sol:311
+
+ightFee = 0;
+
+        if (_isHi
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x801020e9e7e, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x20000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: setPriceFeeHBWALLET(uint256,uint256,bool), txdata: 0x5d8b5437000000000000000004000000000000000102020101010202000000000000000001010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101, value: 0x0

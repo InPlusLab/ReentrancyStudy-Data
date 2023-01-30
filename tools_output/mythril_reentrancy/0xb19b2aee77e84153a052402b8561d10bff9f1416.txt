@@ -1,0 +1,148 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: HypeRideCrowdsale
+Function name: constructor
+PC address: 196
+Estimated Gas Usage: 47687 - 230790
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/50f52913bf4723ee01c6a2362fc73756.sol:275
+
+ideToken) {
+    return n
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: HypeRideCrowdsale
+Function name: fallback
+PC address: 1156
+Estimated Gas Usage: 883 - 978
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/50f52913bf4723ee01c6a2362fc73756.sol:399
+
+tokens.add(bonus);
+        require(TOKENS_SOLD+tokens<=maxTokensToSale);
+    
+        // update state
+        weiRaised = weiRaised.add(weiAmount);
+
+        token.mint(wallet, beneficiary, tokens); 
+        TokenPurchase(msg.sender, beneficiary, weiAmount, tokens);
+        TOKENS_SOLD = TOKENS_SOLD.add(tokens);
+        forwardFunds();
+    }
+    else if (now > endTime && now <= endTime + 365 days)
+    {
+        require(beneficiary != 0x0);
+        require(isCrowdsalePaused == false);
+        require(msg.value > 0);
+        require(TOKENS_SOLD<maxTokensToSale);
+        weiAmount = msg.value;
+    
+        // calculate token amount to be created
+    
+        tokens = weiAmount.mul(ratePerWei);
+        require(TOKENS_SOLD+tokens<=maxTokensToSale);
+    
+        // update state
+        weiRaised = weiRaised.add(weiAmount);
+
+        token.mint(wallet, beneficiary, tokens); 
+        TokenPurchase(msg.sender, beneficiary, weiAmount, tokens);
+        TOKENS_SOLD = TOKENS_SOLD.add(tokens);
+        forwardFunds();
+    }
+  }
+
+  // send ether to the fund collection wallet
+  // override to create custom fund forwarding mechanisms
+  function forwardFunds() internal {
+    wallet.transfer(msg.value);
+  }
+
+  // @return true if the transaction can buy tokens
+  function validPurchase() internal constant returns (bool) {
+    bool withinPeriod = now >= startTime && now <= endTime;
+    bool nonZeroPurchase = msg.value != 0;
+    return withinPeriod && n
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000008811ffffffffffffffffffffffffffffffffff62000000000000000000000000000001, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: HypeRideCrowdsale
+Function name: fallback
+PC address: 1855
+Estimated Gas Usage: 1711 - 1806
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/50f52913bf4723ee01c6a2362fc73756.sol:423
+
+ // update state
+        weiRaised = weiRa
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x200000003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000000000000000000000000000000000000001cc0000000000000000000000000001, value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: HypeRideToken
+Function name: transferAnyERC20Token(address,uint256)
+PC address: 5967
+Estimated Gas Usage: 3904 - 39785
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/50f52913bf4723ee01c6a2362fc73756.sol:215
+
+re(tokenBalances[wallet] >= tokenAmount);           
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferAnyERC20Token(address,uint256), txdata: 0xdc39d06d000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

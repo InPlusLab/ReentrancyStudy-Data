@@ -1,0 +1,737 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    TokenReserve
+Line:        115
+Source: 
+>         uint unlockBracket = getBracketByTimestamp(block.timestamp.add(lockPeriod));
+>         if (unlockBracket == lastUnlockBracket) {
+>                           ^^^^^^^^^^^^^^^^^^^^^^^
+>             brackets[lastUnlockBracket].value = brackets[lastUnlockBracket].value.add(value);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    TokenReserve
+Line:        118
+Source: 
+>         } else {
+>             if (lastUnlockBracket == 0) {
+>                               ^^^^^^^^^^^
+>                 firstUnlockBracket = unlockBracket;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    TokenReserve
+Line:        152
+Source: 
+>         }
+>         if (firstUnlockBracket == 0) {
+>                           ^^^^^^^^^^^^
+>             lastUnlockBracket = 0;
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    TokenReserve
+Line:        222
+Source: 
+>         require(msg.sender == tokenContractAddress, "Sender must be a token contract address");
+>         if (value == 0) {
+>                           
+>             require(authorizedWithdrawalAddress[from], "Only authorized addresses can unlock tokens");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    TokenReserve
+Line:        109
+Source: 
+>      */
+>     function lockTokens(uint value) public {
+>                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lockTokensInternal(msg.sender, value);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    TokenReserve
+Line:        136
+Source: 
+>      */
+>     function unlockTokens() public authorizedAccessOnly {
+>                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         unlockTokensInternal(msg.sender);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    TokenReserve
+Line:        170
+Source: 
+>      */
+>     function authorizeWithdrawalAddress(address _authorizedWithdrawalAddress) public authorizedAccessOnly {
+>                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(!authorizedWithdrawalAddress[_authorizedWithdrawalAddress], "Account is already authorized");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    TokenReserve
+Line:        179
+Source: 
+>      */
+>     function deauthorizeWithdrawalAddress() public authorizedAccessOnly {
+>                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(authorizedWithdrawalAddress[msg.sender], "Account was not authorized");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    TokenReserve
+Line:        188
+Source: 
+>      */
+>     function getUnlockedValue() public view returns (uint) {
+>                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint totalUnlocked = 0;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    TokenReserve
+Line:        203
+Source: 
+>      */
+>     function getNextUnlockTimestamp() public view returns (uint) {
+>                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return getTimestampByBracket(firstUnlockBracket);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    TokenReserve
+Line:        113
+Source: 
+>     function lockTokensInternal(address from, uint value) internal {
+>         ERC20CompatibleToken(tokenContractAddress).transferFrom(from, address(this), value);
+>                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint unlockBracket = getBracketByTimestamp(block.timestamp.add(lockPeriod));
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    TokenReserve
+Line:        160
+Source: 
+>         // Add tokens that were sent to a smart contract accidentally
+>         if (ERC20CompatibleToken(tokenContractAddress).balanceOf(address(this)) > wasLocked) {
+>                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             totalUnlocked = totalUnlocked.add(ERC20CompatibleToken(tokenContractAddress).balanceOf(address(this)).sub(wasLocked));
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    TokenReserve
+Line:        161
+Source: 
+>         if (ERC20CompatibleToken(tokenContractAddress).balanceOf(address(this)) > wasLocked) {
+>             totalUnlocked = totalUnlocked.add(ERC20CompatibleToken(tokenContractAddress).balanceOf(address(this)).sub(wasLocked));
+>                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     External call in loop
+Description: If a single call in the loop fails or revers, it will
+             cause all other calls to fail as well.
+Type:        Warning
+Contract:    TokenReserve
+Line:        164
+Source: 
+>         require(totalUnlocked != 0, "Nothing to unlock");
+>         ERC20CompatibleToken(tokenContractAddress).transfer(receiver, totalUnlocked);
+>                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    TokenReserve
+Line:        109
+Source: 
+>      */
+>     function lockTokens(uint value) public {
+>                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         lockTokensInternal(msg.sender, value);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Violation
+Contract:    TokenReserve
+Line:        220
+Source: 
+>      */
+>     function receiveApproval(address from, uint256 value, address, bytes calldata) external {
+>                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(msg.sender == tokenContractAddress, "Sender must be a token contract address");
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    TokenReserve
+Line:        212
+Source: 
+>     function getTimestampByBracket(uint bracket) internal view returns (uint) {
+>         return bracketingStartDate + bracket * bracketSize;
+>                                                    ^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    TokenReserve
+Line:        113
+Source: 
+>     function lockTokensInternal(address from, uint value) internal {
+>         ERC20CompatibleToken(tokenContractAddress).transferFrom(from, address(this), value);
+>                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint unlockBracket = getBracketByTimestamp(block.timestamp.add(lockPeriod));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    TokenReserve
+Line:        160
+Source: 
+>         // Add tokens that were sent to a smart contract accidentally
+>         if (ERC20CompatibleToken(tokenContractAddress).balanceOf(address(this)) > wasLocked) {
+>                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             totalUnlocked = totalUnlocked.add(ERC20CompatibleToken(tokenContractAddress).balanceOf(address(this)).sub(wasLocked));
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    TokenReserve
+Line:        161
+Source: 
+>         if (ERC20CompatibleToken(tokenContractAddress).balanceOf(address(this)) > wasLocked) {
+>             totalUnlocked = totalUnlocked.add(ERC20CompatibleToken(tokenContractAddress).balanceOf(address(this)).sub(wasLocked));
+>                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    TokenReserve
+Line:        164
+Source: 
+>         require(totalUnlocked != 0, "Nothing to unlock");
+>         ERC20CompatibleToken(tokenContractAddress).transfer(receiver, totalUnlocked);
+>                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    TokenReserve
+Line:        65
+Source: 
+>     using SafeMath for uint256;
+>     uint public constant bracketingStartDate = 1546300800; // Tue, 01 Jan 2019 00:00:00 GMT - the beginning of a new year/month/day/hour/minute
+>                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Solidity pragma directives
+Description: Avoid complex solidity version pragma statements.
+Type:        Violation
+Contract:    None
+Line:        5
+Source: 
+> 
+> pragma solidity ^0.5.15;
+> ^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    TokenReserve
+Line:        65
+Source: 
+>     using SafeMath for uint256;
+>     uint public constant bracketingStartDate = 1546300800; // Tue, 01 Jan 2019 00:00:00 GMT - the beginning of a new year/month/day/hour/minute
+>                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    TokenReserve
+Line:        68
+Source: 
+>     // = 5 years, can be reassigned in constructor (see the exact number in blockchain explorer)
+>     uint public lockPeriod = 5 * (365 days + 6 hours);
+>                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint public bracketSize = 30 days + 10 hours; // Pretends to be the best approximation of a calendar month. Reassigned in constructor.
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    TokenReserve
+Line:        69
+Source: 
+>     uint public lockPeriod = 5 * (365 days + 6 hours);
+>     uint public bracketSize = 30 days + 10 hours; // Pretends to be the best approximation of a calendar month. Reassigned in constructor.
+>                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address public tokenContractAddress; // Assigned in constructor
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    TokenReserve
+Line:        70
+Source: 
+>     uint public bracketSize = 30 days + 10 hours; // Pretends to be the best approximation of a calendar month. Reassigned in constructor.
+>     address public tokenContractAddress; // Assigned in constructor
+>                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     mapping(address => bool) public authorizedWithdrawalAddress; // Assigned in constructor
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    TokenReserve
+Line:        78
+Source: 
+>     }
+>     mapping(uint => BracketRecord) brackets;
+>                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint firstUnlockBracket;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    TokenReserve
+Line:        79
+Source: 
+>     mapping(uint => BracketRecord) brackets;
+>     uint firstUnlockBracket;
+>                   ^^^^^^^^^^
+>     uint lastUnlockBracket;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    TokenReserve
+Line:        80
+Source: 
+>     uint firstUnlockBracket;
+>     uint lastUnlockBracket;
+>                   ^^^^^^^^^
+>     uint totalValueLocked;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    TokenReserve
+Line:        81
+Source: 
+>     uint lastUnlockBracket;
+>     uint totalValueLocked;
+>                   ^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    TokenReserve
+Line:        146
+Source: 
+>         // Assuming one loop takes 30000 gas (intentially more than it takes), with an extra allowance of 300000 gas, excluding the gas refund.
+>         while (firstUnlockBracket > 0 && firstUnlockBracket <= currentBracket && limit++ < (block.gaslimit - 300000) / 30000) {
+>                                                                                                                            ^^^^
+>             totalUnlocked = totalUnlocked.add(brackets[firstUnlockBracket].value);
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    TokenReserve
+Line:        160
+Source: 
+>         // Add tokens that were sent to a smart contract accidentally
+>         if (ERC20CompatibleToken(tokenContractAddress).balanceOf(address(this)) > wasLocked) {
+>                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             totalUnlocked = totalUnlocked.add(ERC20CompatibleToken(tokenContractAddress).balanceOf(address(this)).sub(wasLocked));
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    TokenReserve
+Line:        161
+Source: 
+>         if (ERC20CompatibleToken(tokenContractAddress).balanceOf(address(this)) > wasLocked) {
+>             totalUnlocked = totalUnlocked.add(ERC20CompatibleToken(tokenContractAddress).balanceOf(address(this)).sub(wasLocked));
+>                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    TokenReserve
+Line:        113
+Source: 
+>     function lockTokensInternal(address from, uint value) internal {
+>         ERC20CompatibleToken(tokenContractAddress).transferFrom(from, address(this), value);
+>                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint unlockBracket = getBracketByTimestamp(block.timestamp.add(lockPeriod));
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    TokenReserve
+Line:        164
+Source: 
+>         require(totalUnlocked != 0, "Nothing to unlock");
+>         ERC20CompatibleToken(tokenContractAddress).transfer(receiver, totalUnlocked);
+>                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    TokenReserve
+Line:        79
+Source: 
+>     mapping(uint => BracketRecord) brackets;
+>     uint firstUnlockBracket;
+>                   ^^^^^^^^^^
+>     uint lastUnlockBracket;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    TokenReserve
+Line:        80
+Source: 
+>     uint firstUnlockBracket;
+>     uint lastUnlockBracket;
+>                   ^^^^^^^^^
+>     uint totalValueLocked;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    TokenReserve
+Line:        81
+Source: 
+>     uint lastUnlockBracket;
+>     uint totalValueLocked;
+>                   ^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    TokenReserve
+Line:        116
+Source: 
+>         if (unlockBracket == lastUnlockBracket) {
+>             brackets[lastUnlockBracket].value = brackets[lastUnlockBracket].value.add(value);
+>                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         } else {
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    TokenReserve
+Line:        128
+Source: 
+>         }
+>         totalValueLocked = totalValueLocked.add(value);
+>                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         emit TokensLocked(value, block.timestamp);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    TokenReserve
+Line:        119
+Source: 
+>             if (lastUnlockBracket == 0) {
+>                 firstUnlockBracket = unlockBracket;
+>                               ^^^^^^^^^^^^^^^^^^^^^
+>             } else {
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    TokenReserve
+Line:        123
+Source: 
+>             }
+>             brackets[lastUnlockBracket = unlockBracket] = BracketRecord({
+>                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 nextBracket: 0,
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    TokenReserve
+Line:        123
+Source: 
+>             }
+>             brackets[lastUnlockBracket = unlockBracket] = BracketRecord({
+>                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 nextBracket: 0,
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    TokenReserve
+Line:        121
+Source: 
+>             } else {
+>                 brackets[lastUnlockBracket].nextBracket = unlockBracket;
+>                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    TokenReserve
+Line:        149
+Source: 
+>             uint nextBracket = brackets[firstUnlockBracket].nextBracket;
+>             delete brackets[firstUnlockBracket];
+>                           ^^^^^^^^^^^^^^^^^^^^^^
+>             firstUnlockBracket = nextBracket;
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    TokenReserve
+Line:        150
+Source: 
+>             delete brackets[firstUnlockBracket];
+>             firstUnlockBracket = nextBracket;
+>                           ^^^^^^^^^^^^^^^^^^^
+>         }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    TokenReserve
+Line:        153
+Source: 
+>         if (firstUnlockBracket == 0) {
+>             lastUnlockBracket = 0;
+>                           ^^^^^^^^
+>         }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    TokenReserve
+Line:        156
+Source: 
+>         if (totalUnlocked != 0) {
+>             totalValueLocked = totalValueLocked.sub(totalUnlocked);
+>                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>             emit TokensUnlocked(totalUnlocked, block.timestamp);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    TokenReserve
+Line:        113
+Source: 
+>     function lockTokensInternal(address from, uint value) internal {
+>         ERC20CompatibleToken(tokenContractAddress).transferFrom(from, address(this), value);
+>                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint unlockBracket = getBracketByTimestamp(block.timestamp.add(lockPeriod));
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    TokenReserve
+Line:        164
+Source: 
+>         require(totalUnlocked != 0, "Nothing to unlock");
+>         ERC20CompatibleToken(tokenContractAddress).transfer(receiver, totalUnlocked);
+>                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    TokenReserve
+Line:        190
+Source: 
+>         uint totalUnlocked = 0;
+>         uint currentBracket = getBracketByTimestamp(block.timestamp);
+>                                                                   ^^^
+>         uint bracket = firstUnlockBracket;
+
+[0m
+[0;35mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Conflict
+Contract:    TokenReserve
+Line:        114
+Source: 
+>         ERC20CompatibleToken(tokenContractAddress).transferFrom(from, address(this), value);
+>         uint unlockBracket = getBracketByTimestamp(block.timestamp.add(lockPeriod));
+>                                                                  ^^^^^^^^^^^^^^^
+>         if (unlockBracket == lastUnlockBracket) {
+
+[0m
+[0;35mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Conflict
+Contract:    TokenReserve
+Line:        141
+Source: 
+>         uint totalUnlocked = 0;
+>         uint currentBracket = getBracketByTimestamp(block.timestamp);
+>                                                                   ^^^
+>         uint limit = 0;
+
+[0m

@@ -1,0 +1,88 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: FsTKerWallet
+Function name: recoverAndSetSecretHash(string,bytes32)
+PC address: 633
+Estimated Gas Usage: 13147 - 59162
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/ed9c806e7b141c4f76e6aa88c1f3d09f.sol:89
+
+ (bool) {
+    require(_newSecretHash != bytes32(0));
+    require(keccak256(abi.encodePacked(_secret)) == secretHash);
+    owner = msg.sender;
+    secretHash = _newSecretHash;
+    return true;
+  }
+
+  function setFST (ERC _FST) onlyOwner public returns (bool) {
+    require(address(_FST) != 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0303030303030303030303030303030303030303030303030303030303030303fffffffffffffffffffffffffffffb5f44, value: 0x0
+Caller: [CREATOR], function: recoverAndSetSecretHash(string,bytes32), txdata: 0x1c2f2f9fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc01, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: FsTKerWallet
+Function name: getERCBalance(address)
+PC address: 5887
+Estimated Gas Usage: 2186 - 37124
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/ed9c806e7b141c4f76e6aa88c1f3d09f.sol:45
+
+tion transferETH (address _t
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getERCBalance(address), txdata: 0x8fbb3813000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: FsTKerWallet
+Function name: getFSTBalance()
+PC address: 6521
+Estimated Gas Usage: 2999 - 38267
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/ed9c806e7b141c4f76e6aa88c1f3d09f.sol:35
+
+
+
+  function getETHBalance (
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 494949494949494949494949deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: getFSTBalance(), txdata: 0xae117f3e, value: 0x0

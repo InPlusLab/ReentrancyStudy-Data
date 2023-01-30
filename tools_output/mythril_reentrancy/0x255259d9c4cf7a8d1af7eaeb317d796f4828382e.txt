@@ -1,0 +1,81 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: TMTToken
+Function name: transferAndCall(address,uint256,bytes)
+PC address: 623
+Estimated Gas Usage: 17799 - 100536
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/9cc606c829d03b09cfc2055ac8a9dd92.sol:387
+
+a) public returns (bool success) {
+
+		if(approve(_spender,_value)){
+
+			ApprovalReceiver(_spender).receiveApproval(msg.sender, _value, this, _extraData) ;
+
+			return true; 
+
+		}
+
+		else {
+
+            return false;
+
+        }  
+
+    }
+
+	
+
+	// transfer balance to owner
+
+	function withdrawEther(uint amount)
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x9, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transferAndCall(address,uint256,bytes), txdata: 0x4000aea00000000000000000000000000848807a2f400400019010280120813808b020020000000000000000000000000000000000000000000000000044010000004002ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TMTToken
+Function name: transferAndCall(address,uint256,bytes)
+PC address: 1835
+Estimated Gas Usage: 17799 - 100536
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/9cc606c829d03b09cfc2055ac8a9dd92.sol:391
+
+s, _extraData) ;
+
+			return true; 
+
+		}
+
+		else {
+
+            return false
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80000042002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transferAndCall(address,uint256,bytes), txdata: 0x4000aea0000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef000000000000000000000000000000000000000000000000000000000000000080, value: 0x0

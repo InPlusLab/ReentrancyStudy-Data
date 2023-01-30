@@ -1,0 +1,231 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: MapAirDrop
+Function name: airdropTokens(address[],uint256[])
+PC address: 237
+Estimated Gas Usage: 19444 - 139334
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/5ed4ce4534080b59ef8756ef320b9aa5.sol:205
+
+nt[i]]) {
+
+          airdrops[_recipient[i]] = true;
+
+          require(token.transferFrom(msg.sender, _recipient[i], _tokens[i] * decimalFactor));
+
+          airdropped = airdropped.add(_tokens[i] * decimalFactor);
+
+        // }
+
+    }
+
+  }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x200100004002e381, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 7070707070707070707070707070707070707070707070707070707070707070707070707070707070707070deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: airdropTokens(address[],uint256[]), txdata: 0x706f6937fffe000000000000000000000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: MapAirDrop
+Function name: airdropTokens(address[],uint256[])
+PC address: 951
+Estimated Gas Usage: 19444 - 139334
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/5ed4ce4534080b59ef8756ef320b9aa5.sol:213
+
+ }
+
+    }
+
+  }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1c10400000636a0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 707070707070707070707070deadbeefdeadbeefdeadbeefdeadbeefdeadbeef707070707070707070707070deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: airdropTokens(address[],uint256[]), txdata: 0x706f693780, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: MapAirDrop
+Function name: airdropTokens(address[],uint256[])
+PC address: 965
+Estimated Gas Usage: 19444 - 139334
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/5ed4ce4534080b59ef8756ef320b9aa5.sol:213
+
+ }
+
+    }
+
+  }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1c10400000636a0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 707070707070707070707070deadbeefdeadbeefdeadbeefdeadbeefdeadbeef707070707070707070707070deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: airdropTokens(address[],uint256[]), txdata: 0x706f693780, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: MapAirDrop
+Function name: airdropTokens(address[],uint256[])
+PC address: 972
+Estimated Gas Usage: 19444 - 139334
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/5ed4ce4534080b59ef8756ef320b9aa5.sol:219
+Initial State:
+
+Account: [CREATOR], balance: 0x1c10400000636a0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 707070707070707070707070deadbeefdeadbeefdeadbeefdeadbeefdeadbeef707070707070707070707070deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: airdropTokens(address[],uint256[]), txdata: 0x706f693780, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: MapAirDrop
+Function name: airdropTokens(address[],uint256[])
+PC address: 1071
+Estimated Gas Usage: 8441 - 35778
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/5ed4ce4534080b59ef8756ef320b9aa5.sol:205
+
+nt[i]]) {
+
+          airdrops[_recipient[i]] = true;
+
+          require(token.transferFrom(msg.sender, _recipient[i], _tokens[i] * decimalFactor));
+
+          airdropped = airdropped.add(_tokens[i] * decimalFactor);
+
+        // }
+
+    }
+
+  }
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8810220c0011, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 7070707070707070707070707070707070707070707070707070707070707070707070707070707070707070affeaffeaffeaffeaffeaffeaffeaffeaffeaffe, value: 0x0
+Caller: [CREATOR], function: airdropTokens(address[],uint256[]), txdata: 0x706f6937ffffffffffffffffffffffffffffffffffffff80000000000000000000000002ff, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: MapAirDrop
+Function name: airdropTokens(address[],uint256[])
+PC address: 1270
+Estimated Gas Usage: 19444 - 139334
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/5ed4ce4534080b59ef8756ef320b9aa5.sol:219
+Initial State:
+
+Account: [CREATOR], balance: 0x21c1040002045d29, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 707070707070707070707070deadbeefdeadbeefdeadbeefdeadbeefdeadbeef707070707070707070707070deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: airdropTokens(address[],uint256[]), txdata: 0x706f693784, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: MapAirDrop
+Function name: airdropTokens(address[],uint256[])
+PC address: 1270
+Estimated Gas Usage: 19444 - 139334
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/5ed4ce4534080b59ef8756ef320b9aa5.sol:219
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x200000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 3737373737373737373737373737373737373737373737373737373737373737373737373737373737373737deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: airdropTokens(address[],uint256[]), txdata: 0x706f693780, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: MapAirDrop
+Function name: airdropTokens(address[],uint256[])
+PC address: 1270
+Estimated Gas Usage: 19444 - 139334
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/5ed4ce4534080b59ef8756ef320b9aa5.sol:219
+Initial State:
+
+Account: [CREATOR], balance: 0x1c10400000636a0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 707070707070707070707070deadbeefdeadbeefdeadbeefdeadbeefdeadbeef707070707070707070707070deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: airdropTokens(address[],uint256[]), txdata: 0x706f693780, value: 0x0

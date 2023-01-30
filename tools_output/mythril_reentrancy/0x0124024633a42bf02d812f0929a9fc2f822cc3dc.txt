@@ -1,0 +1,266 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Capsule
+Function name: constructor
+PC address: 81
+Estimated Gas Usage: 22826 - 109855
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/fb04471a01e168638d52029032038fa1.sol:31
+
+
+      recipient = _recipie
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Capsule
+Function name: constructor
+PC address: 87
+Estimated Gas Usage: 10956 - 54059
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/fb04471a01e168638d52029032038fa1.sol:31
+
+imestamp + 100 years));
+      recipient = _recipient
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Capsule
+Function name: withdraw(address[])
+PC address: 297
+Estimated Gas Usage: 8468 - 82132
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/fb04471a01e168638d52029032038fa1.sol:63
+
+sg.sender == recipient);
+      require(block.timestamp > excavation);
+
+      // withdraw ether
+      if(this.balance > 0) {
+        uint ethShare = this.balance / (100 / percent);
+        company.transfer(ethShare);
+        uint ethWithdrawal = this.balance;
+        msg.sender.transfer(ethWithdrawal);
+        EtherWithdrawal(ethWithdrawal);
+      }
+
+      // withdraw listed ERC20 tokens
+      for(uint i = 0; i < _tokens.length; i++) {
+        ERC20 token = ERC20(_tokens[i]);
+        uint tokenBalance = token.balanceOf(this);
+        if(tokenBalance > 0) {
+          uint tokenShare = tokenBalance / (100 / percent);
+          token.transfer(company, tokenShare);
+          uint tokenWithdrawal = token.balanceOf(this);
+          token.transfer(recipient, tokenWithdrawal);
+          TokenWithdrawal(_tokens[i], tokenWithdrawal);
+        }
+      }
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000020401000000000000000101000001000000000000000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x1
+Caller: [SOMEGUY], function: withdraw(address[]), txdata: 0xbd5dec98ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: Capsule
+Function name: withdraw(address[])
+PC address: 446
+Estimated Gas Usage: 2113 - 5455
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/fb04471a01e168638d52029032038fa1.sol:66
+
+
+      if(this.balance > 0) {
+       
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000108300, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0100000101000000000000000000040100100400000000100000000101040010000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: withdraw(address[]), txdata: 0xbd5dec98, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: Capsule
+Function name: withdraw(address[])
+PC address: 600
+Estimated Gas Usage: 8468 - 82132
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/fb04471a01e168638d52029032038fa1.sol:72
+
+wal);
+      }
+
+      // withdraw l
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, value: 0x1
+Caller: [SOMEGUY], function: withdraw(address[]), txdata: 0xbd5dec98, value: 0x0
+
+==== Unprotected Ether Withdrawal ====
+SWC ID: 105
+Severity: High
+Contract: Capsule
+Function name: withdraw(address[])
+PC address: 600
+Estimated Gas Usage: 8468 - 82132
+Any sender can withdraw Ether from the contract account.
+Arbitrary senders other than the contract creator can profitably extract Ether from the contract account. Verify the business logic carefully and make sure that appropriate security controls are in place to prevent unexpected loss of funds.
+--------------------
+In file: /tmp/fb04471a01e168638d52029032038fa1.sol:72
+
+wal);
+      }
+
+      // withdraw l
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x421c10c054207ffff, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x1
+Caller: [ATTACKER], function: withdraw(address[]), txdata: 0xbd5dec98, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Capsule
+Function name: withdraw(address[])
+PC address: 799
+Estimated Gas Usage: 8468 - 82132
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/fb04471a01e168638d52029032038fa1.sol:80
+
+re = tokenBalance / (
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0100800101040401010201010402080101800004012002000000000001000040000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x1
+Caller: [ATTACKER], function: withdraw(address[]), txdata: 0xbd5dec98fd, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Capsule
+Function name: withdraw(address[])
+PC address: 833
+Estimated Gas Usage: 8468 - 82132
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/fb04471a01e168638d52029032038fa1.sol:82
+
+thdrawa
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x6000000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0400100000000000010000000000000008018020004000010100000001020104000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x1
+Caller: [ATTACKER], function: withdraw(address[]), txdata: 0xbd5dec9880, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Capsule
+Function name: withdraw(address[])
+PC address: 858
+Estimated Gas Usage: 8468 - 82132
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/fb04471a01e168638d52029032038fa1.sol:83
+
+       
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x6000000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0400100000000000010000000000000008018020004000010100000001020104000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x1
+Caller: [ATTACKER], function: withdraw(address[]), txdata: 0xbd5dec9880, value: 0x0

@@ -1,0 +1,66 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Migrations
+Function name: upgrade(address)
+PC address: 374
+Estimated Gas Usage: 3810 - 38611
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/67caef7953f29f43a242ba62667b957c.sol:1592
+
+ble form
+     * So that it can be used to recov
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: upgrade(address), txdata: 0x0900f0100000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [CREATOR], function: upgrade(address), txdata: 0x0900f010000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Jump to an arbitrary instruction ====
+SWC ID: 127
+Severity: High
+Contract: NativeMetaTransaction
+Function name: executeMetaTransaction(address,bytes,bytes32,bytes32,uint8) or executeMetaTransaction(address,bytes,bytes32,bytes32,uint8)
+PC address: 1360
+Estimated Gas Usage: 6329 - 49459
+The caller can redirect execution to arbitrary bytecode locations.
+It is possible to redirect the control flow to arbitrary locations in the code. This may allow an attacker to bypass security controls or manipulate the business logic of the smart contract. Avoid using low-level-operations and assembly to prevent this issue.
+--------------------
+In file: /tmp/67caef7953f29f43a242ba62667b957c.sol:1755
+
+       uint256 newTokenId = _getNextTokenId();
+        _mint(_to, newTokenId);
+        _incrementTokenId();
+    }
+    
+
+    function buy() public payable {
+        require(block.timestamp >= startTime, "It's not time yet");
+        require(msg.value == nftPrice, "Sent Amount Not Enough");
+        require(_currentTokenId < maxSupply, "Max Supply Reached");
+
+            uint256 newTokenId = _getNextTokenId();
+            _mint(msg.sender, newTokenId);
+            _incrementTokenId();
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x218c7, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: executeMetaTransaction(address,bytes,bytes32,bytes32,uint8), txdata: 0x0c53c51c00000000000000000000000001000000000000000000000000000004048080100000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005, value: 0x0

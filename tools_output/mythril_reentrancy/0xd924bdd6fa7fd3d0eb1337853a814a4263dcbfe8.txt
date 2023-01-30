@@ -1,0 +1,331 @@
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: TrustlessOTC
+Function name: cancelTrade(uint256)
+PC address: 2128
+Estimated Gas Usage: 1086 - 1181
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/e10254607109de0bcc428b20978fecbe.sol:893
+
+ub(o.amountFrom);
+
+        uint256 fee = o.amountFrom.mul(feeBasisPoints).div(10000);
+
+        feeTracker[o.tokenFrom] = feeTracker[o.tokenFrom].add(fee);
+
+        tradeTracker[msg.sender].push(tradeID);
+
+
+
+        if (o.tokenFrom == address(0)) {
+
+            msg.sender.transfer(o.amountFrom.sub(fee));
+
+        } else {
+
+          IERC20(o.tokenFrom).safeTransfer(msg.sender, o.amountFrom.sub(fee));
+
+        }
+
+
+
+        if (o.tokenTo == address(0)) {
+
+            require(msg.value == o.amountTo);
+
+            o.creator.transfer(msg.value);
+
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: cancelTrade(uint256), txdata: 0x09ec6cc70000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: TrustlessOTC
+Function name: tradeTracker(address,uint256)
+PC address: 4496
+Estimated Gas Usage: 1175 - 1460
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/e10254607109de0bcc428b20978fecbe.sol:801
+
+uint256 _amountFrom,
+
+        uint256 _amountT
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x900080000000903, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tradeTracker(address,uint256), txdata: 0x2b4c1fdc00000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: TrustlessOTC
+Function name: getOfferDetails(uint256)
+PC address: 4546
+Estimated Gas Usage: 1128 - 1223
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/e10254607109de0bcc428b20978fecbe.sol:993
+
+ess(_token)]);
+
+        require(excess > 0);
+
+        if (address(_token) == address(0)) {
+
+            msg.sender.transfer(excess);
+
+        } else {
+
+            _token.safeTransfer(owner(), excess);
+
+        }
+
+    }
+
+
+
+    function claimFees(IERC20 _token) external onlyOwner {
+
+        uint256 feesToClaim = feeTracker[address(_token)];
+
+        feeTracker[address(_token)] = 0;
+
+        require(feesToClaim > 0);
+
+        if (address(_token) == address(0)) {
+
+            msg.sender.transfer(feesToClaim);
+
+        } else {
+
+            _token.safeTransfer(owner(), feesToClaim);
+
+        }
+
+    }
+
+
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2000000010002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getOfferDetails(uint256), txdata: 0x4fb64be20000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: TrustlessOTC
+Function name: take(uint256)
+PC address: 4810
+Estimated Gas Usage: 1105 - 1200
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/e10254607109de0bcc428b20978fecbe.sol:921
+
+se {
+
+            require(msg.value == 0);
+
+            IERC20(o.tokenTo).safeTransferFrom(msg.sender, o.creator, o.amountTo);
+
+        }
+
+        o.completed = true;
+
+        emit OfferTaken(tradeID);
+
+        return true;
+
+    }
+
+
+
+    function getOfferDetails(uint tradeID) external view returns (
+
+        address _tokenFrom,
+
+        address _tokenTo,
+
+        uint256 _amountFrom,
+
+        uint256 _amountTo,
+
+        address _creator,
+
+        uint256 _fee,
+
+        bool _active,
+
+        bool _completed
+
+    ) {
+
+        TradeOffer storage o = offers[tradeID];
+
+        _tokenFrom = o.tokenFrom;
+
+        _tokenTo = o.tokenTo;
+
+        _amountFrom = o.amountFrom;
+
+        _amountTo = o.amountTo;
+
+        _creator = o.creator;
+
+        _fee = o.amountFrom.mul(feeBasisPoints).div(10000);
+
+        _active = o.active;
+
+        _completed = o.completed;
+
+    }
+
+
+
+    function getUserTrades(address user) external view returns (uint[] memory){
+
+      return tradeTracker[user];
+
+    }
+
+
+
+    function reclaimToken(IERC20 _token) external onlyOwner {
+
+        uint256 balance = _token.balanceOf(address(this));
+
+        uint256 excess = balance.sub(balance
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x901080000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: take(uint256), txdata: 0x4fd9efc40000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: TrustlessOTC
+Function name: offers(uint256)
+PC address: 6655
+Estimated Gas Usage: 1101 - 1196
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/e10254607109de0bcc428b20978fecbe.sol:831
+
+     o.tokenTo = _tokenTo;
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: offers(uint256), txdata: 0x8a72ea6a0000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TrustlessOTC
+Function name: reclaimToken(address)
+PC address: 8846
+Estimated Gas Usage: 7346 - 79435
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/e10254607109de0bcc428b20978fecbe.sol:597
+
+s private _owner;
+
+
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc320000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: TrustlessOTC
+Function name: reclaimToken(address)
+PC address: 8846
+Estimated Gas Usage: 7346 - 79435
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/e10254607109de0bcc428b20978fecbe.sol:597
+
+s private _owner;
+
+
+
+    
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: reclaimToken(address), txdata: 0x17ffc3200000000000000000000000000000000000000000000000000000000000000004, value: 0x0

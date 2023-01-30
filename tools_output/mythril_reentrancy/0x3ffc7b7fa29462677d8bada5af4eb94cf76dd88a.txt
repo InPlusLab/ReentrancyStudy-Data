@@ -1,0 +1,91 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ICOStartSale
+Function name: removeAddressesFromWhitelist(address[])
+PC address: 1261
+Estimated Gas Usage: 7351 - 13375
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/cd204efe2c48cccf8fd8c5cd955eab45.sol:341
+
+isted.
+   */
+  function isAddressInWhitelist(address _address) view public returns (bool) {
+    return whitelistedAddresses[_address];
+  }
+
+  /**
+   * @dev True while the sale is open (i.e. accepting contributions). False otherwise.
+   */
+  function isOpen() view public returns (
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x15c880c582869011, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000001000440000000040000000400000000000000000000000020, value: 0x0
+Caller: [CREATOR], function: removeAddressesFromWhitelist(address[]), txdata: 0x24953eaaffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc101010101010101001, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: ICOStartSale
+Function name: addAddressesToWhitelist(address[],uint256)
+PC address: 1920
+Estimated Gas Usage: 14827 - 60052
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/cd204efe2c48cccf8fd8c5cd955eab45.sol:308
+
+@dev Remove an address from the whitelist.
+   * @param _address Address to remove.
+   * @return true if the address was removed from the whitelist, 
+   * false if the address wasn't in the whitelist in the first place.
+   */
+  function removeAddressFromWhitelist(address _address) onlyOwner 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000110080420081001800101010801018001010101000000000000000000000000010104010108011004081008020210000801010100000000000000000000000001, value: 0x0
+Caller: [CREATOR], function: addAddressesToWhitelist(address[],uint256), txdata: 0x70be89c1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc01, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ICOStartSale
+Function name: remainingTokens()
+PC address: 4884
+Estimated Gas Usage: 3936 - 39629
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/cd204efe2c48cccf8fd8c5cd955eab45.sol:398
+
+riods[i].endTimestamp >= block.tim
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000101018001010101010101010101010101010101000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef00000000000000000000000001, value: 0x0
+Caller: [SOMEGUY], function: remainingTokens(), txdata: 0xbf583903, value: 0x0

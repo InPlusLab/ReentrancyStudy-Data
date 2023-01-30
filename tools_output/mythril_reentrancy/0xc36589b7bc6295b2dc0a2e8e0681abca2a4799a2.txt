@@ -1,0 +1,123 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: TokenVault
+Function name: unlock()
+PC address: 393
+Estimated Gas Usage: 966 - 1061
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/a42ff34dacf2e7a51c74afd79f2a6c80.sol:93
+
+n.transfer(
+
+                decentBetMult
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x900000023000002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000010101010101010101010101010101000001010100000000000000000000000001, value: 0x0
+Caller: [SOMEGUY], function: unlock(), txdata: 0xa69df4b5, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TokenVault
+Function name: unlock()
+PC address: 685
+Estimated Gas Usage: 6850 - 77154
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/a42ff34dacf2e7a51c74afd79f2a6c80.sol:107
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000101010101010101010100000004010001010101000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: unlock(), txdata: 0xa69df4b5, value: 0x0
+Caller: [SOMEGUY], function: unlock(), txdata: 0xa69df4b5, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TokenVault
+Function name: unlock()
+PC address: 877
+Estimated Gas Usage: 6850 - 77154
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/a42ff34dacf2e7a51c74afd79f2a6c80.sol:97
+
+.balanceOf(address(this))
+
+            )
+
+        );
+
+    }
+
+
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000101010101010101010100000004010001010101000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: unlock(), txdata: 0xa69df4b5, value: 0x0
+Caller: [SOMEGUY], function: unlock(), txdata: 0xa69df4b5, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: TokenVault
+Function name: unlock()
+PC address: 877
+Estimated Gas Usage: 6850 - 77154
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/a42ff34dacf2e7a51c74afd79f2a6c80.sol:97
+
+.balanceOf(address(this))
+
+            )
+
+        );
+
+    }
+
+
+
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x900000001001820, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000082040800101802001408000020180100101010100000000000000000000000001, value: 0x0
+Caller: [SOMEGUY], function: unlock(), txdata: 0xa69df4b5, value: 0x0

@@ -1,0 +1,464 @@
+Environment variable LD_LIBRARY_PATH not set. Setting it up...
+[0;31mSeverity:    INFO
+Pattern:     Assembly Usage
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    DssSpell
+Line:        80
+Source: 
+>         address _action = action;
+>         assembly { _tag := extcodehash(_action) }
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         tag = _tag;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    DssSpell
+Line:        66
+Source: 
+> contract DssSpell {
+>     DSPauseAbstract public pause =
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         DSPauseAbstract(0xbE286431454714F511008713973d3B053A2d38f3);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Dangerous Strict Equalities
+Description: Strict equalities that use account's balance, timestamps
+             and block numbers should be avoided
+Type:        Violation
+Contract:    DssSpell
+Line:        91
+Source: 
+>         require(now <= expiration, "This contract has expired");
+>         require(eta == 0, "This spell has already been scheduled");
+>                 ^^^^^^^^
+>         eta = now + DSPauseAbstract(pause).delay();
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DssSpell
+Line:        85
+Source: 
+> 
+>     function description() public view returns (string memory) {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         return SpellAction(action).description();
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DssSpell
+Line:        89
+Source: 
+> 
+>     function schedule() public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(now <= expiration, "This contract has expired");
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     External Calls of Functions
+Description: A public function that is never called within the
+             contract should be marked as external
+Type:        Violation
+Contract:    DssSpell
+Line:        96
+Source: 
+> 
+>     function cast() public {
+>     ^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(!done, "spell-already-cast");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    DssSpell
+Line:        92
+Source: 
+>         require(eta == 0, "This spell has already been scheduled");
+>         eta = now + DSPauseAbstract(pause).delay();
+>                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         pause.plot(action, tag, sig, eta);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    DssSpell
+Line:        93
+Source: 
+>         eta = now + DSPauseAbstract(pause).delay();
+>         pause.plot(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    DssSpell
+Line:        99
+Source: 
+>         done = true;
+>         pause.exec(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    SpellAction
+Line:        34
+Source: 
+>     // Hash: seth keccak -- "$(wget https://raw.githubusercontent.com/makerdao/community/77f94a877eaeeff7eccee0bfdf45cb377ff0a25c/governance/votes/Executive%20vote%20-%20August%2021%2C%202020.md -q -O - 2>/dev/null)"
+>     string constant public description =
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         "2020-08-21 MakerDAO Executive Spell | Hash: 0xa42625339c53b03d0d95ad99ccffc07a1f2cf8ec5f8858d9a0b5578204949609";
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    DssSpell
+Line:        78
+Source: 
+>         action = address(new SpellAction());
+>         bytes32 _tag;
+>         ^^^^^^^^^^^^
+>         address _action = action;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    DssSpell
+Line:        79
+Source: 
+>         bytes32 _tag;
+>         address _action = action;
+>         ^^^^^^^^^^^^^^^
+>         assembly { _tag := extcodehash(_action) }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    SpellAction
+Line:        42
+Source: 
+>     //     https://changelog.makerdao.com/releases/mainnet/1.0.9/contracts.json
+>     address constant MCD_JUG = 0x19c0976f590D67707E62397C87829d896Dc0f1F1;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    SpellAction
+Line:        47
+Source: 
+>     // $ bc -l <<< 'scale=27; e( l(1.08)/(60 * 60 * 24 * 365) )'
+>     uint256 constant EIGHT_PCT      = 1000000002440418608258400030;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 constant FOURTY_SIX_PCT = 1000000012000140727767957524;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    SpellAction
+Line:        48
+Source: 
+>     uint256 constant EIGHT_PCT      = 1000000002440418608258400030;
+>     uint256 constant FOURTY_SIX_PCT = 1000000012000140727767957524;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    SpellAction
+Line:        47
+Source: 
+>     // $ bc -l <<< 'scale=27; e( l(1.08)/(60 * 60 * 24 * 365) )'
+>     uint256 constant EIGHT_PCT      = 1000000002440418608258400030;
+>                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 constant FOURTY_SIX_PCT = 1000000012000140727767957524;
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Too Many Digit Literals
+Description: Usage of assembly in Solidity code is discouraged.
+Type:        Violation
+Contract:    SpellAction
+Line:        48
+Source: 
+>     uint256 constant EIGHT_PCT      = 1000000002440418608258400030;
+>     uint256 constant FOURTY_SIX_PCT = 1000000012000140727767957524;
+>                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    DssSpell
+Line:        92
+Source: 
+>         require(eta == 0, "This spell has already been scheduled");
+>         eta = now + DSPauseAbstract(pause).delay();
+>                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         pause.plot(action, tag, sig, eta);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SpellAction
+Line:        54
+Source: 
+>         //      New: 46%
+>         JugAbstract(MCD_JUG).drip("USDC-B"); // drip right before
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         JugAbstract(MCD_JUG).file("USDC-B", "duty", FOURTY_SIX_PCT);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SpellAction
+Line:        55
+Source: 
+>         JugAbstract(MCD_JUG).drip("USDC-B"); // drip right before
+>         JugAbstract(MCD_JUG).file("USDC-B", "duty", FOURTY_SIX_PCT);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SpellAction
+Line:        60
+Source: 
+>         //      New: 8%
+>         JugAbstract(MCD_JUG).drip("MANA-A"); // drip right before
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         JugAbstract(MCD_JUG).file("MANA-A", "duty", EIGHT_PCT);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    SpellAction
+Line:        61
+Source: 
+>         JugAbstract(MCD_JUG).drip("MANA-A"); // drip right before
+>         JugAbstract(MCD_JUG).file("MANA-A", "duty", EIGHT_PCT);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    DssSpell
+Line:        86
+Source: 
+>     function description() public view returns (string memory) {
+>         return SpellAction(action).description();
+>                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    DssSpell
+Line:        93
+Source: 
+>         eta = now + DSPauseAbstract(pause).delay();
+>         pause.plot(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Violation
+Contract:    DssSpell
+Line:        99
+Source: 
+>         done = true;
+>         pause.exec(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Uninitialized Local Variables
+Description: A variable is declared but never initialized.
+Type:        Violation
+Contract:    DssSpell
+Line:        81
+Source: 
+>         assembly { _tag := extcodehash(_action) }
+>         tag = _tag;
+>               ^^^^
+>         expiration = now + 30 days;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    DssSpell
+Line:        70
+Source: 
+>     bytes32         public tag;
+>     uint256         public eta;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     bytes           public sig;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Warning
+Contract:    DssSpell
+Line:        73
+Source: 
+>     uint256         public expiration;
+>     bool            public done;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    DssSpell
+Line:        92
+Source: 
+>         require(eta == 0, "This spell has already been scheduled");
+>         eta = now + DSPauseAbstract(pause).delay();
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         pause.plot(action, tag, sig, eta);
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    DssSpell
+Line:        98
+Source: 
+>         require(!done, "spell-already-cast");
+>         done = true;
+>         ^^^^^^^^^^^
+>         pause.exec(action, tag, sig, eta);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    SpellAction
+Line:        54
+Source: 
+>         //      New: 46%
+>         JugAbstract(MCD_JUG).drip("USDC-B"); // drip right before
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         JugAbstract(MCD_JUG).file("USDC-B", "duty", FOURTY_SIX_PCT);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    SpellAction
+Line:        60
+Source: 
+>         //      New: 8%
+>         JugAbstract(MCD_JUG).drip("MANA-A"); // drip right before
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         JugAbstract(MCD_JUG).file("MANA-A", "duty", EIGHT_PCT);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Unused Return Pattern
+Description: The value returned by an external function call is never
+             used
+Type:        Violation
+Contract:    DssSpell
+Line:        99
+Source: 
+>         done = true;
+>         pause.exec(action, tag, sig, eta);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    SpellAction
+Line:        34
+Source: 
+>     // Hash: seth keccak -- "$(wget https://raw.githubusercontent.com/makerdao/community/77f94a877eaeeff7eccee0bfdf45cb377ff0a25c/governance/votes/Executive%20vote%20-%20August%2021%2C%202020.md -q -O - 2>/dev/null)"
+>     string constant public description =
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         "2020-08-21 MakerDAO Executive Spell | Hash: 0xa42625339c53b03d0d95ad99ccffc07a1f2cf8ec5f8858d9a0b5578204949609";
+
+[0m

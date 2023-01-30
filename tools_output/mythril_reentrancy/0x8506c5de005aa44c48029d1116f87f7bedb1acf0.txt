@@ -1,0 +1,1106 @@
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: TimeLapse
+Function name: constructor
+PC address: 71
+Estimated Gas Usage: 178 - 2951
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:19
+
+me >= now);
+    require(_clo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ERC20Vault
+Function name: constructor
+PC address: 95
+Estimated Gas Usage: 10232 - 53098
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:19
+
+me >= now);
+    require(_clo
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Erc20Wallet
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 519
+Estimated Gas Usage: 15357 - 91356
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:125
+
+ emit DepositReceived(msg.sender, amount);
+  }
+
+  f
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80108, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x800, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 151515151515151515151515deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be77, value: 0x0
+Caller: [ATTACKER], function: depositToken(uint256), txdata: 0x6215be77, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Erc20Wallet
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 594
+Estimated Gas Usage: 15357 - 91356
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:128
+
+withdrawToken(address pa
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2008042242010847, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 151515151515151515151515deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be77, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Erc20Wallet
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 595
+Estimated Gas Usage: 15357 - 91356
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:128
+
+withdrawToken(address pa
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000100001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be7741, value: 0x0
+Caller: [CREATOR], function: depositToken(uint256), txdata: 0x6215be77c0, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Erc20Wallet
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 601
+Estimated Gas Usage: 15357 - 91356
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:128
+
+withdrawToken(address pa
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2008042242010847, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 151515151515151515151515deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be77, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Erc20Wallet
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 670
+Estimated Gas Usage: 15357 - 91356
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:128
+
+nt256 payment) internal{
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2008042242010847, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 151515151515151515151515deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be77, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Erc20Wallet
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 671
+Estimated Gas Usage: 15357 - 91356
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:128
+
+nt256 payment) internal{
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: depositToken(uint256), txdata: 0x6215be7780, value: 0x0
+Caller: [CREATOR], function: depositToken(uint256), txdata: 0x6215be7780, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: Erc20Wallet
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 677
+Estimated Gas Usage: 15357 - 91356
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:128
+
+nt256 payment) internal{
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2008042242010847, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 151515151515151515151515deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be77, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ERC20Vault
+Function name: claim() or claim()
+PC address: 980
+Estimated Gas Usage: 1007 - 1102
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:14
+
+ closingTime);
+    _;
+  }
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: claim(), txdata: 0x4e71d92d, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ERC20Vault
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 1007
+Estimated Gas Usage: 1088 - 1183
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:10
+
+eningTime && now <= closingTime);
+    _;
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21c0000000000c32, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be77, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: ERC20Vault
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 1021
+Estimated Gas Usage: 1108 - 1203
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:10
+
+ow >= openingTime && now <= closingTime);
+    _;
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000180, value: 0x0
+Caller: [ATTACKER], function: depositToken(uint256), txdata: 0x6215be77, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: ERC20Vault
+Function name: payees(uint256) or payees(uint256)
+PC address: 1052
+Estimated Gas Usage: 1124 - 1219
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:156
+
+positToken(amount);
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x21c0000000000c32, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: payees(uint256), txdata: 0x63037b0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: SplitErc20Payment
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 1239
+Estimated Gas Usage: 40200 - 197194
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:163
+
+he balance.
+   */
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000040022082, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be7714, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: SplitErc20Payment
+Function name: payees(uint256) or payees(uint256)
+PC address: 1288
+Estimated Gas Usage: 1080 - 1175
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:156
+
+positToken(amount);
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x234c90000800048c3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x100008, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: payees(uint256), txdata: 0x63037b0c, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Vault
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 1704
+Estimated Gas Usage: 41937 - 198931
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:163
+
+he balance.
+   */
+
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: depositToken(uint256), txdata: 0x6215be7785, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: SplitErc20Payment
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2035
+Estimated Gas Usage: 40200 - 197194
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:125
+
+ emit DepositReceived(msg.sender, amount);
+  }
+
+  f
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40023000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 040404040404040404040404deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: depositToken(uint256), txdata: 0x6215be7780, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: SplitErc20Payment
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2110
+Estimated Gas Usage: 40200 - 197194
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:128
+
+withdrawToken(address pa
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000040022082, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be7714, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: SplitErc20Payment
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2117
+Estimated Gas Usage: 40200 - 197194
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:128
+
+withdrawToken(address pa
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000040022082, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be7714, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: SplitErc20Payment
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2186
+Estimated Gas Usage: 40200 - 197194
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:128
+
+nt256 payment) internal{
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000040022082, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be7714, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: SplitErc20Payment
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2193
+Estimated Gas Usage: 40200 - 197194
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:128
+
+nt256 payment) internal{
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000040022082, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be7714, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: ERC20Vault
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2355
+Estimated Gas Usage: 41937 - 198931
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:125
+
+ emit DepositReceived(msg.sender, amount);
+  }
+
+  f
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x4000000a00010001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x2, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [ATTACKER], function: depositToken(uint256), txdata: 0x6215be7704, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Vault
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2430
+Estimated Gas Usage: 41937 - 198931
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:128
+
+withdrawToken(address pa
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: depositToken(uint256), txdata: 0x6215be7785, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Vault
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2437
+Estimated Gas Usage: 41937 - 198931
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:128
+
+withdrawToken(address pa
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: depositToken(uint256), txdata: 0x6215be7785, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: SplitErc20Payment
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2445
+Estimated Gas Usage: 40200 - 197194
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:198
+
+ress of the pa
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000040022082, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be7714, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: SplitErc20Payment
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2466
+Estimated Gas Usage: 40200 - 197194
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000040022082, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be7714, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: SplitErc20Payment
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2470
+Estimated Gas Usage: 40200 - 197194
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000040022082, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be7714, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: SplitErc20Payment
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2504
+Estimated Gas Usage: 40200 - 197194
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:199
+
+* @param _shares Th
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000040022082, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be7714, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Vault
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2507
+Estimated Gas Usage: 41937 - 198931
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:128
+
+nt256 payment) internal{
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: depositToken(uint256), txdata: 0x6215be7785, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Vault
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2514
+Estimated Gas Usage: 41937 - 198931
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:128
+
+nt256 payment) internal{
+   
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: depositToken(uint256), txdata: 0x6215be7785, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: SplitErc20Payment
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2557
+Estimated Gas Usage: 40200 - 197194
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:199
+
+* @param _shares Th
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000040022082, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be7714, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: SplitErc20Payment
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2626
+Estimated Gas Usage: 40200 - 197194
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:199
+
+r of shares to add to th
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000040022082, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be7714, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: SplitErc20Payment
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2634
+Estimated Gas Usage: 40200 - 197194
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:201
+
+tion addToP
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000040022082, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be7714, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: SplitErc20Payment
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2653
+Estimated Gas Usage: 40200 - 197194
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:199
+
+.
+   */
+  function addToPayeeBalance(a
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000040022082, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 303030303030303030303030deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [SOMEGUY], function: depositToken(uint256), txdata: 0x6215be7714, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Vault
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2766
+Estimated Gas Usage: 41937 - 198931
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:198
+
+ress of the pa
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: depositToken(uint256), txdata: 0x6215be7785, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Vault
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2787
+Estimated Gas Usage: 41937 - 198931
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: depositToken(uint256), txdata: 0x6215be7785, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Vault
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2791
+Estimated Gas Usage: 41937 - 198931
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: depositToken(uint256), txdata: 0x6215be7785, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Vault
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2825
+Estimated Gas Usage: 41937 - 198931
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:199
+
+* @param _shares Th
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: depositToken(uint256), txdata: 0x6215be7785, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Vault
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2878
+Estimated Gas Usage: 41937 - 198931
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:199
+
+* @param _shares Th
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: depositToken(uint256), txdata: 0x6215be7785, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Vault
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2947
+Estimated Gas Usage: 41937 - 198931
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:199
+
+r of shares to add to th
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: depositToken(uint256), txdata: 0x6215be7785, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Vault
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2955
+Estimated Gas Usage: 41937 - 198931
+Read of persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:201
+
+tion addToP
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: depositToken(uint256), txdata: 0x6215be7785, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Medium
+Contract: ERC20Vault
+Function name: depositToken(uint256) or depositToken(uint256) or depositToken(uint256)
+PC address: 2974
+Estimated Gas Usage: 41937 - 198931
+Write to persistent state following external call
+The contract account state is accessed after an external call to a user defined address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/773e297a394f4a0de4b37425aef04224.sol:199
+
+.
+   */
+  function addToPayeeBalance(a
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: 000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+Caller: [CREATOR], function: depositToken(uint256), txdata: 0x6215be7785, value: 0x0

@@ -1,0 +1,295 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Call
+Function name: params0(address,bytes)
+PC address: 319
+Estimated Gas Usage: 1627 - 40469
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/f2aa489418d41245f7c00e9de8d000b3.sol:177
+
+tion params0(address c, bytes _method) public view returns (uint answer) {
+        // https://medium.com/@blockchain101/calling-the-function-of-another-contract-in-solidity-f9edfa921f4c
+        //    dc = c;
+        bytes4 sig = bytes4(keccak256(_method));
+        assembly {
+        // move pointer to free memory spot
+            let ptr := mload(0x40)
+        // put function sig at memory spot
+            mstore(ptr,sig)
+
+            let result := call(  // use WARNING because this should be staticcall BUT geth crash!
+            15000, // gas limit
+            c, // sload(dc_slot),  // to addr. append var to _slot to access storage variable
+            0, // not transfer any ether (comment if using staticcall)
+            ptr, // Inputs are stored at location ptr
+            0x04, // Inputs are 0 bytes long
+            ptr,  //Store output over input
+            0x20) //Outputs are 1 bytes long
+
+            if eq(result, 0) {
+                revert(0, 0)
+            }
+
+            answer := mload(ptr) // Assign output to answer var
+            mstore(0x40,add(ptr,0x24)) // Set storage pointer to new space
+        }
+    }
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000009, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x4000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: params0(address,bytes), txdata: 0x4ecec67b0000000000000000000000000000010101010101010101000101010101010101ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Call
+Function name: params1(address,bytes,uint256)
+PC address: 427
+Estimated Gas Usage: 1676 - 40706
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/f2aa489418d41245f7c00e9de8d000b3.sol:205
+
+tion params1(address c, bytes _method, uint _val) public view returns (uint answer) {
+        // https://medium.com/@blockchain101/calling-the-function-of-another-contract-in-solidity-f9edfa921f4c
+        //    dc = c;
+        bytes4 sig = bytes4(keccak256(_method));
+        assembly {
+        // move pointer to free memory spot
+            let ptr := mload(0x40)
+        // put function sig at memory spot
+            mstore(ptr,sig)
+        // append argument after function sig
+            mstore(add(ptr,0x04), _val)
+
+            let result := call(  // use WARNING because this should be staticcall BUT geth crash!
+            15000, // gas limit
+            c, // sload(dc_slot),  // to addr. append var to _slot to access storage variable
+            0, // not transfer any ether (comment if using staticcall)
+            ptr, // Inputs are stored at location ptr
+            0x24, // Inputs are 0 bytes long
+            ptr,  //Store output over input
+            0x20) //Outputs are 1 bytes long
+
+            if eq(result, 0) {
+                revert(0, 0)
+            }
+
+            answer := mload(ptr) // Assign output to answer var
+            mstore(0x40,add(ptr,0x24)) // Set storage pointer to new space
+        }
+    }
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40088fa6504542270, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: params1(address,bytes,uint256), txdata: 0x72d33e630000000000000000000000000100010001000100010001000100010000010101ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: TwoKeyRegistry
+Function name: getUserName2UserAddress(string)
+PC address: 821
+Estimated Gas Usage: 3294 - 45193
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/f2aa489418d41245f7c00e9de8d000b3.sol:729
+
+tion getUserName2UserAddress(
+        string _username
+    )
+    public
+    view
+    returns (address)
+    {
+        bytes32 usernameBytes = stringToBytes32(_username);
+        return PROXY_STORAGE_CONTRACT.getAddress(keccak256("username2currentAddress", usernameBytes));
+    }
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: getUserName2UserAddress(string), txdata: 0xa5a37104fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: TwoKeyRegistry
+Function name: getUserName2UserAddress(string)
+PC address: 826
+Estimated Gas Usage: 3294 - 45193
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/f2aa489418d41245f7c00e9de8d000b3.sol:729
+
+tion getUserName2UserAddress(
+        string _username
+    )
+    public
+    view
+    returns (address)
+    {
+        bytes32 usernameBytes = stringToBytes32(_username);
+        return PROXY_STORAGE_CONTRACT.getAddress(keccak256("username2currentAddress", usernameBytes));
+    }
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: getUserName2UserAddress(string), txdata: 0xa5a3710480, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: TwoKeyRegistry
+Function name: getUserName2UserAddress(string)
+PC address: 855
+Estimated Gas Usage: 3294 - 45193
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/f2aa489418d41245f7c00e9de8d000b3.sol:729
+
+tion getUserName2UserAddress(
+        string _username
+    )
+    public
+    view
+    returns (address)
+    {
+        bytes32 usernameBytes = stringToBytes32(_username);
+        return PROXY_STORAGE_CONTRACT.getAddress(keccak256("username2currentAddress", usernameBytes));
+    }
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getUserName2UserAddress(string), txdata: 0xa5a37104fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Call
+Function name: params0(address,bytes)
+PC address: 1112
+Estimated Gas Usage: 1627 - 40469
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc0000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: params0(address,bytes), txdata: 0x4ecec67b0000000000000000000000000000000000000000000000000000000000000040, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: Call
+Function name: params0(address,bytes)
+PC address: 1186
+Estimated Gas Usage: 1627 - 40469
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/f2aa489418d41245f7c00e9de8d000b3.sol:187
+
+(  // use WARNING because this should be staticcall BUT geth crash!
+            15000, // gas limit
+            c, // sload(dc_slot),  // to addr. append var to _slot to access storage variable
+            0, // not transfer any ether (comment if using staticcall)
+            ptr, // Inputs are stored at location ptr
+            0x04, // Inputs are 0 bytes long
+            ptr,  //Store output over input
+            0x20) //O
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000000400000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x49020528321008000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: params0(address,bytes), txdata: 0x4ecec67b000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef80, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Call
+Function name: params1(address,bytes,uint256)
+PC address: 1255
+Estimated Gas Usage: 1676 - 40706
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x6b46000000002000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: params1(address,bytes,uint256), txdata: 0x72d33e630000000000000000000000000000000000000000000000000000000000000040, value: 0x0

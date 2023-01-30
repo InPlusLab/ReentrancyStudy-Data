@@ -1,0 +1,343 @@
+pragma directive defines a prior version to 0.6.12. Changing pragma version to 0.6.12....
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    lpEvent
+Line:        63
+Source: 
+>     
+>     address payable public fundsReceiver = 0x9F2742e7427E26DeC6beD359F0B4b5bff6A41bB3;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Constable State Variables
+Description: State variables that do not change should be declared as
+             constants.
+Type:        Violation
+Contract:    lpEvent
+Line:        69
+Source: 
+>     
+>     uint256 pointMultiplier = 1e18;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public unitShare = 0;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    lpEvent
+Line:        101
+Source: 
+>     
+>     function addLpTokens(address _lpTokenAddress, uint256 lpTokens) external onlyFundsReceiver{
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         require(block.timestamp > lpEventEndDate, "Lp event is running");
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     Missing Input Validation
+Description: Method arguments must be sanitized before they are used
+             in computations.
+Type:        Warning
+Contract:    lpEvent
+Line:        118
+Source: 
+>     
+>     function lpShare(address _user) public view returns(uint256){
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         uint256 owing = unitShare.mul(investors[_user].investment);
+
+[0m
+[0;31mSeverity:    MEDIUM
+Pattern:     Multiplication after division
+Description: Information might be lost due to division before
+             multiplication
+Type:        Violation
+Contract:    SafeMath
+Line:        19
+Source: 
+>     }
+>     uint256 c = a * b;
+>                 ^^^^^
+>     assert(c / a == b);
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    lpEvent
+Line:        105
+Source: 
+>         require(!claimOpen, "Cannot add more, claim is already open");
+>         require(IERC20(_lpTokenAddress).transferFrom(msg.sender, address(this), lpTokens), "Could not transfer lp tokens from sender");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         totalLpTokens = lpTokens;
+
+[0m
+[0;33mSeverity:    MEDIUM
+Pattern:     No-Ether-Involved Reentrancy
+Description: Reentrancy that involves no ether
+Type:        Warning
+Contract:    lpEvent
+Line:        129
+Source: 
+>         require(owing > 0, "No pending lp tokens");
+>         require(IERC20(lpTokenAddress).transfer(msg.sender, owing));
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         unclaimedLps = unclaimedLps.sub(owing);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Reentrancy with constant gas
+Description: Ether transfers (such as send and transfer) that are
+             followed by state changes may be reentrant.
+Type:        Warning
+Contract:    lpEvent
+Line:        98
+Source: 
+>         investors[msg.sender].investment = investors[msg.sender].investment.add(msg.value);
+>         fundsReceiver.transfer(msg.value);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Solidity Naming Convention
+Description: Reports declarations that do not adhere to Solidity's
+             naming convention.
+Type:        Violation
+Contract:    lpEvent
+Line:        59
+Source: 
+> 
+> contract lpEvent{
+> ^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     State variables default visibility
+Description: Visibility of state variables should be stated explicitly
+Type:        Violation
+Contract:    lpEvent
+Line:        69
+Source: 
+>     
+>     uint256 pointMultiplier = 1e18;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public unitShare = 0;
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Ether Receiver
+Description: The receiver of ether transfers must not be influenced by
+             other transactions.
+Type:        Violation
+Contract:    lpEvent
+Line:        98
+Source: 
+>         investors[msg.sender].investment = investors[msg.sender].investment.add(msg.value);
+>         fundsReceiver.transfer(msg.value);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Transaction Order Affects Execution of Ether Transfer
+Description: Ether transfers whose execution can be manipulated by
+             other transactions must be inspected for unintended
+             behavior.
+Type:        Violation
+Contract:    lpEvent
+Line:        98
+Source: 
+>         investors[msg.sender].investment = investors[msg.sender].investment.add(msg.value);
+>         fundsReceiver.transfer(msg.value);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    lpEvent
+Line:        105
+Source: 
+>         require(!claimOpen, "Cannot add more, claim is already open");
+>         require(IERC20(_lpTokenAddress).transferFrom(msg.sender, address(this), lpTokens), "Could not transfer lp tokens from sender");
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         totalLpTokens = lpTokens;
+
+[0m
+[0;33mSeverity:    HIGH
+Pattern:     Unhandled Exception
+Description: The return value of statements that may return error
+             values must be explicitly checked.
+Type:        Warning
+Contract:    lpEvent
+Line:        129
+Source: 
+>         require(owing > 0, "No pending lp tokens");
+>         require(IERC20(lpTokenAddress).transfer(msg.sender, owing));
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         unclaimedLps = unclaimedLps.sub(owing);
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    lpEvent
+Line:        65
+Source: 
+>     
+>     uint256 public totalFundsReceived; 
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     uint256 public lpEventEndDate;
+
+[0m
+[0;31mSeverity:    HIGH
+Pattern:     Uninitialized State Variable
+Description: State variables should be explicitly initialized.
+Type:        Violation
+Contract:    lpEvent
+Line:        73
+Source: 
+>     uint256 public totalLpTokens = 0;
+>     address public lpTokenAddress;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted Ether Flow
+Description: The execution of ether flows should be restricted to an
+             authorized set of users.
+Type:        Violation
+Contract:    lpEvent
+Line:        98
+Source: 
+>         investors[msg.sender].investment = investors[msg.sender].investment.add(msg.value);
+>         fundsReceiver.transfer(msg.value);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    lpEvent
+Line:        96
+Source: 
+>         require(block.timestamp <= lpEventEndDate, "Lp Event is closed");
+>         totalFundsReceived = totalFundsReceived.add(msg.value);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         investors[msg.sender].investment = investors[msg.sender].investment.add(msg.value);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    lpEvent
+Line:        130
+Source: 
+>         require(IERC20(lpTokenAddress).transfer(msg.sender, owing));
+>         unclaimedLps = unclaimedLps.sub(owing);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         investors[msg.sender].lpTokensGained = investors[msg.sender].lpTokensGained.add(owing);
+
+[0m
+[0;33mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Warning
+Contract:    lpEvent
+Line:        131
+Source: 
+>         unclaimedLps = unclaimedLps.sub(owing);
+>         investors[msg.sender].lpTokensGained = investors[msg.sender].lpTokensGained.add(owing);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    CRITICAL
+Pattern:     Unrestricted write to storage
+Description: Contract fields that can be modified by any user must be
+             inspected.
+Type:        Violation
+Contract:    lpEvent
+Line:        97
+Source: 
+>         totalFundsReceived = totalFundsReceived.add(msg.value);
+>         investors[msg.sender].investment = investors[msg.sender].investment.add(msg.value);
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>         fundsReceiver.transfer(msg.value);
+
+[0m
+[0;31mSeverity:    INFO
+Pattern:     Unused State Variable
+Description: Unused state variables should be removed.
+Type:        Violation
+Contract:    lpEvent
+Line:        72
+Source: 
+>     uint256 public unclaimedLps = 0;
+>     uint256 public totalLpTokens = 0;
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     address public lpTokenAddress;
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    lpEvent
+Line:        87
+Source: 
+>     constructor() public{
+>         lpEventEndDate = block.timestamp.add(3 days); 
+>                          ^^^^^^^^^^^^^^^
+>     }
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    lpEvent
+Line:        95
+Source: 
+>     function deposit() public payable{
+>         require(block.timestamp <= lpEventEndDate, "Lp Event is closed");
+>                 ^^^^^^^^^^^^^^^
+>         totalFundsReceived = totalFundsReceived.add(msg.value);
+
+[0m
+[0;31mSeverity:    LOW
+Pattern:     Usage of block timestamp
+Description: Returned value relies on block timestamp.
+Type:        Violation
+Contract:    lpEvent
+Line:        102
+Source: 
+>     function addLpTokens(address _lpTokenAddress, uint256 lpTokens) external onlyFundsReceiver{
+>         require(block.timestamp > lpEventEndDate, "Lp event is running");
+>                 ^^^^^^^^^^^^^^^
+>         require(_lpTokenAddress != address(0), "Invalid token address");
+
+[0m

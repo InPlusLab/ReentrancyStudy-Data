@@ -1,0 +1,252 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: AbstractFee
+Function name: performFeelessTransaction(address,address,bytes,uint256,bytes) or performFeelessTransaction(address,address,bytes,uint256,bytes)
+PC address: 257
+Estimated Gas Usage: 21855 - 126155
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/74c02261277deaf801b5edf5207a5655.sol:121
+
+{
+        require(this == target);
+        
+        bytes memory prefix = "\x19Ethereum Signed Message:\n32";
+        bytes32 hash = keccak256(prefix, keccak256(target, data, nonce));
+        msgSender = ECRecovery.recover(hash, sig);
+        require(msgSender == sender);
+        require(nonces[msgSender]++ == nonce);
+        
+        require(target.call.value(msg.value)(data));
+        msgSender = address(0);
+    }
+}
+contract ERC20Basic {
+  function transfer(address to, uint256 value) public returns (bool);
+  event Transfer(address indexed fro
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: performFeelessTransaction(address,address,bytes,uint256,bytes), txdata: 0x51b7949502100102044002080201808000000000000000000000000000000000000000000000000000000000000000000901d12ebe1b195e5aa8748e62bd7734ae19b51f8a000000000000000000000000000000000000000000000000000100080000000000000000000000000000000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: AbstractFee
+Function name: performFeelessTransaction(address,address,bytes,uint256,bytes) or performFeelessTransaction(address,address,bytes,uint256,bytes)
+PC address: 1370
+Estimated Gas Usage: 21855 - 126155
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/74c02261277deaf801b5edf5207a5655.sol:136
+
+t Transfer(address ind
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc1080100003a23, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x40000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: performFeelessTransaction(address,address,bytes,uint256,bytes), txdata: 0x51b7949501010101010101010120200100000000000000000000000000000000000000000000000000000000000000000901d12ebe1b195e5aa8748e62bd7734ae19b51fff, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: AbstractFee
+Function name: performFeelessTransaction(address,address,bytes,uint256,bytes) or performFeelessTransaction(address,address,bytes,uint256,bytes)
+PC address: 1423
+Estimated Gas Usage: 21855 - 126155
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/74c02261277deaf801b5edf5207a5655.sol:136
+
+t Transfer(address ind
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0xc1080100003a23, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x40000000000000000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: performFeelessTransaction(address,address,bytes,uint256,bytes), txdata: 0x51b7949501010101010101010120200100000000000000000000000000000000000000000000000000000000000000000901d12ebe1b195e5aa8748e62bd7734ae19b51fff, value: 0x0
+
+==== Jump to an arbitrary instruction ====
+SWC ID: 127
+Severity: High
+Contract: Feeless
+Function name: performFeelessTransaction(address,address,bytes,uint256,bytes) or performFeelessTransaction(address,address,bytes,uint256,bytes)
+PC address: 1592
+Estimated Gas Usage: 2506 - 45625
+The caller can redirect execution to arbitrary bytecode locations.
+It is possible to redirect the control flow to arbitrary locations in the code. This may allow an attacker to bypass security controls or manipulate the business logic of the smart contract. Avoid using low-level-operations and assembly to prevent this issue.
+--------------------
+In file: /tmp/74c02261277deaf801b5edf5207a5655.sol:9
+
+ recover(bytes32 hash, bytes sig)
+    internal
+    pure
+    returns (address)
+  {
+    bytes32 r;
+    bytes32 s;
+    uint8 v;
+
+    // Check the signature length
+    if (sig.length != 65) {
+      return (address(0));
+    }
+
+    // Divide the signature in r, s and v variables
+    // ecrecover takes the signature parameters, and the only way to get them
+    // currently is to use assembly.
+    // solium-disable-next-line security/no-inline-assembly
+    assembly {
+      r := mload(add(sig, 32))
+      s := mload(add(sig, 64))
+      v := byte(0, mload(add(sig, 96)))
+    }
+
+    // Version of signature should be 27 or 28, but 0 and 1 are also possible versions
+    if (v < 27) {
+      v += 27;
+    }
+
+    // If the version is correct return the signer address
+    if (v != 27 && v != 28) {
+      return (address(0));
+    } else {
+      // solium-disable-next-line arg-overflow
+      return ecrecover(hash, v, r, s);
+    }
+  }
+
+  /**
+   * toEthSignedMessageHash
+   * @de
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1000040040633, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: performFeelessTransaction(address,address,bytes,uint256,bytes), txdata: 0x51b7949500000000000000000000000000000000000000000000000000000000000000410000000000000000000000000901d12ebe1b195e5aa8748e62bd7734ae19b51fff, value: 0x0
+
+==== Jump to an arbitrary instruction ====
+SWC ID: 127
+Severity: High
+Contract: AbstractFee
+Function name: performFeelessTransaction(address,address,bytes,uint256,bytes) or performFeelessTransaction(address,address,bytes,uint256,bytes)
+PC address: 2936
+Estimated Gas Usage: 2506 - 45625
+The caller can redirect execution to arbitrary bytecode locations.
+It is possible to redirect the control flow to arbitrary locations in the code. This may allow an attacker to bypass security controls or manipulate the business logic of the smart contract. Avoid using low-level-operations and assembly to prevent this issue.
+--------------------
+In file: /tmp/74c02261277deaf801b5edf5207a5655.sol:9
+
+ recover(bytes32 hash, bytes sig)
+    internal
+    pure
+    returns (address)
+  {
+    bytes32 r;
+    bytes32 s;
+    uint8 v;
+
+    // Check the signature length
+    if (sig.length != 65) {
+      return (address(0));
+    }
+
+    // Divide the signature in r, s and v variables
+    // ecrecover takes the signature parameters, and the only way to get them
+    // currently is to use assembly.
+    // solium-disable-next-line security/no-inline-assembly
+    assembly {
+      r := mload(add(sig, 32))
+      s := mload(add(sig, 64))
+      v := byte(0, mload(add(sig, 96)))
+    }
+
+    // Version of signature should be 27 or 28, but 0 and 1 are also possible versions
+    if (v < 27) {
+      v += 27;
+    }
+
+    // If the version is correct return the signer address
+    if (v != 27 && v != 28) {
+      return (address(0));
+    } else {
+      // solium-disable-next-line arg-overflow
+      return ecrecover(hash, v, r, s);
+    }
+  }
+
+  /**
+   * toEthSignedMessageHash
+   * @de
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: performFeelessTransaction(address,address,bytes,uint256,bytes), txdata: 0x51b7949500000000000000000000000000000000000000000000000000000000000000410000000000000000000000000901d12ebe1b195e5aa8748e62bd7734ae19b51f80, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: AbstractFee
+Function name: transfer(address,uint256) or transfer(address,uint256)
+PC address: 2950
+Estimated Gas Usage: 8795 - 30070
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/74c02261277deaf801b5edf5207a5655.sol:145
+
+true;
+    }
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1bffd, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: transfer(address,uint256), txdata: 0xa9059cbb000000000000000000000000000000000000000000000000000000000000002001, value: 0x0

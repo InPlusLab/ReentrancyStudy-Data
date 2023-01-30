@@ -1,0 +1,185 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Generic223Receiver
+Function name: tokenFallback(address,uint256,bytes)
+PC address: 741
+Estimated Gas Usage: 42697 - 224406
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/84818a5c7ecdecee62913a32ee23f621.sol:363
+
+tokenPayable {
+
+        saveTokenValues();
+
+        calledFoo = true;
+
+    }
+
+
+
+    function getSig(bytes _data) private pure returns (bytes4 sig) {
+
+        uint lngth = _data.length < 4 ? _data.length : 4;
+
+        for (uint i = 0; i < lngth; i++) {
+
+            sig = bytes4(uint(sig) + uint(_data[i]) * (2 ** (8 * (lngth - 1
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x400008003, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tokenFallback(address,uint256,bytes), txdata: 0xc0ee0b8a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdc, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Generic223Receiver
+Function name: tokenFallback(address,uint256,bytes)
+PC address: 1708
+Estimated Gas Usage: 42346 - 222833
+Read of persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/84818a5c7ecdecee62913a32ee23f621.sol:379
+
+= bytes4(uint(sig) + uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8001a, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tokenFallback(address,uint256,bytes), txdata: 0xc0ee0b8a, value: 0x0
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: Generic223Receiver
+Function name: tokenFallback(address,uint256,bytes)
+PC address: 1722
+Estimated Gas Usage: 42346 - 222833
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/84818a5c7ecdecee62913a32ee23f621.sol:379
+
+= bytes4(uint(sig) + uint
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x8001a, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tokenFallback(address,uint256,bytes), txdata: 0xc0ee0b8a, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: Generic223Receiver
+Function name: foo()
+PC address: 1757
+Estimated Gas Usage: 1136 - 1561
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/84818a5c7ecdecee62913a32ee23f621.sol:381
+
+       }
+
+    }
+
+
+
+    function saveTokenValues() private {
+
+        tokenAddr = tkn.addr;
+
+        toke
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: foo(), txdata: 0xc2985578, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Generic223Receiver
+Function name: tokenFallback(address,uint256,bytes)
+PC address: 1971
+Estimated Gas Usage: 42697 - 224406
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/84818a5c7ecdecee62913a32ee23f621.sol:413
+
+e_ = "Regium";
+
+    string private symbol_ = 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x8000, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: tokenFallback(address,uint256,bytes), txdata: 0xc0ee0b8a0000000000000000000000000000000000000000000000000000000000000001a9, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Generic223Receiver
+Function name: tokenFallback(address,uint256,bytes)
+PC address: 2036
+Estimated Gas Usage: 42697 - 224406
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/84818a5c7ecdecee62913a32ee23f621.sol:413
+
+ string private name_ = "Regium";
+
+    string private symbol_ = "
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40006400000001e12, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: tokenFallback(address,uint256,bytes), txdata: 0xc0ee0b8a000000000000000000000000000000000000000000000000000000000000000102, value: 0x0

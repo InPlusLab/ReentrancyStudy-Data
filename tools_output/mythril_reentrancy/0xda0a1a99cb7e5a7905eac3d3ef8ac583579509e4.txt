@@ -1,0 +1,459 @@
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: PreSale
+Function name: returnVariousTokenFromContract(address)
+PC address: 3241
+Estimated Gas Usage: 4548 - 74473
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/c8ba5027c39e4d972b0fb619870848fb.sol:180
+
+      require(msg.sender == owner);
+      msg.sender.transfer(valu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: returnVariousTokenFromContract(address), txdata: 0x6ebbda9f000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: PreSale
+Function name: returnVariousTokenFromContract(address)
+PC address: 3241
+Estimated Gas Usage: 4548 - 74473
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/c8ba5027c39e4d972b0fb619870848fb.sol:180
+
+      require(msg.sender == owner);
+      msg.sender.transfer(valu
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: returnVariousTokenFromContract(address), txdata: 0x6ebbda9f0000000000000000000000000100000108000004080004400020040000000040, value: 0x0
+
+==== Exception State ====
+SWC ID: 110
+Severity: Medium
+Contract: PreSale
+Function name: allUsers(uint256)
+PC address: 3763
+Estimated Gas Usage: 1112 - 1207
+An assertion violation was triggered.
+It is possible to trigger an assertion violation. Note that Solidity assert() statements should only be used to check invariants. Review the transaction trace generated for this issue and either make sure your program logic is correct, or use require() instead of assert() if your goal is to constrain user inputs or enforce preconditions. Remember to validate inputs from both callers (for instance, via passed arguments) and callees (for instance, via return values).
+--------------------
+In file: /tmp/c8ba5027c39e4d972b0fb619870848fb.sol:74
+
+g.sender;
+    token = add
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: allUsers(uint256), txdata: 0xa2bdedf40000000000000000000000000000000000000000000000000000000000000000, value: 0x0
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: PreSale
+Function name: contribute()
+PC address: 4040
+Estimated Gas Usage: 1962 - 2387
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/c8ba5027c39e4d972b0fb619870848fb.sol:91
+
+ub(startDate) > 1 days && now.sub(startDate) <= 2 days) {
+       amount = amount.mul(190);
+    } else if(now.sub(startDate) > 2 days && now.sub(startDate) <= 3 days) {
+       amount = amount.mul(180);
+    } else if(now.sub(startDate) > 3 days && now.sub(startDate) <= 4 days) {
+       amount = amount.mul(170);
+    } else if(now.sub(startDate) > 4 days && now.sub(startDate) <= 5 days) {
+       amount = amount.mul(160);
+    } else if(now.sub(startDate) > 5 days && now.sub(startDate) <= 6 days) {
+       amount = amount.mul(150);
+    } else if(now.sub(startDate) > 6 days && now.sub(startDate) <= 7 days) {
+       amount = amount.mul(140);
+    } else if(now.sub(startDate) > 7 days && now.sub(startDate) <= 8 days) {
+       amount = amount.mul(130);
+    } else if(now.sub(startDate) > 8 days && now.sub(startDate) <= 9 days) {
+       amount = amount.mul(120);
+    } else if(now.sub(startDate) > 9 days && now.sub(startDate) <= 10 days) {
+       amount = amount.mul(110);
+    } else {
+       amount = amount.mul(100);
+    }
+    
+    amount = amount.div(100);
+    
+    totalSold = totalSold.add(amount);
+    
+    users[msg.sender].acc
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000400000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: contribute(), txdata: 0xd7bb99ba, value: 0x2386f26fc10000
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: PreSale
+Function name: contribute()
+PC address: 4099
+Estimated Gas Usage: 2898 - 3323
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/c8ba5027c39e4d972b0fb619870848fb.sol:92
+
+190);
+    } else if(now.sub(startDate) > 2 days && now.sub(
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: contribute(), txdata: 0xd7bb99ba, value: 0x2386f26fc10000
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: PreSale
+Function name: contribute()
+PC address: 4133
+Estimated Gas Usage: 3836 - 4261
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/c8ba5027c39e4d972b0fb619870848fb.sol:92
+
+ul(190);
+    } else if(now.sub(startDate) > 2 days && now.sub(startDate) <= 3 days) {
+       amount = amount.mul(180);
+    } else if(now.sub(startDate) > 3 days && now.sub(startDate) <= 4 days) {
+       amount = amount.mul(170);
+    } else if(now.sub(startDate) > 4 days && now.sub(startDate) <= 5 days) {
+       amount = amount.mul(160);
+    } else if(now.sub(startDate) > 5 days && now.sub(startDate) <= 6 days) {
+       amount = amount.mul(150);
+    } else if(now.sub(startDate) > 6 days && now.sub(startDate) <= 7 days) {
+       amount = amount.mul(140);
+    } else if(now.sub(startDate) > 7 days && now.sub(startDate) <= 8 days) {
+       amount = amount.mul(130);
+    } else if(now.sub(startDate) > 8 days && now.sub(startDate) <= 9 days) {
+       amount = amount.mul(120);
+    } else if(now.sub(startDate) > 9 days && now.sub(startDate) <= 10 days) {
+       amount = amount.mul(110);
+    } else {
+       amount = amount.mul(100);
+    }
+    
+    amount = amount.div(100);
+    
+    totalSold = totalSold.add(amount);
+    
+    users[msg.sender].acc
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: contribute(), txdata: 0xd7bb99ba, value: 0x2386f26fc10000
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: PreSale
+Function name: contribute()
+PC address: 4192
+Estimated Gas Usage: 4772 - 5197
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/c8ba5027c39e4d972b0fb619870848fb.sol:94
+
+0);
+    } else if(now.sub(startDate) > 3 days && now.sub(st
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x18a12f673c60001, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: contribute(), txdata: 0xd7bb99ba, value: 0x2386f26fc10000
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: PreSale
+Function name: contribute()
+PC address: 4226
+Estimated Gas Usage: 5710 - 6135
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/c8ba5027c39e4d972b0fb619870848fb.sol:94
+
+(180);
+    } else if(now.sub(startDate) > 3 days && now.sub(startDate) <= 4 days) {
+       amount = amount.mul(170);
+    } else if(now.sub(startDate) > 4 days && now.sub(startDate) <= 5 days) {
+       amount = amount.mul(160);
+    } else if(now.sub(startDate) > 5 days && now.sub(startDate) <= 6 days) {
+       amount = amount.mul(150);
+    } else if(now.sub(startDate) > 6 days && now.sub(startDate) <= 7 days) {
+       amount = amount.mul(140);
+    } else if(now.sub(startDate) > 7 days && now.sub(startDate) <= 8 days) {
+       amount = amount.mul(130);
+    } else if(now.sub(startDate) > 8 days && now.sub(startDate) <= 9 days) {
+       amount = amount.mul(120);
+    } else if(now.sub(startDate) > 9 days && now.sub(startDate) <= 10 days) {
+       amount = amount.mul(110);
+    } else {
+       amount = amount.mul(100);
+    }
+    
+    amount = amount.div(100);
+    
+    totalSold = totalSold.add(amount);
+    
+    users[msg.sender].acc
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40000000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: contribute(), txdata: 0xd7bb99ba, value: 0x2386f26fc10000
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: PreSale
+Function name: contribute()
+PC address: 4285
+Estimated Gas Usage: 6646 - 7071
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/c8ba5027c39e4d972b0fb619870848fb.sol:96
+
+;
+    } else if(now.sub(startDate) > 4 days && now.sub(star
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x2886f278010001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: contribute(), txdata: 0xd7bb99ba, value: 0x2386f26fc10000
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: PreSale
+Function name: contribute()
+PC address: 4319
+Estimated Gas Usage: 7584 - 8009
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/c8ba5027c39e4d972b0fb619870848fb.sol:96
+
+70);
+    } else if(now.sub(startDate) > 4 days && now.sub(startDate) <= 5 days) {
+       amount = amount.mul(160);
+    } else if(now.sub(startDate) > 5 days && now.sub(startDate) <= 6 days) {
+       amount = amount.mul(150);
+    } else if(now.sub(startDate) > 6 days && now.sub(startDate) <= 7 days) {
+       amount = amount.mul(140);
+    } else if(now.sub(startDate) > 7 days && now.sub(startDate) <= 8 days) {
+       amount = amount.mul(130);
+    } else if(now.sub(startDate) > 8 days && now.sub(startDate) <= 9 days) {
+       amount = amount.mul(120);
+    } else if(now.sub(startDate) > 9 days && now.sub(startDate) <= 10 days) {
+       amount = amount.mul(110);
+    } else {
+       amount = amount.mul(100);
+    }
+    
+    amount = amount.div(100);
+    
+    totalSold = totalSold.add(amount);
+    
+    users[msg.sender].acc
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x44074040810002, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: contribute(), txdata: 0xd7bb99ba, value: 0x2386f26fc10000
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: PreSale
+Function name: contribute()
+PC address: 4378
+Estimated Gas Usage: 8520 - 8945
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/c8ba5027c39e4d972b0fb619870848fb.sol:99
+
+    } else if(now.sub(startDate) > 5 days && now.sub(startD
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: contribute(), txdata: 0xd7bb99ba, value: 0x2386f26fc10000
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: PreSale
+Function name: contribute()
+PC address: 4412
+Estimated Gas Usage: 9458 - 9883
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/c8ba5027c39e4d972b0fb619870848fb.sol:98
+
+);
+    } else if(now.sub(startDate) > 5 days && now.sub(startDate) <= 6 days) {
+       amount = amount.mul(150);
+    } else if(now.sub(startDate) > 6 days && now.sub(startDate) <= 7 days) {
+       amount = amount.mul(140);
+    } else if(now.sub(startDate) > 7 days && now.sub(startDate) <= 8 days) {
+       amount = amount.mul(130);
+    } else if(now.sub(startDate) > 8 days && now.sub(startDate) <= 9 days) {
+       amount = amount.mul(120);
+    } else if(now.sub(startDate) > 9 days && now.sub(startDate) <= 10 days) {
+       amount = amount.mul(110);
+    } else {
+       amount = amount.mul(100);
+    }
+    
+    amount = amount.div(100);
+    
+    totalSold = totalSold.add(amount);
+    
+    users[msg.sender].acc
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: contribute(), txdata: 0xd7bb99ba, value: 0x2386f26fc10000
+
+==== Dependence on predictable environment variable ====
+SWC ID: 116
+Severity: Low
+Contract: PreSale
+Function name: contribute()
+PC address: 5468
+Estimated Gas Usage: 1899 - 2324
+A control flow decision is made based on The block.timestamp environment variable.
+The block.timestamp environment variable is used to determine a control flow decision. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner. Also keep in mind that attackers know hashes of earlier blocks. Don't use any of those environment variables as sources of randomness and be aware that use of these variables introduces a certain level of trust into miners.
+--------------------
+In file: /tmp/c8ba5027c39e4d972b0fb619870848fb.sol:29
+
+6 c = a - b;
+
+ 
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x80000000000000, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: contribute(), txdata: 0xd7bb99ba, value: 0x2386f26fc10000

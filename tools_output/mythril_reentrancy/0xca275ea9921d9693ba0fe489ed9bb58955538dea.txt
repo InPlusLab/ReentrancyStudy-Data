@@ -1,0 +1,117 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: TwoKeyExchangeRateContract
+Function name: getFiatToStableQuotes(uint256,string,bytes32[])
+PC address: 721
+Estimated Gas Usage: 1016 - 7223
+The arithmetic operator can overflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/de22456a77bb009995f375e9d90ee9b9.sol:693
+
+tion getFiatToStableQuotes(
+        uint amountInFiatWei,
+        string fiatCurrency,
+        bytes32 [] stableCoinPairs //Pairs stable coin - ETh
+    )
+    public
+    view
+    returns (uint[])
+    {
+        uint len = stableCoinPairs.length;
+
+        uint [] memory pairs = new uint[](len);
+
+        uint i;
+
+        // We have rate 1 DAI = X USD => 1 USD = 1/X DAI
+        // We need to compute N dai = Y usd
+        for(i = 0; i < len; i++) {
+            // This represents us how much USD is 1 stable coin unit worth
+            // Example: 1 DAI = rate = 0.99 $
+            // 1 * DAI = 0.99 * USD
+            // 1 USD = 1 * DAI / 0.99
+            // 15 USD = 15 / 0.99
+
+            // get rate against ETH (1 STABLE  = rate ETH)
+            uint stableEthRate = getBaseToTargetRateInternal(stableCoinPairs[i]);
+
+            // This is the ETH/USD rate
+            uint eth_usd = getBaseToTargetRateInternal(stringToBytes32("USD"));
+
+            uint rate =  stableEthRate.mul(eth_usd).div(10**18);
+
+            pairs[i] = amountInFiatWei.mul(10**18).div(rate);
+        }
+
+        return pairs;
+    }
+
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x3, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: getFiatToStableQuotes(uint256,string,bytes32[]), txdata: 0x41bb19890000000000000000000000000000000000000000000000000000000000000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TwoKeyExchangeRateContract
+Function name: getLatestPrice(address)
+PC address: 2397
+Estimated Gas Usage: 2097 - 37312
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/de22456a77bb009995f375e9d90ee9b9.sol:797
+
+egatorV3Interface(oracleAddress).latestRoundData();
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x10, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [CREATOR], function: getLatestPrice(address), txdata: 0x16345f18000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0
+
+==== External Call To User-Supplied Address ====
+SWC ID: 107
+Severity: Low
+Contract: TwoKeyExchangeRateContract
+Function name: getDecimalsReturnPrecision(address)
+PC address: 3722
+Estimated Gas Usage: 2002 - 36845
+A call to a user-supplied address is executed.
+An external message call to an address specified by the caller is executed. Note that the callee account might contain arbitrary code and could re-enter any function within this contract. Reentering the contract in an intermediate state may lead to unexpected behaviour. Make sure that no state modifications are executed after this call and/or reentrancy guards are in place.
+--------------------
+In file: /tmp/de22456a77bb009995f375e9d90ee9b9.sol:813
+
+egatorV3Interface(oracleAddress).decimals();
+  
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x41000000000004, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x1, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [ATTACKER], function: getDecimalsReturnPrecision(address), txdata: 0x4a6021d3000000000000000000000000deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, value: 0x0

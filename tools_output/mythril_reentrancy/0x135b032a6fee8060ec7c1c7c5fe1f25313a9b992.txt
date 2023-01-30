@@ -1,0 +1,127 @@
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Lib
+Function name: GetLastMsg()
+PC address: 488
+Estimated Gas Usage: 4124 - 6055
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/9d134a184400d1e2e7b334a3c652077c.sol:68
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x0101010100000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [CREATOR], function: GetLastMsg(), txdata: 0x40c8a90a, value: 0x0
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: High
+Contract: Lib
+Function name: GetLastMsg()
+PC address: 540
+Estimated Gas Usage: 4124 - 6055
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation. 
+--------------------
+In file: /tmp/9d134a184400d1e2e7b334a3c652077c.sol:68
+Initial State:
+
+Account: [CREATOR], balance: 0x1, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x0101010100000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [CREATOR], function: GetLastMsg(), txdata: 0x40c8a90a, value: 0x0
+
+==== Multiple Calls in a Single Transaction ====
+SWC ID: 113
+Severity: Low
+Contract: TransferReg
+Function name: transfer(address)
+PC address: 784
+Estimated Gas Usage: 4262 - 73530
+Multiple calls are executed in the same transaction.
+This call is executed following another call within the same transaction. It is possible that the call never gets executed if a prior call fails permanently. This might be caused intentionally by a malicious callee. If possible, refactor the code such that each transaction only executes one external call or make sure that all callees can be trusted (i.e. they’re part of your own codebase).
+--------------------
+In file: /tmp/9d134a184400d1e2e7b334a3c652077c.sol:25
+
+e);
+        }
+    }
+    
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x40001a2000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transfer(address), txdata: 0x1a695230, value: 0x1
+
+==== State access after external call ====
+SWC ID: 107
+Severity: Low
+Contract: TransferReg
+Function name: transfer(address)
+PC address: 784
+Estimated Gas Usage: 4262 - 73530
+Write to persistent state following external call
+The contract account state is accessed after an external call to a fixed address. To prevent reentrancy issues, consider accessing the state only before the call, especially if the callee is untrusted. Alternatively, a reentrancy lock can be used to prevent untrusted callees from re-entering the contract in an intermediate state.
+--------------------
+In file: /tmp/9d134a184400d1e2e7b334a3c652077c.sol:25
+
+e);
+        }
+    }
+    
+}
+
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x100480000000001, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: transfer(address), txdata: 0x1a695230, value: 0x1
+
+==== Integer Arithmetic Bugs ====
+SWC ID: 101
+Severity: Low
+Contract: Lib
+Function name: fallback
+PC address: 893
+Estimated Gas Usage: 16436 - 76626
+The arithmetic operator can underflow.
+It is possible to cause an integer overflow or underflow in the arithmetic operation.  This issue is reported for internal compiler generated code.
+--------------------
+Initial State:
+
+Account: [CREATOR], balance: 0x0, nonce:0, storage:{}
+Account: [ATTACKER], balance: 0x0, nonce:0, storage:{}
+Account: [SOMEGUY], balance: 0x0, nonce:0, storage:{}
+
+Transaction Sequence:
+
+Caller: [CREATOR], calldata: , value: 0x0
+Caller: [SOMEGUY], function: unknown, txdata: 0x010101010000000000000000000000000000000000000000000000000000000000, value: 0x0
+Caller: [CREATOR], function: unknown, txdata: 0x010101011111111111111111111111110000000000000000000000000000000000, value: 0x0
