@@ -40,9 +40,9 @@ The mapping from the hash value (for deduplication) to the address.
 The python script to load reentrancy_information.csv.
 
 ## Citing
-``` 
+
 Zibin Zheng, Neng Zhang, Jianzhong Su, Zhijie Zhong, Mingxi Ye, and Jiachi Chen, “Turn the rudder: A beacon of reentrancy detection for smart contracts on ethereum,” in Proceedings of the 45th IEEE/ACM International Conference on Software Engineering, ser. ICSE ’23, 2023
-```
+
 <!-- ```
 @inproceedings{zheng2023turn,
 author = {Zheng, Zibin and Zhang, Neng and Su, Jianzhong and Zhong, Zhijie and Ye, Mingxi and Chen, Jiachi},
