@@ -1,6 +1,6 @@
 # ReentrancyStudy-Data
 
-ReentrancyStudy-Data is a large-scale dataset of reentrancy vulnerability in smart contracts, which is built from 230,548 open-source smart contracts from Etherscan. For more details, please refer to [ICSE'23 paper](https://github.com/InPlusLab/ReentrancyStudy-Data/tree/main/paper/Turn_the_Rudder_A_Beacon_of_Reentrancy Detection_for_Smart_Contracts_on_Ethereum.pdf).
+ReentrancyStudy-Data is a large-scale dataset of reentrancy vulnerability in smart contracts, which is built from 230,548 open-source smart contracts from Etherscan. For more details, please refer to [ICSE'23 paper](https://github.com/InPlusLab/ReentrancyStudy-Data/tree/main/paper/Turn_the_Rudder_A_Beacon_of_Reentrancy_Detection_for_Smart_Contracts_on_Ethereum.pdf).
 
 ## Data Annotation
 
