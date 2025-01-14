@@ -1,6 +1,8 @@
 # ReentrancyStudy-Data
 
-ReentrancyStudy-Data is a large-scale dataset of reentrancy vulnerability in smart contracts, which is built from 230,548 open-source smart contracts from Etherscan. For more details, please refer to [ICSE'23 paper](https://github.com/InPlusLab/ReentrancyStudy-Data/tree/main/paper/Turn_the_Rudder_A_Beacon_of_Reentrancy_Detection_for_Smart_Contracts_on_Ethereum.pdf).
+ReentrancyStudy-Data is a large-scale dataset of reentrancy vulnerability in smart contracts, which is built from 230,548 open-source smart contracts from Etherscan. 
+
+For more details, please refer to our paper "Turn the Rudder: A Beacon of Reentrancy Detection for Smart Contracts on Ethereum" [ICSE'23 paper](https://github.com/InPlusLab/ReentrancyStudy-Data/tree/main/paper/Turn_the_Rudder_A_Beacon_of_Reentrancy_Detection_for_Smart_Contracts_on_Ethereum.pdf).
 
 ## Data Annotation
 
@@ -44,7 +46,7 @@ The python script to load reentrancy_information.csv.
 Zibin Zheng, Neng Zhang, Jianzhong Su, Zhijie Zhong, Mingxi Ye, and Jiachi Chen, “Turn the rudder: A beacon of reentrancy detection for smart contracts on ethereum,” in Proceedings of the 45th IEEE/ACM International Conference on Software Engineering, ser. ICSE ’23, 2023
 
 ## Contact 
-If you have any questions about our dataset, please contact wdgrzn2008@163.com.
+If you have any questions about our dataset, please contact sujzh3@mail2.sysu.edu.cn.
 
 <!-- ```
 @inproceedings{zheng2023turn,
